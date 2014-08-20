@@ -1,0 +1,267 @@
+begin model
+
+begin parameters
+# Parameternames and values...
+kf1 1
+kr1 1
+kf2 1
+kr2 1
+kf3 1
+kr3 1
+k4 1
+k5 1
+k6 1
+k7 1
+kf8 1
+kr8 1
+k9 1
+k10 1
+kf11 1
+kr11 1
+k12 1
+kf13 1
+kr13 1
+kf13_i1 1
+kr13_i1 1
+k14 1
+kf15 1
+kr15 1
+kf15_j2 1
+kr15_j2 1
+kf15_j3 1
+kr15_j3 1
+kf15_j4 1
+kr15_j4 1
+k16 1
+kf17 1
+kr17 1
+kf18 1
+kr18 1
+kf19 1
+kr19 1
+k20 1
+kf21 1
+kr21 1
+k22 1
+kf23 1
+kr23 1
+kf24 1
+kr24 1
+end parameters
+
+
+begin molecule types    # define molecules present
+
+BAR(bd_C8_bd)
+MT
+BID(bd~U~Truncated,bd_MCL1_bd)
+C9(bd_APAF_bd,bd_XIAP_bd)
+FLIP(bd_R_bd)
+BAX(D_BAX_D,bd_BCL2_bd,T_BAX_T,bd~U~active,loc~Cytoplasm~Mitochondria)
+Cytoc(bd_APAF_bd,loc~Mitochondria~Cytoplasm)
+SMAC(bd_XIAP_bd,loc~Mitochondria~Cytoplasm)
+TRAIL(bd_R_bd)
+XIAP(bd_C3_bd,bd_SMAC_bd,bd_C9_bd)
+C8(bd~U~Truncated,bd_BAR_bd)
+ECS(bd~U~Truncated)
+MCL1(bd_BID_bd)
+FADD(bd_R_bd)
+C3(bd~U~Truncated,bd_XIAP_bd)
+R(bd_FADD_bd,bd_FLIP_bd,bd_TRAIL_bd)
+APAF(bd_Cytoc_bd,bd_C9_bd)
+C6(bd~U~Truncated)
+BCL2(bd_BAX_bd)
+
+end molecule types
+
+
+begin seed species      # initial conditions (all species unbound, unphosphorylated, initial value 1)
+
+BAR(bd_C8_bd)                                                                              100
+MT                                                                                         100
+BID(bd~U,bd_MCL1_bd)                                                                       100
+C9(bd_APAF_bd,bd_XIAP_bd)                                                                  100
+FLIP(bd_R_bd)                                                                              100
+BAX(D_BAX_D,bd_BCL2_bd,loc~Cytoplasm,T_BAX_T,bd~U)                             100
+Cytoc(bd_APAF_bd,loc~Mitochondria)                                                         100
+SMAC(bd_XIAP_bd,loc~Mitochondria)                                                          100
+TRAIL(bd_R_bd)                                                                             100
+XIAP(bd_C3_bd,bd_SMAC_bd,bd_C9_bd)                                                         100
+C8(bd~U,bd_BAR_bd)                                                                         100
+ECS(bd~U)                                                                                  100
+MCL1(bd_BID_bd)                                                                            100
+FADD(bd_R_bd)                                                                              100
+C3(bd~U,bd_XIAP_bd)                                                                        100
+R(bd_FADD_bd,bd_FLIP_bd,bd_TRAIL_bd)                                                       100
+APAF(bd_Cytoc_bd,bd_C9_bd)                                                                 100
+C6(bd~U)                                                                                   100
+BCL2(bd_BAX_bd)                                                                            100
+
+end seed species
+
+
+begin observables       # model outputs (e.g phosphorylated Target is our output)
+
+
+end observables
+
+begin reaction rules
+
+###########################  1###TRAIL i R###
+#      required: [[(u'x', u'FADD--R')]]                            optional: []
+#<<[(u'x', u'FADD--R')]
+#source states: [('x', u'TRAIL_bd--R_bd')] product states: [('!c', u'TRAIL_bd--R_bd')]
+TRAIL(bd_R_bd) + R(bd_FADD_bd,bd_TRAIL_bd) <-> TRAIL(bd_R_bd!0).R(bd_FADD_bd,bd_TRAIL_bd!0)     kf1,kr1
+#>>>>>>>>>>
+###########################  2###FADD ppi R###
+#      required: [[(u'x', u'FLIP--R'), (u'!', u'TRAIL--R')]]       optional: []
+#<<[(u'x', u'FLIP--R'), (u'!', u'TRAIL--R')]
+#source states: [('x', u'FADD_bd--R_bd')] product states: [('!c', u'FADD_bd--R_bd')]
+FADD(bd_R_bd) + R(bd_FLIP_bd,bd_TRAIL_bd!2,bd_FADD_bd).TRAIL(bd_R_bd!2) <-> FADD(bd_R_bd!0).R(bd_FLIP_bd,bd_TRAIL_bd!2,bd_FADD_bd!0).TRAIL(bd_R_bd!2)     kf2,kr2
+#>>>>>>>>>>
+###########################  3###FLIP ppi R###
+#      required: [[(u'!', u'FADD--R')]]                            optional: []
+#<<[(u'!', u'FADD--R')]
+#source states: [('x', u'FLIP_bd--R_bd')] product states: [('!c', u'FLIP_bd--R_bd')]
+FLIP(bd_R_bd) + R(bd_FADD_bd!1,bd_FLIP_bd).FADD(bd_R_bd!1) <-> FLIP(bd_R_bd!0).R(bd_FADD_bd!1,bd_FLIP_bd!0).FADD(bd_R_bd!1)     kf3,kr3
+#>>>>>>>>>>
+###########################  4###R CUT C8###
+#      required: [[(u'!', u'FADD--R'), (u'x', u'FLIP--R')]]        optional: []
+#<<[(u'!', u'FADD--R'), (u'x', u'FLIP--R')]
+#source states: [('x', u'C8_bd-{Truncated}')] product states: [('!', u'C8_bd-{Truncated}')]
+R(bd_FADD_bd!0,bd_FLIP_bd).FADD(bd_R_bd!0) + C8(bd~U) -> R(bd_FADD_bd!0,bd_FLIP_bd).FADD(bd_R_bd!0) + C8(bd~Truncated)     k4
+#>>>>>>>>>>
+###########################  5###C6 CUT C8###
+#      required: [[(u'!', u'C6-{Truncated}')]]                     optional: []
+#<<[(u'!', u'C6-{Truncated}')]
+#source states: [('x', u'C8_bd-{Truncated}')] product states: [('!', u'C8_bd-{Truncated}')]
+C6(bd~Truncated) + C8(bd~U) -> C6(bd~Truncated) + C8(bd~Truncated)     k5
+#>>>>>>>>>>
+###########################  6###C8 CUT C3###
+#      required: [[(u'x', u'C8--BAR'), (u'!', u'C8-{Truncated}')]] optional: []
+#<<[(u'x', u'C8--BAR'), (u'!', u'C8-{Truncated}')]
+#source states: [('x', u'C3_bd-{Truncated}')] product states: [('!', u'C3_bd-{Truncated}')]
+C8(bd~Truncated,bd_BAR_bd) + C3(bd~U) -> C8(bd~Truncated,bd_BAR_bd) + C3(bd~Truncated)     k6
+#>>>>>>>>>>
+###########################  7###C3 CUT C6###
+#      required: [[(u'x', u'C3--XIAP'), (u'!', u'C3-{Truncated}')]]optional: []
+#<<[(u'x', u'C3--XIAP'), (u'!', u'C3-{Truncated}')]
+#source states: [('x', u'C6_bd-{Truncated}')] product states: [('!', u'C6_bd-{Truncated}')]
+C3(bd~Truncated,bd_XIAP_bd) + C6(bd~U) -> C3(bd~Truncated,bd_XIAP_bd) + C6(bd~Truncated)     k7
+#>>>>>>>>>>
+###########################  8###C8 ppi BAR###
+#      required: [[(u'!', u'C8-{Truncated}')]]                     optional: []
+#<<[(u'!', u'C8-{Truncated}')]
+#source states: [('x', u'C8_bd--BAR_bd')] product states: [('!c', u'C8_bd--BAR_bd')]
+C8(bd~Truncated,bd_BAR_bd) + BAR(bd_C8_bd) <-> C8(bd~Truncated,bd_BAR_bd!0).BAR(bd_C8_bd!0)     kf8,kr8
+#>>>>>>>>>>
+###########################  9###C3 CUT ECS###
+#      required: [[(u'x', u'C3--XIAP'), (u'!', u'C3-{Truncated}')]]optional: []
+#<<[(u'x', u'C3--XIAP'), (u'!', u'C3-{Truncated}')]
+#source states: [('x', u'ECS_bd-{Truncated}')] product states: [('!', u'ECS_bd-{Truncated}')]
+C3(bd~Truncated,bd_XIAP_bd) + ECS(bd~U) -> C3(bd~Truncated,bd_XIAP_bd) + ECS(bd~Truncated)     k9
+#>>>>>>>>>>
+########################### 10###C8 CUT BID###
+#      required: [[(u'x', u'C8--BAR'), (u'!', u'C8-{Truncated}')]] optional: []
+#<<[(u'x', u'C8--BAR'), (u'!', u'C8-{Truncated}')]
+#source states: [('x', u'BID_bd-{Truncated}')] product states: [('!', u'BID_bd-{Truncated}')]
+C8(bd~Truncated,bd_BAR_bd) + BID(bd~U) -> C8(bd~Truncated,bd_BAR_bd) + BID(bd~Truncated)     k10
+#>>>>>>>>>>
+########################### 11###BID ppi MCL1###
+#      required: [[(u'!', u'BID-{Truncated}')]]                    optional: []
+#<<[(u'!', u'BID-{Truncated}')]
+#source states: [('x', u'BID_bd--MCL1_bd')] product states: [('!c', u'BID_bd--MCL1_bd')]
+BID(bd~Truncated,bd_MCL1_bd) + MCL1(bd_BID_bd) <-> BID(bd~Truncated,bd_MCL1_bd!0).MCL1(bd_BID_bd!0)     kf11,kr11
+#>>>>>>>>>>
+########################### 12###BID Activate BAX###
+#      required: [[(u'!', u'BID-{Truncated}'), (u'x', u'BID--MCL1')]]optional: []
+#<<[(u'!', u'BID-{Truncated}'), (u'x', u'BID--MCL1')]
+#source states: [('x', u'BAX_bd-{active}')] product states: [('!', u'BAX_bd-{active}')]
+BID(bd~Truncated,bd_MCL1_bd) + BAX(bd~U) -> BID(bd~Truncated,bd_MCL1_bd) + BAX(bd~active)     k12
+#>>>>>>>>>>
+########################### 13###C3 ppi XIAP###
+#      required: [[(u'!', u'C3-{Truncated}'), (u'x', u'SMAC--XIAP'), (u'x', u'C9--XIAP')], [(u'x', u'C9--XIAP'), (u'x', u'SMAC--XIAP'), (u'!', u'C3-{Truncated}')]]optional: []
+#<<[(u'!', u'C3-{Truncated}'), (u'x', u'SMAC--XIAP'), (u'x', u'C9--XIAP')]
+#source states: [('x', u'C3_bd--XIAP_bd')] product states: [('!c', u'C3_bd--XIAP_bd')]
+C3(bd~Truncated,bd_XIAP_bd) + XIAP(bd_SMAC_bd,bd_C9_bd,bd_C3_bd) <-> C3(bd~Truncated,bd_XIAP_bd!0).XIAP(bd_SMAC_bd,bd_C9_bd,bd_C3_bd!0)     kf13,kr13
+#>>>>>>>>>>
+########################### 14###MT MIMP BAX###
+#      required: [[(u'!', u'BAX-{active}')]]                       optional: []
+#<<[(u'!', u'BAX-{active}')]
+#source states: [('!', u'BAX_loc-{Cytoplasm}')] product states: [('!', u'BAX_loc-{Mitochondria}')]
+MT + BAX(loc~Cytoplasm,bd~active) -> MT + BAX(loc~Mitochondria,bd~active)     k14
+#>>>>>>>>>>
+########################### 15###BCL2 ppi BAX###
+#      required: [[(u'!', u'BAX-{Mitochondria}'), (u'x', u'BCL2--BAX')]]optional: [(u'K+', u'BAX_D--BAX_D'), (u'K+', u'BAX_T--BAX_T')]
+#<<[(u'!', u'BAX-{Mitochondria}'), (u'x', u'BCL2--BAX')]
+#source states: [('x', u'BCL2_bd--BAX_bd')] product states: [('!c', u'BCL2_bd--BAX_bd')]
+BCL2(bd_BAX_bd) + BAX(bd_BCL2_bd,T_BAX_T,D_BAX_D,loc~Mitochondria) <-> BCL2(bd_BAX_bd!0).BAX(bd_BCL2_bd!0,T_BAX_T,D_BAX_D,loc~Mitochondria)     kf15,kr15
+#>>>>>>>>>>
+#--2 [(u'K+', u'BAX_T--BAX_T')]
+#source states: [('x', u'BCL2_bd--BAX_bd')] product states: [('!c', u'BCL2_bd--BAX_bd')]
+BCL2(bd_BAX_bd) + BAX(bd_BCL2_bd,D_BAX_D,T_BAX_T!1,loc~Mitochondria).BAX(bd_BCL2_bd,D_BAX_D,T_BAX_T!1,loc~Mitochondria) <-> BCL2(bd_BAX_bd!0).BAX(bd_BCL2_bd!0,D_BAX_D,T_BAX_T!1,loc~Mitochondria).BAX(bd_BCL2_bd,D_BAX_D,T_BAX_T!1,loc~Mitochondria)     kf15_j2,kr15_j2
+#--3 [(u'K+', u'BAX_D--BAX_D')]
+#source states: [('x', u'BCL2_bd--BAX_bd')] product states: [('!c', u'BCL2_bd--BAX_bd')]
+BCL2(bd_BAX_bd) + BAX(bd_BCL2_bd,T_BAX_T,D_BAX_D!1,loc~Mitochondria).BAX(bd_BCL2_bd,T_BAX_T,D_BAX_D!1,loc~Mitochondria) <-> BCL2(bd_BAX_bd!0).BAX(bd_BCL2_bd!0,T_BAX_T,D_BAX_D!1,loc~Mitochondria).BAX(bd_BCL2_bd,T_BAX_T,D_BAX_D!1,loc~Mitochondria)     kf15_j3,kr15_j3
+#--4 [(u'K+', u'BAX_D--BAX_D'), (u'K+', u'BAX_T--BAX_T')]
+#source states: [('x', u'BCL2_bd--BAX_bd')] product states: [('!c', u'BCL2_bd--BAX_bd')]
+BCL2(bd_BAX_bd) + BAX(bd_BCL2_bd,T_BAX_T!2,D_BAX_D!1,loc~Mitochondria).BAX(bd_BCL2_bd,T_BAX_T!2,loc~Mitochondria).BAX(bd_BCL2_bd,D_BAX_D!1,loc~Mitochondria) <-> BCL2(bd_BAX_bd!0).BAX(bd_BCL2_bd!0,T_BAX_T!2,D_BAX_D!1,loc~Mitochondria).BAX(bd_BCL2_bd,T_BAX_T!2,loc~Mitochondria).BAX(bd_BCL2_bd,D_BAX_D!1,loc~Mitochondria)     kf15_j4,kr15_j4
+########################### 16###BAX MEXP Cytoc###
+#      required: [[(u'!', u'BAX_T--BAX_T'), (u'x', u'BCL2--BAX')]] optional: []
+#<<[(u'!', u'BAX_T--BAX_T'), (u'x', u'BCL2--BAX')]
+#source states: [('!', u'Cytoc_loc-{Mitochondria}')] product states: [('!', u'Cytoc_loc-{Cytoplasm}')]
+BAX(T_BAX_T!0,bd_BCL2_bd).BAX(T_BAX_T!0,bd_BCL2_bd) + Cytoc(loc~Mitochondria) -> BAX(T_BAX_T!0,bd_BCL2_bd).BAX(T_BAX_T!0,bd_BCL2_bd) + Cytoc(loc~Cytoplasm)     k16
+#>>>>>>>>>>
+########################### 17###Cytoc ppi APAF###
+#      required: [[(u'!', u'Cytoc-{Cytoplasm}'), (u'x', u'C9--APAF')]]optional: []
+#<<[(u'!', u'Cytoc-{Cytoplasm}'), (u'x', u'C9--APAF')]
+#source states: [('x', u'Cytoc_bd--APAF_bd')] product states: [('!c', u'Cytoc_bd--APAF_bd')]
+Cytoc(loc~Cytoplasm,bd_APAF_bd) + APAF(bd_C9_bd,bd_Cytoc_bd) <-> Cytoc(loc~Cytoplasm,bd_APAF_bd!0).APAF(bd_C9_bd,bd_Cytoc_bd!0)     kf17,kr17
+#>>>>>>>>>>
+########################### 18###C9 ppi APAF###
+#      required: [[(u'!', u'Cytoc--APAF'), (u'x', u'C9--XIAP')]]   optional: []
+#<<[(u'!', u'Cytoc--APAF'), (u'x', u'C9--XIAP')]
+#source states: [('x', u'C9_bd--APAF_bd')] product states: [('!c', u'C9_bd--APAF_bd')]
+C9(bd_XIAP_bd,bd_APAF_bd) + APAF(bd_Cytoc_bd!1,bd_C9_bd).Cytoc(bd_APAF_bd!1) <-> C9(bd_XIAP_bd,bd_APAF_bd!0).APAF(bd_Cytoc_bd!1,bd_C9_bd!0).Cytoc(bd_APAF_bd!1)     kf18,kr18
+#>>>>>>>>>>
+########################### 19###C9 ppi XIAP###
+#      required: [[(u'x', u'C3--XIAP'), (u'x', u'SMAC--XIAP'), (u'!', u'C9--APAF')]]optional: []
+#<<[(u'x', u'C3--XIAP'), (u'x', u'SMAC--XIAP'), (u'!', u'C9--APAF')]
+#source states: [('x', u'C9_bd--XIAP_bd')] product states: [('!c', u'C9_bd--XIAP_bd')]
+C9(bd_APAF_bd!3,bd_XIAP_bd).APAF(bd_C9_bd!3) + XIAP(bd_C3_bd,bd_SMAC_bd,bd_C9_bd) <-> C9(bd_APAF_bd!3,bd_XIAP_bd!0).XIAP(bd_C3_bd,bd_SMAC_bd,bd_C9_bd!0).APAF(bd_C9_bd!3)     kf19,kr19
+#>>>>>>>>>>
+########################### 20###BAX MEXP SMAC###
+#      required: [[(u'!', u'BAX_T--BAX_T'), (u'x', u'BCL2--BAX')]] optional: []
+#<<[(u'!', u'BAX_T--BAX_T'), (u'x', u'BCL2--BAX')]
+#source states: [('!', u'SMAC_loc-{Mitochondria}')] product states: [('!', u'SMAC_loc-{Cytoplasm}')]
+BAX(T_BAX_T!0,bd_BCL2_bd).BAX(T_BAX_T!0,bd_BCL2_bd) + SMAC(loc~Mitochondria) -> BAX(T_BAX_T!0,bd_BCL2_bd).BAX(T_BAX_T!0,bd_BCL2_bd) + SMAC(loc~Cytoplasm)     k20
+#>>>>>>>>>>
+########################### 21###SMAC ppi XIAP###
+#      required: [[(u'x', u'C3--XIAP'), (u'x', u'C9--XIAP'), (u'!', u'SMAC-{Cytoplasm}')]]optional: []
+#<<[(u'x', u'C3--XIAP'), (u'x', u'C9--XIAP'), (u'!', u'SMAC-{Cytoplasm}')]
+#source states: [('x', u'SMAC_bd--XIAP_bd')] product states: [('!c', u'SMAC_bd--XIAP_bd')]
+SMAC(loc~Cytoplasm,bd_XIAP_bd) + XIAP(bd_C3_bd,bd_C9_bd,bd_SMAC_bd) <-> SMAC(loc~Cytoplasm,bd_XIAP_bd!0).XIAP(bd_C3_bd,bd_C9_bd,bd_SMAC_bd!0)     kf21,kr21
+#>>>>>>>>>>
+########################### 22###C9 CUT C3###
+#      required: [[(u'x', u'C9--XIAP'), (u'!', u'C9--APAF')]]      optional: []
+#<<[(u'x', u'C9--XIAP'), (u'!', u'C9--APAF')]
+#source states: [('x', u'C3_bd-{Truncated}')] product states: [('!', u'C3_bd-{Truncated}')]
+C9(bd_XIAP_bd,bd_APAF_bd!1).APAF(bd_C9_bd!1) + C3(bd~U) -> C9(bd_XIAP_bd,bd_APAF_bd!1).APAF(bd_C9_bd!1) + C3(bd~Truncated)     k22
+#>>>>>>>>>>
+########################### 23###BAX ppi BAX###
+#      required: [[(u'!', u'BAX-{Mitochondria}'), (u'x', u'BAX--BCL2')]]optional: []
+#<<[(u'!', u'BAX-{Mitochondria}'), (u'x', u'BAX--BCL2')]
+#source states: [('x', u'BAX_D--BAX_D'), ('x', u'BAX_T--BAX_T')] product states: [('!c', u'BAX_D--BAX_D'), ('x', u'BAX_T--BAX_T')]
+BAX(loc~Mitochondria,bd_BCL2_bd,D_BAX_D,T_BAX_T) + BAX(loc~Mitochondria,bd_BCL2_bd,D_BAX_D,T_BAX_T) <-> BAX(loc~Mitochondria,bd_BCL2_bd,D_BAX_D!0,T_BAX_T).BAX(loc~Mitochondria,bd_BCL2_bd,D_BAX_D!0,T_BAX_T)     kf23,kr23
+#>>>>>>>>>>
+########################### 24###BAX tet BAX###
+#      required: [[(u'!', u'BAX_D--BAX_D'), (u'x', u'BAX--BCL2')]] optional: []
+#<<[(u'!', u'BAX_D--BAX_D'), (u'x', u'BAX--BCL2')]
+#source states: [('x', u'BAX_T--BAX_T')] product states: [('!c', u'BAX_T--BAX_T')]
+BAX(bd_BCL2_bd,T_BAX_T,D_BAX_D!0).BAX(bd_BCL2_bd,T_BAX_T,D_BAX_D!0) + BAX(bd_BCL2_bd,T_BAX_T,D_BAX_D!1).BAX(bd_BCL2_bd,T_BAX_T,D_BAX_D!1) <-> BAX(D_BAX_D!0,T_BAX_T!10,bd_BCL2_bd).BAX(D_BAX_D!0,T_BAX_T,bd_BCL2_bd).BAX(D_BAX_D!1,T_BAX_T!10,bd_BCL2_bd).BAX(D_BAX_D!1,T_BAX_T,bd_BCL2_bd)     kf24,kr24
+#>>>>>>>>>>
+
+end reaction rules
+end model
+generate_network({overwrite=>1,max_stoich=>{BAR=>4,MT=>4,BID=>4,C9=>4,FLIP=>4,BAX=>4,Cytoc=>4,SMAC=>4,TRAIL=>4,XIAP=>4,C8=>4,ECS=>4,MCL1=>4,FADD=>4,C3=>4,R=>4,APAF=>4,C6=>4,BCL2=>4}});
+writeSBML({});

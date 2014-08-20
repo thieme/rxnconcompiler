@@ -23,11 +23,11 @@ __location__ = os.path.join(os.getcwd(), os.path.dirname(
 
 # Change these settings according to your needs
 MAIN_PACKAGE = "rxnconcompiler"
-DESCRIPTION = "None"
+DESCRIPTION = "Systems Biology iterative network building tool"
 LICENSE = "new BSD"
 URL = "None"
-AUTHOR = "lena"
-EMAIL = "lena@lena-think"
+AUTHOR = "Magdalena Rother"
+EMAIL = "rother.magdalena@gmail.com"
 
 COVERAGE_XML = False
 COVERAGE_HTML = False
