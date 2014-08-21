@@ -9,18 +9,23 @@ from unittest import main, TestCase
 # Unit Tests
 from test_biological_complex import BiologicalComplexTests, AlternativeComplexesTests
 from test_bngl_output import BnglTranslatorTests, BnglOutputTests
+from test_complex_applicator import ComplexApplicatorTests
+from test_complex_builder import BiologicalComplexBuilderTests
 from test_contingency import ContingencyTests, BooleanContingencyTests, \
 	ComplexContingencyTests
+from test_contingency_applicator import ContingencyApplicatorTests
 from test_contingency_factory import ContingencyFactoryTests, \
 	ContingencyApoptosisTests, ContingencyMAPKTests, ContingencyWrapperTests, \
 	ComplexTests
 from test_definitions import ReactionDefinitionTests
 from test_domain_factory import DomainFactoryTests, DomainAcceptanceTests
+from test_interface import RxnconCompilerInterfaceTests
 from test_molecule import MoleculeTests
 from test_rate import RateTests
 from test_reaction import ReactionTests
 from test_reaction_container import ReactionContainerTests
 from test_reaction_factory import ReactionFactoryTests
+from test_requirements import RequirementsGeneratorTests, RequirementsFactoryTests
 from test_rulebased import RxnconTests, CompilerTests, BnglTests
 from test_rxncon_parser import RxnconTextParserTests, RxnconXlsParserTests
 from test_state import StateFactoryTests, StateTests

@@ -42,9 +42,9 @@ class BiologicalComplexBuilderTests(TestCase):
         mol = self.comp.get_molecules('A')[0]
         builder = ComplexBuilder()
         states = builder.get_states_from_complex(self.comp, mol)
-        level1 = ['A_[AsocB]--B_[AsocA]', 'A_[AsocC]--C_[AsocA]', 'A_[AsocD]--D_[AsocA]']
-        level2 = ['B_[AsocE]--E_[AsocB]', 'B_[AsocF]--F_[AsocB]', 'D_[AsocG]--G_[AsocD]', 'D_[AsocH]--H_[AsocD]']
-        level3 = ['E_[AsocK]--K_[AsocE]', 'E_[AsocJ]--J_[AsocE]']
+        level1 = ['A_[AssocB]--B_[AssocA]', 'A_[AssocC]--C_[AssocA]', 'A_[AssocD]--D_[AssocA]']
+        level2 = ['B_[AssocE]--E_[AssocB]', 'B_[AssocF]--F_[AssocB]', 'D_[AssocG]--G_[AssocD]', 'D_[AssocH]--H_[AssocD]']
+        level3 = ['E_[AssocK]--K_[AssocE]', 'E_[AssocJ]--J_[AssocE]']
         for state in states[:3]:
             self.assertTrue(str(state) in level1)
         for state in states[3:7]:

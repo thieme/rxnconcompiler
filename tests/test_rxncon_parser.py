@@ -36,24 +36,38 @@ class RxnconTextParserTests(TestCase):
 
 class RxnconXlsParserTests(TestCase):
 
+    def setUp(self):
+        """
+        Sets path to test_data or tests/test_data.
+        test_data is used when running from tests
+        tests/test_data when runing setup.py test
+        """
+        self.p = ''
+        if os.path.exists('test_data/apoptosis_small.xls'):
+            self.p = 'test_data/' 
+        elif os.path.exists('tests/test_data/apoptosis_small.xls'):
+            self.p = 'tests/test_data/' 
+
+
+
     def test_parse_xls(self):
-        tables = parse_xls('test_data/apoptosis_small.xls')
+        tables = parse_xls(self.p + 'apoptosis_small.xls')
         self.assertEqual(len(tables['reaction_list']), 4)
         self.assertEqual(len(tables['contingency_list']), 6)
         self.assertEqual(tables['reaction_list'][3]['Reaction[Full]'], 'R_CUT_C8')
         self.assertEqual(tables['contingency_list'][3]['Target'], 'FADD_ppi_R')
 
     def test_apoptosis(self):
-        tables = parse_xls('test_data/apoptosis.xls')
+        tables = parse_xls(self.p + 'apoptosis.xls')
 
     def test_new_reaction(self):
         """Tests whether xls with new reactions (e.g. lipidation) can be parsed."""
-        tables = parse_xls('test_data/Example_Reactions.xls')
+        tables = parse_xls(self.p + 'Example_Reactions.xls')
         #print tables['reaction_list']
 
     def test_new_structure(self):
         """Checks whether xls with subcategories in deffinintions can be parsed"""
-        tables = parse_xls('test_data/rxncon_template_subcategory_test.xls')
+        tables = parse_xls(self.p + 'rxncon_template_subcategory_test.xls')
         #print tables['reaction_definition']
 
 

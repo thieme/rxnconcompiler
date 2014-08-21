@@ -115,16 +115,15 @@ REQUIREMENTS_TEST = [(RXNCON_INPUT, 2), (EMPTY_BOOL, 1), \
     (AND_SIMETRIC, 1), (AND_ASIMETRIC, 1), (OR, 3), (OR_AND_OR, 3),\
     (IGNORED, 1)]
 
-STRING_TEST = [(RXNCON_INPUT, '! A_[C]--C_[A], ! A_[D]--D_[A], x (B-{P} and (C-{P} or D-{P}))'),\
+STRING_TEST = [(RXNCON_INPUT, '! A_[AssocC]--C_[AssocA], ! A_[AssocD]--D_[AssocA], x (B_[bd]-{P} and (C_[bd]-{P} or D_[bd]-{P}))'),\
 (NO_CONTINGENCIES, ''), \
-(ONLY_EXCLAMATION, '! A-{P}'),\
-(ONLY_X, 'x B-{P}'), (EXCLAMATION_AND_X, '! A-{P}, x B-{P}'),\
-(AND, '! (A-{P} and B-{P})'), (IGNORED, 'k+ B-{P}, 0 A-{P}, ? B_[C]--C_[B]'),\
-(AND_SIMETRIC, '! ((A-{P} and B-{P}) and (A_[C]--C_[A] and A_[D]--D_[A]))'), \
-(AND_ASIMETRIC, '! (A-{P} and ((A_[C]--C_[A] and A_[D]--D_[A]) and B-{P}))'),\
-(OR, '! (A-{P} or B-{P} or A_[C]--C_[A])'), \
-(OR_AND_OR, '! ((A-{P} and B-{P}) or (A_[C]--C_[A] or A_[D]--D_[A]))')]
-
+(ONLY_EXCLAMATION, '! A_[bd]-{P}'),\
+(ONLY_X, 'x B_[bd]-{P}'), (EXCLAMATION_AND_X, '! A_[bd]-{P}, x B_[bd]-{P}'),\
+(AND, '! (A_[bd]-{P} and B_[bd]-{P})'), (IGNORED, 'k+ B_[bd]-{P}, 0 A_[bd]-{P}, ? B_[AssocC]--C_[AssocB]'),\
+(AND_SIMETRIC, '! ((A_[bd]-{P} and B_[bd]-{P}) and (A_[AssocC]--C_[AssocA] and A_[AssocD]--D_[AssocA]))'), \
+(AND_ASIMETRIC, '! (A_[bd]-{P} and ((A_[AssocC]--C_[AssocA] and A_[AssocD]--D_[AssocA]) and B_[bd]-{P}))'),\
+(OR, '! (A_[bd]-{P} or B_[bd]-{P} or A_[AssocC]--C_[AssocA])'), \
+(OR_AND_OR, '! ((A_[bd]-{P} and B_[bd]-{P}) or (A_[AssocC]--C_[AssocA] or A_[AssocD]--D_[AssocA]))')]
 
 class RequirementsGeneratorTests(TestCase):
     """Tests for ReguirementsGenerator class."""
@@ -160,14 +159,14 @@ class RequirementsGeneratorTests(TestCase):
         """Checks whether proprer requirements are generated."""
         walker = self.get_walker(RXNCON_INPUT) 
         walker.get_requirements()
-        self.assertEqual(str(walker.requirements[0]),'[! A_[C]--C_[A], ! A_[D]--D_[A], x B-{P}, x C-{P}]')
+        self.assertEqual(str(walker.requirements[0]),'[! A_[AssocC]--C_[AssocA], ! A_[AssocD]--D_[AssocA], x B_[bd]-{P}, x C_[bd]-{P}]')
         self.assertEqual(2,len(walker.requirements))
         self.assertEqual(4,len(walker.requirements[0]))
         self.assertEqual(4,len(walker.requirements[1]))
 
         walker = self.get_walker(OR_AND_OR) 
         walker.get_requirements()
-        self.assertEqual(str(walker.requirements), '[[! A-{P}, ! B-{P}], [! A_[C]--C_[A]], [! A_[D]--D_[A]]]')
+        self.assertEqual(str(walker.requirements), '[[! A_[bd]-{P}, ! B_[bd]-{P}], [! A_[AssocC]--C_[AssocA]], [! A_[AssocD]--D_[AssocA]]]')
         
         walker = self.get_walker(NO_CONTINGENCIES) 
         walker.get_requirements()

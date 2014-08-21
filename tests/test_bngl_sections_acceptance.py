@@ -26,7 +26,13 @@ class MoleculesTests(TestCase):
         """
         set test data
         """
-        simple = Compiler("test_data" + os.sep + "rxncon_simple_example.xls").translate()
+        self.p = ''
+        if os.path.exists('test_data/rxncon_simple_example.xls'):
+            self.p = 'test_data/' 
+        elif os.path.exists('tests/test_data/rxncon_simple_example.xls'):
+            self.p = 'tests/test_data/' 
+
+        simple = Compiler(self.p + "rxncon_simple_example.xls").translate()
         #nimp = Compiler("test_data" + os.sep + "nimp_test.xls").translate()
         
         molecule_pattern = 'begin molecule types.*?end molecule types'
@@ -67,7 +73,7 @@ class MoleculesTests(TestCase):
         """
         Test whether molecule section produced from simple example is correct.
         """ 
-        quick_data = str(Rxncon("test_data" + os.sep + "Tiger_et_al_TableS1.xls"))
+        quick_data = str(Rxncon(self.p + "Tiger_et_al_TableS1.xls"))
         bngl = Compiler(quick_data).translate(False, True, True, True)
 
         molecule_pattern = 'begin molecule types.*?end molecule types'

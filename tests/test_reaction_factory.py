@@ -21,7 +21,14 @@ class ReactionFactoryTests(TestCase):
         """
         Setting data for tests.
         """
-        mapk_xls = rxncon_parser.parse_xls("test_data" + os.sep + "Tiger_et_al_TableS1.xls")
+        self.p = ''
+        if os.path.exists('test_data/Tiger_et_al_TableS1.xls'):
+            self.p = 'test_data/' 
+        elif os.path.exists('tests/test_data/Tiger_et_al_TableS1.xls'):
+            self.p = 'tests/test_data/' 
+
+        mapk_xls = rxncon_parser.parse_xls(self.p + "Tiger_et_al_TableS1.xls")
+        
         self.react_fact = ReactionFactory(mapk_xls)
         self.react_fact.parse_reactions(mapk_xls)
         ipi = rxncon_parser.parse_text('A_ipi_A')

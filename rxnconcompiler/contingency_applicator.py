@@ -378,11 +378,3 @@ class ContingencyApplicator():
                 container.add_reaction(reaction)
                 new_rate_ids = self.get_rate_ids(reaction, container, subrate, False)
                 reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
-            '''
-            for reaction in container:
-                print 'REACTION'
-                for ccc in reaction.substrat_complexes:
-                    print 'Complex:'
-                    ccc.inspect()
-                    print '++++++++++++++'
-            '''

@@ -20,7 +20,14 @@ class RxnconCompilerInterfaceTests(TestCase):
         """
         Parses xls_tables. 
         """
-        self.tiger_path = os.sep.join(os.getcwd().split(os.sep) + ['test_data', 'Tiger_et_al_TableS1.xls'])
+        self.p = ''
+        if os.path.exists('test_data/Tiger_et_al_TableS1.xls'):
+            self.p = 'test_data/' 
+        elif os.path.exists('tests/test_data/Tiger_et_al_TableS1.xls'):
+            self.p = 'tests/test_data/'
+
+        self.tiger_path = self.p + 'Tiger_et_al_TableS1.xls' 
+        #self.tiger_path = os.sep.join(os.getcwd().split(os.sep) + ['test_data', 'Tiger_et_al_TableS1.xls'])
         self.xls_tables = interface.parse(self.tiger_path)
 
     def test_get_src(self):

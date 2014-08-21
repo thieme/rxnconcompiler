@@ -137,14 +137,14 @@ class BioNetGenTests(TestCase):
         bngl = Compiler("test_data" + os.sep + "nimp_test.xls").translate()
         self.assertBnglRuns(bngl)
         '''
-        
+        '''
     def test_mapk_xls(self):
         """
         Tests mapk reaction in BioNetGen
         """
         bngl = Compiler("test_data" + os.sep + "Tiger_et_al_TableS1.xls").translate(False, True, True, True)
         self.assertBnglRuns(bngl)
-        
+        '''
     def tearDown(self):
         """
         Removes temp.bngl and temp.net after testing.

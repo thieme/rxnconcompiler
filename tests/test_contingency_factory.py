@@ -99,7 +99,13 @@ class ContingencyFactoryTests(TestCase):
 class ContingencyApoptosisTests(TestCase):
     """Checks whether proper contingencies pool is generated for apoptosis."""
     def setUp(self):
-        apoptosis_xls = parse_xls("test_data" + os.sep + "apoptosis_final_template.xls")
+        self.p = ''
+        if os.path.exists('test_data/apoptosis_final_template.xls'):
+            self.p = 'test_data/' 
+        elif os.path.exists('tests/test_data/apoptosis_final_template.xls'):
+            self.p = 'tests/test_data/' 
+
+        apoptosis_xls = parse_xls(self.p + "apoptosis_final_template.xls")
         factory = ContingencyFactory(apoptosis_xls)
         self.pool = factory.parse_contingencies()
 
@@ -115,7 +121,13 @@ class ContingencyApoptosisTests(TestCase):
 class ContingencyMAPKTests(TestCase):
     """Checks whether proper contingencies pool is generated for MAPK."""
     def setUp(self):
-        apoptosis_xls = parse_xls("test_data" + os.sep + "Tiger_et_al_TableS1.xls")
+        self.p = ''
+        if os.path.exists('test_data/Tiger_et_al_TableS1.xls'):
+            self.p = 'test_data/' 
+        elif os.path.exists('tests/test_data/Tiger_et_al_TableS1.xls'):
+            self.p = 'tests/test_data/' 
+
+        apoptosis_xls = parse_xls(self.p + "Tiger_et_al_TableS1.xls")
         factory = ContingencyFactory(apoptosis_xls)
         self.pool = factory.parse_contingencies()
 
