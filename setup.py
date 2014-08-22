@@ -73,9 +73,21 @@ class PyTest(TestCommand):
         if self.junitxml is not None:
             self.junitxml = ["--junitxml", self.junitxml]
 
+    def add_test_data_path(self):
+        """
+        Add tests path so test_data is
+        available for imports. 
+        """
+        import os
+        p = os.getcwd()
+        p = p.split(MAIN_PACKAGE)
+        p = p[0] + MAIN_PACKAGE + '/tests/'
+        sys.path.append(p)
+        
     def run_tests(self):
         try:
             import pytest
+            self.add_test_data_path()
         except:
             raise RuntimeError("py.test is not installed, "
                                "run: pip install pytest")
