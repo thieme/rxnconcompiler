@@ -10,7 +10,7 @@ from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from rxnconcompiler.rulebased import Compiler, Rxncon, Bngl
-from rxnconcompiler.rxncon_parser import parse_text
+from rxnconcompiler.parser.rxncon_parser import parse_text
 
 class RxnconTests(TestCase):
     """

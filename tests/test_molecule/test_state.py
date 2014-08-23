@@ -8,7 +8,7 @@ import sys
 import os
 from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
-from rxnconcompiler.state import get_state, State, Component
+from rxnconcompiler.molecule.state import get_state, State, Component
 
 class StateFactoryTests(TestCase):
 	"""Unit Tests for StateFactory class."""

@@ -8,8 +8,8 @@ from unittest import main, TestCase
 import os
 import sys
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
-from rxnconcompiler.rxncon_parser import parse_text, parse_xls
-from rxnconcompiler.rxncon_errors import RxnconParserError
+from rxnconcompiler.parser.rxncon_parser import parse_text, parse_xls
+from rxnconcompiler.util.rxncon_errors import RxnconParserError
 
 class RxnconTextParserTests(TestCase):
 
@@ -26,7 +26,13 @@ class RxnconTextParserTests(TestCase):
 
     def test_parse_error(self):
         """Tests creation of table dict"""
-        self.assertRaises(RxnconParserError, parse_text, 'A_ppi_B ; C_ppi_D')
+        print RxnconParserError
+        print sys.path
+        try:
+            parse_text('A_ppi_B; C_ppi_D')
+        except Exception, e:
+            print e.__class__
+        self.assertRaises(RxnconParserError, parse_text, 'A_ppi_B; C_ppi_D')
 
     def test_parse_product_state(self):
         """"""

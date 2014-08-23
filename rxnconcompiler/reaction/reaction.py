@@ -14,10 +14,10 @@ MODIFIER - a participant of a reaction that doesn't change
 """
 
 import copy
-from contingency import Contingency
-from state import get_state
-from biological_complex import BiologicalComplex
-from molecule import Molecule
+from molecule.state import get_state
+from molecule.molecule import Molecule
+from biological_complex.biological_complex import BiologicalComplex
+from contingency.contingency import Contingency
 
 #TODO: should modifiers be the same object 
 #      in the reaction (no substrat and product)?

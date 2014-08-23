@@ -5,8 +5,8 @@ Module molecule.py.
 """
 
 import copy 
-from contingency import Contingency
 from state import get_state, Component
+from contingency.contingency import Contingency
 
 # TODO: function __add__ in Molecules requires more attention.
 # TODO: more attention needed for domains in the small functions.

@@ -10,10 +10,9 @@ Creates RoolPool from reaction_pool and contingency_pool
 Not neccesary?
 """
 
-from state import Component
 from rule import RulePool, RuleContainer, Rule
 from requirements import RequirementsGenerator
-
+from molecule.state import Component
 
 class RuleFactory:
     """"""

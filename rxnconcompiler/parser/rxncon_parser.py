@@ -18,11 +18,11 @@ parse_rxncon - recognise input, can parse:
 import sys
 import os
 import os.path
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
+#sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 sys.path.append(os.sep.join(__file__.split(os.sep)[:-2]))
 import xlrd
-from rxncon_errors import RxnconParserError
-from default_definition import DEFAULT_DEFINITION
+from util.rxncon_errors import RxnconParserError
+from definitions.default_definition import DEFAULT_DEFINITION
 
 
 def parse_rxncon(rxncon_input):

@@ -9,8 +9,8 @@ import pickle
 import sys
 import os,re
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
-from rxnconcompiler import rxncon_parser
-from rxnconcompiler.reaction_factory import ReactionFactory
+from rxnconcompiler.parser import rxncon_parser
+from rxnconcompiler.reaction.reaction_factory import ReactionFactory
 
 
 class ReactionFactoryTests(TestCase):

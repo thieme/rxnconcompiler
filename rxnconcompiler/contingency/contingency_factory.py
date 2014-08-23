@@ -10,8 +10,8 @@ ContingencyPool      - dict of reaction (key) - Contingency root (value)
 ContingencyFactory   - parses contingencies from xls to a tree.
 """
 
-from state import get_state, Component
 from contingency import Contingency
+from molecule.state import get_state, Component
 
 
 class ContingencyWrapper:

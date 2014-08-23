@@ -10,7 +10,7 @@ import os
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from rxnconcompiler.rulebased import Rxncon
-from rxnconcompiler.complex_applicator import ComplexApplicator
+from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicator
 
 REACTIONS = """ProtA_[a]_ipi_ProtA_[b]"""
 

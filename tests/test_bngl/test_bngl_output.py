@@ -9,11 +9,11 @@ import os
 from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
-from rxnconcompiler.state import get_state
+from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.rulebased import Rxncon
-from rxnconcompiler.rule import Rule
-from rxnconcompiler.rule_factory import RuleFactory
-from rxnconcompiler.bngl_output import BnglOutput, BnglTranslator
+from rxnconcompiler.bngl.rule import Rule
+from rxnconcompiler.bngl.rule_factory import RuleFactory
+from rxnconcompiler.bngl.bngl_output import BnglOutput, BnglTranslator
 
 
 Ste11 = """Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>

@@ -10,10 +10,10 @@ import os
 from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 from rxnconcompiler.rulebased import Rxncon
-from rxnconcompiler.contingency_applicator import ContingencyApplicator
-from rxnconcompiler.contingency import Contingency
-from rxnconcompiler.state import get_state
-from rxnconcompiler.complex_applicator import ComplexApplicator
+from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
+from rxnconcompiler.contingency.contingency import Contingency
+from rxnconcompiler.molecule.state import get_state
+from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicator
 
 
 class ContingencyApplicatorTests(TestCase):

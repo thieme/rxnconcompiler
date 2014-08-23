@@ -9,10 +9,10 @@ import sys
 import os
 from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
-from rxnconcompiler.rxncon_parser import parse_text
-from rxnconcompiler.contingency_factory import ContingencyFactory
-from rxnconcompiler.contingency import Contingency
-from rxnconcompiler.requirements import RequirementsGenerator, RequirementsFactory
+from rxnconcompiler.parser.rxncon_parser import parse_text
+from rxnconcompiler.contingency.contingency_factory import ContingencyFactory
+from rxnconcompiler.contingency.contingency import Contingency
+from rxnconcompiler.bngl.requirements import RequirementsGenerator, RequirementsFactory
 
 """
         

@@ -13,9 +13,9 @@ sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from unittest import TestCase, main
 from rxnconcompiler.rulebased import Rxncon, Compiler
-from rxnconcompiler.rate import Rate
-from rxnconcompiler.state import get_state
-from rxnconcompiler.contingency import Contingency
+from rxnconcompiler.reaction.rate import Rate
+from rxnconcompiler.molecule.state import get_state
+from rxnconcompiler.contingency.contingency import Contingency
 
 
 class RateTests(TestCase):

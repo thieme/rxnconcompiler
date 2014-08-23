@@ -12,9 +12,9 @@ from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from unittest import TestCase, main
-from rxnconcompiler.molecule import Molecule
-from rxnconcompiler.state import get_state
-from rxnconcompiler.contingency import Contingency
+from rxnconcompiler.molecule.molecule import Molecule
+from rxnconcompiler.molecule.state import get_state
+from rxnconcompiler.contingency.contingency import Contingency
 
 class MoleculeTests(TestCase):
     """

@@ -14,7 +14,7 @@ RuleContainer
 Rule         
 """
 
-from state import Component
+from molecule.state import Component
 
 
 class RulePool(dict):

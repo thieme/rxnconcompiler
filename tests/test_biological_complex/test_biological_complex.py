@@ -10,9 +10,9 @@ from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from rxnconcompiler.rulebased import Rxncon
-from rxnconcompiler.biological_complex import BiologicalComplex, AlternativeComplexes
-from rxnconcompiler.state import get_state
-from rxnconcompiler.molecule import Molecule
+from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex, AlternativeComplexes
+from rxnconcompiler.molecule.state import get_state
+from rxnconcompiler.molecule.molecule import Molecule
 
 Ste11 = """Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
 <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>

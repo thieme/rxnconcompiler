@@ -14,7 +14,7 @@ from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from rxnconcompiler.rulebased import Compiler
-from rxnconcompiler.domain_factory import DomainFactory
+from rxnconcompiler.molecule.domain_factory import DomainFactory
 
 DOMAINS_ASSOSIATION = """A_BIND_DNA
 A_ppi_C; ! A--DNA"""

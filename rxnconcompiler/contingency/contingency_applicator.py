@@ -32,8 +32,8 @@ TODO: How to apply cont like A_P+_B; A--B
 
 import copy
 from contingency_factory import ContingencyWrapper
-from molecule import Molecule
-from biological_complex import BiologicalComplex
+from molecule.molecule import Molecule
+from biological_complex.biological_complex import BiologicalComplex
 
 
 class ContingencyApplicator():

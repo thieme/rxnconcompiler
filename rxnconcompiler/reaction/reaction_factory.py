@@ -9,14 +9,15 @@ Class ReactionFactory   - generates ReactionPool and MoleculePool
                         
 """
 
-from definitions import ReactionDefinitions
-from molecule import Molecule, MoleculePool
 from reaction import Reaction, Modification, Interaction, \
                      SyntDeg, Relocalisation
 from reaction_container import ReactionContainer, ReactionPool
 from rate import Rate 
-from state import get_state
-from default_definition import DEFAULT_DEFINITION
+from definitions.definitions import ReactionDefinitions
+from definitions.default_definition import DEFAULT_DEFINITION
+from molecule.molecule import Molecule, MoleculePool
+from molecule.state import get_state
+
 
 ENZYME = 'Enzyme'  # universal name for proteins that perform covalent modification reactions.
 TRANSPORTER = 'Transporter'  # universal name for proteins that are on the left side of relocalisation reaction. 

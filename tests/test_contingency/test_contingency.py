@@ -16,8 +16,8 @@ import sys
 import os
 from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
-from rxnconcompiler.contingency import Contingency
-from rxnconcompiler.state import get_state
+from rxnconcompiler.contingency.contingency import Contingency
+from rxnconcompiler.molecule.state import get_state
 
 
 class ContingencyTests(TestCase):

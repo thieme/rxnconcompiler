@@ -12,7 +12,7 @@ BnglOutput - producess sections of bngl file.
 # TODO: Refactor get_molecule_str and get_complex_str ---> CODE DUPLICATION!!!
 
 import re
-from state import Component
+from molecule.state import Component
 
 
 class BnglTranslator:

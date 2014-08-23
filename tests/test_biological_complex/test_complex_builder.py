@@ -9,10 +9,10 @@ import os
 from unittest import main, TestCase
 sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
-from rxnconcompiler.biological_complex import BiologicalComplex
-from rxnconcompiler.complex_builder import ComplexBuilder
-from rxnconcompiler.state import get_state
-from rxnconcompiler.molecule import Molecule
+from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
+from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder
+from rxnconcompiler.molecule.state import get_state
+from rxnconcompiler.molecule.molecule import Molecule
 
 
 class BiologicalComplexBuilderTests(TestCase):

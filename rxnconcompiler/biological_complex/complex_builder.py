@@ -43,11 +43,11 @@ How contingencies with Input states inside boolean are treated?
 (- later in the flow when applying complexes on reaction it will change reaction rate.) 
 """
 
-from contingency import Contingency
-from molecule import Molecule
 from biological_complex import BiologicalComplex, \
         AlternativeComplexes
-from util import product
+from molecule.molecule import Molecule
+from contingency.contingency import Contingency
+from util.util import product
 
 class ComplexBuilder:
     """
