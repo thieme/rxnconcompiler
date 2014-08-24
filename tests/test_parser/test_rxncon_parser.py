@@ -4,6 +4,7 @@
 Unit Tests for rxncon_parser.py module.
 """
 
+import os
 from unittest import main, TestCase
 
 from rxnconcompiler.parser.rxncon_parser import parse_text, parse_xls
