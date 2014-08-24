@@ -16,11 +16,14 @@ Classes:
 import sys
 import os
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
+
 from rxnconcompiler.parser.rxncon_parser import parse_text, parse_xls
 from rxnconcompiler.contingency.contingency_factory import ContingencyFactory, ContingencyWrapper
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state
+
+import test_data
+DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
 
 RXNCON_INPUT = """A_ppi_B; ! A--C
 A_ppi_B; ! A--D
@@ -99,13 +102,7 @@ class ContingencyFactoryTests(TestCase):
 class ContingencyApoptosisTests(TestCase):
     """Checks whether proper contingencies pool is generated for apoptosis."""
     def setUp(self):
-        self.p = ''
-        if os.path.exists('test_data/apoptosis_final_template.xls'):
-            self.p = 'test_data/' 
-        elif os.path.exists('tests/test_data/apoptosis_final_template.xls'):
-            self.p = 'tests/test_data/' 
-
-        apoptosis_xls = parse_xls(self.p + "apoptosis_final_template.xls")
+        apoptosis_xls = parse_xls(DATA_PATH + "apoptosis_final_template.xls")
         factory = ContingencyFactory(apoptosis_xls)
         self.pool = factory.parse_contingencies()
 
@@ -121,13 +118,7 @@ class ContingencyApoptosisTests(TestCase):
 class ContingencyMAPKTests(TestCase):
     """Checks whether proper contingencies pool is generated for MAPK."""
     def setUp(self):
-        self.p = ''
-        if os.path.exists('test_data/Tiger_et_al_TableS1.xls'):
-            self.p = 'test_data/' 
-        elif os.path.exists('tests/test_data/Tiger_et_al_TableS1.xls'):
-            self.p = 'tests/test_data/' 
-
-        apoptosis_xls = parse_xls(self.p + "Tiger_et_al_TableS1.xls")
+        apoptosis_xls = parse_xls(DATA_PATH + "Tiger_et_al_TableS1.xls")
         factory = ContingencyFactory(apoptosis_xls)
         self.pool = factory.parse_contingencies()
 

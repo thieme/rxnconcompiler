@@ -5,11 +5,12 @@ Unit Tests for rxncon_parser.py module.
 """
 
 from unittest import main, TestCase
-import os
-import sys
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
+
 from rxnconcompiler.parser.rxncon_parser import parse_text, parse_xls
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
+
+import test_data
+DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
 
 class RxnconTextParserTests(TestCase):
 
@@ -26,13 +27,7 @@ class RxnconTextParserTests(TestCase):
 
     def test_parse_error(self):
         """Tests creation of table dict"""
-        print RxnconParserError
-        print sys.path
-        try:
-            parse_text('A_ppi_B; C_ppi_D')
-        except Exception, e:
-            print e.__class__
-        self.assertRaises(RxnconParserError, parse_text, 'A_ppi_B; C_ppi_D')
+        self.assertRaises(RxnconParserError, parse_text, 'A_ppi_B ; C_ppi_D')
 
     def test_parse_product_state(self):
         """"""
@@ -42,39 +37,23 @@ class RxnconTextParserTests(TestCase):
 
 class RxnconXlsParserTests(TestCase):
 
-    def setUp(self):
-        """
-        Sets path to test_data or tests/test_data.
-        test_data is used when running from tests
-        tests/test_data when runing setup.py test
-        """
-        self.p = ''
-        if os.path.exists('test_data/apoptosis_small.xls'):
-            self.p = 'test_data/' 
-        elif os.path.exists('tests/test_data/apoptosis_small.xls'):
-            self.p = 'tests/test_data/' 
-
-
-
     def test_parse_xls(self):
-        tables = parse_xls(self.p + 'apoptosis_small.xls')
+        tables = parse_xls(DATA_PATH + 'apoptosis_small.xls')
         self.assertEqual(len(tables['reaction_list']), 4)
         self.assertEqual(len(tables['contingency_list']), 6)
         self.assertEqual(tables['reaction_list'][3]['Reaction[Full]'], 'R_CUT_C8')
         self.assertEqual(tables['contingency_list'][3]['Target'], 'FADD_ppi_R')
 
     def test_apoptosis(self):
-        tables = parse_xls(self.p + 'apoptosis.xls')
+        tables = parse_xls(DATA_PATH + 'apoptosis.xls')
 
     def test_new_reaction(self):
         """Tests whether xls with new reactions (e.g. lipidation) can be parsed."""
-        tables = parse_xls(self.p + 'Example_Reactions.xls')
-        #print tables['reaction_list']
+        tables = parse_xls(DATA_PATH + 'Example_Reactions.xls')
 
     def test_new_structure(self):
         """Checks whether xls with subcategories in deffinintions can be parsed"""
-        tables = parse_xls(self.p + 'rxncon_template_subcategory_test.xls')
-        #print tables['reaction_definition']
+        tables = parse_xls(DATA_PATH + 'rxncon_template_subcategory_test.xls')
 
 
 if __name__ == '__main__':

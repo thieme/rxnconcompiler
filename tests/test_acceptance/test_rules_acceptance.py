@@ -12,17 +12,16 @@ import os
 import re
 import subprocess
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from unittest import TestCase, main
 from utils_for_tests import filter_reactions
 from rxnconcompiler.rulebased import Compiler
-from test_data.rules_basic_data import DATA as BASIC
-from test_data.rules_mapk_data import DATA as MAPK
-from test_data.rules_input_data import DATA as INPUT
-from test_data.rules_geometry_data import DATA as GEOMETRY
-from test_data.rules_difficult_data import DATA as DIFFICULT
-from test_data.rules_pheromon_data import DATA as PHEROMON
+from test_data.bngl_rules.rules_basic_data import DATA as BASIC
+from test_data.bngl_rules.rules_mapk_data import DATA as MAPK
+from test_data.bngl_rules.rules_input_data import DATA as INPUT
+from test_data.bngl_rules.rules_geometry_data import DATA as GEOMETRY
+from test_data.bngl_rules.rules_difficult_data import DATA as DIFFICULT
+from test_data.bngl_rules.rules_pheromon_data import DATA as PHEROMON
 
 # To run more tests uncomment the data sets.
 DATA_SETS = {

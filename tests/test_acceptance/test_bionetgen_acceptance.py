@@ -25,17 +25,20 @@ import os
 import re
 import subprocess
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
-from unittest import TestCase, main
-from utils_for_tests import filter_reactions, filter_exclude_reactions
 from rxnconcompiler.rulebased import Compiler, Rxncon
-from test_data.rules_basic_data import DATA as BASIC
-from test_data.rules_mapk_data import DATA as MAPK
-from test_data.rules_input_data import DATA as INPUT
-from test_data.rules_geometry_data import DATA as GEOMETRY
-from test_data.rules_difficult_data import DATA as DIFFICULT
-from test_data.rules_pheromon_data import DATA as PHEROMON
+
+
+from utils_for_tests import filter_reactions, filter_exclude_reactions
+from test_data.bngl_rules.rules_basic_data import DATA as BASIC
+from test_data.bngl_rules.rules_mapk_data import DATA as MAPK
+from test_data.bngl_rules.rules_input_data import DATA as INPUT
+from test_data.bngl_rules.rules_geometry_data import DATA as GEOMETRY
+from test_data.bngl_rules.rules_difficult_data import DATA as DIFFICULT
+from test_data.bngl_rules.rules_pheromon_data import DATA as PHEROMON
+
+import test_data
+DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
 
 # To run more tests uncomment the data sets.
 DATA_SETS = {
@@ -106,8 +109,6 @@ class BioNetGenTests(TestCase):
                     all_reactions += reaction + '\n'
                 if all_reactions:
                     bngl = Compiler(all_reactions).translate(False, True, True, True)
-                    f = open('mapk_data3.bngl', 'w')
-                    f.write(bngl)
                     self.assertBnglRuns(bngl)
         '''
         '''
@@ -117,7 +118,7 @@ class BioNetGenTests(TestCase):
         Then produces bngl code from the quick string
         and run it in BioNetGen.
         """ 
-        quick_data = str(Rxncon("test_data" + os.sep + "Tiger_et_al_TableS1.xls"))
+        quick_data = str(Rxncon(DATA_PATH + "Tiger_et_al_TableS1.xls"))
         bngl = Compiler(quick_data).translate(False, True, True, True)
         self.assertBnglRuns(bngl)
         '''
@@ -126,7 +127,7 @@ class BioNetGenTests(TestCase):
         """
         Tests rxncon_simple_example.xls. 
         """ 
-        bngl = Compiler("test_data" + os.sep + "rxncon_simple_example.xls").translate()
+        bngl = Compiler(DATA_PATH + "rxncon_simple_example.xls").translate()
         self.assertBnglRuns(bngl)
         '''
         '''
@@ -134,7 +135,7 @@ class BioNetGenTests(TestCase):
         """
         Tests NIMP reaction in BioNetGen
         """
-        bngl = Compiler("test_data" + os.sep + "nimp_test.xls").translate()
+        bngl = Compiler(DATA_PATH + "nimp_test.xls").translate()
         self.assertBnglRuns(bngl)
         '''
         '''
@@ -142,7 +143,7 @@ class BioNetGenTests(TestCase):
         """
         Tests mapk reaction in BioNetGen
         """
-        bngl = Compiler("test_data" + os.sep + "Tiger_et_al_TableS1.xls").translate(False, True, True, True)
+        bngl = Compiler(DATA_PATH + "Tiger_et_al_TableS1.xls").translate(False, True, True, True)
         self.assertBnglRuns(bngl)
         '''
     def tearDown(self):

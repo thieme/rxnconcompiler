@@ -4,10 +4,7 @@
 Unit Tests for biological_complex.py module.
 """
 
-import sys
-import os
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from rxnconcompiler.rulebased import Rxncon
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex, AlternativeComplexes
@@ -126,7 +123,6 @@ class AlternativeComplexesTests(TestCase):
         compl0_mol0_id = self.alt_comp[0].molecules[0]._id
         new = self.alt_comp.clone()
         new_compl0_mol0_id = new[0].molecules[0]._id
-        #print compl0_mol0_id, new_compl0_mol0_id
         self.assertNotEqual(compl0_mol0_id, new_compl0_mol0_id)
 
 if __name__ == '__main__':

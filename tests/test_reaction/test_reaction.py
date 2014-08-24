@@ -5,10 +5,7 @@ Unit Tests for module reaction.py.
 """
 
 from unittest import main, TestCase
-import pickle
-import sys
-import os,re
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
+
 from rxnconcompiler.rulebased import Rxncon
 
 REACTIONS = """PolII_TRSC_Gene 

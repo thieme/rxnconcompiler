@@ -5,9 +5,6 @@ Unit Tests for complex_applicator.py module.
 """
 
 from unittest import main, TestCase
-import sys
-import os
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from rxnconcompiler.rulebased import Rxncon
 from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicator

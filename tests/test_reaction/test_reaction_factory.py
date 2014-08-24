@@ -4,14 +4,14 @@
 Unit Tests for reaction_factory.py module.
 """
 
+import os
 from unittest import main, TestCase
-import pickle
-import sys
-import os,re
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
+
 from rxnconcompiler.parser import rxncon_parser
 from rxnconcompiler.reaction.reaction_factory import ReactionFactory
 
+import test_data
+DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
 
 class ReactionFactoryTests(TestCase):
     """
@@ -21,13 +21,7 @@ class ReactionFactoryTests(TestCase):
         """
         Setting data for tests.
         """
-        self.p = ''
-        if os.path.exists('test_data/Tiger_et_al_TableS1.xls'):
-            self.p = 'test_data/' 
-        elif os.path.exists('tests/test_data/Tiger_et_al_TableS1.xls'):
-            self.p = 'tests/test_data/' 
-
-        mapk_xls = rxncon_parser.parse_xls(self.p + "Tiger_et_al_TableS1.xls")
+        mapk_xls = rxncon_parser.parse_xls(DATA_PATH + "Tiger_et_al_TableS1.xls")
         
         self.react_fact = ReactionFactory(mapk_xls)
         self.react_fact.parse_reactions(mapk_xls)

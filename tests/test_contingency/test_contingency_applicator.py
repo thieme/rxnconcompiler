@@ -5,10 +5,7 @@ Unit tets for contingency classes:
 ContingencyFactory
 """
 
-import sys
-import os
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 from rxnconcompiler.rulebased import Rxncon
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
 from rxnconcompiler.contingency.contingency import Contingency

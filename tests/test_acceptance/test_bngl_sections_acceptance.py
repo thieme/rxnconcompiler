@@ -5,17 +5,15 @@ Acceptance tests for bngl file.
 Tests molecules and species section
 """
 
-import sys
 import os
 import re
 import subprocess
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
-import re
-from unittest import TestCase, main
 from rxnconcompiler.rulebased import Compiler, Rxncon
 
+import test_data
+DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
 
 
 class MoleculesTests(TestCase):
@@ -26,13 +24,7 @@ class MoleculesTests(TestCase):
         """
         set test data
         """
-        self.p = ''
-        if os.path.exists('test_data/rxncon_simple_example.xls'):
-            self.p = 'test_data/' 
-        elif os.path.exists('tests/test_data/rxncon_simple_example.xls'):
-            self.p = 'tests/test_data/' 
-
-        simple = Compiler(self.p + "rxncon_simple_example.xls").translate()
+        simple = Compiler(DATA_PATH + "rxncon_simple_example.xls").translate()
         #nimp = Compiler("test_data" + os.sep + "nimp_test.xls").translate()
         
         molecule_pattern = 'begin molecule types.*?end molecule types'
@@ -73,7 +65,7 @@ class MoleculesTests(TestCase):
         """
         Test whether molecule section produced from simple example is correct.
         """ 
-        quick_data = str(Rxncon(self.p + "Tiger_et_al_TableS1.xls"))
+        quick_data = str(Rxncon(DATA_PATH + "Tiger_et_al_TableS1.xls"))
         bngl = Compiler(quick_data).translate(False, True, True, True)
 
         molecule_pattern = 'begin molecule types.*?end molecule types'
@@ -84,11 +76,6 @@ class MoleculesTests(TestCase):
         for mol in mols:
             if mol.startswith('Ste7'):
                 self.assertIn('Fus3', mol)
-
-
-
-
-
 
 
 if __name__ == '__main__':

@@ -4,10 +4,7 @@
 Unit tests fror complex_builder module.
 """
 
-import sys
-import os
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
 from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder

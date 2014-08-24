@@ -4,12 +4,7 @@
 Unit tests for rate.py module.
 """
 
-import sys
-import os
-import re
-import subprocess
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from unittest import TestCase, main
 from rxnconcompiler.rulebased import Rxncon, Compiler

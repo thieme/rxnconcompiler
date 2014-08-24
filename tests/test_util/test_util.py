@@ -5,9 +5,7 @@ Unit Tets for util.py module.
 """
 
 from unittest import main, TestCase
-import sys
-import os
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
+
 from rxnconcompiler.util.util import create_all_combinations
 
 class UtilTests(TestCase):

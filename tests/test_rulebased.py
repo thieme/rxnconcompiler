@@ -4,13 +4,14 @@
 Unit tests for rulebased.py
 """
 
-import sys
 import os
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from rxnconcompiler.rulebased import Compiler, Rxncon, Bngl
 from rxnconcompiler.parser.rxncon_parser import parse_text
+
+import test_data
+DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
 
 class RxnconTests(TestCase):
     """
@@ -170,17 +171,6 @@ class CompilerTests(TestCase):
     Tests whether bngl is produced out of 
     dictionary, string, and xls.
     """
-    def setUp(self):
-        """
-        Sets path to test_data or tests/test_data.
-        test_data is used when running from tests
-        tests/test_data when runing setup.py test
-        """
-        self.p = ''
-        if os.path.exists('test_data/Tiger_et_al_TableS1.xls'):
-            self.p = 'test_data/' 
-        elif os.path.exists('tests/test_data/Tiger_et_al_TableS1.xls'):
-            self.p = 'tests/test_data/' 
 
     def test_basic(self):
         """Sets data for testing"""
@@ -202,7 +192,7 @@ class CompilerTests(TestCase):
 
     def test_mapk_runs(self):
         """Tests that Compiler can process mapk example."""
-        from_xls = Compiler(self.p + 'Tiger_et_al_TableS1.xls').translate()
+        from_xls = Compiler(DATA_PATH + 'Tiger_et_al_TableS1.xls').translate()
         self.assertIn('begin model', from_xls)
 
 

@@ -5,9 +5,7 @@ Unit Tests for definitions.py module.
 """
 
 from unittest import main, TestCase
-import sys
-import os
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
+
 from rxnconcompiler.parser.rxncon_parser import parse_text
 from rxnconcompiler.definitions.definitions import ReactionDefinitions
 

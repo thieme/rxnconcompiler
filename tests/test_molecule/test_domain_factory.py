@@ -8,10 +8,7 @@ Test entire rule examples (also updainting
 modification domains and warnings).
 """
 
-import sys
-import os
 from unittest import main, TestCase
-sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
 
 from rxnconcompiler.rulebased import Compiler
 from rxnconcompiler.molecule.domain_factory import DomainFactory
