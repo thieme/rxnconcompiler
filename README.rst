@@ -1,6 +1,8 @@
 =======================================================================
-rxnconcompiler - an iterative network building tool for Systems Biology.
+rxnconcompiler 
 =======================================================================
+
+rxnconcompiler is an iterative network building tool for Systems Biology.
 
 Magdalena Rother, Sebastian Thieme, Ulrike Muenzner and Marcus Krantz
 
