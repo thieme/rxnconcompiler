@@ -1,21 +1,10 @@
-================================================================
-rxnconcompiler - Systems Biology itrative network building tool.
-================================================================
+=======================================================================
+rxnconcompiler - an iterative network building tool for Systems Biology.
+=======================================================================
 
 Magdalena Rother, Sebastian Thieme, Ulrike Muenzner and Marcus Krantz
 
-Version 1.0.1
-
-------------------------------------------------------------------------
-
-INSTALLATION INSTRUCTIONS
-
-Quick guide:
- 
-   python setup.py install
-
-
-------------------------------------------------------------------------
+-----------------------------------------------------------------------
 
 LEGAL DISCLAIMER
 
@@ -35,25 +24,24 @@ of this software, even if advised of the possibility of such damage.
 The authors take no responsibility for damage caused by this program 
 or its components. 
 
-------------------------------------------------------------------------
+-----------------------------------------------------------------------
 
 CREDITS
 
-Magdalena Rother   - code and test implementation
-Sebastian Thieme   - testing, codevdloper
-Ulrike Muenzner    - conceptual contribution
-Janusz Bujnicki    - concept and supervision
+Magdalena Rother   - architecture and unit tests and implementation
+Sebastian Thieme   - model validation and testing
+Ulrike Muenzner    - contribution into concepts
+Marcus Krantz      - concept and supervision
 
 -----------------------------------------------------------------------
 
 ACKNOWLEDGEMENTS
 
 Credit goes to our colleagues Falko Krause, Max Floettmann, 
-David Jesinghaus for their comments, ideas and support 
-during development. 
+David Jesinghaus, and Janina Linnik for their comments, 
+ideas and support during development. 
 
-
--------------------------------------------------------------------------
+-----------------------------------------------------------------------
 
 REFERENCES
 
@@ -62,3 +50,18 @@ Magdalena Rother, Ulrike Muenzner, Sebastian Thieme and Marcus Krantz
 Information content and scalability in signal transduction 
 network reconstruction formats. Molecular BioSystems, 
 DOI: 10.1039/C3MB00005B (2013)
+
+-----------------------------------------------------------------------
+
+FOR DEVELOPERS
+
+When using the repository version modify your ~/.bashrc :
+
+PYTHONPATH=$PYTHONPATH:/path/to/main/rxnconcompiler/:
+/path/to/rxnconcompiler/tests/
+export PYTHONPATH
+
+To be able to run acceptance tests with BioNetGen, 
+install the BioNetGen software and add to ~/.bashrc :
+BNG_PATH=/path/to/BioNetGen-2.2.2-stable/
+export BNG_PATH
