@@ -75,16 +75,17 @@ Classes:
 
 import os
 import argparse
-from rxncon_parser import parse_rxncon 
-from reaction_factory import ReactionFactory
-from contingency_applicator import ContingencyApplicator
-from contingency_factory import ContingencyFactory
-from rule_factory import RuleFactory
-from biological_complex import ComplexPool
-from complex_applicator import ComplexApplicator
-from complex_builder import ComplexBuilder 
-from bngl_output import BnglOutput
-from domain_factory import DomainFactory
+from parser.rxncon_parser import parse_rxncon 
+from molecule.domain_factory import DomainFactory
+from biological_complex.biological_complex import ComplexPool
+from biological_complex.complex_applicator import ComplexApplicator
+from biological_complex.complex_builder import ComplexBuilder 
+from contingency.contingency_applicator import ContingencyApplicator
+from contingency.contingency_factory import ContingencyFactory
+from reaction.reaction_factory import ReactionFactory
+from bngl.bngl_output import BnglOutput
+from bngl.rule_factory import RuleFactory
+
 
 
 class Compiler:

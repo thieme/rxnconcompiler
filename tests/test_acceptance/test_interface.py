@@ -6,6 +6,7 @@ Unit Tests rxnconCompiler_interface.py module.
 
 import os
 from unittest import main, TestCase
+import sys
 
 import rxnconcompiler.rxnconCompiler_interface as interface
 

@@ -6,7 +6,7 @@ functions from Compiler used in the GUI.
 """
 
 from rulebased import Compiler, Rxncon, Bngl
-from bngl_output import BnglOutput
+from bngl.bngl_output import BnglOutput
 
 def parse(rxncon_input):
     """
