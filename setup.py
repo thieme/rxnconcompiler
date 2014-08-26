@@ -72,7 +72,7 @@ class PyTest(TestCommand):
                 self.cov.extend(["--cov-report", "html"])
         if self.junitxml is not None:
             self.junitxml = ["--junitxml", self.junitxml]
-
+        
     def run_tests(self):
         try:
             import pytest
@@ -197,7 +197,7 @@ def setup_package():
           long_description=read('README.rst'),
           classifiers=CLASSIFIERS,
           test_suite='tests',
-          packages=setuptools.find_packages(),#exclude=['tests', 'tests.*']),
+          packages=setuptools.find_packages(exclude=['tests', 'tests.*']),
           install_requires=install_reqs,
           setup_requires=['six'],
           cmdclass=cmdclass,
