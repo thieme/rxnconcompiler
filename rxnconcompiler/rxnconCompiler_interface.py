@@ -5,6 +5,7 @@ Module rxnconCompiler_interface containes
 functions from Compiler used in the GUI.
 """
 
+import json
 from rulebased import Compiler, Rxncon, Bngl
 from bngl.bngl_output import BnglOutput
 
@@ -38,22 +39,71 @@ def filter_reactions(xls_tables, id_list=None):
     return new_xls
 
 
-def get_src(xls_tables, reaction_ids=None, max_stoich=4):
+def get_bngl(inp, reaction_ids=None, max_stoich=4):
     """
     Returns BNGL code for given xls_tables.
     """
-    comp = Compiler(xls_tables)
+    comp = Compiler(inp)
     xls_tables = comp.xls_tables
     xls_tables = filter_reactions(xls_tables, reaction_ids)
     return Compiler(xls_tables).translate(True, True, True, True)
 
-
-def get_reactions(xls_tables, reaction_ids=None):
+def get_rxncon(inp, file_name=None):
     """
-    Returnd rules secion and parameters section.
+    Returns data as rxncon string. 
+    """
+    if not file_name:
+        return str(Rxncon(inp))
+    f = open(file_name, 'w')
+    f.write(str(Rxncon(inp)))
+    f.close()
+
+def get_json_reactions(inp, file_name=None):
+    """Returns rxncon dict as a json string."""
+    comp = Compiler(inp)
+    reactions = json.dumps({'reaction_list': comp.xls_tables['reaction_list']}, indent=4, sort_keys=True)
+    if file_name:
+        f = open(file_name, 'w')
+        f.write(reactions)
+        f.close()
+    return reactions    
+
+def get_json_contingencies(inp, file_name=None):
+    """Returns contingency list as json """
+    comp = Compiler(inp)
+    cont = json.dumps({'contingency_list': comp.xls_tables['contingency_list']}, indent=4, sort_keys=True)
+    if file_name:
+        f = open(file_name, 'w')
+        f.write(cont)
+        f.close()
+    return cont
+
+def get_json_definitions(inp, file_name=None):
+    comp = Compiler(inp)
+    definitions = json.dumps({'reaction_definition': comp.xls_tables['reaction_definition']}, indent=4, sort_keys=True)
+    if file_name:
+        f = open(file_name, 'w')
+        f.write(definitions)
+        f.close()
+    return definitions
+
+def get_json(inp, file_name=None):
+    """Returns json format for rxncon"""
+    comp = Compiler(inp)
+    rxn = json.dumps(comp.xls_tables, indent=4, sort_keys=True)
+    if file_name:
+        f = open(file_name, 'w')
+        f.write(rxn)
+        f.close()
+    return rxn    
+
+    
+def get_bngl_reactions(inp, reaction_ids=None):
+    """
+    Returns rules secion and parameters section.
     """
     # xls_tables
-    comp = Compiler(xls_tables)
+    comp = Compiler(inp)
     xls_tables = comp.xls_tables
     xls_tables = filter_reactions(xls_tables, reaction_ids)
     # Rxncon

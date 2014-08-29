@@ -18,7 +18,7 @@ parse_rxncon - recognise input, can parse:
 import sys
 import os
 import os.path
-#sys.path.append(os.sep.join(os.getcwd().split(os.sep)[:-1]))
+import json
 sys.path.append(os.sep.join(__file__.split(os.sep)[:-2]))
 import xlrd
 from util.rxncon_errors import RxnconParserError
@@ -35,16 +35,26 @@ def parse_rxncon(rxncon_input):
     elif rxncon_input[-4:] in ['.ods', '.xls', '.xlsx']:
         return parse_xls(rxncon_input)
 
-    # quick from file
+    # quick from file or json from file
     elif os.path.exists(rxncon_input):
         f = open(rxncon_input)
         quick_str = f.read().strip()
+        if 'reaction_list' in quick_str:
+            return parse_json(quick_str) 
         return parse_text(quick_str)
         
-    # quick from string
+    # quick from string or json 
     else:
+        if 'reaction_list' in rxncon_input:
+            return parse_json(rxncon_input)
         return parse_text(rxncon_input)
         
+def parse_json(rxncon_input):
+    """
+    Gets string.
+    Returns rxncon dictionary.
+    """
+    return json.loads(rxncon_input)
 
 def parse_text(rxncon_text):
     """Parses quick format and returns xls_tables dict."""
