@@ -10,7 +10,8 @@ from unittest import main, TestCase
 import rxnconcompiler.rxnconCompiler_interface as interface
 
 import test_data
-DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
+XLS_DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
+JSON_DATA_PATH = test_data.__path__[0] + os.sep + 'json_files' + os.sep
 
 class RxnconCompilerInterfaceTests(TestCase):
     """
@@ -20,7 +21,8 @@ class RxnconCompilerInterfaceTests(TestCase):
         """
         Parses xls_tables. 
         """
-        self.tiger_path = DATA_PATH + 'Tiger_et_al_TableS1.xls' 
+        self.tiger_path = XLS_DATA_PATH + 'Tiger_et_al_TableS1.xls' 
+        self.json_example = JSON_DATA_PATH + 'example.json'
         self.xls_tables = interface.parse(self.tiger_path)
 
     def tearDown(self):
@@ -124,6 +126,14 @@ class RxnconCompilerInterfaceTests(TestCase):
         content = f.read()
         for word in words:
             self.assertIn(word, content)
+
+    def test_json_to_json(self):
+        """read-write-read test"""
+        tables = interface.parse(self.tiger_path)
+        interface.get_json(tables, 'test.json')
+        new_tables = interface.parse('test.json')
+        self.assertEqual(tables, new_tables)
+
 
 
 if __name__ == '__main__': 
