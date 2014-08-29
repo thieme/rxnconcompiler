@@ -42,7 +42,7 @@ from test_molecule.test_molecule import MoleculeTests
 from test_molecule.test_state import StateFactoryTests, StateTests
 
 # test_parser
-from test_parser.test_rxncon_parser import RxnconTextParserTests, RxnconXlsParserTests
+from test_parser.test_rxncon_parser import RxnconTextParserTests, RxnconXlsParserTests, RxnconParserTests
 
 # test_reaction
 from test_reaction.test_rate import RateTests
