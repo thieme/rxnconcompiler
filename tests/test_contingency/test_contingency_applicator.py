@@ -6,7 +6,7 @@ ContingencyFactory
 """
 
 from unittest import main, TestCase
-from rxnconcompiler.rulebased import Rxncon
+from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state

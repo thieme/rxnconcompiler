@@ -6,8 +6,10 @@ functions from Compiler used in the GUI.
 """
 
 import json
-from rulebased import Compiler, Rxncon, Bngl
+from rxncon import Rxncon
+from compiler import Compiler
 from bngl.bngl_output import BnglOutput
+from bngl.bngl import Bngl
 
 def parse(rxncon_input):
     """
@@ -116,3 +118,29 @@ def get_bngl_reactions(inp, reaction_ids=None):
     output = BnglOutput(bngl.rule_pool, bngl.molecule_pool, bngl.warnings)
     output.create_sections_txt()
     return output.parameters_txt, output.rules_txt
+
+
+        
+def main():
+    """
+    Defines CLI for rulebased module.
+    """
+    #KR: cool, in particular that you dont need BioNetGen.
+    #    do you have tests for main()?
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_file", \
+        help="rxncon xls file that will be translated into BNGL")
+    parser.add_argument("-o", "--output", \
+        help="path to the output BNGL file")
+    args = parser.parse_args()
+
+    if args.input_file:
+        comp = Compiler(args.input_file)
+        bngl_src = comp.translate()
+        if args.output:
+            output_file = open(args.output, 'w')
+        else:
+            output_file = open('output.BNGL','w')
+        output_file.write(bngl_src)
+        output_file.close()
+

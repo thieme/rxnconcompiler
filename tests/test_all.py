@@ -7,14 +7,15 @@ All tests for rxncon modules.
 from unittest import main, TestCase
 
 #
-from test_rulebased import RxnconTests, CompilerTests, BnglTests
+from test_rxncon import RxnconTests
+from test_compiler import CompilerTests
+from test_interface import RxnconCompilerInterfaceTests
 
 # test_acceptance
 # DATA_SETS for testing can be changed in the test files
 #from test_acceptance.test_bionetgen_acceptance import BioNetGenTests  # requires BioNetGen and Perl
 from test_acceptance.test_bngl_sections_acceptance import MoleculesTests
 from test_acceptance.test_rules_acceptance import RuleAcceptanceTests
-from test_acceptance.test_interface import RxnconCompilerInterfaceTests
 
 # test_biological_complex
 from test_biological_complex.test_biological_complex import BiologicalComplexTests, AlternativeComplexesTests
@@ -22,6 +23,7 @@ from test_biological_complex.test_complex_applicator import ComplexApplicatorTes
 from test_biological_complex.test_complex_builder import BiologicalComplexBuilderTests
 
 # test_bngl
+from test_bngl.test_bngl import BnglTests
 from test_bngl.test_bngl_output import BnglTranslatorTests, BnglOutputTests
 from test_bngl.test_requirements import RequirementsGeneratorTests, RequirementsFactoryTests
 

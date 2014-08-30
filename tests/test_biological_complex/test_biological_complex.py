@@ -6,7 +6,7 @@ Unit Tests for biological_complex.py module.
 
 from unittest import main, TestCase
 
-from rxnconcompiler.rulebased import Rxncon
+from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex, AlternativeComplexes
 from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.molecule.molecule import Molecule

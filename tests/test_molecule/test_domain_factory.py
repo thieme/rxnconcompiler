@@ -10,7 +10,7 @@ modification domains and warnings).
 
 from unittest import main, TestCase
 
-from rxnconcompiler.rulebased import Compiler
+from rxnconcompiler.compiler import Compiler
 from rxnconcompiler.molecule.domain_factory import DomainFactory
 
 DOMAINS_ASSOSIATION = """A_BIND_DNA

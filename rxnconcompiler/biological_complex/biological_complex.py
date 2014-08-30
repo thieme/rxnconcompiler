@@ -17,8 +17,8 @@ ComplexPool: Stors all (positive) complexes in the system.
 """
 
 import copy
-from contingency.contingency import Contingency
-from molecule.molecule import Molecule
+from rxnconcompiler.contingency.contingency import Contingency
+from rxnconcompiler.molecule.molecule import Molecule
 
 #KR: please complete docstrings
 

@@ -73,9 +73,7 @@ Classes:
 - main:          defines CLI - Commend Line Interface.
 """
 
-import os
-import argparse
-from parser.rxncon_parser import parse_rxncon 
+from util.warnings import RxnconWarnings 
 from molecule.domain_factory import DomainFactory
 from biological_complex.biological_complex import ComplexPool
 from biological_complex.complex_applicator import ComplexApplicator
@@ -83,86 +81,8 @@ from biological_complex.complex_builder import ComplexBuilder
 from contingency.contingency_applicator import ContingencyApplicator
 from contingency.contingency_factory import ContingencyFactory
 from reaction.reaction_factory import ReactionFactory
-from bngl.bngl_output import BnglOutput
-from bngl.rule_factory import RuleFactory
+from parser.rxncon_parser import parse_rxncon
 
-
-
-class Compiler:
-    """
-    Compiler object translates given rxncon input (xls file or quick text)
-    into BioNetGen source code (BNGL file).
-
-    TODO: rename to RxnconCompiler (Copiler not specific)
-    TODO: add functions for translation into other formats
-    TODO: apply filters
-    TODO: write any output write_bngl ---> write_output
-    """
-    def __init__(self, input_data):
-        """
-        Keeps single xls object.
-        """
-        self.xls_tables = parse_rxncon(input_data)
-
-    def translate(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True): 
-        """
-        Translates Rxncon data into bngl string.
-        Uses Rxncon and Bngl objects.
-        """
-        rxncon = Rxncon(self.xls_tables)
-        rxncon.run_process(add_translation, add_missing_reactions, add_complexes, add_contingencies)
-        bngl = Bngl(rxncon.reaction_pool, \
-            rxncon.molecule_pool, rxncon.contingency_pool, rxncon.war)
-        bngl_src = bngl.get_src()
-        return bngl_src
-
-    def write_bngl(self, bngl_src, output_path):
-        """
-        Writes bngl string to file.
-        """
-        output_file = open(output_path, 'w')
-        output_file.write(bngl_src)
-
-
-class RxnconWarnings:
-    """
-    Stores inforation on logical problems in the rxncon input.
-    """
-    def __init__(self):
-        """"""
-        # state used in a contingency is not produced by the reactions.
-        self.not_in_products = []
-        # there are more than one modification states produced.
-        # Contingncy state must indicate (via the domain) which product to use.  
-        self.produced_in_more = {}
-        self.not_applied_contingencies = []
-
-    def calculate_missing_states(self, reaction_pool, contingency_pool):
-        """
-        Based on given reacion and contingencies pool checks
-        which states are missing (used in contingencies and not 
-        produced in reactions).
-        Returns list of states. 
-        """
-        # states in reactions like P- or GAP, Ub-
-        destroyed_states = reaction_pool.get_destroyed_states()
-        # states from !, K+, K- contingencies
-        # and also x ---> domains from x need to be present and domains are only 
-        #                 colected from produced states
-        contingency_states = contingency_pool.get_required_states()
-        product_states = reaction_pool.get_product_states()
-        required_states = contingency_states.union(destroyed_states)
-        self.not_in_products = required_states - product_states
-        return self.not_in_products
-
-    def get_problem_reaction_str(self):
-        """
-        makes set of strings out of self.not_applied_contingencies
-        (list of objects).
-        Removes redundant reactions.
-        """
-        result = [str(react) for react in self.not_applied_contingencies]
-        return set(result)
 
 class Rxncon:
     """
@@ -394,76 +314,6 @@ class Rxncon:
                 reaction.run_reaction()
 
 
-class Bngl:
-    """
-    Translates rxncon reactions into BNGL string. 
-    Creates BNGL objects that mirror the Rxncon objects but are simpler.
-    Main object used: BnglOutput - menages all strings production. 
-
-    @type reactions:      ReactionPool
-    @param reactions:     dictionary of ReactionContainer objects.
-                          Used to create RulePool (production done by RuleFactory).
-    @type molecules:      MoleculePool
-    @param molecules:     dictionary of all molecules present in the system.
-                          Used to create molecules and species section.
-    @type contingencies:  ContingencyPool
-    @param contingencies: all contingencise for the system.
-                          Used to generate warnings (list states that are not present).
-    """
-    def __init__(self, reaction_pool, molecules, contingencies, warnings=None):
-        self.reaction_pool = reaction_pool  # list of ReactionContainer objects.
-        self.molecule_pool = molecules  # all molecules in the system.
-        self.contingency_pool = contingencies
-        rule_factory = RuleFactory(self.reaction_pool, self.contingency_pool)
-        self.rule_pool = rule_factory.rule_pool
-        self.warnings = warnings
-
-    def get_src(self):
-        """
-        Returns BNGL source code as a string.
-        """
-        output = BnglOutput(self.rule_pool, self.molecule_pool, self.warnings)
-        return output.get_src() 
-        
-
-class BioNetGen:
-    #KR: looks a little bit like a relic that might disappear.
-    """
-    Conects translation to the button in the interface.
-    """
-    def __init__(self, xls_tables):
-        self.xls_tables = xls_tables
-
-    def get_src(self):
-        """
-        Uses Compiler object to create BNGL string.
-        """  
-        comp = Compiler(self.xls_tables)
-        return comp.translate()
-
-
-def main():
-    """
-    Defines CLI for rulebased module.
-    """
-    #KR: cool, in particular that you dont need BioNetGen.
-    #    do you have tests for main()?
-    parser = argparse.ArgumentParser()
-    parser.add_argument("input_file", \
-        help="rxncon xls file that will be translated into BNGL")
-    parser.add_argument("-o", "--output", \
-        help="path to the output BNGL file")
-    args = parser.parse_args()
-
-    if args.input_file:
-        comp = Compiler(args.input_file)
-        bngl_src = comp.translate()
-        if args.output:
-            output_file = open(args.output, 'w')
-        else:
-            output_file = open('output.BNGL','w')
-        output_file.write(bngl_src)
-        output_file.close()
 
 if __name__ == '__main__':
     main()

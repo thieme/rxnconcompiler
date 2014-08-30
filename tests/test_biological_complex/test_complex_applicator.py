@@ -6,7 +6,7 @@ Unit Tests for complex_applicator.py module.
 
 from unittest import main, TestCase
 
-from rxnconcompiler.rulebased import Rxncon
+from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicator
 
 REACTIONS = """ProtA_[a]_ipi_ProtA_[b]"""

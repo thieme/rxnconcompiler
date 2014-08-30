@@ -45,9 +45,9 @@ How contingencies with Input states inside boolean are treated?
 
 from biological_complex import BiologicalComplex, \
         AlternativeComplexes
-from molecule.molecule import Molecule
-from contingency.contingency import Contingency
-from util.util import product
+from rxnconcompiler.molecule.molecule import Molecule
+from rxnconcompiler.contingency.contingency import Contingency
+from rxnconcompiler.util.util import product
 
 class ComplexBuilder:
     """

@@ -6,7 +6,7 @@ Unit Tests for reaction_container.py module.
 
 from unittest import main, TestCase
 
-from rxnconcompiler.rulebased import Rxncon
+from rxnconcompiler.rxncon import Rxncon
 
 REACTIONS = """PolII_TRSC_Gene 
 Ribo_TRSL_A

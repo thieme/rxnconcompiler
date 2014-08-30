@@ -29,7 +29,7 @@ if AlternativeComplexes > 1 BiologicalComplex
 import copy
 from biological_complex import BiologicalComplex
 from complex_builder import ComplexBuilder
-from util.util import product
+from rxnconcompiler.util.util import product
 
 class ComplexApplicator:
     """
