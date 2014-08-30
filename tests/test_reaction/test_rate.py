@@ -7,7 +7,8 @@ Unit tests for rate.py module.
 from unittest import main, TestCase
 
 from unittest import TestCase, main
-from rxnconcompiler.rulebased import Rxncon, Compiler
+from rxnconcompiler.rxncon import Rxncon
+from rxnconcompiler.compiler import Compiler
 from rxnconcompiler.reaction.rate import Rate
 from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.contingency.contingency import Contingency

@@ -13,10 +13,10 @@ from reaction import Reaction, Modification, Interaction, \
                      SyntDeg, Relocalisation
 from reaction_container import ReactionContainer, ReactionPool
 from rate import Rate 
-from definitions.definitions import ReactionDefinitions
-from definitions.default_definition import DEFAULT_DEFINITION
-from molecule.molecule import Molecule, MoleculePool
-from molecule.state import get_state
+from rxnconcompiler.definitions.definitions import ReactionDefinitions
+from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION
+from rxnconcompiler.molecule.molecule import Molecule, MoleculePool
+from rxnconcompiler.molecule.state import get_state
 
 
 ENZYME = 'Enzyme'  # universal name for proteins that perform covalent modification reactions.

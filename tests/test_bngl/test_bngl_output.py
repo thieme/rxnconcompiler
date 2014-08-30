@@ -7,7 +7,7 @@ Unit tests for bngl_output.py module.
 from unittest import main, TestCase
 
 from rxnconcompiler.molecule.state import get_state
-from rxnconcompiler.rulebased import Rxncon
+from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.bngl.rule import Rule
 from rxnconcompiler.bngl.rule_factory import RuleFactory
 from rxnconcompiler.bngl.bngl_output import BnglOutput, BnglTranslator

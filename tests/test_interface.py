@@ -6,8 +6,7 @@ Unit Tests rxnconCompiler_interface.py module.
 
 import os
 from unittest import main, TestCase
-
-import rxnconcompiler.rxnconCompiler_interface as interface
+from rxnconcompiler import interface
 
 import test_data
 XLS_DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep

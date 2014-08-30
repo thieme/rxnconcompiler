@@ -10,7 +10,8 @@ import re
 import subprocess
 from unittest import main, TestCase
 
-from rxnconcompiler.rulebased import Compiler, Rxncon
+from rxnconcompiler.rxncon import Rxncon
+from rxnconcompiler.compiler import Compiler
 
 import test_data
 DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep

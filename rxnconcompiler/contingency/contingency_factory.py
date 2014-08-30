@@ -11,7 +11,7 @@ ContingencyFactory   - parses contingencies from xls to a tree.
 """
 
 from contingency import Contingency
-from molecule.state import get_state, Component
+from rxnconcompiler.molecule.state import get_state, Component
 
 
 class ContingencyWrapper:

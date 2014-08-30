@@ -15,7 +15,7 @@ from unittest import main, TestCase
 
 from unittest import TestCase, main
 from utils_for_tests import filter_reactions
-from rxnconcompiler.rulebased import Compiler
+from rxnconcompiler.compiler import Compiler
 from test_data.bngl_rules.rules_basic_data import DATA as BASIC
 from test_data.bngl_rules.rules_mapk_data import DATA as MAPK
 from test_data.bngl_rules.rules_input_data import DATA as INPUT
