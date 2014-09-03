@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+"""
+Class Compiler: translates any rxncon language input 
+                (json, string, dict, xls, txt) into BNGL.
+"""
+
 from parser.rxncon_parser import parse_rxncon
 from rxncon import Rxncon
 from bngl.bngl import Bngl

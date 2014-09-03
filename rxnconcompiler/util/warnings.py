@@ -1,4 +1,9 @@
+#!/usr/bin/env python
 
+"""
+Class RxnconWarnings: colects info on problems 
+                      so they can be included in BNGL file as comments.
+"""
 class RxnconWarnings:
     """
     Stores inforation on logical problems in the rxncon input.
