@@ -14,7 +14,7 @@ RuleContainer
 Rule         
 """
 
-from molecule.state import Component
+from rxnconcompiler.molecule.component import Component
 
 
 class RulePool(dict):
@@ -73,10 +73,6 @@ class Rule:
     def rates(self):
         """"""
         return self.reaction.rate.get_rates_for_reaction()
-        #if self.reaction.definition['Reversibility'] == 'irreversible':
-        #    return ['k%s' %self.rid] 
-        #elif self.reaction.definition['Reversibility'] == 'reversible':
-        #    return ['kf%s' %self.rid, 'kr%s' %self.rid] 
 
     @property
     def rate_values(self):

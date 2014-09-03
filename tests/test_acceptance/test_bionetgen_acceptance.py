@@ -26,7 +26,8 @@ import re
 import subprocess
 from unittest import main, TestCase
 
-from rxnconcompiler.rulebased import Compiler, Rxncon
+from rxnconcompiler.compiler import Compiler
+from rxnconcompiler.rxncon import Rxncon
 
 
 from utils_for_tests import filter_reactions, filter_exclude_reactions

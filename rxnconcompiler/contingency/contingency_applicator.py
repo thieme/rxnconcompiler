@@ -30,7 +30,6 @@ How rate is updated for K+/K-:
 TODO: How to apply cont like A_P+_B; A--B
 """
 
-import copy
 from contingency_factory import ContingencyWrapper
 from rxnconcompiler.molecule.molecule import Molecule
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
@@ -367,8 +366,6 @@ class ContingencyApplicator():
             #for reaction in temp2:
             #    print 'Reaction in temp2:', reaction.substrat_complexes[0].molecules[0].modifications, reaction.substrat_complexes[0].molecules[0].modification_sites
                 
-                
-
             container.empty()
             for reaction in temp2:
                 container.add_reaction(reaction)

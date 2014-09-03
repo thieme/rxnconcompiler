@@ -12,7 +12,7 @@ BnglOutput - producess sections of bngl file.
 # TODO: Refactor get_molecule_str and get_complex_str ---> CODE DUPLICATION!!!
 
 import re
-from molecule.state import Component
+from rxnconcompiler.molecule.component import Component
 
 
 class BnglTranslator:
@@ -333,7 +333,6 @@ class BnglOutput:
         self.translator = BnglTranslator()
         self.rates = []
         self.max_stoich = 4
-        #self.warning_states = warning_states
         self.warnings = warnings
 
     def create_sections_txt(self):

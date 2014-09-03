@@ -10,8 +10,8 @@ Class RequirementsFactory   - class that produces RequirementsPool objects
 """
 
 import re
-from contingency.contingency_factory import ContingencyWrapper, ContingencyFactory
-from util.util import product, flatten
+from rxnconcompiler.contingency.contingency_factory import ContingencyWrapper, ContingencyFactory
+from rxnconcompiler.util.util import product, flatten
 
 
 class RequirementsPool(dict):

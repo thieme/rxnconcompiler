@@ -8,7 +8,7 @@ import os
 from unittest import main, TestCase
 
 from rxnconcompiler.parser.rxncon_parser import parse_text, parse_xls, parse_rxncon
-from util.rxncon_errors import RxnconParserError
+from rxnconcompiler.util.rxncon_errors import RxnconParserError
 
 import test_data
 XLS_DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep

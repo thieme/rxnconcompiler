@@ -5,14 +5,14 @@ Module rule_factory.py
 
 Contains: RuleFactory class.
 
-Creates RoolPool from reaction_pool and contingency_pool
+Creates RulePool from reaction_pool and contingency_pool
 
 Not neccesary?
 """
 
 from rule import RulePool, RuleContainer, Rule
 from requirements import RequirementsGenerator
-from molecule.state import Component
+from rxnconcompiler.molecule.component import Component
 
 class RuleFactory:
     """"""
