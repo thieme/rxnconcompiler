@@ -5,7 +5,8 @@ Module molecule.py.
 """
 
 import copy 
-from state import get_state, Component
+from state import get_state
+from component import Component
 from rxnconcompiler.contingency.contingency import Contingency
 
 # TODO: function __add__ in Molecules requires more attention.

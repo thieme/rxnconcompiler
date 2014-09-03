@@ -5,9 +5,8 @@ Unit tests for bngl.py module.
 """
 
 from unittest import main, TestCase
-
-from rxnconcompiler.bngl.bngl import Bngl
 from rxnconcompiler.rxncon import Rxncon
+from rxnconcompiler.bngl.bngl import Bngl
 
 class BnglTests(TestCase):
     """
@@ -19,7 +18,7 @@ class BnglTests(TestCase):
         rxncon = Rxncon('A_ppi_B')
         rxncon.run_process()
         self.basic = Bngl(rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
-
+        
     def test_get_src(self):
         """"""
         source = self.basic.get_src()

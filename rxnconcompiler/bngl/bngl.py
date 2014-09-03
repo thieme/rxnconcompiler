@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+
+"""
+Module bngl.py
+
+Classes:
+Bngl - main class from bngl.
+       Connects all functionalities from bngl to create
+       output BNGL file. 
+"""
+
 from bngl_output import BnglOutput
 from rule_factory import RuleFactory
 

@@ -5,7 +5,7 @@ Unit tests for rxncon.py
 """
 
 from unittest import main, TestCase
-
+from rxnconcompiler.bngl.bngl import Bngl
 from rxnconcompiler.rxncon import Rxncon
 
 
