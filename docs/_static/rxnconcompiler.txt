@@ -395,6 +395,9 @@ rxnconcompiler
         - BnglOutput
         - Bngl
 
+        FUNCTION: main
+        - contains Command Line Interface for rxnconcompiler
+        
     rxncon.py
 
         CLASS: Rxncon
