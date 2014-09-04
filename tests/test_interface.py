@@ -11,10 +11,11 @@ from rxnconcompiler import interface
 import test_data
 XLS_DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
 JSON_DATA_PATH = test_data.__path__[0] + os.sep + 'json_files' + os.sep
+IPATH = os.sep.join([test_data.__path__[0], '..', '..', 'rxnconcompiler'])
 
-class RxnconCompilerInterfaceTests(TestCase):
+class InterfaceTests(TestCase):
     """
-    Unit Tests for rxnconCompiler interface.
+    Unit Tests for rxnconcompiler interface.
     """
     def setUp(self):
         """
@@ -134,6 +135,99 @@ class RxnconCompilerInterfaceTests(TestCase):
         self.assertEqual(tables, new_tables)
 
 
+class CliTests(TestCase):
+    """
+    Unit Tests for rxnconcompiler CLI.
+    """
+    def setUp(self):
+        """
+        Parses xls_tables. 
+        """
+        self.cpath = os.getcwd()
+        os.chdir(IPATH)
+
+        self.tiger_path = XLS_DATA_PATH + 'Tiger_et_al_TableS1.xls' 
+        self.json_example = JSON_DATA_PATH + 'example.json'
+        #self.xls_tables = interface.parse(self.tiger_path)
+
+    def tearDown(self):
+        """
+        Removes files.
+        """
+        if os.path.exists('test.json'):
+            os.remove('test.json')
+        if os.path.exists('test.rxncon'):
+            os.remove('test.rxncon')
+        if os.path.exists('rxnconcompiler.output'):
+            os.remove('rxnconcompiler.output')
+        os.chdir(self.cpath)
+
+    def test_basic(self):
+        """
+        Tests yhe most simple command:
+        python interface.py 'A_ppi_B; ! A--C' 
+        """
+        os.system("python interface.py 'A_ppi_B'")
+        self.assertTrue(os.path.exists('rxnconcompiler.output'))
+        f = open('rxnconcompiler.output') 
+        cont = f.read()
+        self.assertIn('A(AssocB) + B(AssocA) <-> A(AssocB!1).B(AssocA!1)', cont) 
+
+    def test_json2bngl(self):
+        """
+        Tests json can be read.
+        """
+        com = "python interface.py %s -o 'test.json'" % self.json_example
+        os.system(com)
+        self.assertTrue(os.path.exists('test.json'))
+        f = open('test.json') 
+        cont = f.read()
+        self.assertIn('A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <->', cont) 
+
+    def test_json2rxncon(self):
+        """
+        Tests json can be translated into rxncon quick text.
+        """
+        com = "python interface.py %s -o 'test.rxncon' --rxncon" % self.json_example
+        os.system(com)
+        self.assertTrue(os.path.exists('test.rxncon'))
+        f = open('test.rxncon') 
+        cont = f.read()
+        self.assertIn('A_ppi_B; ! A_[AssocC]--C_[AssocA]', cont)
+
+    def test_tiger2rxncon(self):
+        """
+        Tests MAPK network can be translated into rxncon through CLI.
+        """
+        com = "python interface.py %s -o 'test.rxncon' --rxncon" % self.tiger_path
+        os.system(com)
+        self.assertTrue(os.path.exists('test.rxncon'))
+        f = open('test.rxncon') 
+        cont = f.read()
+        self.assertIn('Fus3_[CD]_ppi_Msg5_[n]', cont)
+
+    def test_tiger2json(self):
+        """
+        Tests MAPK network can be translated into json through CLI.
+        """
+        com = "python interface.py %s -o 'test.json' --json" % self.tiger_path
+        os.system(com)
+        self.assertTrue(os.path.exists('test.json'))
+        f = open('test.json') 
+        cont = f.read()
+        self.assertIn('Fus3_[CD]_ppi_Msg5_[n]', cont)
+        self.assertIn('reaction_list', cont)
+
+    def test_tiger2bngl(self):
+        """
+        Tests MAPK network can be translated into bngl through CLI.
+        """
+        com = "python interface.py %s" % self.tiger_path
+        os.system(com)
+        self.assertTrue(os.path.exists('rxnconcompiler.output'))
+        f = open('rxnconcompiler.output') 
+        cont = f.read()
+        self.assertIn('Ste11 p+ Pbs2', cont)  
 
 if __name__ == '__main__': 
     main()

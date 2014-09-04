@@ -9,7 +9,7 @@ from unittest import main, TestCase
 #
 from test_rxncon import RxnconTests
 from test_compiler import CompilerTests
-from test_interface import RxnconCompilerInterfaceTests
+from test_interface import InterfaceTests, CliTests
 
 # test_acceptance
 # DATA_SETS for testing can be changed in the test files

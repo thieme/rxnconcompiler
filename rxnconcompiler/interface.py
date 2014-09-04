@@ -5,6 +5,7 @@ Module rxnconCompiler_interface containes
 functions from Compiler used in the GUI.
 """
 
+import argparse
 import json
 from rxncon import Rxncon
 from compiler import Compiler
@@ -41,14 +42,18 @@ def filter_reactions(xls_tables, id_list=None):
     return new_xls
 
 
-def get_bngl(inp, reaction_ids=None, max_stoich=4):
+def get_bngl(inp, reaction_ids=None, max_stoich=4, file_name=None):
     """
     Returns BNGL code for given xls_tables.
     """
     comp = Compiler(inp)
     xls_tables = comp.xls_tables
     xls_tables = filter_reactions(xls_tables, reaction_ids)
-    return Compiler(xls_tables).translate(True, True, True, True)
+    if not file_name:
+        return Compiler(xls_tables).translate(True, True, True, True)
+    f = open(file_name, 'w')
+    f.write(Compiler(xls_tables).translate(True, True, True, True))
+    f.close()
 
 def get_rxncon(inp, file_name=None):
     """
@@ -128,19 +133,30 @@ def main():
     #KR: cool, in particular that you dont need BioNetGen.
     #    do you have tests for main()?
     parser = argparse.ArgumentParser()
-    parser.add_argument("input_file", \
-        help="rxncon xls file that will be translated into BNGL")
+    parser.add_argument("rxncon_input", \
+        help="Rxncon language input as xls file, json, txt, or string.")
     parser.add_argument("-o", "--output", \
-        help="path to the output BNGL file")
+        help="path to the output file")
+    parser.add_argument("-s", "--max_stoich", default='4',\
+        help="Value of max stoich variable in bngl.")
+    parser.add_argument('--json', dest='mode', action='store_const', \
+        const='json', default='bngl', \
+        help='Indicate the output type as json (default: bngl).')
+    parser.add_argument('--rxncon', dest='mode', action='store_const', \
+        const='rxncon', default='bngl', \
+        help='Indicate the output type as rxncon (default: bngl).')
     args = parser.parse_args()
 
-    if args.input_file:
-        comp = Compiler(args.input_file)
-        bngl_src = comp.translate()
-        if args.output:
-            output_file = open(args.output, 'w')
-        else:
-            output_file = open('output.BNGL','w')
-        output_file.write(bngl_src)
-        output_file.close()
+    if args.rxncon_input:
+        output_file = args.output or 'rxnconcompiler.output'        
+        if args.mode == 'json':
+            get_json(args.rxncon_input, output_file)
+        elif args.mode == 'rxncon':
+            get_rxncon(args.rxncon_input, output_file)
+        elif args.mode == 'bngl':
+            get_bngl(args.rxncon_input, None, args.max_stoich, output_file)
+
+if __name__ == '__main__':
+    main()
+
 
