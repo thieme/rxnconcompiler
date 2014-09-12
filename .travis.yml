@@ -5,7 +5,7 @@ python:
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: 
   - "pip install -r requirements.txt"
-  - export PYTHONPATH=$PYTHONPATH:$HOME/builds/lenarother/rxnconcompiler/:$HOME/builds/lenarother/rxnconcompiler/tests/test_data/
+  - export PYTHONPATH=$PYTHONPATH:$HOME/builds/lenarother/rxnconcompiler/:$HOME/builds/lenarother/rxnconcompiler/tests/
 
 # command to run tests, e.g. python setup.py test
 script: "python setup.py test"
