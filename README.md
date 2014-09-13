@@ -1,12 +1,10 @@
-=======================================================================
 # rxnconcompiler 
-=======================================================================
+
 
 rxnconcompiler is an iterative network building tool for Systems Biology.
 
 Magdalena Rother, Sebastian Thieme, Ulrike Muenzner and Marcus Krantz
 
------------------------------------------------------------------------
 
 ## Build Status
 
@@ -15,27 +13,26 @@ Magdalena Rother, Sebastian Thieme, Ulrike Muenzner and Marcus Krantz
 ## USAGE
 
 
-### Get help:
+### 1. Get help:
 
 python interface.py -h 
 
 
-### Generate bngl file:
+### 2. Generate bngl file:
 
 python interface.py 'A_ppi_B; ! A--C' [-o output_file.name]
 
 
-### Generate json file:
+### 3. Generate json file:
 
 
 python interface.py 'A_ppi_B; ! A--C' --json [-o output_file.name]
 
 
-### Generate file with rxncon quick text:**
+### 4. Generate file with rxncon quick text:
 
 python interface.py 'A_ppi_B; ! A--C' --json [-o output_file.name]
 
------------------------------------------------------------------------
 
 ## LEGAL DISCLAIMER
 
@@ -55,7 +52,6 @@ of this software, even if advised of the possibility of such damage.
 The authors take no responsibility for damage caused by this program 
 or its components. 
 
------------------------------------------------------------------------
 
 ## CREDITS
 
@@ -65,7 +61,6 @@ or its components.
 - **Ulrike Muenzner**    - contribution into concepts
 - **Marcus Krantz**      - concept and supervision
 
------------------------------------------------------------------------
 
 ## ACKNOWLEDGEMENTS
 
@@ -73,7 +68,6 @@ Credit goes to our colleagues Falko Krause, Max Floettmann,
 David Jesinghaus, and Janina Linnik for their comments, 
 ideas and support during development. 
 
------------------------------------------------------------------------
 
 ## REFERENCES
 
@@ -83,7 +77,6 @@ Information content and scalability in signal transduction
 network reconstruction formats. Molecular BioSystems, 
 DOI: 10.1039/C3MB00005B (2013)
 
------------------------------------------------------------------------
 
 ## FOR DEVELOPERS
 
@@ -106,53 +99,37 @@ doc/_statis/rxncompiler.txt
 
 ### Release making:
 
-git tag -a v1.2.0 -m 'read and write json, cli added'
-
-git push --tags
-
-python setup.py sdist
-
-python setup.py sdist upload (sends package to PyPI)
-
-
+- git tag -a v1.2.0 -m 'read and write json, cli added'
+- git push --tags
+- python setup.py sdist
+- python setup.py sdist upload (sends package to PyPI)
+ 
 ### Generating documentation with Sphinx:
 
-pip install spxinx
-
-python setup.py docs
-
-cd docs
-
-make html (index.html in docs/_build/index.html)
+- pip install spxinx
+- python setup.py docs
+- cd docs
+- make html (index.html in docs/_build/index.html)
 
 
 ### Testing and coverage:
 
-python setup.py test (calculates coverage)
+- python setup.py test (calculates coverage)
 
 or
 
-cd tests
-
-python test_all.py
+- cd tests
+- python test_all.py
 
 
 ### Usage of virtual environment:
 
-pip install virtualenv
-
-virtualenv venv_rxncon
-
-source venv_rxncon/bin/activate
-
-(venv_rxncon) pip install xlrd
-
-(venv_rxncon) pip install pyscaffold
-
-(venv_rxncon) pip install sphinx
-
-(venv_rxncon) pip freeze
-
-(venv_rxncon) cd rxnconcompiler
-
-(venv_rxncon) python setup.py test
+- pip install virtualenv
+- virtualenv venv_rxncon
+- source venv_rxncon/bin/activate
+- (venv_rxncon) pip install xlrd
+- (venv_rxncon) pip install pyscaffold
+- (venv_rxncon) pip install sphinx
+- (venv_rxncon) pip freeze
+- (venv_rxncon) cd rxnconcompiler
+- (venv_rxncon) python setup.py test
