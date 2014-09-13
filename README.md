@@ -1,16 +1,16 @@
 # rxnconcompiler 
 
 
-rxnconcompiler is an iterative network building tool for Systems Biology.
+**rxnconcompiler is an iterative network building tool for Systems Biology.**
 
-Magdalena Rother, Sebastian Thieme, Ulrike Muenzner and Marcus Krantz
+**Magdalena Rother, Sebastian Thieme, Ulrike Muenzner and Marcus Krantz**
 
 
 ## Build Status
 
 [![Build Status](https://travis-ci.org/lenarother/rxnconcompiler.svg?branch=master)](https://travis-ci.org/lenarother/rxnconcompiler)
 
-## USAGE
+## Usage
 
 
 ### 1. Get help:
@@ -34,7 +34,7 @@ python interface.py 'A_ppi_B; ! A--C' --json [-o output_file.name]
 python interface.py 'A_ppi_B; ! A--C' --json [-o output_file.name]
 
 
-## LEGAL DISCLAIMER
+## Legal disclaimer
 
 rxnconcompiler is released under the GPL license, a copy of which 
 is included in the distribution (See COPYING for details). 
@@ -53,7 +53,7 @@ The authors take no responsibility for damage caused by this program
 or its components. 
 
 
-## CREDITS
+## Credits
 
 - **Magdalena Rother**   - architecture and unit tests and implementation
 - **Sebastian Thieme**   - model validation and testing
@@ -62,14 +62,14 @@ or its components.
 - **Marcus Krantz**      - concept and supervision
 
 
-## ACKNOWLEDGEMENTS
+## Acknowledgements
 
 Credit goes to our colleagues Falko Krause, Max Floettmann, 
 David Jesinghaus, and Janina Linnik for their comments, 
 ideas and support during development. 
 
 
-## REFERENCES
+## References
 
 Magdalena Rother, Ulrike Muenzner, Sebastian Thieme and Marcus Krantz 
 
@@ -78,7 +78,7 @@ network reconstruction formats. Molecular BioSystems,
 DOI: 10.1039/C3MB00005B (2013)
 
 
-## FOR DEVELOPERS
+## For developers
 
 When using the repository version modify your ~/.bashrc :
 
