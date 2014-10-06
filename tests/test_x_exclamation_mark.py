@@ -15,16 +15,16 @@ class x_exclamation_mark_Tests(TestCase):
         """
         Prepares data for tests.
         """
-        # basic reaction.
+    # basic reaction.import
         print "HIER"
 #        self.basic = Rxncon('A_ppi_B')
 
         # basic reaction with one contingency.
-        self.basic_cont = Rxncon('Z_P+_A \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A')
-        rxncon = Rxncon('Z_P+_A \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A')
+        self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
+        rxncon = Rxncon('Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
         rxncon.run_process()
         bngl_src = Bngl(rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
-        print bngl_src.get_src()
+        #print bngl_src.get_src()
 
 
 
@@ -33,7 +33,7 @@ class x_exclamation_mark_Tests(TestCase):
         Tests that molecules_pool is created and
         containe right number of molecules.
         """
-        print self.basic_cont
+        print "self.basic_cont: ", self.basic_cont
 
 
 
