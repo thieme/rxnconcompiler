@@ -8,7 +8,7 @@
 
 ## Build Status
 
-[![Build Status](https://travis-ci.org/lenarother/rxnconcompiler.svg?branch=master)](https://travis-ci.org/lenarother/rxnconcompiler)
+[![Build Status](https://travis-ci.org/thieme/rxnconcompiler.svg?branch=master)](https://travis-ci.org/thieme/rxnconcompiler)
 
 ## Usage
 
