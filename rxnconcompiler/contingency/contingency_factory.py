@@ -100,7 +100,7 @@ class ContingencyPool(dict):
                 if cont == child:
                     root.children.remove(cont)
 
-    def get_positive_required_states(self):
+    def get_positive_required_contingencies(self):
         """
         Allows to obtain states that need to be present in the system
         to allow contingencies (the context) to be fulfilled.

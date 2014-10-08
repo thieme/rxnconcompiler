@@ -143,20 +143,21 @@ class Rxncon:
 
         for product_contingency in self.reaction_pool.get_product_contingencies():  # step 1 get product contingencies
             if str(product_contingency)[0] == "x": # check for absolute inhibitory reactions
-                for required_cont in self.contingency_pool.get_positive_required_states():  # step 2 get required contingency
+                for required_cont in self.contingency_pool.get_positive_required_contingencies():  # step 2 get required contingency
                     #print "required_cont.state_str: ", required_cont.state_str
                     #print "product_contingency.state: ", product_contingency.state
-                    cont = required_cont[0]
-                    state = required_cont[1]
-                    if str(state.state_str) == str(product_contingency.state):  # step 3 check for conflicts
+                    print required_cont
+                    print dir(required_cont)
+                    #cont = required_cont
+                    #state = required_cont[1]
+                    if str(required_cont.state) == str(product_contingency.state):  # step 3 check for conflicts
                         print "Conflict: ", required_cont, product_contingency
                         #print dir(product_contingency)
                         # step 4 
                         ## get reaction from reaction_pool
                         ## get reaction to which contingency belongs
                         print "product_contingency.state: ", product_contingency.target_reaction
-                        print dir(cont)  
-                        print "required_cont: ", cont.target_reaction
+                        print "required_cont: ", required_cont.target_reaction
 
     def __repr__(self):
         """
