@@ -134,30 +134,46 @@ class Rxncon:
         self.update_contingencies()
 
     def find_conflicts(self):
-        # print "self.reaction_pool.get_product_contingency(): ", self.reaction_pool.get_product_contingencies()
-        # print dir(list(self.reaction_pool.get_product_contingencies())[0])target_reaction
-        # print list(self.reaction_pool.get_product_contingencies())[0]
-        # print "self.contingency_pool.get_required_states(): ", self.contingency_pool.get_required_states()
-        # print dir(list(self.contingency_pool.get_required_states())[0])
-        # print list(self.contingency_pool.get_required_states())[0]
 
-        for product_contingency in self.reaction_pool.get_product_contingencies():  # step 1 get product contingencies
+        from contingency.contingency import Contingency
+        print "self.reaction_pool: ", self.reaction_pool
+        for product_contingency in self.reaction_pool.get_product_contingencies():  # step 1 get product contingencies if the reaction we have to change
             if str(product_contingency)[0] == "x": # check for absolute inhibitory reactions
-                for required_cont in self.contingency_pool.get_positive_required_contingencies():  # step 2 get required contingency
-                    #print "required_cont.state_str: ", required_cont.state_str
-                    #print "product_contingency.state: ", product_contingency.state
-                    print required_cont
-                    print dir(required_cont)
-                    #cont = required_cont
-                    #state = required_cont[1]
+                for required_cont in self.contingency_pool.get_positive_required_contingencies():  # step 2 get required contingency, for possible conflicts
                     if str(required_cont.state) == str(product_contingency.state):  # step 3 check for conflicts
                         print "Conflict: ", required_cont, product_contingency
-                        #print dir(product_contingency)
                         # step 4 
                         ## get reaction from reaction_pool
                         ## get reaction to which contingency belongs
                         print "product_contingency.state: ", product_contingency.target_reaction
-                        print "required_cont: ", required_cont.target_reaction
+                        print "product_contingency"
+                        print type(product_contingency.target_reaction)
+                        #step 4 
+                        #get the reaction of reaction_pool and reaction to which the contingency belongs
+                        reaction_containter = self.reaction_pool[product_contingency.target_reaction]  # get reaction object of reaction we want to change
+                        required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
+                        NEW_STATE = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
+                        for reaction in reaction_containter:  # iterate over all reactions we want to change
+                            print "reaction: ", reaction
+                            print dir(reaction)
+                            print reaction.product_complexes
+                            print reaction.substrat_complexes
+                            reaction_run_reaction = reaction.run_reaction()
+                            #print reaction_run_reaction
+                            #reaction = reaction.clone()  # clone the reaction (get two??)
+
+                            print dir(reaction_run_reaction)
+                            print reaction.right_reactant # 5.2 ??
+                            # create contingencies for applying on the reaction we want to change
+                            # have to initialize a contingency 5.2
+                            cont_x = Contingency(target_reaction=product_contingency.target_reaction,ctype="x",state=NEW_STATE)
+                            cont_exclamation = Contingency(target_reaction=product_contingency.target_reaction,ctype="!",state=NEW_STATE)
+                            print cont_x
+                            print cont_exclamation
+                            print dir(reaction.right_reactant)
+                            #ContingencyApplicator().apply_on_complex(reaction.right_reactant,cont_x)
+
+                        
 
     def __repr__(self):
         """
@@ -205,7 +221,7 @@ class Rxncon:
 
     def get_complexes(self, reaction_name):
         """
-        Prepares a list of complexes aplicable to a give reaction.
+        Prepares a list of complexes applicable to a give reaction.
 
         @type  reaction_name: string
         @param reaction_name: reaction string e.g. A_ppi_B_[bd_A].
@@ -329,6 +345,7 @@ class Rxncon:
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name) 
+                print complexes
             ComplexApplicator(react_container, complexes).apply_complexes() 
 
             # after applying complexes we may have more reactions in a single container.

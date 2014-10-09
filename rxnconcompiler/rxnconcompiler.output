@@ -1,0 +1,41 @@
+begin model
+begin parameters
+# input parameters
+# normal parameters
+kf1 1
+kr1 1
+kf2 1
+kr2 1
+end parameters
+
+begin molecule types
+A(AssocB,AssocC)
+B(AssocA)
+C(AssocA)
+end molecule types
+
+begin seed species
+A(AssocB,AssocC)                                                                           100
+B(AssocA)                                                                                  100
+C(AssocA)                                                                                  100
+end seed species
+
+begin observables
+
+end observables
+
+begin reaction rules
+###########################  1####A ppi B###
+# Contingencies: ! A_[AssocC]--C_[AssocA]
+# Absolute requirements: A_[AssocC]--C_[AssocA] True
+# Source states:  A_[AssocB]--B_[AssocA] False
+# Product states: A_[AssocB]--B_[AssocA] True
+A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1)    kf1, kr1
+###########################  2####A ppi C###
+# Source states:  A_[AssocC]--C_[AssocA] False
+# Product states: A_[AssocC]--C_[AssocA] True
+A(AssocC) + C(AssocA) <-> A(AssocC!1).C(AssocA!1)    kf2, kr2
+end reaction rules
+end model
+
+generate_network({overwrite=>1,max_stoich=>{A=>4,B=>4,C=>4}});
