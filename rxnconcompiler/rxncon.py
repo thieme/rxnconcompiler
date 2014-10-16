@@ -194,10 +194,11 @@ class Rxncon:
 
         from rxnconcompiler.molecule.state import get_state
         print "self.reaction_pool: ", self.reaction_pool
+        print "self.contingency_pool.get_required_contingencies(): ", self.contingency_pool.get_required_contingencies()
         for product_contingency in self.reaction_pool.get_product_contingencies():  # step 1 get product contingencies if the reaction we have to change
-            if str(product_contingency)[0] == "x": # check for absolute inhibitory reactions
-                for required_cont in self.contingency_pool.get_positive_required_contingencies():  # step 2 get required contingency, for possible conflicts
-                    if str(required_cont.state) == str(product_contingency.state) and (required_cont.state,product_contingency.state) not in self.solved_conflicts:  # step 3 check for conflicts
+            #if str(product_contingency)[0] == "x": # check for absolute inhibitory reactions
+                for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
+                    if (str(required_cont.state)) == str(product_contingency.state) and str(required_cont.ctype) != str(product_contingency.ctype) and (required_cont.state,product_contingency.state) not in self.solved_conflicts:  # step 3 check for conflicts
                         print "Conflict: ", required_cont, product_contingency
                         self.conflict_found = True
                         #step 4 
@@ -209,9 +210,9 @@ class Rxncon:
 
                         self.solve_conflicts(reaction_containter, required_cont_reaction_container, NEW_STATE, product_contingency.target_reaction)
                         self.solved_conflicts.append((required_cont.state,product_contingency.state))
-        if self.conflict_found:
-            self.conflict_found = False
-            self.find_conflicts()
+        #if self.conflict_found:
+         #   self.conflict_found = False
+         #   self.find_conflicts()
 
     def __repr__(self):
         """

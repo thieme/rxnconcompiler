@@ -100,7 +100,7 @@ class ContingencyPool(dict):
                 if cont == child:
                     root.children.remove(cont)
 
-    def get_positive_required_contingencies(self):
+    def get_required_contingencies(self):
         """
         Allows to obtain states that need to be present in the system
         to allow contingencies (the context) to be fulfilled.
@@ -115,7 +115,7 @@ class ContingencyPool(dict):
         for root in self.values():
             children = root.get_leafs()
             for cont in children:
-                if cont.ctype in ['!', 'k+'] or cont.inherited_ctype in ['!', 'k+']:
+                if cont.ctype in ['!', 'k+', 'k-', 'x'] or cont.inherited_ctype in ['!', 'k+', 'k-', 'x']:
                     if cont.state.type in ['Association', 'Covalent Modification', 'Relocalisation']:
                         result.append(cont)
         return set(result)
