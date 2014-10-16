@@ -22,13 +22,13 @@ Process steps:
      - reaction_list 
      - contingency_list
      - reaction_definitions
-1.b. Parsing data from dictionary into rxnon objects.
+1.b. Parsing data from dictionary into rxncon objects.
      The result is: 
      - ReactionPool containing ReactionContainer objects, 
        each with single Reaction object.
      - ContingencyPool containing root contingency 
        for all reactions with contingencies
-     - MoleculesPool containg Molecule objects 
+     - MoleculesPool containing Molecule objects 
        representing all substrates.
 2.   Creating complexes from boolean or complex contingencies.
 ==============================================================
@@ -41,16 +41,16 @@ Process steps:
      so the ReactionContainer contain in the end 
      all alternatives when reaction can run
      as single Reaction objects.
-     All remaining single Molecul objects are 
+     All remaining single Molecule objects are 
      exchanged with complex containing single molecule.
-4.   Applying other (non-comlex) contingencies.
+4.   Applying other (non-complex) contingencies.
 ===============================================
 5.   Running reactions to obtain product complexes.
 =======================
 6.   Translating reactions into BNGL string.
 ============================================
 6.a. Prepare RulePoll out of RecationPool 
-     (same strucrure with RuleContainer and Rule objects) 
+     (same structure with RuleContainer and Rule objects) 
 6.b. Create strings for all sections using BnglTranslator, and BnglOutput
 
 
@@ -82,7 +82,7 @@ from contingency.contingency_applicator import ContingencyApplicator
 from contingency.contingency_factory import ContingencyFactory
 from reaction.reaction_factory import ReactionFactory
 from parser.rxncon_parser import parse_rxncon
-
+from contingency.contingency import Contingency
 
 class Rxncon:
     """
@@ -94,8 +94,8 @@ class Rxncon:
     translation to bngl string in later stage.
 
     The end product is a pool of ReactionContainer objects.
-    Single ReactionContainer object coresponds to a RuleContainer object.
-    Single ReactionContainer has all data neccessary for translation into bngl.
+    Single ReactionContainer object corresponds to a RuleContainer object.
+    Single ReactionContainer has all data necessary for translation into bngl.
 
     @type xls_tables:  dictionary
     @param xls_tables: rxncon input data
@@ -112,7 +112,7 @@ class Rxncon:
         MoleculePool - list of all right and left reactants from all reactions.
         ReactionPool - dict of all reactions. 
                        rxncon reaction str: ReactionContiner object 
-                       (captures all posible alternative reactions
+                       (captures all possible alternative reactions
                        depending on conditions in which reaction can happen). 
         ContingencyPool - dictionary of all contingencies.
                           rxncon_reaction_str: root contingency 
@@ -120,6 +120,8 @@ class Rxncon:
         ComplexPool - dict of all complexes (defined as children-containing contingencies with '<>').
                       '<name>': AlternativeComplexes (which contains BiologicalComplex objects).
         """
+        self.solved_conflicts = []
+        self.conflict_found = False
         self.war = RxnconWarnings()
         self.df = DomainFactory()
         self.xls_tables = parse_rxncon(xls_tables)
@@ -128,52 +130,88 @@ class Rxncon:
         self.reaction_pool = reaction_factory.reaction_pool
         contingency_factory = ContingencyFactory(self.xls_tables)
         self.contingency_pool = contingency_factory.parse_contingencies()
-        self.find_conflicts()
+        
         self.complex_pool = ComplexPool()
         self.create_complexes()
         self.update_contingencies()
+        
+    def solve_conflicts(self, reaction_containter, required_cont_reaction_container, NEW_STATE, product_contingencyTarget_reaction):
+        for reaction in reaction_containter:  # iterate over all reactions we want to change
+            reaction_clone = reaction.clone()  # clone the reaction (get the second reaction) step 5.1
+        #     # create contingencies for applying on the reaction we want to change
+        #     # have to initialize a contingency 5.2
+            cont_x = Contingency(target_reaction=product_contingencyTarget_reaction,ctype="x",state=NEW_STATE)
+            cont_exclamation = Contingency(target_reaction=product_contingencyTarget_reaction,ctype="!",state=NEW_STATE)
+
+            # step 5.2
+            ## 5.2.1
+            # apply x contingency on right right of substrate 
+            for comp in reaction.substrat_complexes: # iterate over the different substrate complexes
+                if reaction.right_reactant in comp.molecules: # find the right reactant complex
+                    ContingencyApplicator().apply_on_complex(comp,cont_x) # apply new contingency to this complex
+            ## 5.2.2
+            # apply x contingency on right complex of product 
+            for comp in reaction.product_complexes:
+                if reaction.right_reactant in comp.molecules:
+                    ContingencyApplicator().apply_on_complex(comp,cont_x)
+
+            #5.3 change cloned reaction
+            #5.3.1 change cloned reaction substrate side
+            for i, component in enumerate(reaction_clone.substrat_complexes):
+                    if reaction_clone.right_reactant in component.molecules: # find the right reactant complex in molecules of component
+                        mol_index = component.molecules.index(reaction_clone.right_reactant)  # get the index of the molecule in the molecule List
+                        mol = component.molecules[mol_index] # get the molecule
+                        # check in NEW_STATE if we have to add additional molecules
+                        for reaction2 in required_cont_reaction_container:
+                            for add_comp in reaction2.product_complexes:
+                                for add_mol in add_comp.molecules:
+                                    if mol.name != add_mol.name:
+                                        # replace the component by it's complex so instead of A(P) we get A(P,AssocB!1).B(AssocA!1) on substrate side
+                                        reaction_clone.substrat_complexes[i] = add_comp 
+                        ContingencyApplicator().apply_on_complex(component, cont_exclamation)
+
+            #5.3.2 change cloned reaction product side
+            for component in reaction_clone.product_complexes:  # iterating over the components of product complex
+                if reaction_clone.right_reactant in component.molecules:  # if the component molecule list contains the right handed reactant
+                    mol_index = component.molecules.index(reaction_clone.right_reactant)  # get the index of the molecule in the molecule List
+                    mol = component.molecules[mol_index] # get the molecule
+                    # check in NEW_STATE if we have to add additional molecules
+                    for reaction2 in required_cont_reaction_container:
+                        for add_comp in reaction2.substrat_complexes:
+                            if mol.name != add_comp.molecules[0].name:
+                                # append the molecule directly to the product complex list to generate a separated molecule 
+                                # we get X + A(Z~U,AssocB) + B(AssocA) on the product side
+                                reaction_clone.product_complexes.append(add_comp) #
+                    ContingencyApplicator().apply_on_complex(component,cont_x)
+        reaction_containter.add_reaction(reaction_clone)
+        self.reaction_pool[reaction_containter.name] = reaction_containter
+        
 
     def find_conflicts(self):
+        """
+        check if there are conflicts between generated states and required contingencies
+        """
 
-        from contingency.contingency import Contingency
+        from rxnconcompiler.molecule.state import get_state
         print "self.reaction_pool: ", self.reaction_pool
         for product_contingency in self.reaction_pool.get_product_contingencies():  # step 1 get product contingencies if the reaction we have to change
             if str(product_contingency)[0] == "x": # check for absolute inhibitory reactions
                 for required_cont in self.contingency_pool.get_positive_required_contingencies():  # step 2 get required contingency, for possible conflicts
-                    if str(required_cont.state) == str(product_contingency.state):  # step 3 check for conflicts
+                    if str(required_cont.state) == str(product_contingency.state) and (required_cont.state,product_contingency.state) not in self.solved_conflicts:  # step 3 check for conflicts
                         print "Conflict: ", required_cont, product_contingency
-                        # step 4 
+                        self.conflict_found = True
+                        #step 4 
                         ## get reaction from reaction_pool
                         ## get reaction to which contingency belongs
-                        print "product_contingency.state: ", product_contingency.target_reaction
-                        print "product_contingency"
-                        print type(product_contingency.target_reaction)
-                        #step 4 
-                        #get the reaction of reaction_pool and reaction to which the contingency belongs
                         reaction_containter = self.reaction_pool[product_contingency.target_reaction]  # get reaction object of reaction we want to change
                         required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
                         NEW_STATE = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
-                        for reaction in reaction_containter:  # iterate over all reactions we want to change
-                            print "reaction: ", reaction
-                            print dir(reaction)
-                            print reaction.product_complexes
-                            print reaction.substrat_complexes
-                            reaction_run_reaction = reaction.run_reaction()
-                            #print reaction_run_reaction
-                            #reaction = reaction.clone()  # clone the reaction (get two??)
 
-                            print dir(reaction_run_reaction)
-                            print reaction.right_reactant # 5.2 ??
-                            # create contingencies for applying on the reaction we want to change
-                            # have to initialize a contingency 5.2
-                            cont_x = Contingency(target_reaction=product_contingency.target_reaction,ctype="x",state=NEW_STATE)
-                            cont_exclamation = Contingency(target_reaction=product_contingency.target_reaction,ctype="!",state=NEW_STATE)
-                            print cont_x
-                            print cont_exclamation
-                            print dir(reaction.right_reactant)
-                            #ContingencyApplicator().apply_on_complex(reaction.right_reactant,cont_x)
-
-                        
+                        self.solve_conflicts(reaction_containter, required_cont_reaction_container, NEW_STATE, product_contingency.target_reaction)
+                        self.solved_conflicts.append((required_cont.state,product_contingency.state))
+        if self.conflict_found:
+            self.conflict_found = False
+            self.find_conflicts()
 
     def __repr__(self):
         """
@@ -327,7 +365,7 @@ class Rxncon:
         Groups the information that belong together.
         Adds implicit information.
 
-        add_translation: when Trues add reanslation reaction for each protein # not available yet.
+        add_translation: when Trues add translation reaction for each protein # not available yet.
         add_missing_reactions: when True looks for required states that are not produced and adds proper reactions.
         add_complexes: when True applys boolean contingencies.
         add_contingencies: when True applys non-boolean contingencies.
@@ -340,23 +378,24 @@ class Rxncon:
             self.add_translation()
 
         for react_container in self.reaction_pool:
+
             # initially container has one reaction 
             # (changes after running the process because of OR and K+/K-)
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name) 
-                print complexes
+
             ComplexApplicator(react_container, complexes).apply_complexes() 
 
             # after applying complexes we may have more reactions in a single container.
             if add_contingencies:
                 self.apply_contingencies(react_container)
 
-            # single contingency is applied for all reactions. If K+/K- reactions are dubbled.
+            # single contingency is applied for all reactions. If K+/K- reactions are doubled.
             self.update_reactions()
             for reaction in react_container:
                 reaction.run_reaction()
-
+        self.find_conflicts()
 
 
 if __name__ == '__main__':

@@ -159,7 +159,7 @@ class ContingencyApplicator():
                     reaction.join_substrate_complexes(cont.state)
 
                 # here one of mols from contingency is present in both complexes
-                # but it was added becouse of previously applayed coningency so we dont want to join.
+                # but it was added because of previously applayed contingency so we dont want to join.
                 else:
                     if component1.name == reaction.left_reactant.name \
                         or component2.name == reaction.left_reactant.name:
@@ -198,8 +198,9 @@ class ContingencyApplicator():
 
     def apply_on_complex(self, compl, cont):
         """
-        Possitive association won't get here.
+        Positive association won't get here.
         """
+
         if cont.state.type == 'Association': # only negative associations get here.
             side = compl.side
             for component in cont.state.components:
@@ -216,7 +217,7 @@ class ContingencyApplicator():
         """
         Gets reaction and x or ! contingency.
         For ! contingencies with input state creates additional substrate complex.
-        For other states applays contingency on substrate complexes.
+        For other states apply contingency on substrate complexes.
         """
         for compl in reaction.substrat_complexes:
                 self.apply_on_complex(compl, cont)
@@ -228,7 +229,7 @@ class ContingencyApplicator():
         (adding a local function).
 
         Rate depend on:
-        - ontingency type: difrent functions for !, x and K
+        - contingency type: different functions for !, x and K
         - whether reaction is reversible or irreversible
           (for reversible reaction kr always looks like for K even when its ! or x)
 
@@ -250,7 +251,7 @@ class ContingencyApplicator():
         if cont.ctype in ['x', '!']:
             for reaction in container:
                 if reaction.definition['Reversibility'] == 'reversible':
-                    # we will have two rates here (because of reverse rreaction).
+                    # we will have two rates here (because of reverse reaction).
                     reaction.rate.update_function(cont, False, num1, num2)
                 else:
                     # just multiply old rate by input rate.
