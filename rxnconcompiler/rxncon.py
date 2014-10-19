@@ -1,5 +1,22 @@
 #!/usr/bin/env python
 
+# MR: code review 2014/10/19
+# goal: comment on rxncon.py
+# Tests: 115; F:1; E:6
+#
+# General comments:
+# - you got inside the existing code really quickly - great!
+# - I like your function names.
+# - Thanks for fixing typos!
+# - Rxncon starts to be long - you can think whether you see any logical
+#   divisions e.g. parsing xls into objects and advanced operations,
+#   or all 'updates'.
+#   Perhaps it would be good to keep here only top level operations -
+#   go through this class and if something is to detailed
+#   (both your and my code) - find a better place for that).
+#   (see also comment in find_conflicts).
+
+
 #KR: code review 2013/12/29
 # goals:
 # 1. general comments on architecture (OOP and other)
@@ -11,7 +28,7 @@
 # TODO: define role of domains in the process 
 
 """
-Module rulebased.py translates rxncon input to BNGL
+Module rxncon.py creates rxncon objects.
 
 Process steps:
 1.   Data parsing.
@@ -56,21 +73,10 @@ Process steps:
 
 
 Classes:
-- Compiler:      Input: txt/xls/dict. Output: bngl string.
-                 Uses parser, rxncon reactions propagation, 
-                 translation of reactions into rules.
-
-- RxnconWarnings: collects all problems in rxncon reactions propagation.
-
 - Rxncon:        Input: rxncon dict. Output: rxncon objects. 
                  out of initial reactions and contingencies produces reactions 
                  similar to bngl rules.
 
-- Bngl:          Input: rxncon objects. Output: bngl string. # redundant
-
-- BioNetGen:     Input: rxncon dict. Output: bngl string.
-
-- main:          defines CLI - Commend Line Interface.
 """
 
 from util.warnings import RxnconWarnings 
@@ -136,6 +142,8 @@ class Rxncon:
         self.update_contingencies()
         
     def solve_conflicts(self, reaction_containter, required_cont_reaction_container, NEW_STATE, product_contingencyTarget_reaction):
+        # MR: add documentation.
+        # MR: it is long, you can try to divide it into smaller functions.
         for reaction in reaction_containter:  # iterate over all reactions we want to change
             reaction_clone = reaction.clone()  # clone the reaction (get the second reaction) step 5.1
         #     # create contingencies for applying on the reaction we want to change
@@ -190,14 +198,26 @@ class Rxncon:
     def find_conflicts(self):
         """
         check if there are conflicts between generated states and required contingencies
+        MR: Would be nice to have some example in documentation.
         """
-
+        # MR:
+        # Be careful with function responsibility:
+        # for me it is misleading that function called find_conflicts 
+        # also solve them.
+        # Be careful with function responsibility:
+        # I would call both functions in the run_process - find and solve and have some self.conflicts
+        # (I see WCM influence here ;-D)
+        # Perhaps it will be easier to start some ConflictSolver,
+        # as you manipulate data at the end of run_process anyway?
         from rxnconcompiler.molecule.state import get_state
         print "self.reaction_pool: ", self.reaction_pool
         print "self.contingency_pool.get_required_contingencies(): ", self.contingency_pool.get_required_contingencies()
         for product_contingency in self.reaction_pool.get_product_contingencies():  # step 1 get product contingencies if the reaction we have to change
             #if str(product_contingency)[0] == "x": # check for absolute inhibitory reactions
                 for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
+                    # MR: this line is a long one :-)
+                    #     perhaps it would be a good idea to have a function is_conflict() 
+                    #     which would do this job.
                     if (str(required_cont.state)) == str(product_contingency.state) and str(required_cont.ctype) != str(product_contingency.ctype) and (required_cont.state,product_contingency.state) not in self.solved_conflicts:  # step 3 check for conflicts
                         print "Conflict: ", required_cont, product_contingency
                         self.conflict_found = True
@@ -206,6 +226,8 @@ class Rxncon:
                         ## get reaction to which contingency belongs
                         reaction_containter = self.reaction_pool[product_contingency.target_reaction]  # get reaction object of reaction we want to change
                         required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
+                        # MR: big letters are usually used for global variables,
+                        #     perhaps something more descriptive like conflict_state
                         NEW_STATE = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
 
                         self.solve_conflicts(reaction_containter, required_cont_reaction_container, NEW_STATE, product_contingency.target_reaction)

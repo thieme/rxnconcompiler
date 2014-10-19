@@ -6,6 +6,18 @@ from rxnconcompiler.bngl.bngl import Bngl
 from rxnconcompiler.rxncon import Rxncon
 
 
+# MR 19.10.2014
+# Name of this test sounds to me like 
+# acceptance test - testing the end product - bngl.
+# If you look for some inspiration for asserts you can go other
+# acceptance tests.
+# Perhaps it would also help to have unit tests - 
+# just testting whether new functions work.
+#
+# You can also use oposite case 
+# A_ppi_B; x A-{P}
+# X_P+_A
+
 class x_exclamation_mark_Tests(TestCase):
     """
     Unit tests for Rxncon class.
