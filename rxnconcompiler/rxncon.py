@@ -145,6 +145,7 @@ class Rxncon:
         # MR: add documentation.
         # MR: it is long, you can try to divide it into smaller functions.
         for reaction in reaction_containter:  # iterate over all reactions we want to change
+
             reaction_clone = reaction.clone()  # clone the reaction (get the second reaction) step 5.1
         #     # create contingencies for applying on the reaction we want to change
         #     # have to initialize a contingency 5.2
@@ -179,6 +180,7 @@ class Rxncon:
                         ContingencyApplicator().apply_on_complex(component, cont_exclamation)
 
             #5.3.2 change cloned reaction product side
+            to_add = []
             for component in reaction_clone.product_complexes:  # iterating over the components of product complex
                 if reaction_clone.right_reactant in component.molecules:  # if the component molecule list contains the right handed reactant
                     mol_index = component.molecules.index(reaction_clone.right_reactant)  # get the index of the molecule in the molecule List
@@ -189,8 +191,10 @@ class Rxncon:
                             if mol.name != add_comp.molecules[0].name:
                                 # append the molecule directly to the product complex list to generate a separated molecule 
                                 # we get X + A(Z~U,AssocB) + B(AssocA) on the product side
-                                reaction_clone.product_complexes.append(add_comp) #
+                                #reaction_clone.product_complexes.append(add_comp) #
+                                to_add.append(add_comp)
                     ContingencyApplicator().apply_on_complex(component,cont_x)
+            reaction_clone.product_complexes.extend(to_add)
         reaction_containter.add_reaction(reaction_clone)
         self.reaction_pool[reaction_containter.name] = reaction_containter
         
@@ -210,28 +214,37 @@ class Rxncon:
         # Perhaps it will be easier to start some ConflictSolver,
         # as you manipulate data at the end of run_process anyway?
         from rxnconcompiler.molecule.state import get_state
+        import re
         print "self.reaction_pool: ", self.reaction_pool
-        print "self.contingency_pool.get_required_contingencies(): ", self.contingency_pool.get_required_contingencies()
+        #print "self.contingency_pool.get_required_contingencies(): ", self.contingency_pool.get_required_contingencies()
         for product_contingency in self.reaction_pool.get_product_contingencies():  # step 1 get product contingencies if the reaction we have to change
             #if str(product_contingency)[0] == "x": # check for absolute inhibitory reactions
                 for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
                     # MR: this line is a long one :-)
                     #     perhaps it would be a good idea to have a function is_conflict() 
                     #     which would do this job.
-                    if (str(required_cont.state)) == str(product_contingency.state) and str(required_cont.ctype) != str(product_contingency.ctype) and (required_cont.state,product_contingency.state) not in self.solved_conflicts:  # step 3 check for conflicts
-                        print "Conflict: ", required_cont, product_contingency
+                    if (str(required_cont.state)) == str(product_contingency.state) and (str(required_cont.ctype) != str(product_contingency.ctype) and str(required_cont.ctype) not in ["and", "or"]) and (required_cont.state,product_contingency.state) not in self.solved_conflicts:  # step 3 check for conflicts
+                        
                         self.conflict_found = True
                         #step 4 
                         ## get reaction from reaction_pool
                         ## get reaction to which contingency belongs
-                        reaction_containter = self.reaction_pool[product_contingency.target_reaction]  # get reaction object of reaction we want to change
-                        required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
-                        # MR: big letters are usually used for global variables,
-                        #     perhaps something more descriptive like conflict_state
-                        NEW_STATE = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
+                        # explanation  ^(?!_)\[([^]]+)\] search for any string containing [ ] but not for those with an _ in front
+                        # this leads to a search for only [ ] string so domains and sub-domains are excluded
+                        if re.search('^(?!_)\[(.*?)\]',required_cont.target_reaction) or re.search('<(.*?)>', required_cont.target_reaction):
+                            print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                            print "required_cont.target_reaction: ", required_cont.target_reaction
+                            print "Conflict: ", "required_cont: ", required_cont, " ",  "product_contingency: ", product_contingency
+                            #self.solved_conflicts.append((required_cont.state,product_contingency.state))
+                        else:
+                            reaction_containter = self.reaction_pool[product_contingency.target_reaction]  # get reaction object of reaction we want to change
+                            required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
+                            # MR: big letters are usually used for global variables,
+                            #     perhaps something more descriptive like conflict_state
+                            NEW_STATE = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
 
-                        self.solve_conflicts(reaction_containter, required_cont_reaction_container, NEW_STATE, product_contingency.target_reaction)
-                        self.solved_conflicts.append((required_cont.state,product_contingency.state))
+                            self.solve_conflicts(reaction_containter, required_cont_reaction_container, NEW_STATE, product_contingency.target_reaction)
+                            self.solved_conflicts.append((required_cont.state,product_contingency.state))
         #if self.conflict_found:
          #   self.conflict_found = False
          #   self.find_conflicts()
