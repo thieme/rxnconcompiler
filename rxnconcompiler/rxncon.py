@@ -212,19 +212,22 @@ class Rxncon:
         # I would call both functions in the run_process - find and solve and have some self.conflicts
         # (I see WCM influence here ;-D)
         # Perhaps it will be easier to start some ConflictSolver,
-        # as you manipulate data at the end of run_process anyway?
+        # as you manipulate data at the end of run_process anyway? 
+
         from rxnconcompiler.molecule.state import get_state
         import re
         print "self.reaction_pool: ", self.reaction_pool
         #print "self.contingency_pool.get_required_contingencies(): ", self.contingency_pool.get_required_contingencies()
         for product_contingency in self.reaction_pool.get_product_contingencies():  # step 1 get product contingencies if the reaction we have to change
             #if str(product_contingency)[0] == "x": # check for absolute inhibitory reactions
+            # the change should only be applied if the dependence reaction is reversible like ppi, ipi ...
+            if self.reaction_pool[product_contingency.target_reaction][0].definition['Reversibility'] == 'reversible':
                 for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
                     # MR: this line is a long one :-)
                     #     perhaps it would be a good idea to have a function is_conflict() 
                     #     which would do this job.
-                    if (str(required_cont.state)) == str(product_contingency.state) and (str(required_cont.ctype) != str(product_contingency.ctype) and str(required_cont.ctype) not in ["and", "or"]) and (required_cont.state,product_contingency.state) not in self.solved_conflicts:  # step 3 check for conflicts
-                        
+                    if (str(required_cont.state)) == str(product_contingency.state) and (str(required_cont.ctype) != str(product_contingency.ctype) and str(required_cont.ctype) not in ["and", "or", "0"]) and (required_cont.state,product_contingency.state) not in self.solved_conflicts:  # step 3 check for conflicts
+                        print str(required_cont.ctype)
                         self.conflict_found = True
                         #step 4 
                         ## get reaction from reaction_pool
@@ -232,11 +235,15 @@ class Rxncon:
                         # explanation  ^(?!_)\[([^]]+)\] search for any string containing [ ] but not for those with an _ in front
                         # this leads to a search for only [ ] string so domains and sub-domains are excluded
                         if re.search('^(?!_)\[(.*?)\]',required_cont.target_reaction) or re.search('<(.*?)>', required_cont.target_reaction):
+                            #print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                            ##print "required_cont.target_reaction: ", required_cont.target_reaction
+                            #print "Conflict: ", "required_cont: ", required_cont, " ",  "product_contingency: ", product_contingency
+                            pass
+                            #self.solved_conflicts.append((required_cont.state,product_contingency.state))
+                        else:
                             print "product_contingency.target_reaction: ", product_contingency.target_reaction
                             print "required_cont.target_reaction: ", required_cont.target_reaction
                             print "Conflict: ", "required_cont: ", required_cont, " ",  "product_contingency: ", product_contingency
-                            #self.solved_conflicts.append((required_cont.state,product_contingency.state))
-                        else:
                             reaction_containter = self.reaction_pool[product_contingency.target_reaction]  # get reaction object of reaction we want to change
                             required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
                             # MR: big letters are usually used for global variables,
