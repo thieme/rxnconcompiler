@@ -18,7 +18,12 @@ from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 # You can also use oposite case 
 # A_ppi_B; x A-{P}
 # X_P+_A
-
+from unittest import main, TestCase
+from rxnconcompiler.rxncon import Rxncon
+from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
+from rxnconcompiler.contingency.contingency import Contingency
+from rxnconcompiler.molecule.state import get_state
+from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicator
 class x_exclamation_mark_Tests(TestCase):
     """
     Unit tests for Rxncon class.
@@ -31,9 +36,9 @@ class x_exclamation_mark_Tests(TestCase):
         # basic reaction with one contingency.
         input_data = "/home/thiemese/projects/rxncon/rxncon-unix/web2py/applications/yeastmap/modules/rxncon/test/test_data/Tiger_et_al_TableS1_2.xls"
         self.xls_tables = parse_rxncon(input_data)
-        self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
-        #rxncon = Rxncon('Z_p+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
-        rxncon = Rxncon(input_data)
+        self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
+        rxncon = Rxncon('Z_p+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
+        #rxncon = Rxncon(input_data)
         rxncon.run_process()
         self.bngl_src = Bngl(rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
         #print bngl_src.get_src()
@@ -45,7 +50,26 @@ class x_exclamation_mark_Tests(TestCase):
         Tests that molecules_pool is created and
         containe right number of molecules.
         """
-        print "self.basic_cont: ", self.basic_cont
+        #print "self.basic_cont: ", self.basic_cont
+        #print "bngl_src: ", self.bngl_src.get_src()
+
+        rxn = Rxncon('C_p+_B_[C] \n A_ppi_B; ! B_[C]-{P}')
+        rcont = rxn.reaction_pool['A_ppi_B']
+        cont = Contingency('A_ppi_B', 'K+', get_state('C--B'))
+        #print "rxn.contingency_pool: ", rxn.contingency_pool.get_required_contingencies()
+        ComplexApplicator(rcont, []).apply_complexes()
+        cap = ContingencyApplicator()
+        cap.apply_on_container(rcont, cont)
+        rxn.apply_contingencies(rcont)
+
+        #rxn.run_process()
+        for reaction in rcont:
+            reaction.run_reaction()
+        #ComplexApplicator(self.rcont, []).apply_complexes() 
+        
+        
+
+        self.bngl_src = Bngl(rxn.reaction_pool, rxn.molecule_pool, rxn.contingency_pool)
         print "bngl_src: ", self.bngl_src.get_src()
 
 
