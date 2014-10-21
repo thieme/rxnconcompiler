@@ -136,11 +136,52 @@ class Rxncon:
         self.reaction_pool = reaction_factory.reaction_pool
         contingency_factory = ContingencyFactory(self.xls_tables)
         self.contingency_pool = contingency_factory.parse_contingencies()
-        
+        print "self.contingency_pool::: ", self.contingency_pool
+        self.find_conflicts_on_mol()
         self.complex_pool = ComplexPool()
         self.create_complexes()
         self.update_contingencies()
         
+    def find_conflicts_on_mol(self):
+        import re
+        from rxnconcompiler.molecule.state import get_state
+
+        for product_contingency in self.reaction_pool.get_product_contingencies():  # step 1 get product contingencies if the reaction we have to change
+            #if str(product_contingency)[0] == "x": # check for absolute inhibitory reactions
+            # the change should only be applied if the dependence reaction is reversible like ppi, ipi ...
+
+            for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
+                if self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
+                    # MR: this line is a long one :-)
+                    #     perhaps it would be a good idea to have a function is_conflict() 
+                    #     which would do this job.
+                    if str(required_cont.state) == str(product_contingency.state) and str(required_cont.ctype) != str(product_contingency.ctype) and str(required_cont.ctype) not in ["and", "or", "0"]:# and (required_cont.state,product_contingency.state) not in self.solved_conflicts:  # step 3 check for conflicts
+                        reaction_containter = self.reaction_pool[product_contingency.target_reaction]  # get reaction object of reaction we want to change
+                        required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
+                            # MR: big letters are usually used for global variables,
+                            #     perhaps something more descriptive like conflict_state
+                        NEW_STATE = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
+                        print "NEW_STATE: ", NEW_STATE
+                        print "str(required_cont.ctype): ", str(required_cont.ctype)
+                        print "str(product_contingency.ctype): ", str(product_contingency.ctype)
+                        print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                        ComplexApplicator(reaction_containter, []).apply_complexes()
+
+                        #cont_x = Contingency('X_p+_A_[Z]', 'x', get_state('A_[AssocB]--B_[AssocA]'))
+                        #cont_exclamation = Contingency('X_p+_A_[Z]', '!', get_state('A_[AssocB]--B_[AssocA]'))
+                        cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=NEW_STATE)
+                        cap = ContingencyApplicator()
+
+                        #cap.apply_on_container(reaction_containter,cont_k)
+                        #cap.apply_on_container(reaction_containter,cont_exclamation)
+
+                        for reaction in reaction_containter:
+                        #    cap = ContingencyApplicator()
+                        #    #cap.apply_on_container(
+                            #ComplexApplicator(reaction, []).apply_complexes()
+                            cap.apply_on_reaction(reaction, cont_k)
+                         #   print "heirs"
+
     def solve_conflicts(self, reaction_containter, required_cont_reaction_container, NEW_STATE, product_contingencyTarget_reaction):
         # MR: add documentation.
         # MR: it is long, you can try to divide it into smaller functions.
@@ -438,7 +479,7 @@ class Rxncon:
             self.update_reactions()
             for reaction in react_container:
                 reaction.run_reaction()
-        self.find_conflicts()
+        #self.find_conflicts()
 
 
 if __name__ == '__main__':
