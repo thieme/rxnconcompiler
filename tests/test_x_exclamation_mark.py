@@ -24,6 +24,8 @@ from rxnconcompiler.contingency.contingency_applicator import ContingencyApplica
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicator
+from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
+from rxnconcompiler.molecule.molecule import Molecule
 class x_exclamation_mark_Tests(TestCase):
     """
     Unit tests for Rxncon class.
@@ -49,28 +51,202 @@ class x_exclamation_mark_Tests(TestCase):
         """
         Tests that molecules_pool is created and
         containe right number of molecules.
-        """
-        #print "self.basic_cont: ", self.basic_cont
-        #print "bngl_src: ", self.bngl_src.get_src()
-
         rxn = Rxncon('C_p+_B_[C] \n A_ppi_B; ! B_[C]-{P}')
         rcont = rxn.reaction_pool['A_ppi_B']
-        cont = Contingency('A_ppi_B', 'K+', get_state('C--B'))
-        #print "rxn.contingency_pool: ", rxn.contingency_pool.get_required_contingencies()
+
+        cont = Contingency('A_ppi_B', 'K+', get_state('A_[T666]-{P}'))
+        # #print "rxn.contingency_pool: ", rxn.contingency_pool.get_required_contingencies()
         ComplexApplicator(rcont, []).apply_complexes()
         cap = ContingencyApplicator()
         cap.apply_on_container(rcont, cont)
-        rxn.apply_contingencies(rcont)
 
-        #rxn.run_process()
+        rxn.apply_contingencies(rcont)
         for reaction in rcont:
             reaction.run_reaction()
-        #ComplexApplicator(self.rcont, []).apply_complexes() 
+
+
+
+             rxn = Rxncon('C_p+_B_[C] \n A_ppi_B; ! B_[C]-{P}')
+        rcont = rxn.reaction_pool['A_ppi_B']
+
+        cont = Contingency('A_ppi_B', 'K+', get_state('A_[T666]-{P}'))
+        # #print "rxn.contingency_pool: ", rxn.contingency_pool.get_required_contingencies()
+        
+        
+        
+        for rcont in rxn.reaction_pool:
+            ComplexApplicator(rcont, []).apply_complexes()
+            print dir(rcont)
+            if rxn.reaction_pool['A_ppi_B'] == rcont:
+                cap = ContingencyApplicator()
+                cap.apply_on_container(rcont, cont)
+
+                rxn.apply_contingencies(rcont)
+                for reaction in rcont:
+                    reaction.run_reaction()
+            else:
+                for reaction in rcont:
+                    reaction.run_reaction()
+        """
+        #print "self.basic_cont: ", self.basic_cont
+        print "bngl_src: ", self.bngl_src.get_src()
+
+        # rxn = Rxncon('C_p+_B_[C] \n A_ppi_B; x B_[C]-{P}')
+        # #rxn.run_process()
+        # #rcont = rxn.reaction_pool['C_p+_B_[C]']
+
+        # test_cont = rxn.reaction_pool['A_ppi_B'] 
+
+        # #for reaction in test_cont:
+
+        #     #reaction.run_reaction()
+        #     #print "reaction.substrat_complexes: ", reaction.substrat_complexes
+        # cont = Contingency('C_p+_B_[C]', 'K+', get_state('A--B'))
+        # cont_exc = Contingency('C_p+_B_[C]', '!', get_state('A--B'))
+        # cont_exc2 = Contingency('C_p+_B_[C]', '!', get_state('B_[C]-{P}'))
+        # cont_x = Contingency('C_p+_B_[C]', 'x', get_state('A--B'))
+        # # # #print "rxn.contingency_pool: ", rxn.contingency_pool.get_required_contingencies()
+        
+        # #print dir(get_state('A--B'))
+        # #print dir(get_state('A--B').components[0])
+        # #print get_state('A--B').components[0].name
+        
+        # for rcont in rxn.reaction_pool:
+        #     ComplexApplicator(rcont, []).apply_complexes()
+        #     #print dir(rcont)
+        #     #
+
+        #     if rxn.reaction_pool['C_p+_B_[C]'] == rcont:
+        #         cap = ContingencyApplicator()
+        #         ContingencyApplicator().apply_on_container(rcont, cont)
+
+        #         rxn.apply_contingencies(rcont)
+        #         for i, reaction in enumerate(rcont):
+        #     #        cap2 = ContingencyApplicator()
+        #     #         reaction_clone = reaction.clone()
+
+        #     #         print dir(reaction)
+
+                    
+        #                     #print reaction.product_complexes
+
+        #                 #if comp == get_state('A--B'):
+                               
+        #             # m = Molecule("A")
+        #             # new = BiologicalComplex()
+        #             # new.molecules.append(m)
+        #             # reaction.product_complexes.append(new)
+        #             #cap.apply_on_reaction_product(reaction,cont_x)
+        #             #cap.apply_on_reaction(reaction,cont_x)
+        #             #rxn.apply_contingencies(rcont)
+        #             reaction.run_reaction()
+        #             component_names = [component.name for component in get_state('A--B').components]
+        #             print component_names
+        #             new_complex = []
+        #             for comp in reaction.substrat_complexes:
+        #                 if len(comp.molecules) == len(get_state('A--B').components):
+        #                     print "reaction.product_complexes: ", reaction.product_complexes
+        #                     print "comp: ", comp 
+        #                     print "comp.molecules: ", comp.molecules
+        #                     print "HIER"
+                            
+        #                     mol_index = comp.molecules.index(reaction.right_reactant)  # get the index of the molecule in the molecule List
+        #                     mol = comp.molecules[mol_index].remove_bond(get_state('A--B'))
+        #                     new = BiologicalComplex()
+        #                     new.side = 'L'
+        #                     mol.remove_bond(get_state('A--B'))
+        #                     new.molecules.append(mol)
+        #                             #new_complex.append(new)
+        #                     new_complex.append(new)
+        #                     new = BiologicalComplex()
+        #                     new.side = 'R'
+        #                     for molecule in comp.molecules:
+        #                         if mol.name != molecule.name and molecule.name in component_names:
+        #                             if molecule.has_bond(get_state('A--B')):
+        #                                 molecule.remove_bond(get_state('A--B'))
+        #                             new.molecules.append(molecule)
+        #                             #new_complex.append(new)
+
+        #                     new_complex.append(new)
+        #                 else:
+        #                     new_complex.append(comp)
+        #             if new_complex:
+        #                 reaction.product_complexes = new_complex
+        #                 ContingencyApplicator().apply_on_reaction_product(reaction,cont_exc)
+        #                 rxn.apply_contingencies(rcont)
+        #                 reaction.run_reaction
+
+                    
+
+                    
+
+
+
+
+                    # for comp in reaction.product_complexes:
+                        
+                    #     if reaction.right_reactant in comp.molecules:
+                    #         print comp.molecules
+                    #         print comp.molecules[0]
+                    #         #print comp.molecules[1]
+                    #         mol_index = comp.molecules.index(reaction.right_reactant)  # get the index of the molecule in the molecule List
+                    #         mol = comp.molecules[mol_index]
+                    #         new_complex = []
+                    #         for molecule in comp.molecules:
+                    #             if molecule.name != mol.name:
+                    #                 pass
+                    #         cap = ContingencyApplicator()
+                    #         cap.apply_on_complex(comp, cont_x)
+
+                                    #new_complex.append(molecule)
+                            #reaction.product_complexes.append(new_complex)
+                            # print "dir(mol): ", dir(mol)
+                            # print "mol.name: ", mol.name
+                            # print "mol.binding_partners: ", mol.binding_partners
+                            #cap.apply_on_molecule(mol,cont_x)
+                            #mol.binding_partners = []
+                            #mol.remove_bond(get_state('A--B'))
+
+                    #reaction_clone = reaction.clone()
+
+                    # for comp in reaction.substrat_complexes:
+                    #     print comp
+                    #     cap.apply_on_complex(comp,cont_exc)
+                    
+                    #     cap.apply_on_complex(comp, cont_exc)
+                    
+                    #rcont[i] = reaction
+                    #rcont.add_reaction(reaction_clone)
+
+                    #rxn.apply_contingencies(rcont)
+                    #reaction.run_reaction()
+                    # cont_x = Contingency('C_p+_B_[C]', 'x', get_state('A--B'))
+                    # cont_exc = Contingency('C_p+_B_[C]', '!', get_state('A--B'))
+                    # cap.apply_on_reaction_product(reaction, cont_exc)
+                    # cap.apply_on_reaction(reaction, cont_exc)
+
+                    #reaction.run_reaction()
+                    #reaction_clone.run_reaction()
+        #     else:
+        #         rxn.apply_contingencies(rcont)
+        #         for reaction in rcont:
+        #             reaction.run_reaction()
+        #     # initially container has one reaction 
+        #     # (changes after running the process because of OR and K+/K-)
+            
+        #     # for reaction in rcont:
+        #     #     reaction.run_reaction()
+        
+        # # for reaction in rcont:
+        # #     reaction.run_reaction()
+        # #rxn.run_process()
+        # #
+        # #ComplexApplicator(self.rcont, []).apply_complexes() 
         
         
 
-        self.bngl_src = Bngl(rxn.reaction_pool, rxn.molecule_pool, rxn.contingency_pool)
-        print "bngl_src: ", self.bngl_src.get_src()
+        # self.bngl_src = Bngl(rxn.reaction_pool, rxn.molecule_pool, rxn.contingency_pool)
+        # print "bngl_src: ", self.bngl_src.get_src()
 
 
 

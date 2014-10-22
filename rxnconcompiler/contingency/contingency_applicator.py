@@ -222,6 +222,16 @@ class ContingencyApplicator():
         for compl in reaction.substrat_complexes:
                 self.apply_on_complex(compl, cont)
 
+    def apply_on_reaction_product(self, reaction, cont):
+        """
+        Gets reaction and x or ! contingency.
+        For ! contingencies with input state creates additional substrate complex.
+        For other states apply contingency on product complexes.
+        """
+        for compl in reaction.product_complexes:
+                self.apply_on_complex(compl, cont)
+
+
     def apply_input_on_container(self, container, cont):
         """
         Applys all input contingencies.
