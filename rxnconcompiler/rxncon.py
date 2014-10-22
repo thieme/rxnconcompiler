@@ -290,9 +290,11 @@ class Rxncon:
 
     def is_conflict(self,product_contingency, required_cont):
         if str(required_cont.state) == str(product_contingency.state):
+
             if str(required_cont.ctype) != str(product_contingency.ctype):
                 if str(required_cont.ctype) not in ["and", "or", "0"]:
-                    self.conflict_found = True
+                    self.conflict_found = True 
+                    return
         self.conflict_found = False
 
     def find_conflicts_on_mol(self, react_container):
@@ -313,8 +315,9 @@ class Rxncon:
         for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
         # the change should only be applied if the dependence reaction is reversible like ppi, ipi ...
             if self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
+                self.is_conflict(product_contingency, required_cont)
+                print self.conflict_found
                 if self.conflict_found:
-                        
                         # explanation  ^(?!_)\[([^]]+)\] search for any string containing [ ] but not for those with an _ in front
                         # this leads to a search for only [ ] string so domains and sub-domains are excluded
                     if re.search('^(?!_)\[(.*?)\]',required_cont.target_reaction) or re.search('<(.*?)>', required_cont.target_reaction):
@@ -435,7 +438,7 @@ class Rxncon:
             self.update_reactions()
 
             react_container, conflict_state = self.find_conflicts_on_mol(react_container)
-
+            print "conflict_state: ", conflict_state
             for reaction in react_container:
                 reaction.run_reaction()
 

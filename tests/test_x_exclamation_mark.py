@@ -139,7 +139,7 @@ class x_exclamation_mark_Tests(TestCase):
         #             #cap.apply_on_reaction_product(reaction,cont_x)
         #             #cap.apply_on_reaction(reaction,cont_x)
         #             #rxn.apply_contingencies(rcont)
-        #             reaction.run_reaction()
+        #             reaction.run_reaction()   
         #             component_names = [component.name for component in get_state('A--B').components]
         #             print component_names
         #             new_complex = []
