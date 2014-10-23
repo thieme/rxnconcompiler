@@ -289,15 +289,16 @@ class Rxncon:
         pass
 
     def is_conflict(self,product_contingency, required_cont):
-        self.conflict_found = False
+        #self.conflict_found = False
         if re.search('^(?!_)\[(.*?)\]',required_cont.target_reaction) or re.search('<(.*?)>', required_cont.target_reaction):
-            return
+            return False
         elif str(required_cont.state) == str(product_contingency.state):
-
             if str(required_cont.ctype) != str(product_contingency.ctype):
                 if str(required_cont.ctype) not in ["and", "or", "0"]:
-                    self.conflict_found = True 
-                    return
+                    if self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
+                        #self.conflict_found = True
+                        return True # self.conflict_found
+        return False # self.conflict_found
         
 
     def find_conflicts_on_mol(self, react_container):
@@ -314,13 +315,18 @@ class Rxncon:
 
         product_contingency = react_container.product_contingency
         conflict_state = ""
+        self.conflict_found = False
+        #print "product_contingency: ", product_contingency
         for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
         # the change should only be applied if the dependence reaction is reversible like ppi, ipi ...
             #print required_cont.target_reaction
             #print self.reaction_pool.keys()
+            #print "required_cont: ", required_cont
             self.is_conflict(product_contingency, required_cont)
-            if self.conflict_found and self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
-                
+            #print self.conflict_found
+            if self.is_conflict(product_contingency, required_cont):#self.conflict_found: #and self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
+                    self.conflict_found = True
+
                 #print self.conflict_found
                 #if self.conflict_found:
                         # explanation  ^(?!_)\[([^]]+)\] search for any string containing [ ] but not for those with an _ in front
@@ -333,9 +339,8 @@ class Rxncon:
                         ## get reaction to which contingency belongs
 
                         required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
-                        #print "##############"
-                        #print "required_cont_reaction_container.sp_state: ", required_cont_reaction_container.sp_state
-                        #print "required_cont.target_reaction: ", required_cont.target_reaction
+                        
+
                         #print "required_cont_reaction_container.sp_state: ", required_cont_reaction_container.sp_state
                         conflict_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
 
@@ -349,9 +354,6 @@ class Rxncon:
 
                         self.apply_contingencies(react_container)
                         #changed_react_container = True #.append(react_container)
-            else:
-                self.conflict_found = False
-                   
 
         return react_container, conflict_state
 
@@ -389,6 +391,12 @@ class Rxncon:
             new_complex = []
             for i, comp in enumerate(reaction.product_complexes):
                 if reaction.right_reactant in comp.molecules and len(comp.molecules) == len(conflict_state_component_names):
+                    print "##############"
+                    #print "required_cont_reaction_container.sp_state: ", required_cont_reaction_container.sp_state
+                    print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                    print "conflict_state: ", conflict_state
+                    #print "required_cont.target_reaction: ", required_cont.target_reaction
+                    #print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
                     mol_index = comp.molecules.index(reaction.right_reactant)  # get the index of the molecule in the molecule List
                     mol = comp.molecules[mol_index]
 
@@ -398,18 +406,20 @@ class Rxncon:
                     new.molecules.append(mol)
 
                     new_complex.append(new)
-                    new = BiologicalComplex()
-                    new.side = 'LR'
-                    for molecule in comp.molecules:
-                        if mol.name != molecule.name and molecule.name in conflict_state_component_names:
-                            if molecule.has_bond(conflict_state):
-                                molecule.remove_bond(conflict_state)
-                            new.molecules.append(molecule)
+                    if len(comp.molecules) > 1:
+                        new = BiologicalComplex()
+                        new.side = 'LR'
+                        for molecule in comp.molecules:
+                            if mol.name != molecule.name and molecule.name in conflict_state_component_names:
+                                if molecule.has_bond(conflict_state):
+                                    molecule.remove_bond(conflict_state)
+                                new.molecules.append(molecule)
 
-                    new_complex.append(new)
+                        new_complex.append(new)
                 else:
                     new_complex.append(comp)
             if new_complex:
+                print "new_complex: ", new_complex
                 reaction.product_complexes = new_complex
 
     def run_process(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True):
