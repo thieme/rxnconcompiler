@@ -340,12 +340,18 @@ class Rxncon:
 
                         required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
                         
-
+                        
                         #print "required_cont_reaction_container.sp_state: ", required_cont_reaction_container.sp_state
                         conflict_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
-
+                        print "##############"
+                        #print "required_cont_reaction_container.sp_state: ", required_cont_reaction_container.sp_state
+                        print "product_complexes: ", product_contingency.target_reaction
+                        print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                        print "conflict_state: ", conflict_state
+                        #print "required_cont.target_reaction: ", required_cont.target_reaction
+                        print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
                         cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflict_state)
-                        
+                        print "cont_k: ", cont_k
                         cap = ContingencyApplicator()
                         # apply a k+ contingency to our product contingency target reaction
                         # step 5.1, 5.2, 5.3
@@ -356,6 +362,13 @@ class Rxncon:
                         #changed_react_container = True #.append(react_container)
 
         return react_container, conflict_state
+
+    def get_molecules_on_state(self, comp, conflict_state):
+        result = []
+        for mol in comp.molecules:
+            if mol.has_state(conflict_state):
+                result.append(mol)
+        return result
 
     def solve_conlict(self, react_container, conflict_state):
         """
@@ -386,36 +399,100 @@ class Rxncon:
         cap = ContingencyApplicator()
 
         conflict_state_component_names = [component.name for component in conflict_state.components]
-
+        
+        
         for reaction in react_container:
+            #cont_reaction_list = [ (str(cont_reaction).split()[0],str(cont_reaction).split()[1]) for cont_reaction in reaction.get_contingencies()]
+            cont_reaction_dict = {}
+            for cont_reaction in reaction.get_contingencies():
+                cont_reaction_dict[str(cont_reaction).split()[1]] = str(cont_reaction).split()[0]
+
+            #print "cont_reaction_list: ", cont_reaction_list
+            # print "<<<<<<<<<"
+            # print "dir(reaction): ", dir(reaction)
+            # print "<<<<<<<<<"
+            # print "reaction: ", reaction
+            # print "reaction.conditions: ", reaction.conditions
+            # print "reaction.definition: ", reaction.definition
+            # print "reaction.get_contingencies: ", reaction.get_contingencies()
+            # print "reaction.get_domain: ", reaction.get_domain()
+            # print "reaction.get_modifier: ", reaction.get_modifier() 
+            # print "reaction.get_product_contingency", reaction.get_product_contingency()
+            # print "reaction.get_source_contingency",reaction.get_source_contingency()
+            # print "reaction.get_sp_state: ", reaction.get_sp_state()
+            # #print "reaction.get_specific_contingencies: ", reaction.get_specific_contingencies()
+            # #print "reaction.get_substrate_complex: ",reaction.get_substrate_complex()
+            # print "reaction.inspect: ", reaction.inspect()
+            # print "reaction.left_reactant: ", reaction.left_reactant
+            # print "reaction.main_id: ",  reaction.main_id
+            # print "reaction.name: ", reaction.name
+            # print "reaction.product_complexes: ", reaction.product_complexes
+            # print "reaction.rate: ", reaction.rate
+            # print "reaction.rid", reaction.rid
+            # print "reaction.right_reactant: ", reaction.right_reactant
+            # print "reaction.rtype: ", reaction.rtype
+            # print "reaction.substrat_complexes", reaction.substrat_complexes
+            print "reaction.to_change: ", reaction.to_change
             new_complex = []
             for i, comp in enumerate(reaction.product_complexes):
-                if reaction.right_reactant in comp.molecules and len(comp.molecules) == len(conflict_state_component_names):
-                    print "##############"
-                    #print "required_cont_reaction_container.sp_state: ", required_cont_reaction_container.sp_state
-                    print "product_contingency.target_reaction: ", product_contingency.target_reaction
+               #             A                   [A,B]                    len([A])              len([A,B]) if conflict_state True
+                conflicted_mol = []
+                if str(conflict_state) in cont_reaction_dict and cont_reaction_dict[str(conflict_state)] == "!":
                     print "conflict_state: ", conflict_state
+                    print "comp: ", comp
+                    print "comp: ", dir(comp)
+                    print "comp.molecules: ", comp.molecules
+                    print "cont_reaction_list: ", cont_reaction_dict
+                    print "reaction.right_reactant: ", reaction.right_reactant
+
+                    print "dir(reaction.right_reactant): ", dir(reaction.right_reactant)
+                    print "reaction.right_reactant.has_bond: ", reaction.right_reactant.has_bond(conflict_state)
+                    print "reaction.right_reactant.has_state: ", reaction.right_reactant.has_state(conflict_state)
+                    print "reaction.left_reactant: ", reaction.left_reactant
+                    print "reaction.left_reactant.has_bond: ", reaction.left_reactant.has_bond(conflict_state)
+                    print "reaction.left_reactant.has_state: ", reaction.left_reactant.has_state(conflict_state)
+                   
+                    #print conflict_state.get_molecules_on_state_condition(name=reaction.right_reactant.name)
+                    conflicted_mol = self.get_molecules_on_state(comp,conflict_state)
+                    
+                    if conflicted_mol:
+                        for mol in conflicted_mol:
+                            new = BiologicalComplex()
+                            new.side = 'LR'
+                            mol.remove_bond(conflict_state)
+                            new.molecules.append(mol)
+                            new_complex.append(new)
+                    else:
+                        new_complex.append(comp)
+                #if reaction.right_reactant in comp.molecules and #len(comp.molecules) == len(conflict_state_component_names):
+                    #print "##############"
+                    #print "required_cont_reaction_container.sp_state: ", required_cont_reaction_container.sp_state
+                    #print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                    #print "conflict_state: ", conflict_state
                     #print "required_cont.target_reaction: ", required_cont.target_reaction
                     #print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
-                    mol_index = comp.molecules.index(reaction.right_reactant)  # get the index of the molecule in the molecule List
-                    mol = comp.molecules[mol_index]
+                    
+                    #mol_index = comp.molecules.index(reaction.right_reactant)  # get the index of the molecule in the molecule List
 
-                    new = BiologicalComplex()
-                    new.side = 'LR'
-                    mol.remove_bond(conflict_state)
-                    new.molecules.append(mol)
 
-                    new_complex.append(new)
-                    if len(comp.molecules) > 1:
-                        new = BiologicalComplex()
-                        new.side = 'LR'
-                        for molecule in comp.molecules:
-                            if mol.name != molecule.name and molecule.name in conflict_state_component_names:
-                                if molecule.has_bond(conflict_state):
-                                    molecule.remove_bond(conflict_state)
-                                new.molecules.append(molecule)
+                    #mol = comp.molecules[mol_index]
 
-                        new_complex.append(new)
+                    # new = BiologicalComplex()
+                    # new.side = 'LR'
+                    # mol.remove_bond(conflict_state)
+                    # new.molecules.append(mol)
+
+                    # new_complex.append(new)
+                    # if len(comp.molecules) > 1:
+                    #     new = BiologicalComplex()
+                    #     new.side = 'LR'
+                    #     for molecule in comp.molecules:
+                    #         if mol.name != molecule.name and molecule.name in conflict_state_component_names:
+                    #             if molecule.has_bond(conflict_state):
+                    #                 molecule.remove_bond(conflict_state)
+                    #             new.molecules.append(molecule)
+
+                    #     new_complex.append(new)
                 else:
                     new_complex.append(comp)
             if new_complex:
