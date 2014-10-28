@@ -36,14 +36,14 @@ class x_exclamation_mark_Tests(TestCase):
         Prepares data for tests.
         """
         # basic reaction with one contingency.
-        input_data = "/home/thiemese/projects/rxncon/rxncon-unix/web2py/applications/yeastmap/modules/rxncon/test/test_data/Tiger_et_al_TableS1.xls"
+        input_data = "/home/thiemese/projects/rxncon/rxncon-unix/web2py/applications/yeastmap/modules/rxncon/test/test_data/Tiger_et_al_TableS1_v3.xls"
         self.xls_tables = parse_rxncon(input_data)
         self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon('Z_p+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon("Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z] \n X_[PD]_P+_Hog1_[(T174)] \n Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P} \n Ptc1_[PD]_P-_Hog1_[(T174)]")
         #rxncon = Rxncon('Z_p+_A_[Z]; ! Z--A \n Z_ppi_A \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
 
-        rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
 
         
         #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[KD]_ppi_Ste20; x Cdc42_[ED]--Ste20 \n Ste20_[BR]_ppi_PIP2_[AssocSte20]')
@@ -62,7 +62,7 @@ class x_exclamation_mark_Tests(TestCase):
         #works in master branch
         #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[KD+CRIB]--Ste20_[KD+CRIB] \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
         
-        #rxncon = Rxncon(input_data)
+        rxncon = Rxncon(input_data)
         rxncon.run_process()
         self.bngl_src = Bngl(rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
         #print bngl_src.get_src()
