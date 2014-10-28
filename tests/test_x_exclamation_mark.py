@@ -42,10 +42,26 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon('Z_p+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon("Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z] \n X_[PD]_P+_Hog1_[(T174)] \n Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P} \n Ptc1_[PD]_P-_Hog1_[(T174)]")
         #rxncon = Rxncon('Z_p+_A_[Z]; ! Z--A \n Z_ppi_A \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
-        rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20--Ste20 \n Ste20_[KD]_ppi_Ste20_[CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+
+        rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+
+        
         #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[KD]_ppi_Ste20; x Cdc42_[ED]--Ste20 \n Ste20_[BR]_ppi_PIP2_[AssocSte20]')
         #rxncon =  Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD]_ppi_Ste20_[CRIB]; x Cdc42--Ste20 \n Ste20_[BR]_ppi_PIP2')
         #rxncon =  Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste21_[BR]--PIP2 \n Ste21_[KD]_ppi_Ste20_[CRIB]; x Cdc42--Ste20 \n Ste21_[BR]_ppi_PIP2')
+
+        #conflicted example x!
+        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[CRIB]_ppi_Ste20_[CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+        #rxncon =  Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD]_ppi_Ste20_[CRIB]; x Cdc42--Ste20 \n Ste20_[BR]_ppi_PIP2')
+
+        #conflicted example in master branch
+        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[KD]--Ste20_[CRIB2] \n Ste20_[KD]_ppi_Ste20_[CRIB2]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[CRIB]--Ste20_[CRIB] \n Ste20_[CRIB]_ppi_Ste20_[CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+
+        #works in master branch
+        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[KD+CRIB]--Ste20_[KD+CRIB] \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+        
         #rxncon = Rxncon(input_data)
         rxncon.run_process()
         self.bngl_src = Bngl(rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
@@ -97,7 +113,7 @@ class x_exclamation_mark_Tests(TestCase):
         #print "self.basic_cont: ", self.basic_cont
         print "bngl_src: ", self.bngl_src.get_src()
 
-        # rxn = Rxncon('C_p+_B_[C] \n A_ppi_B; x B_[C]-{P}')
+        # rxn = Rxncon('C_p+_B_[C] \n A_ppi_B; x B_[C]-{P}'
         # #rxn.run_process()
         # #rcont = rxn.reaction_pool['C_p+_B_[C]']
 

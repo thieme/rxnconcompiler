@@ -356,11 +356,11 @@ class Rxncon:
                         # apply a k+ contingency to our product contingency target reaction
                         # step 5.1, 5.2, 5.3
                         #this approach also solves problems with adapting the reaction rates
+                        #for reaction in react_container:
                         cap.apply_on_container(react_container, cont_k)
-
-                        self.apply_contingencies(react_container)
+        
+        #self.apply_contingencies(react_container)
                         #changed_react_container = True #.append(react_container)
-
         return react_container, conflict_state
 
     def get_molecules_on_state(self, comp, conflict_state):
@@ -543,13 +543,15 @@ class Rxncon:
             ComplexApplicator(react_container, complexes).apply_complexes() 
 
             # after applying complexes we may have more reactions in a single container.
-            if add_contingencies:
+            react_container, conflict_state = self.find_conflicts_on_mol(react_container)
+            print "self.conflict_found: ", self.conflict_found
+            if add_contingencies or self.conflict_found:
                 self.apply_contingencies(react_container)
 
             # single contingency is applied for all reactions. If K+/K- reactions are doubled.
             self.update_reactions()
 
-            react_container, conflict_state = self.find_conflicts_on_mol(react_container)
+            
 
             for reaction in react_container:
                 reaction.run_reaction()
