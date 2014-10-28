@@ -389,7 +389,7 @@ class Rxncon:
         """
         from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
         from rxnconcompiler.molecule.molecule import Molecule
-
+        import copy
         product_contingency = react_container.product_contingency
 
         #cont = Contingency('C_p+_B_[C]', 'K+', get_state('A--B'))
@@ -438,19 +438,19 @@ class Rxncon:
                #             A                   [A,B]                    len([A])              len([A,B]) if conflict_state True
                 conflicted_mol = []
                 if str(conflict_state) in cont_reaction_dict and cont_reaction_dict[str(conflict_state)] == "!":
-                    print "conflict_state: ", conflict_state
-                    print "comp: ", comp
-                    print "comp: ", dir(comp)
-                    print "comp.molecules: ", comp.molecules
-                    print "cont_reaction_list: ", cont_reaction_dict
-                    print "reaction.right_reactant: ", reaction.right_reactant
+                    # print "conflict_state: ", conflict_state
+                    # print "comp: ", comp
+                    # print "comp: ", dir(comp)
+                    # print "comp.molecules: ", comp.molecules
+                    # print "cont_reaction_list: ", cont_reaction_dict
+                    # print "reaction.right_reactant: ", reaction.right_reactant
 
-                    print "dir(reaction.right_reactant): ", dir(reaction.right_reactant)
-                    print "reaction.right_reactant.has_bond: ", reaction.right_reactant.has_bond(conflict_state)
-                    print "reaction.right_reactant.has_state: ", reaction.right_reactant.has_state(conflict_state)
-                    print "reaction.left_reactant: ", reaction.left_reactant
-                    print "reaction.left_reactant.has_bond: ", reaction.left_reactant.has_bond(conflict_state)
-                    print "reaction.left_reactant.has_state: ", reaction.left_reactant.has_state(conflict_state)
+                    # print "dir(reaction.right_reactant): ", dir(reaction.right_reactant)
+                    # print "reaction.right_reactant.has_bond: ", reaction.right_reactant.has_bond(conflict_state)
+                    # print "reaction.right_reactant.has_state: ", reaction.right_reactant.has_state(conflict_state)
+                    # print "reaction.left_reactant: ", reaction.left_reactant
+                    # print "reaction.left_reactant.has_bond: ", reaction.left_reactant.has_bond(conflict_state)
+                    # print "reaction.left_reactant.has_state: ", reaction.left_reactant.has_state(conflict_state)
                    
                     #print conflict_state.get_molecules_on_state_condition(name=reaction.right_reactant.name)
                     conflicted_mol = self.get_molecules_on_state(comp,conflict_state)
@@ -462,6 +462,21 @@ class Rxncon:
                             mol.remove_bond(conflict_state)
                             new.molecules.append(mol)
                             new_complex.append(new)
+                        tmp_complex = copy.deepcopy(new_complex)
+                        if len(conflicted_mol) != len(comp.molecules): # find binding partners which are left 
+                            for i, single_new_comp in enumerate(tmp_complex):
+                                if single_new_comp.molecules[0].binding_partners: # there is only one molecule in the new complex and we want to add all other binding partners
+                                    for mol in comp.molecules:
+                                        if mol not in new_complex[i].molecules:
+                                            for binding_partners in single_new_comp.molecules[0].binding_partners:
+                                                print "single_new_comp: ", single_new_comp
+                                                print "mol: ", mol
+                                                print "mol.binding_partners: ", mol.binding_partners
+                                                print "binding_partners: ", binding_partners
+                                                print "binding_partners.has_component(mol): ", binding_partners.has_component(mol)
+                                                #if binding_partners in mol.binding_partners:
+                                                if binding_partners.has_component(mol):
+                                                    new_complex[i].molecules.append(mol)
                     else:
                         new_complex.append(comp)
                 #if reaction.right_reactant in comp.molecules and #len(comp.molecules) == len(conflict_state_component_names):
