@@ -351,12 +351,10 @@ class Rxncon:
                         #print "required_cont.target_reaction: ", required_cont.target_reaction
                         print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
                         cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflict_state)
-                        print "cont_k: ", cont_k
                         cap = ContingencyApplicator()
                         # apply a k+ contingency to our product contingency target reaction
                         # step 5.1, 5.2, 5.3
                         #this approach also solves problems with adapting the reaction rates
-                        #for reaction in react_container:
                         cap.apply_on_container(react_container, cont_k)
         
         #self.apply_contingencies(react_container)
@@ -432,7 +430,6 @@ class Rxncon:
             # print "reaction.right_reactant: ", reaction.right_reactant
             # print "reaction.rtype: ", reaction.rtype
             # print "reaction.substrat_complexes", reaction.substrat_complexes
-            print "reaction.to_change: ", reaction.to_change
             new_complex = []
             for i, comp in enumerate(reaction.product_complexes):
                #             A                   [A,B]                    len([A])              len([A,B]) if conflict_state True
@@ -469,12 +466,6 @@ class Rxncon:
                                     for mol in comp.molecules:
                                         if mol not in new_complex[i].molecules:
                                             for binding_partners in single_new_comp.molecules[0].binding_partners:
-                                                print "single_new_comp: ", single_new_comp
-                                                print "mol: ", mol
-                                                print "mol.binding_partners: ", mol.binding_partners
-                                                print "binding_partners: ", binding_partners
-                                                print "binding_partners.has_component(mol): ", binding_partners.has_component(mol)
-                                                #if binding_partners in mol.binding_partners:
                                                 if binding_partners.has_component(mol):
                                                     new_complex[i].molecules.append(mol)
                     else:
@@ -511,7 +502,6 @@ class Rxncon:
                 else:
                     new_complex.append(comp)
             if new_complex:
-                print "new_complex: ", new_complex
                 reaction.product_complexes = new_complex
 
     def run_process(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True):
@@ -544,7 +534,6 @@ class Rxncon:
 
             # after applying complexes we may have more reactions in a single container.
             react_container, conflict_state = self.find_conflicts_on_mol(react_container)
-            print "self.conflict_found: ", self.conflict_found
             if add_contingencies or self.conflict_found:
                 self.apply_contingencies(react_container)
 
