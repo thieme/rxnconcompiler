@@ -345,8 +345,9 @@ class Rxncon:
                         conflict_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
                         print "##############"
                         #print "required_cont_reaction_container.sp_state: ", required_cont_reaction_container.sp_state
-                        print "product_complexes: ", product_contingency.target_reaction
+                        #print "product_complexes: ", product_contingency.target_reaction
                         print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                        print "required_cont.target_reaction: ", required_cont.target_reaction
                         print "conflict_state: ", conflict_state
                         #print "required_cont.target_reaction: ", required_cont.target_reaction
                         print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
