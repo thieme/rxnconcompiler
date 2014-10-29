@@ -37,19 +37,21 @@ class x_exclamation_mark_Tests(TestCase):
         """
         # basic reaction with one contingency.
         input_data = "/home/thiemese/projects/rxncon/rxncon-unix/web2py/applications/yeastmap/modules/rxncon/test/test_data/Tiger_et_al_TableS1_v3.xls"
-        self.xls_tables = parse_rxncon(input_data)
+        #self.xls_tables = parse_rxncon(input_data)
         self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
+        
         #rxncon = Rxncon('Z_p+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon("Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z] \n X_[PD]_P+_Hog1_[(T174)] \n Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P} \n Ptc1_[PD]_P-_Hog1_[(T174)]")
         #rxncon = Rxncon('Z_p+_A_[Z]; ! Z--A \n Z_ppi_A \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
+        
+        #rxncon = Rxncon('Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]; ! Ypd1--Ssk1 \n Ssk1_[RR]_ppi_Ssk2_[BDSsk1]; x Ssk1_[RRD544]-{P} \n Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P}')
+        #rxncon = Rxncon('Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]')
 
-        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+        #rxncon = Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]')
+
+        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
 
         
-        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[KD]_ppi_Ste20; x Cdc42_[ED]--Ste20 \n Ste20_[BR]_ppi_PIP2_[AssocSte20]')
-        #rxncon =  Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD]_ppi_Ste20_[CRIB]; x Cdc42--Ste20 \n Ste20_[BR]_ppi_PIP2')
-        #rxncon =  Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste21_[BR]--PIP2 \n Ste21_[KD]_ppi_Ste20_[CRIB]; x Cdc42--Ste20 \n Ste21_[BR]_ppi_PIP2')
-
         #conflicted example x!
         #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[CRIB]_ppi_Ste20_[CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
         #rxncon =  Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD]_ppi_Ste20_[CRIB]; x Cdc42--Ste20 \n Ste20_[BR]_ppi_PIP2')
