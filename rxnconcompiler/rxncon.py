@@ -392,8 +392,9 @@ class Rxncon:
                         conflicted_mol = self.get_molecules_on_state(comp,conflicted_state)
                         
                         if conflicted_mol:
+                            # if there are conflicted molecules create for each of them a separated complex 
                             for mol in conflicted_mol:
-                                new = BiologicalComplex()
+                                new = BiologicalComplex() 
                                 new.side = 'LR'
                                 mol.remove_bond(conflicted_state)
                                 new.molecules.append(mol)
