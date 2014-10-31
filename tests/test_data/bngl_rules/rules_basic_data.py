@@ -32,7 +32,7 @@ REACTIONS_DATA = {
 
 'PDonor_PT_PAcceptor': {
     'Rules':[
-    'PDonor(PDonor~P) + PAcceptor(PDonor~U) <-> PDonor(PDonor~U) + PAcceptor(PDonor~P)'],
+    'PDonor(PAcceptor~P) + PAcceptor(PDonor~U) <-> PDonor(PAcceptor~U) + PAcceptor(PDonor~P)'],
     'Tags': [
     1, 'PT', 'no contingencies']},
 
