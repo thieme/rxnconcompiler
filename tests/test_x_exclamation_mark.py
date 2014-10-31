@@ -44,12 +44,12 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon("Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z] \n X_[PD]_P+_Hog1_[(T174)] \n Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P} \n Ptc1_[PD]_P-_Hog1_[(T174)]")
         #rxncon = Rxncon('Z_p+_A_[Z]; ! Z--A \n Z_ppi_A \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon('Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]; ! Ypd1--Ssk1 \n Ssk1_[RR]_ppi_Ssk2_[BDSsk1]; x Ssk1_[RRD544]-{P}; x Ssk1--Ssk22 \n Ssk1_[RR]_ppi_Ssk22; x Ssk1_[RRD544]-{P}; x Ssk1--Ssk2')
-        rxncon = Rxncon('Ypd1_[(H64)]_PT_Ssk1_[RR(D544)] \n Ssk1_[RR]_ppi_Ssk2_[BDSsk1]; x Ssk1_[RRD544]-{P} \n Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P}')
+        #rxncon = Rxncon('Ypd1_[(H64)]_PT_Ssk1_[RR(D544)] \n Ssk1_[RR]_ppi_Ssk2_[BDSsk1]; x Ssk1_[RRD544]-{P} \n Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P}')
         #rxncon = Rxncon('Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]')
 
         #rxncon = Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]')
 
-        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
+        rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
 
         
         #conflicted example x!

@@ -260,7 +260,8 @@ class ContingencyApplicator():
 
         if cont.ctype in ['x', '!']:
             for reaction in container:
-                if reaction.definition['Reversibility'] == 'reversible':
+                #if reaction.definition['Reversibility'] == 'reversible':
+                if reaction.reversibility == 'reversible':
                     # we will have two rates here (because of reverse reaction).
                     reaction.rate.update_function(cont, False, num1, num2)
                 else:

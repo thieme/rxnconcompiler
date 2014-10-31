@@ -65,9 +65,11 @@ class Rule:
     @property
     def arrow(self):
         """Returns reaction arrow depending on reaction reversibility."""
-        if self.reaction.definition['Reversibility'] == 'irreversible':
-            return '->' 
-        elif self.reaction.definition['Reversibility'] == 'reversible':
+        #if self.reaction.definition['Reversibility'] == 'irreversible':
+        if self.reaction.reversibility == 'irreversible':
+            return '->'
+        elif self.reaction.reversibility == 'reversible':
+        #elif self.reaction.definition['Reversibility'] == 'reversible':
             return '<->'
     @property
     def rates(self):

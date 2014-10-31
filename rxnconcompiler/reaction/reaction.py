@@ -41,6 +41,7 @@ class Reaction:
         self.rid = None
         self.rtype = None
         self.definition = None
+        self.reversibility = None
         self.left_reactant = None # RxnconMolecule object
         self.right_reactant = None # RxnconMolecule object
         self.substrat_complexes = []
@@ -86,6 +87,7 @@ class Reaction:
         new.rid = copy.deepcopy(self.rid)
         new.rtype = self.rtype
         new.definition = self.definition
+        new.reversibility = self.reversibility
         new.left_reactant = self.left_reactant #None # RxnconMolecule object
         new.right_reactant = self.right_reactant #None # RxnconMolecule object
         new.substrat_complexes = copy.deepcopy(self.substrat_complexes)

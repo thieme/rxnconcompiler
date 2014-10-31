@@ -116,7 +116,8 @@ class Rate:
         For a reversible reaction frate and rrate have values and rate is None.
         For a irreversible reaction rate has a value and frate and frate are None.
         """
-        if reaction.definition['Reversibility'] == 'irreversible':
+        #if reaction.definition['Reversibility'] == 'irreversible':
+        if reaction.reversibility == 'irreversible':
             self.rate = 'k%s' % reaction.rid # rate for irreversible reaction
             self._rate_names = [self.rate]
         else:
@@ -139,7 +140,7 @@ class Rate:
         e.g. 
         [1_1, 1_2]
         [1]
-        One Rate may hace maximaly two such ids.
+        One Rate may have maximaly two such ids.
         """
         rates = []
         for rate in self._rate_names:

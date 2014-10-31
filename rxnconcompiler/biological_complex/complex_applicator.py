@@ -111,7 +111,8 @@ class ComplexApplicator:
         neg = False
 
         for reaction, compl in zip(self.reaction_container, self.complexes):
-            if reaction.definition['Reversibility'] == 'reversible' and compl.input_conditions:
+            #if reaction.definition['Reversibility'] == 'reversible' and compl.input_conditions:
+            if reaction.reversibility == 'reversible' and compl.input_conditions:
                 return True
             elif compl.is_positive == 'both':
                 return True
