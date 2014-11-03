@@ -28,7 +28,7 @@ Process steps:
        each with single Reaction object.
      - ContingencyPool containing root contingency 
        for all reactions with contingencies
-     - MoleculesPool containg Molecule objects 
+     - MoleculesPool containing Molecule objects 
        representing all substrates.
 2.   Creating complexes from boolean or complex contingencies.
 ==============================================================
@@ -41,16 +41,16 @@ Process steps:
      so the ReactionContainer contain in the end 
      all alternatives when reaction can run
      as single Reaction objects.
-     All remaining single Molecul objects are 
+     All remaining single Molecule objects are 
      exchanged with complex containing single molecule.
-4.   Applying other (non-comlex) contingencies.
+4.   Applying other (non-complex) contingencies.
 ===============================================
 5.   Running reactions to obtain product complexes.
 =======================
 6.   Translating reactions into BNGL string.
 ============================================
 6.a. Prepare RulePoll out of RecationPool 
-     (same strucrure with RuleContainer and Rule objects) 
+     (same structure with RuleContainer and Rule objects) 
 6.b. Create strings for all sections using BnglTranslator, and BnglOutput
 
 
@@ -94,8 +94,8 @@ class Rxncon:
     translation to bngl string in later stage.
 
     The end product is a pool of ReactionContainer objects.
-    Single ReactionContainer object coresponds to a RuleContainer object.
-    Single ReactionContainer has all data neccessary for translation into bngl.
+    Single ReactionContainer object corresponds to a RuleContainer object.
+    Single ReactionContainer has all data necessary for translation into bngl.
 
     @type xls_tables:  dictionary
     @param xls_tables: rxncon input data
@@ -112,7 +112,7 @@ class Rxncon:
         MoleculePool - list of all right and left reactants from all reactions.
         ReactionPool - dict of all reactions. 
                        rxncon reaction str: ReactionContiner object 
-                       (captures all posible alternative reactions
+                       (captures all possible alternative reactions
                        depending on conditions in which reaction can happen). 
         ContingencyPool - dictionary of all contingencies.
                           rxncon_reaction_str: root contingency 
@@ -178,7 +178,7 @@ class Rxncon:
 
     def get_complexes(self, reaction_name):
         """
-        Prepares a list of complexes aplicable to a give reaction.
+        Prepares a list of complexes applicable to a give reaction.
 
         @type  reaction_name: string
         @param reaction_name: reaction string e.g. A_ppi_B_[bd_A].
@@ -275,7 +275,7 @@ class Rxncon:
         """
         Adds translation reaction for each protein to reaction_pool.
         """
-        # Add apropriate reaction_factory
+        # Add appropriate reaction_factory
         pass
 
     def run_process(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True):
@@ -284,7 +284,7 @@ class Rxncon:
         Groups the information that belong together.
         Adds implicit information.
 
-        add_translation: when Trues add reanslation reaction for each protein # not available yet.
+        add_translation: when Trues add translation reaction for each protein # not available yet.
         add_missing_reactions: when True looks for required states that are not produced and adds proper reactions.
         add_complexes: when True applys boolean contingencies.
         add_contingencies: when True applys non-boolean contingencies.
