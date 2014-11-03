@@ -213,7 +213,6 @@ class ContingencyFactory(dict):
         If it is not possible - parent is not yet there returns row.
         """
         reaction = row['Target']
-        print "reaction: ",reaction
 
         ctype = row['Contingency']
         if '--' in ctype:

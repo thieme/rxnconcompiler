@@ -114,26 +114,16 @@ class ContingencyApplicator():
             compl.molecules.append(mol_ob) 
 
     def apply_positive_intraprotein(self, reaction, cont):
-        print "cont.state.components: ", cont.state.components
+        #print "cont.state.components: ", cont.state.components
         #mol.add_binding_site(cont.state, side)
         component = cont.state.components[0]
         left = reaction.get_substrate_complex('L')
         right = reaction.get_substrate_complex('R')
         left_right = reaction.get_substrate_complex('LR')
 
-        print "left: ", left
-        print "right: ", right
-        print "left_right: ", left_right
-        print "cont.state: ", cont.state
-        print "reaction.to_change: ", reaction.to_change
-        print "component.cid: ", component.cid
         if right.has_molecule(component.name) and not cont.state == reaction.to_change:
             side = right.side
-            print "side: ", side
             mol = right.get_molecules(component.name, component.cid)
-            print "mol: ", mol
-            print "cont.state: ", cont.state
-            print "mol.get_domains('binding', True): ", mol[0].get_domains('binding', True)
             new_mols = []
 
             occupied_doms = mol[0].get_domains('binding', True)
@@ -183,12 +173,13 @@ class ContingencyApplicator():
                 self.add_molecule_to_complex(mols2, cont, component1, left_right, reaction)
 
         elif left and right:
+
             # TODO: Refactor make a function to check this condition.
             # A--B, A and B present in substrates
             if ((left.has_molecule(component1.name) and right.has_molecule(component2.name))\
                 or (left.has_molecule(component2.name) and right.has_molecule(component1.name)))\
                 and not cont.state == reaction.to_change: 
-         
+                
                 if component1.name in [reaction.left_reactant.name, reaction.right_reactant.name] \
                     and component2.name in [reaction.left_reactant.name, reaction.right_reactant.name]:
                 # if A--B, A and B present in substrates but if reaction creates A and B
@@ -237,7 +228,6 @@ class ContingencyApplicator():
         """
         Positive association won't get here.
         """
-        print "cont.state.type: ", cont.state.type
         if cont.state.type == 'Association': # only negative associations get here.
             side = compl.side
             for component in cont.state.components:

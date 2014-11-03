@@ -218,8 +218,6 @@ class Rxncon:
         """
         # TODO: make ContingencyUpdator class out of it.
         # TODO: separate functions for different updates.
-        #print "self.contingency_pool.get_required_states(): ", self.contingency_pool.get_required_states()
-        #print "self.reaction_pool[Cdc42_ppi_Ste20]: ", self.reaction_pool["Cdc42_ppi_Ste20"][0].get_contingencies()
         modifications = self.contingency_pool.get_modification_contingencies()
         if modifications:
             for cont in modifications:
