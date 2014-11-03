@@ -142,6 +142,18 @@ CONTINGENCIES_DATA = {
     'A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1)'],
     'Tags': [
     1, 'ppi', 'contingencies']},
+    
+    'ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; ! ProtA_[a]--[b]': {
+    'Rules':[
+    'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a!1,b!1) <-> ProtA(AssocProtC!1,a!2,b!2).ProtC(Gnp~P,AssocProtA!1)'],
+    'Tags': [
+    1, 'ipi', 'contingencies']},
+
+    'ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; x ProtA_[a]--[b]': {
+    'Rules':[
+    'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a,b) <-> ProtA(AssocProtC!1,a,b).ProtC(Gnp~P,AssocProtA!1)'],
+    'Tags': [
+    1, 'ipi', 'contingencies']}
 }
 
 
