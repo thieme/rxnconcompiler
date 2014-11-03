@@ -114,8 +114,10 @@ class ContingencyApplicator():
             compl.molecules.append(mol_ob) 
 
     def apply_positive_intraprotein(self, reaction, cont):
-        #print "cont.state.components: ", cont.state.components
-        #mol.add_binding_site(cont.state, side)
+        """
+        it requires to set the binding_partners for the Intraprotein
+        """
+
         component = cont.state.components[0]
         left = reaction.get_substrate_complex('L')
         right = reaction.get_substrate_complex('R')
@@ -128,16 +130,11 @@ class ContingencyApplicator():
 
             occupied_doms = mol[0].get_domains('binding', True)
 
-        #if add_partner:
             if component.domain not in occupied_doms:
                 new_mols.append(mol)
             if new_mols:
                 mol[0].binding_partners.append(cont.state)
-                mol_ob = Molecule(component.name)
-                mol_ob.binding_partners.append(cont.state)
-                #compl.molecules.append(mol_ob) 
-            #mol[0].add_binding_site(cont.state, side)
-            #self.add_molecule_to_complex(mol, cont, component, right, reaction)
+
 
     def apply_positive_association(self, reaction, cont):
         """
