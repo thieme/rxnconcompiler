@@ -111,12 +111,12 @@ class ContingencyPool(dict):
 
         @todo:   what about ! <OR> are all states required? 
         """
-        result = [] 
+        result = []
         for root in self.values():
             children = root.get_leafs()
             for cont in children:
                 if cont.ctype in ['!', 'k+', 'k-', 'x'] or cont.inherited_ctype in ['!', 'k+', 'k-', 'x']:
-                    if cont.state.type in ['Association', 'Covalent Modification', 'Relocalisation']:
+                    if cont.state.type in ['Association', 'Covalent Modification', 'Relocalisation', 'Intraprotein']:
                         result.append(cont.state)
         return set(result)
 
@@ -142,6 +142,13 @@ class ContingencyPool(dict):
         Used when updating contingencies.
         """
         return self.get_kind_contingencies("Covalent Modification")
+    def get_Intraprotein_contingencies(self):
+        """
+        Returns all contingencies with Covalent Modification state.
+
+        Used when updating contingencies.
+        """
+
 
     def get_relocalisation_contingencies(self):
         """
@@ -179,9 +186,9 @@ class ContingencyFactory(dict):
         It is a dict that holds all top nodes contingencies of a reaction.
         Key - reaction string. Value - list of contingencies. 
         """
-        # Could be recurent because of boolean nodes
+        # Could be recurrent because of boolean nodes
         # (we cannot add child if the parent is not there)
-        # but then we have risk that we have infinit loop 
+        # but then we have risk that we have infinite loop 
         # if the parent does not exist.
         # For now we have parse_later but it may not be sufficient in all cases.
         parse_later = []
@@ -203,9 +210,11 @@ class ContingencyFactory(dict):
     def parse_contingency(self, row):
         """
         Parses single contingency from row.
-        If it os not possible - parent is not yet there returns row.
+        If it is not possible - parent is not yet there returns row.
         """
         reaction = row['Target']
+        print "reaction: ",reaction
+
         ctype = row['Contingency']
         if '--' in ctype:
             sid = ctype 

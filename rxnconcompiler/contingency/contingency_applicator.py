@@ -19,9 +19,9 @@ Applies contingencies on:
 - reactions
 - reaction containers
 
-In the end coningency application means 
-modification of molecule object (gets assitional modification, bond ...).
-If contingency type is K+ or K- it also means dupplication of a reaction
+In the end contingency application means 
+modification of molecule object (gets additional modification, bond ...).
+If contingency type is K+ or K- it also means duplication of a reaction
 and updating the rate for the new one.
 
 How rate is updated for K+/K-:
@@ -49,12 +49,12 @@ class ContingencyApplicator():
     def apply_on_molecule(self, mol, cont, side = 'L'):
         """
         Applys contingency on molecule.
-        Side - indicatecs whether molecule belong to
+        Side - indicates whether molecule belong to
         left or right substrate complex.
         It is important when we have homodimer states: 
-        indicstes which doman is used.
+        indicates which domain is used.
         """
-        if cont.state.type == 'Association' and cont.ctype == 'x':
+        if (cont.state.type == 'Association' or cont.state.type == "Intraprotein") and cont.ctype == 'x':
             #mol.binding_sites.append(cont.state)
             mol.add_binding_site(cont.state, side)
         elif cont.state.type == 'Covalent Modification' and cont.ctype == '!':
@@ -79,7 +79,7 @@ class ContingencyApplicator():
         """
         #print 'add_molecule_to_complex'
         #print mols, cont, component, compl
-        # check whether cotingency state in not equal to product state 
+        # check whether contingency state in not equal to product state 
         add_partner = True
         for state in mols[0].binding_sites:
             if state == cont.state:
@@ -88,7 +88,7 @@ class ContingencyApplicator():
                 if dom_side == dom_cont: 
                     add_partner = False
 
-        # check conflickts between contingency and to_change
+        # check conflicts between contingency and to_change
         # (state that changes in the reaction)
         for comp_cont in cont.state.components:
             for comp_tochange in reaction.to_change.components:
@@ -113,6 +113,41 @@ class ContingencyApplicator():
             mol_ob.binding_partners.append(cont.state)
             compl.molecules.append(mol_ob) 
 
+    def apply_positive_intraprotein(self, reaction, cont):
+        print "cont.state.components: ", cont.state.components
+        #mol.add_binding_site(cont.state, side)
+        component = cont.state.components[0]
+        left = reaction.get_substrate_complex('L')
+        right = reaction.get_substrate_complex('R')
+        left_right = reaction.get_substrate_complex('LR')
+
+        print "left: ", left
+        print "right: ", right
+        print "left_right: ", left_right
+        print "cont.state: ", cont.state
+        print "reaction.to_change: ", reaction.to_change
+        print "component.cid: ", component.cid
+        if right.has_molecule(component.name) and not cont.state == reaction.to_change:
+            side = right.side
+            print "side: ", side
+            mol = right.get_molecules(component.name, component.cid)
+            print "mol: ", mol
+            print "cont.state: ", cont.state
+            print "mol.get_domains('binding', True): ", mol[0].get_domains('binding', True)
+            new_mols = []
+
+            occupied_doms = mol[0].get_domains('binding', True)
+
+        #if add_partner:
+            if component.domain not in occupied_doms:
+                new_mols.append(mol)
+            if new_mols:
+                mol[0].binding_partners.append(cont.state)
+                mol_ob = Molecule(component.name)
+                mol_ob.binding_partners.append(cont.state)
+                #compl.molecules.append(mol_ob) 
+            #mol[0].add_binding_site(cont.state, side)
+            #self.add_molecule_to_complex(mol, cont, component, right, reaction)
 
     def apply_positive_association(self, reaction, cont):
         """
@@ -120,7 +155,7 @@ class ContingencyApplicator():
         - adding a new molecule to a complex
         - or incorporating two substrate complexes into one
         and not just editing existing molecules in a complex.
-        It also neads to deal with a situation that there is already one complex.
+        It also needs to deal with a situation that there is already one complex.
         """
         component1 = cont.state.components[0]
         component2 = cont.state.components[1]
@@ -129,6 +164,8 @@ class ContingencyApplicator():
         left = reaction.get_substrate_complex('L')
         right = reaction.get_substrate_complex('R')
         left_right = reaction.get_substrate_complex('LR')
+
+
         
         if left_right:
             mols1 = left_right.get_molecules(component1.name, component1.cid)
@@ -159,7 +196,7 @@ class ContingencyApplicator():
                     reaction.join_substrate_complexes(cont.state)
 
                 # here one of mols from contingency is present in both complexes
-                # but it was added becouse of previously applayed coningency so we dont want to join.
+                # but it was added because of previously applayed contingency so we dont want to join.
                 else:
                     if component1.name == reaction.left_reactant.name \
                         or component2.name == reaction.left_reactant.name:
@@ -198,8 +235,9 @@ class ContingencyApplicator():
 
     def apply_on_complex(self, compl, cont):
         """
-        Possitive association won't get here.
+        Positive association won't get here.
         """
+        print "cont.state.type: ", cont.state.type
         if cont.state.type == 'Association': # only negative associations get here.
             side = compl.side
             for component in cont.state.components:
@@ -219,7 +257,7 @@ class ContingencyApplicator():
         For other states applays contingency on substrate complexes.
         """
         for compl in reaction.substrat_complexes:
-                self.apply_on_complex(compl, cont)
+            self.apply_on_complex(compl, cont)
 
     def apply_input_on_container(self, container, cont):
         """
@@ -228,7 +266,7 @@ class ContingencyApplicator():
         (adding a local function).
 
         Rate depend on:
-        - ontingency type: difrent functions for !, x and K
+        - contingency type: different functions for !, x and K
         - whether reaction is reversible or irreversible
           (for reversible reaction kr always looks like for K even when its ! or x)
 
@@ -250,7 +288,7 @@ class ContingencyApplicator():
         if cont.ctype in ['x', '!']:
             for reaction in container:
                 if reaction.definition['Reversibility'] == 'reversible':
-                    # we will have two rates here (because of reverse rreaction).
+                    # we will have two rates here (because of reverse reaction).
                     reaction.rate.update_function(cont, False, num1, num2)
                 else:
                     # just multiply old rate by input rate.
@@ -267,7 +305,7 @@ class ContingencyApplicator():
     def get_rate_ids(self, reaction, container, subrate, keep_old=False):
         """
         When applying K+/K- contingency rates need to be updated.
-        This function retuens a list of new ids which 
+        This function returns a list of new ids which 
         will be used for updating.
 
         e.g. 
@@ -300,7 +338,7 @@ class ContingencyApplicator():
     def apply_on_container(self, container, cont):
         """
         Applys a contingency on a container.
-        Top level function. It is called first and direacts tasks to other functions.
+        Top level function. It is called first and directs tasks to other functions.
 
         --- If contingency contains Input state:
             apply_input_on_container
@@ -312,7 +350,7 @@ class ContingencyApplicator():
 
         --- If ctype is K+ or K- (no Input):
             clone all the reactions in the container 
-            for each reaction (now two) applys one ! and one x
+            for each reaction (now two) apply one ! and one x
             (it is done like in previous step).
             Updates rate:
             reaction.rate.update_name
@@ -330,6 +368,8 @@ class ContingencyApplicator():
             for reaction in container:
                 if cont.state.type == 'Association' and cont.ctype == '!':
                     self.apply_positive_association(reaction, cont)
+                elif cont.state.type == "Intraprotein" and cont.ctype == '!':
+                    self.apply_positive_intraprotein(reaction,cont)
                 else:
                     self.apply_on_reaction(reaction, cont)
           
