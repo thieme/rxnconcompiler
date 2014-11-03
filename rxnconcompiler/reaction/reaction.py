@@ -47,6 +47,7 @@ class Reaction:
         self.product_complexes = [] #RxnconMolecule objects
         self.conditions = None # e.g. ['Start'], ['Turgor'] ...
         self.to_change = None # domain that will chage during reaction.
+        self.to_change_pt = None # used only in PT reaction - here two domains change.
         self.rate = None # Rate object
 
     def __repr__(self):
@@ -307,7 +308,7 @@ class Modification(Reaction):
             plmol = pcomp.get_molecules(lmol.name, lmol.mid)[0] 
             prmol = pcomp.get_molecules(rmol.name, rmol.mid)[0] 
             prmol.add_modification(self.to_change)
-            plmol.remove_modification(self.to_change) 
+            plmol.remove_modification(self.to_change_pt) 
 
             self.product_complexes += [pcomp]    
         else:
@@ -321,7 +322,7 @@ class Modification(Reaction):
             slmol = slcomp.get_molecules(lmol.name, lmol.mid)[0]        
             plcomp = slcomp.clone()
             plmol = plcomp.get_molecules(lmol.name, lmol.mid)[0]
-            plmol.remove_modification(self.to_change)        
+            plmol.remove_modification(self.to_change_pt)        
 
             self.product_complexes += [prcomp, plcomp]
    

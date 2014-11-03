@@ -187,16 +187,27 @@ class DomainFactory:
         else:
             return re.sub('\(|\)|\[|\]', '', comp_name_dom[1])
 
-    def get_modification_domain_from_dict(self, row, reaction):
+    def get_modification_domain_from_dict(self, row, reaction, component='B'):
         """
         """
-        if row.has_key('ComponentB[DSR]'):
-            b_dsr = row['ComponentB[DSR]']
-        else:
-            b_dsr = self.get_dsr(row, 'B')
-        if b_dsr:
-            return re.sub('\(|\)|\[|\]', '', b_dsr)
+        if component == 'B':
+            if row.has_key('ComponentB[DSR]'):
+                b_dsr = row['ComponentB[DSR]']
+            else:
+                b_dsr = self.get_dsr(row, 'B')
+            if b_dsr:
+                return re.sub('\(|\)|\[|\]', '', b_dsr)
       
-        domain = row['ComponentA[Name]'] 
-        return re.sub('\(|\)|\[|\]', '', domain)  
+            domain = row['ComponentA[Name]'] 
+            return re.sub('\(|\)|\[|\]', '', domain)  
             
+        elif component == 'A':
+            if row.has_key('ComponentA[DSR]'):
+                b_dsr = row['ComponentA[DSR]']
+            else:
+                b_dsr = self.get_dsr(row, 'A')
+            if b_dsr:
+                return re.sub('\(|\)|\[|\]', '', b_dsr)
+      
+            domain = row['ComponentB[Name]'] 
+            return re.sub('\(|\)|\[|\]', '', domain) 
