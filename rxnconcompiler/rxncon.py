@@ -92,6 +92,146 @@ from contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state
 import re
 
+
+class ConflictSolver:
+    """
+    """
+    def __init__(self, reaction_pool, contingency_pool):
+        self.contingency_pool = contingency_pool
+        self.reaction_pool = reaction_pool
+
+    def is_conflict(self, product_contingency, required_cont):
+        if re.search('^(?!_)\[(.*?)\]', required_cont.target_reaction) or re.search('<(.*?)>', required_cont.target_reaction):
+            return False
+        elif str(required_cont.state) == str(product_contingency.state):
+            if str(required_cont.ctype) != str(product_contingency.ctype):
+                if str(required_cont.ctype) not in ["and", "or", "0"]:
+                    if self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
+                        return True
+        return False
+
+    def get_molecules_on_state(self, comp, conflicted_state):
+        """
+        find all molecules involved in the conflicted_state
+        return a list of these molecules
+        """
+        result = [mol for mol in comp.molecules if mol.has_state(conflicted_state)]
+        return result
+
+    def find_conflicts_on_mol(self, react_container):
+        """
+        find all conflicts a specific reaction/reaction_container is involved in
+        apply a k+ contingency on this reaction (state=conflicted_state)
+        return the reaction container and all states which are conflicted by this reaction 
+        """
+        import re
+        # MR:
+        # Perhaps it will be easier to start some ConflictSolver,
+        # as you manipulate data at the end of run_process anyway?
+
+        product_contingency = react_container.product_contingency
+        conflicted_state = ""
+        # conflicted_states = []
+        self.conflicted_states = []
+        self.conflict_found = False
+
+        for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
+            #  the change should only be applied if the dependence reaction is reversible like ppi, ipi ...
+
+            self.is_conflict(product_contingency, required_cont)
+            if self.is_conflict(product_contingency, required_cont):  # self.conflict_found: #and self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
+                    self.conflict_found = True
+
+                    # step 4
+                    # # get reaction from reaction_pool
+                    # # get reaction to which contingency belongs
+
+                    required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
+
+                    conflicted_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
+                    # print "##############"
+                    # print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                    # print "required_cont.target_reaction: ", required_cont.target_reaction
+                    # print "conflicted_state: ", conflicted_state
+                    # print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
+                    cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
+                    cap = ContingencyApplicator()
+                    # apply a k+ contingency to our product contingency target reaction
+                    # step 5.1, 5.2, 5.3
+                    # this approach also solves problems with adapting the reaction rates
+                    cap.apply_on_container(react_container, cont_k)
+                    self.conflicted_states.append(conflicted_state)
+
+        return react_container
+
+    def solve_conlict(self, react_container):
+        """
+        change the reactions responsible for the conflict 
+
+        The reactions are already cloned by applying k+ contingency on the container
+        now we have to change the product complex because we have
+
+            Z + A(Z~U,AssocB!1).B(AssocA!1) -> Z + A(Z~P,AssocB!1).B(AssocA!1)    k1_1
+
+            Z + A(Z~U,AssocB) -> Z + A(Z~P,AssocB)    k1_2
+
+        and want 
+
+            Z + A(Z~U,AssocB!1).B(AssocA!1) -> Z + A(Z~P,AssocB!1) + B(AssocA!1)    k1_1
+
+            Z + A(Z~U,AssocB) -> Z + A(Z~P,AssocB)    k1_2
+        """
+        from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
+        from rxnconcompiler.molecule.molecule import Molecule
+        import copy
+
+        product_contingency = react_container.product_contingency
+        reversible = False
+
+        for conflicted_state in self.conflicted_states:
+            for reaction in react_container:
+                print reaction.name
+                cont_reaction_dict = {}
+                for cont_reaction in reaction.get_contingencies():
+                    cont_reaction_dict[str(cont_reaction).split()[1]] = str(cont_reaction).split()[0]  # later we need to distinguish when which reaction combination of the k+ was applied
+
+                new_complex = []
+                for i, comp in enumerate(reaction.product_complexes):
+                    conflicted_mol = []
+                    # check if the conflict state was applied on this complex and if this was a ! contingency
+                    if str(conflicted_state) in cont_reaction_dict and cont_reaction_dict[str(conflicted_state)] == "!":
+
+                        conflicted_mol = self.get_molecules_on_state(comp, conflicted_state)
+
+                        if conflicted_mol:
+                            # if there are conflicted molecules create for each of them a separated complex
+                            for mol in conflicted_mol:
+                                new = BiologicalComplex()
+                                new.side = 'LR'
+                                mol.remove_bond(conflicted_state)
+                                new.molecules.append(mol)
+                                new_complex.append(new)
+                            tmp_complex = copy.deepcopy(new_complex)
+                            if len(conflicted_mol) != len(comp.molecules):  # find binding partners which are left
+                                if reaction.definition['Reversibility'] == 'reversible':
+                                    reaction.reversibility = 'irreversible'
+                                    reaction.rate.set_basic_rates(reaction)
+
+                                for i, single_new_comp in enumerate(tmp_complex):
+                                    if single_new_comp.molecules[0].binding_partners:  # there is only one molecule in the new complex and we want to add all other binding partners
+                                        for mol in comp.molecules:
+                                            if mol not in new_complex[i].molecules:
+                                                for binding_partners in single_new_comp.molecules[0].binding_partners:
+                                                    if binding_partners.has_component(mol):
+                                                        new_complex[i].molecules.append(mol)
+                        else:
+                            new_complex.append(comp)
+                    else:
+                        new_complex.append(comp)
+                if new_complex:
+                    reaction.product_complexes = new_complex
+
+
 class Rxncon:
     """
     Manage the process that leads from the tabular data representation 
@@ -141,6 +281,7 @@ class Rxncon:
         self.complex_pool = ComplexPool()
         self.create_complexes()
         self.update_contingencies()
+        self.solve_conflict = ConflictSolver(self.reaction_pool, self.contingency_pool)
 
     def __repr__(self):
         """
@@ -288,137 +429,6 @@ class Rxncon:
         # Add appropriate reaction_factory
         pass
 
-    def is_conflict(self,product_contingency, required_cont):
-        if re.search('^(?!_)\[(.*?)\]',required_cont.target_reaction) or re.search('<(.*?)>', required_cont.target_reaction):
-            return False
-        elif str(required_cont.state) == str(product_contingency.state):
-            if str(required_cont.ctype) != str(product_contingency.ctype):
-                if str(required_cont.ctype) not in ["and", "or", "0"]:
-                    if self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
-                        return True 
-        return False 
-        
-
-    def find_conflicts_on_mol(self, react_container):
-        """
-        find all conflicts a specific reaction/reaction_container is involved in
-        apply a k+ contingency on this reaction (state=conflicted_state)
-        return the reaction container and all states which are conflicted by this reaction 
-        """
-        import re
-        # MR:
-        # Perhaps it will be easier to start some ConflictSolver,
-        # as you manipulate data at the end of run_process anyway? 
-
-        product_contingency = react_container.product_contingency
-        conflicted_state = ""
-        conflicted_states = []
-        self.conflict_found = False
-        for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
-        # the change should only be applied if the dependence reaction is reversible like ppi, ipi ...
-
-            self.is_conflict(product_contingency, required_cont)
-            if self.is_conflict(product_contingency, required_cont):#self.conflict_found: #and self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
-                    self.conflict_found = True
-
-                    #step 4 
-                    ## get reaction from reaction_pool
-                    ## get reaction to which contingency belongs
-
-                    required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
-                    
-                    conflicted_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
-                    # print "##############"
-                    # print "product_contingency.target_reaction: ", product_contingency.target_reaction
-                    # print "required_cont.target_reaction: ", required_cont.target_reaction
-                    # print "conflicted_state: ", conflicted_state
-                    # print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
-                    cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
-                    cap = ContingencyApplicator()
-                    # apply a k+ contingency to our product contingency target reaction
-                    # step 5.1, 5.2, 5.3
-                    #this approach also solves problems with adapting the reaction rates
-                    cap.apply_on_container(react_container, cont_k)
-                    conflicted_states.append(conflicted_state)
-
-        return react_container, conflicted_states
-
-    def get_molecules_on_state(self, comp, conflicted_state):
-        """
-        find all molecules involved in the conflicted_state
-        return a list of these molecules
-        """
-        result = [mol for mol in comp.molecules if mol.has_state(conflicted_state)]
-        return result
-
-    def solve_conlict(self, react_container, conflicted_states):
-        """
-        change the reactions responsible for the conflict 
-
-        The reactions are already cloned by applying k+ contingency on the container
-        now we have to change the product complex because we have
-
-            Z + A(Z~U,AssocB!1).B(AssocA!1) -> Z + A(Z~P,AssocB!1).B(AssocA!1)    k1_1
-
-            Z + A(Z~U,AssocB) -> Z + A(Z~P,AssocB)    k1_2
-
-        and want 
-
-            Z + A(Z~U,AssocB!1).B(AssocA!1) -> Z + A(Z~P,AssocB!1) + B(AssocA!1)    k1_1
-
-            Z + A(Z~U,AssocB) -> Z + A(Z~P,AssocB)    k1_2
-        """
-        from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
-        from rxnconcompiler.molecule.molecule import Molecule
-        import copy
-
-        product_contingency = react_container.product_contingency
-        print dir(react_container)
-        reversible = False
-        
-        for conflicted_state in conflicted_states:
-            for reaction in react_container:
-                print reaction.name
-                cont_reaction_dict = {}
-                for cont_reaction in reaction.get_contingencies():
-                    cont_reaction_dict[str(cont_reaction).split()[1]] = str(cont_reaction).split()[0] # later we need to distinguish when which reaction combination of the k+ was applied
-
-                new_complex = []
-                for i, comp in enumerate(reaction.product_complexes):
-                    conflicted_mol = []
-                    # check if the conflict state was applied on this complex and if this was a ! contingency
-                    if str(conflicted_state) in cont_reaction_dict and cont_reaction_dict[str(conflicted_state)] == "!": 
-                       
-                        conflicted_mol = self.get_molecules_on_state(comp,conflicted_state)
-                        
-                        if conflicted_mol:
-                            # if there are conflicted molecules create for each of them a separated complex 
-                            for mol in conflicted_mol:
-                                new = BiologicalComplex() 
-                                new.side = 'LR'
-                                mol.remove_bond(conflicted_state)
-                                new.molecules.append(mol)
-                                new_complex.append(new)
-                            tmp_complex = copy.deepcopy(new_complex)
-                            if len(conflicted_mol) != len(comp.molecules): # find binding partners which are left
-                                if reaction.definition['Reversibility'] == 'reversible':
-                                    reaction.reversibility = 'irreversible'
-                                    reaction.rate.set_basic_rates(reaction)
-
-                                for i, single_new_comp in enumerate(tmp_complex):
-                                    if single_new_comp.molecules[0].binding_partners: # there is only one molecule in the new complex and we want to add all other binding partners
-                                        for mol in comp.molecules:
-                                            if mol not in new_complex[i].molecules:
-                                                for binding_partners in single_new_comp.molecules[0].binding_partners:
-                                                    if binding_partners.has_component(mol):
-                                                        new_complex[i].molecules.append(mol)
-                        else:
-                            new_complex.append(comp)
-                    else:
-                        new_complex.append(comp)
-                if new_complex:
-                    reaction.product_complexes = new_complex
-
     def run_process(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True):
         """
         Transforms table into objects.
@@ -430,7 +440,7 @@ class Rxncon:
         add_complexes: when True applys boolean contingencies.
         add_contingencies: when True applys non-boolean contingencies.
         """
-        #print 'Contingencies', self.contingency_pool['Ste11_[KD]_P+_Ste7_[AL(T363)]'].children[1].children
+        # print 'Contingencies', self.contingency_pool['Ste11_[KD]_P+_Ste7_[AL(T363)]'].children[1].children
         self.war.calculate_missing_states(self.reaction_pool, self.contingency_pool)
         if add_missing_reactions:
             self.add_missing_reactions(list(self.war.not_in_products))
@@ -439,17 +449,18 @@ class Rxncon:
 
         for react_container in self.reaction_pool:
 
-            # initially container has one reaction 
+            # initially container has one reaction
             # (changes after running the process because of OR and K+/K-)
             complexes = []
             if add_complexes:
-                complexes = self.get_complexes(react_container.name) 
+                complexes = self.get_complexes(react_container.name)
 
-            ComplexApplicator(react_container, complexes).apply_complexes() 
+            ComplexApplicator(react_container, complexes).apply_complexes()
 
             # after applying complexes we may have more reactions in a single container.
-            react_container, conflicted_states = self.find_conflicts_on_mol(react_container)
-            if add_contingencies or self.conflict_found:
+            
+            react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
+            if add_contingencies or self.solve_conflict.conflict_found:
                 self.apply_contingencies(react_container)
 
             # single contingency is applied for all reactions. If K+/K- reactions are doubled.
@@ -458,8 +469,8 @@ class Rxncon:
             for reaction in react_container:
                 reaction.run_reaction()
 
-            if self.conflict_found:
-                self.solve_conlict(react_container, conflicted_states)
+            if self.solve_conflict.conflict_found:
+                self.solve_conflict.solve_conlict(react_container)
 
 
 if __name__ == '__main__':
