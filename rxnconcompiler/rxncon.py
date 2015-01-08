@@ -190,7 +190,7 @@ class ConflictSolver:
 
         for conflicted_state in self.conflicted_states:
             for reaction in react_container:
-                print reaction.name
+#                print reaction.name
                 cont_reaction_dict = {}
                 for cont_reaction in reaction.get_contingencies():
                     cont_reaction_dict[str(cont_reaction).split()[1]] = str(cont_reaction).split()[0]  # later we need to distinguish when which reaction combination of the k+ was applied
