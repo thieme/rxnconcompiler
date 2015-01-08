@@ -32,7 +32,7 @@ REACTIONS_DATA = {
 
 'PDonor_PT_PAcceptor': {
     'Rules':[
-    'PDonor(PDonor~P) + PAcceptor(PDonor~U) <-> PDonor(PDonor~U) + PAcceptor(PDonor~P)'],
+    'PDonor(PDonor~P) + PAcceptor(PDonor~U) -> PDonor(PDonor~U) + PAcceptor(PDonor~P)'],
     'Tags': [
     1, 'PT', 'no contingencies']},
 
@@ -142,6 +142,27 @@ CONTINGENCIES_DATA = {
     'A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1)'],
     'Tags': [
     1, 'ppi', 'contingencies']},
+
+    'X_p-_A_[Z] \n A_ppi_B; ! A_[Z]-{P}': {
+    'Rules':[
+    'A(Z~P,AssocB) + B(AssocA) <-> A(Z~P,AssocB!1).B(AssocA!1)',
+    'X + A(Z~P,AssocB!1).B(AssocA!1) -> X + A(Z~U,AssocB) + B(AssocA)',
+    'X + A(Z~P,AssocB) -> X + A(Z~U,AssocB)'],
+    'Tags': [
+    1, 'p-', 'contingencies']},
+
+    'Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]': {
+    'Rules':[
+    'Cdc42(GnP~P,ED) + PIP2(AssocSte20!2).Ste20(BR!2,CRIB,KD+CRIB!1).Ste20(KD+CRIB!1) -> Cdc42(GnP~P,ED!1).PIP2(AssocSte20!2).Ste20(BR!2,CRIB!1,KD+CRIB) + Ste20(KD+CRIB)',
+    'Cdc42(GnP~P,ED) + PIP2(AssocSte20!1).Ste20(BR!1,CRIB,KD+CRIB) <-> Cdc42(GnP~P,ED!1).PIP2(AssocSte20!2).Ste20(BR!2,CRIB!1,KD+CRIB)',
+    'Cdc42(GnP~P,ED) + Ste20(BR,CRIB,KD+CRIB!1).Ste20(KD+CRIB!1) -> Cdc42(GnP~P,ED!1).Ste20(BR,CRIB!1,KD+CRIB) + Ste20(KD+CRIB)',
+    'Cdc42(GnP~P,ED) + Ste20(BR,CRIB,KD+CRIB) <-> Cdc42(GnP~P,ED!1).Ste20(BR,CRIB!1,KD+CRIB)',
+    'Ste20(CRIB,KD+CRIB) + Ste20(CRIB,KD+CRIB) <-> Ste20(CRIB,KD+CRIB!1).Ste20(CRIB,KD+CRIB!1)'],
+    'Tags': [
+    1, 'ppi', 'contingencies']},
+
+
+    
 }
 
 
