@@ -310,13 +310,9 @@ class Modification(Reaction):
             plmol = pcomp.get_molecules(lmol.name, lmol.mid)[0] 
             prmol = pcomp.get_molecules(rmol.name, rmol.mid)[0] 
             prmol.add_modification(self.to_change)
-            print "if"
-            print self.inspect()
-            print "self.to_change_pt: ", self.to_change_pt
-            print prmol.inspect()
-            
+
             plmol.remove_modification(self.to_change_pt) 
-            print "pcomp: ", pcomp
+
             self.product_complexes += [pcomp]    
         else:
             srcomp = self.get_substrate_complex('R')

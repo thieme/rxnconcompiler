@@ -200,6 +200,7 @@ class DomainFactory:
       
             domain = row['ComponentA[Name]'] 
             return re.sub('\(|\)|\[|\]', '', domain)  
+
         elif component == 'A':
             if row.has_key('ComponentA[DSR]'):
                 b_dsr = row['ComponentA[DSR]']

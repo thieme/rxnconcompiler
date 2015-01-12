@@ -151,6 +151,8 @@ class ContingencyApplicator():
         left = reaction.get_substrate_complex('L')
         right = reaction.get_substrate_complex('R')
         left_right = reaction.get_substrate_complex('LR')
+
+
         
         if left_right:
             mols1 = left_right.get_molecules(component1.name, component1.cid)
@@ -168,12 +170,13 @@ class ContingencyApplicator():
                 self.add_molecule_to_complex(mols2, cont, component1, left_right, reaction)
 
         elif left and right:
+
             # TODO: Refactor make a function to check this condition.
             # A--B, A and B present in substrates
             if ((left.has_molecule(component1.name) and right.has_molecule(component2.name))\
                 or (left.has_molecule(component2.name) and right.has_molecule(component1.name)))\
                 and not cont.state == reaction.to_change: 
-         
+                
                 if component1.name in [reaction.left_reactant.name, reaction.right_reactant.name] \
                     and component2.name in [reaction.left_reactant.name, reaction.right_reactant.name]:
                 # if A--B, A and B present in substrates but if reaction creates A and B
@@ -242,7 +245,7 @@ class ContingencyApplicator():
         For other states apply contingency on substrate complexes.
         """
         for compl in reaction.substrat_complexes:
-                self.apply_on_complex(compl, cont)
+            self.apply_on_complex(compl, cont)
 
     def apply_on_reaction_product(self, reaction, cont):
         """
@@ -282,8 +285,10 @@ class ContingencyApplicator():
 
         if cont.ctype in ['x', '!']:
             for reaction in container:
+
                 #if reaction.definition['Reversibility'] == 'reversible':
                 if reaction.reversibility == 'reversible':
+
                     # we will have two rates here (because of reverse reaction).
                     reaction.rate.update_function(cont, False, num1, num2)
                 else:

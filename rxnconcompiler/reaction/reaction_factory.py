@@ -119,9 +119,7 @@ class ReactionFactoryFromDict:
                 reaction.right_reactant.add_modification_site(state)
                 reaction.left_reactant.add_modification(state_pt)
                 reaction.to_change_pt = state_pt
-                
-                print reaction.inspect()
-                print "reaction.to_change_pt: ", reaction.to_change_pt
+
             elif '-' in r_type or r_type in ['gap']:
                 reaction.right_reactant.add_modification(state)
             else:
@@ -138,7 +136,6 @@ class ReactionFactoryFromDict:
             else:
                 state = get_state(row, reaction, 'Association')
                 #if reaction.rtype == 'Association':
-                #    print state
                 reaction.left_reactant.add_binding_site(state)
                 reaction.right_reactant.add_binding_site(state)
                 reaction.to_change = state

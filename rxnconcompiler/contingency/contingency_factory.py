@@ -131,7 +131,7 @@ class ContingencyPool(dict):
 
         @todo:   what about ! <OR> are all states required? 
         """
-        result = [] 
+        result = []
         for root in self.values():
             children = root.get_leafs()
             for cont in children:
@@ -206,9 +206,9 @@ class ContingencyFactory(dict):
         It is a dict that holds all top nodes contingencies of a reaction.
         Key - reaction string. Value - list of contingencies. 
         """
-        # Could be recurent because of boolean nodes
+        # Could be recurrent because of boolean nodes
         # (we cannot add child if the parent is not there)
-        # but then we have risk that we have infinit loop 
+        # but then we have risk that we have infinite loop 
         # if the parent does not exist.
         # For now we have parse_later but it may not be sufficient in all cases.
         parse_later = []
@@ -230,9 +230,10 @@ class ContingencyFactory(dict):
     def parse_contingency(self, row):
         """
         Parses single contingency from row.
-        If it os not possible - parent is not yet there returns row.
+        If it is not possible - parent is not yet there returns row.
         """
         reaction = row['Target']
+
         ctype = row['Contingency']
         if '--' in ctype:
             sid = ctype 

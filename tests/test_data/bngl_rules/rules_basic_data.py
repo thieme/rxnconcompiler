@@ -31,10 +31,12 @@ REACTIONS_DATA = {
     1, 'AP', 'no contingencies']},
 
 'PDonor_PT_PAcceptor': {
+
 'Rules':[
 'PDonor(PAcceptor~P) + PAcceptor(PDonor~U) -> PDonor(PAcceptor~U) + PAcceptor(PDonor~P)'],
 'Tags': [
 1, 'PT', 'no contingencies']},
+
 
 'Enzyme_GEF_GProt': {
     'Rules':[
@@ -161,8 +163,18 @@ CONTINGENCIES_DATA = {
     'Tags': [
     1, 'ppi', 'contingencies']},
 
+    'ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; ! ProtA_[a]--[b]': {
+    'Rules':[
+    'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a!1,b!1) <-> ProtA(AssocProtC!1,a!2,b!2).ProtC(Gnp~P,AssocProtA!1)'],
+    'Tags': [
+    1, 'ipi', 'contingencies']},
 
-    
+    'ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; x ProtA_[a]--[b]': {
+    'Rules':[
+    'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a,b) <-> ProtA(AssocProtC!1,a,b).ProtC(Gnp~P,AssocProtA!1)'],
+    'Tags': [
+    1, 'ipi', 'contingencies']}
+
 }
 
 

@@ -121,7 +121,7 @@ class Contingency:
 
     def add_child(self, contingency):
         """
-        Adds given cotingency to children list.
+        Adds given contingency to children list.
         """
         if self.inherited_ctype and self.inherited_ctype != 'none':
             contingency.inherited_ctype = self.inherited_ctype
@@ -131,7 +131,7 @@ class Contingency:
         
     def is_parent(self, contingency):
         """
-        Checks whether given contingecy is a child.
+        Checks whether given contingency is a child.
         """
         if str(self.state) == contingency.target_reaction:
             return True
