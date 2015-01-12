@@ -45,7 +45,8 @@ class x_exclamation_mark_Tests(TestCase):
         # self.xls_tables = parse_rxncon(input_data)
         #self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
 
-        rxncon = Rxncon('A_ppi_B; ! A_[Z]-{P} \n C_ppi_B; ! A--B \n X_p-_A_[Z]')
+        #rxncon = Rxncon('A_ppi_B; ! A_[Z]-{P} \n C_ppi_B; ! A--B \n X_p-_A_[Z]')
+        rxncon = Rxncon('Sln1_[HK(H576)]_PT_Sln1_[RR(D1144)] \n Sln1_[RR(D1144)]_PT_Ypd1_[(H64)] \n Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]')
         #rxncon = Rxncon('Z_p+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon("Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z] \n X_[PD]_P+_Hog1_[(T174)] \n Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P} \n Ptc1_[PD]_P-_Hog1_[(T174)]")
         #rxncon = Rxncon('Z_p+_A_[Z]; ! Z--A \n Z_ppi_A \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')

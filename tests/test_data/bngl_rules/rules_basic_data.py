@@ -31,10 +31,10 @@ REACTIONS_DATA = {
     1, 'AP', 'no contingencies']},
 
 'PDonor_PT_PAcceptor': {
-    'Rules':[
-    'PDonor(PDonor~P) + PAcceptor(PDonor~U) -> PDonor(PDonor~U) + PAcceptor(PDonor~P)'],
-    'Tags': [
-    1, 'PT', 'no contingencies']},
+'Rules':[
+'PDonor(PAcceptor~P) + PAcceptor(PDonor~U) -> PDonor(PAcceptor~U) + PAcceptor(PDonor~P)'],
+'Tags': [
+1, 'PT', 'no contingencies']},
 
 'Enzyme_GEF_GProt': {
     'Rules':[

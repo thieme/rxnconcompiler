@@ -136,7 +136,7 @@ class ContingencyPool(dict):
             children = root.get_leafs()
             for cont in children:
                 if cont.ctype in ['!', 'k+', 'k-', 'x'] or cont.inherited_ctype in ['!', 'k+', 'k-', 'x']:
-                    if cont.state.type in ['Association', 'Covalent Modification', 'Relocalisation']:
+                    if cont.state.type in ['Association', 'Covalent Modification', 'Relocalisation', 'Intraprotein']:
                         result.append(cont.state)
         return set(result)
 
@@ -162,6 +162,13 @@ class ContingencyPool(dict):
         Used when updating contingencies.
         """
         return self.get_kind_contingencies("Covalent Modification")
+    def get_Intraprotein_contingencies(self):
+        """
+        Returns all contingencies with Covalent Modification state.
+
+        Used when updating contingencies.
+        """
+
 
     def get_relocalisation_contingencies(self):
         """

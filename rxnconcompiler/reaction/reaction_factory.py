@@ -114,8 +114,14 @@ class ReactionFactoryFromDict:
         if r_type in categories_dict['Covalent Modification']:
             state = get_state(row, reaction, 'Covalent Modification')
             if r_type == 'pt': # if subtype == Trnas
+                # second state changes in the reaction PT
+                state_pt = get_state(row, reaction, 'PT')
                 reaction.right_reactant.add_modification_site(state)
-                reaction.left_reactant.add_modification(state)
+                reaction.left_reactant.add_modification(state_pt)
+                reaction.to_change_pt = state_pt
+                
+                print reaction.inspect()
+                print "reaction.to_change_pt: ", reaction.to_change_pt
             elif '-' in r_type or r_type in ['gap']:
                 reaction.right_reactant.add_modification(state)
             else:

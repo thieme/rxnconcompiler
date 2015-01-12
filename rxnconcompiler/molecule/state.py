@@ -55,6 +55,8 @@ class State:
         Compares states only in respect to component names.
         To include domains in comparison use hash function.
         """
+        #print "self.components: ", self.components
+        #print "other.components: ", other.components
         if self.components:
             if sorted(self.components, key=lambda comp: comp.name) == sorted(other.components, key=lambda comp: comp.name):
                 return True
@@ -243,6 +245,18 @@ class StateFactory:
             state.not_modifier = 'U' # for Unmodified
             comp_name = row['ComponentB[Name]'].split('_')[0]
             comp_dom = self.df.get_modification_domain_from_dict(row, reaction)
+            comp = Component(comp_name, comp_dom)
+            state.components.append(comp)
+            state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom, state.modifier)
+
+        elif category == 'PT':
+            # this is a special case
+            # PT has two states that change in the reaction 
+            # here the source_state is returned
+            state.modifier = reaction.definition['Modifier or Boundary'] # e.g. P, Ub, truncated
+            state.not_modifier = 'U' # for Unmodified
+            comp_name = row['ComponentA[Name]'].split('_')[0]
+            comp_dom = self.df.get_modification_domain_from_dict(row, reaction, 'A')
             comp = Component(comp_name, comp_dom)
             state.components.append(comp)
             state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom, state.modifier)

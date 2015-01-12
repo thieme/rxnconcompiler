@@ -459,7 +459,7 @@ class Rxncon:
 
             # after applying complexes we may have more reactions in a single container.
             
-            react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
+            #react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
             if add_contingencies or self.solve_conflict.conflict_found:
                 self.apply_contingencies(react_container)
 
@@ -469,8 +469,8 @@ class Rxncon:
             for reaction in react_container:
                 reaction.run_reaction()
 
-            if self.solve_conflict.conflict_found:
-                self.solve_conflict.solve_conlict(react_container)
+            #if self.solve_conflict.conflict_found:
+            #    self.solve_conflict.solve_conlict(react_container)
 
 
 if __name__ == '__main__':

@@ -38,6 +38,7 @@ class CompilerTests(TestCase):
 
     def test_mapk_runs(self):
         """Tests that Compiler can process mapk example."""
+        print "DATA_PATH: ", DATA_PATH
         from_xls = Compiler(DATA_PATH + 'Tiger_et_al_TableS1.xls').translate()
         self.assertIn('begin model', from_xls)
 
