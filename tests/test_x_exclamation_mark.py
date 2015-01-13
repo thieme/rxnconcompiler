@@ -46,13 +46,31 @@ class x_exclamation_mark_Tests(TestCase):
         #self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
 
         #rxncon = Rxncon('A_ppi_B; ! A_[Z]-{P} \n C_ppi_B; ! A--B \n X_p-_A_[Z]')
-        rxncon = Rxncon('Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P} \n Sln1_[HK(H576)]_PT_Sln1_[RR(D1144)] \n Sln1_[RR(D1144)]_PT_Ypd1_[(H64)] \n Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]')
+        #rxncon = Rxncon('Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P} \n Sln1_[HK(H576)]_PT_Sln1_[RR(D1144)] \n Sln1_[RR(D1144)]_PT_Ypd1_[(H64)] \n Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]')
 
+        ##############
+        #product_contingency.target_reaction:  Swi4_[n]_ppi_Swi4_[c]
+        #required_cont.target_reaction:  Swi4_BIND_SCBG1
+        #conflicted_state:  Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4]
+        #conflict product_contingency:  ! Swi4_[n]--Swi4_[c]  required_cont:  x Swi4_[n]--Swi4_[c]       
+        #rxncon = Rxncon('Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]')
 
-        # product_contingency.target_reaction:  Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]
-        # required_cont.target_reaction:  Ssk1_ppi_Ssk22
-        # conflicted_state:  Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1]
-        # conflict product_contingency:  ! Ssk1_[RRD544]-{P}  required_cont:  x Ssk1_[RRD544]-{P}
+        #product_contingency.target_reaction:  Rom1_[DH]_GEF_Rho1_[GnP]
+        #required_cont.target_reaction:  Pkc1_[C1]_ppi_Rho1_[ED]
+        #conflicted_state:  Pkc1_[C1]--Rho1_[ED]
+        #conflict product_contingency:  x Rho1_[GnP]-{P}  required_cont:  ! Rho1_[GnP]-{P}
+        #rxncon = Rxncon('Pkc1_[C1]_ppi_Rho1_[ED]; ! Rho1_[GnP]-{P} \n Rom1_[DH]_GEF_Rho1_[GnP]')
+        
+        #product_contingency.target_reaction:  Ste5_[MEKK]_ppi_Ste11
+        #required_cont.target_reaction:  Sho1_[CyT]_ppi_Ste11_[BD:Sho1]
+        #conflicted_state:  Sho1_[CyT]--Ste11_[BDSho1]
+        #conflict product_contingency:  ! Ste5_[MEKK]--Ste11_[AssocSte5]  required_cont:  x Ste5_[MEKK]--Ste11_[AssocSte5]
+        #cont_reaction_dict:  {'Sho1_[CyT]--Ste11_[BDSho1]': '!'}
+        #single_new_comp.molecules[0].binding_partners:  [Ste5_[MEKK]--Ste11_[AssocSte5]]
+        #cont_reaction_dict:  {'Sho1_[CyT]--Ste11_[BDSho1]': 'x'}
+
+        rxncon = Rxncon('Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[CyT]_ppi_Ste11_[BD:Sho1]')
+        #rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11_[BD:Sho1]; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]; x Ste5_[MEKK]--Ste11 \n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[CyT]_ppi_Ste11_[BD:Sho1]')
         #rxncon = Rxncon('Z_p+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon("Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z] \n X_[PD]_P+_Hog1_[(T174)] \n Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P} \n Ptc1_[PD]_P-_Hog1_[(T174)]")
         #rxncon = Rxncon('Z_p+_A_[Z]; ! Z--A \n Z_ppi_A \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')

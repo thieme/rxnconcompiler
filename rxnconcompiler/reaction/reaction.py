@@ -95,6 +95,7 @@ class Reaction:
         new.product_complexes = copy.deepcopy(self.product_complexes)
         new.conditions = copy.deepcopy(self.conditions)
         new.to_change = copy.deepcopy(self.to_change)
+        new.to_change_pt = copy.deepcopy(self.to_change_pt)
         new.rate = copy.deepcopy(self.rate)
         return new
 
@@ -320,9 +321,7 @@ class Modification(Reaction):
             prcomp = srcomp.clone()
             prmol = prcomp.get_molecules(rmol.name, rmol.mid)[0]
             prmol.add_modification(self.to_change)
-            print "else"
-            print prmol.inspect()
-            print "self.to_change_pt: ", self.to_change_pt
+            
             slcomp = self.get_substrate_complex('L')
             slmol = slcomp.get_molecules(lmol.name, lmol.mid)[0]        
             plcomp = slcomp.clone()

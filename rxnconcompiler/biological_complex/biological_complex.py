@@ -231,6 +231,7 @@ class BiologicalComplex:
         
         # get pairs molecule-state & molecule-state
         pairs = []
+        
         while mol_state:
             ms = mol_state.pop()
             done = False
@@ -254,8 +255,14 @@ class BiologicalComplex:
             elif len(p) == 1 and p[0][1].type == 'Intraprotein':
                 bonds[p[0]] = counter
                 counter += 1
-            else:
+            else:   
                 print 'Adding bond - sth strange', self 
+                #print 'dir(self): ', dir(self)
+                print self.get_contingencies()
+                print "self.inspect(): ", self.inspect()
+                print "p: ", p
+                print "dir(p[0][1].type): ", dir(p[0][1])
+                print "p[0][1].type: ", p[0][1].type
         return bonds
 
 

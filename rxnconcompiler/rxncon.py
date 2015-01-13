@@ -149,11 +149,11 @@ class ConflictSolver:
                     required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
 
                     conflicted_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
-                    # print "##############"
-                    # print "product_contingency.target_reaction: ", product_contingency.target_reaction
-                    # print "required_cont.target_reaction: ", required_cont.target_reaction
-                    # print "conflicted_state: ", conflicted_state
-                    # print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
+                    print "##############"
+                    print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                    print "required_cont.target_reaction: ", required_cont.target_reaction
+                    print "conflicted_state: ", conflicted_state
+                    print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
                     cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
                     cap = ContingencyApplicator()
                     # apply a k+ contingency to our product contingency target reaction
@@ -194,7 +194,7 @@ class ConflictSolver:
                 cont_reaction_dict = {}
                 for cont_reaction in reaction.get_contingencies():
                     cont_reaction_dict[str(cont_reaction).split()[1]] = str(cont_reaction).split()[0]  # later we need to distinguish when which reaction combination of the k+ was applied
-
+                print  "cont_reaction_dict: ", cont_reaction_dict
                 new_complex = []
                 for i, comp in enumerate(reaction.product_complexes):
                     conflicted_mol = []
@@ -218,7 +218,9 @@ class ConflictSolver:
                                     reaction.rate.set_basic_rates(reaction)
 
                                 for i, single_new_comp in enumerate(tmp_complex):
+
                                     if single_new_comp.molecules[0].binding_partners:  # there is only one molecule in the new complex and we want to add all other binding partners
+                                        print "single_new_comp.molecules[0].binding_partners: ", single_new_comp.molecules[0].binding_partners
                                         for mol in comp.molecules:
                                             if mol not in new_complex[i].molecules:
                                                 for binding_partners in single_new_comp.molecules[0].binding_partners:
@@ -459,7 +461,7 @@ class Rxncon:
 
             # after applying complexes we may have more reactions in a single container.
             
-            #react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
+            react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
             if add_contingencies or self.solve_conflict.conflict_found:
                 self.apply_contingencies(react_container)
 
@@ -469,8 +471,8 @@ class Rxncon:
             for reaction in react_container:
                 reaction.run_reaction()
 
-            #if self.solve_conflict.conflict_found:
-            #    self.solve_conflict.solve_conlict(react_container)
+            if self.solve_conflict.conflict_found:
+                self.solve_conflict.solve_conlict(react_container)
 
 
 if __name__ == '__main__':
