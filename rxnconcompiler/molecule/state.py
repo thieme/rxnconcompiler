@@ -75,7 +75,11 @@ class State:
         """
         #return (str(self) + str(self.sid)).__hash__()
         return (str(self)).__hash__()
-
+    def __len__(self):
+        counter = 0
+        for comp in self.components:
+            counter += 1
+        return counter
     def has_component(self, component):
         """
         Checks wchether stat contains a component.

@@ -41,7 +41,7 @@ class x_exclamation_mark_Tests(TestCase):
         """
 
         # basic reaction with one contingency.
-        input_data = "/home/thiemese/projects/rxncon/rxncon-unix/web2py/applications/yeastmap/modules/rxncon/test/test_data/Tiger_et_al_TableS1_v3.xls"
+        input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
         # self.xls_tables = parse_rxncon(input_data)
         #self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
 
@@ -49,28 +49,44 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon('Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P} \n Sln1_[HK(H576)]_PT_Sln1_[RR(D1144)] \n Sln1_[RR(D1144)]_PT_Ypd1_[(H64)] \n Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]')
 
         ##############
+        # product_contingency.target_reaction:  Ste5_[MEKK]_ppi_Ste11
+        # required_cont.target_reaction:  Sho1_[CyT]_ppi_Ste11_[BD:Sho1]
+        # conflicted_state:  Sho1_[CyT]--Ste11_[BDSho1]
+        # conflict product_contingency:  ! Ste5_[MEKK]--Ste11_[AssocSte5]  required_cont:  x Ste5_[MEKK]--Ste11_[AssocSte5]
+        # conflicted_state:  Sho1_[CyT]--Ste11_[BDSho1]
+
+        # Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5]
+
+        # Ste5_ppi_Ste5
+
         #product_contingency.target_reaction:  Swi4_[n]_ppi_Swi4_[c]
         #required_cont.target_reaction:  Swi4_BIND_SCBG1
         #conflicted_state:  Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4]
         #conflict product_contingency:  ! Swi4_[n]--Swi4_[c]  required_cont:  x Swi4_[n]--Swi4_[c]       
         #rxncon = Rxncon('Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]')
+        #rxncon = Rxncon('Swi4_ppi_SCBG1 \n Swi4_[n]_ppi_Swi4_[c]; ! Swi4--SCBG1')
+        #rxncon = Rxncon('Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]')
 
-        #product_contingency.target_reaction:  Rom1_[DH]_GEF_Rho1_[GnP]
-        #required_cont.target_reaction:  Pkc1_[C1]_ppi_Rho1_[ED]
-        #conflicted_state:  Pkc1_[C1]--Rho1_[ED]
-        #conflict product_contingency:  x Rho1_[GnP]-{P}  required_cont:  ! Rho1_[GnP]-{P}
         #rxncon = Rxncon('Pkc1_[C1]_ppi_Rho1_[ED]; ! Rho1_[GnP]-{P} \n Rom1_[DH]_GEF_Rho1_[GnP]')
         
         #product_contingency.target_reaction:  Ste5_[MEKK]_ppi_Ste11
         #required_cont.target_reaction:  Sho1_[CyT]_ppi_Ste11_[BD:Sho1]
         #conflicted_state:  Sho1_[CyT]--Ste11_[BDSho1]
         #conflict product_contingency:  ! Ste5_[MEKK]--Ste11_[AssocSte5]  required_cont:  x Ste5_[MEKK]--Ste11_[AssocSte5]
-        #cont_reaction_dict:  {'Sho1_[CyT]--Ste11_[BDSho1]': '!'}
-        #single_new_comp.molecules[0].binding_partners:  [Ste5_[MEKK]--Ste11_[AssocSte5]]
-        #cont_reaction_dict:  {'Sho1_[CyT]--Ste11_[BDSho1]': 'x'}
+        #rxncon = Rxncon('Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[CyT]_ppi_Ste11_[BD:Sho1]')
 
-        rxncon = Rxncon('Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[CyT]_ppi_Ste11_[BD:Sho1]')
-        #rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11_[BD:Sho1]; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]; x Ste5_[MEKK]--Ste11 \n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[CyT]_ppi_Ste11_[BD:Sho1]')
+
+        #rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11_[BD:Sho1]; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]; x Ste5_[MEKK]--Ste11 \n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11')
+        #ste5--ste11 is missing
+        rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]\n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[Cyt]--Ste11')
+        #rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11; k+ Hkr1_[TMD]--Sho1_[TMD]\n Ste5_[MEKK]_ppi_Ste11; x Sho1_[Cyt]--Ste11')
+      
+        #rxncon = Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; x Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]')
+        #rxncon = Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]')
+
+        #Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 
+ #Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]
+        #Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4], Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4]
         #rxncon = Rxncon('Z_p+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon("Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z] \n X_[PD]_P+_Hog1_[(T174)] \n Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P} \n Ptc1_[PD]_P-_Hog1_[(T174)]")
         #rxncon = Rxncon('Z_p+_A_[Z]; ! Z--A \n Z_ppi_A \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
@@ -80,7 +96,7 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon('A_p+_X1_[A]; k+ <S1S2> \n <S1S2>; AND X1--X2; AND X2--X3')
         #rxncon = Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]') # changed in master
 
-        #rxncon = Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]')
+        #
 
         #rxncon = Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[KD+CRIB]--Ste20_[KD+CRIB] \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
 
@@ -145,7 +161,7 @@ class x_exclamation_mark_Tests(TestCase):
         """
         # print "self.basic_cont: ", self.basic_cont
         print "bngl_src: ", self.bngl_src.get_src()
-
+        pass
         # rxn = Rxncon('C_p+_B_[C] \n A_ppi_B; x B_[C]-{P}'
         # rxn.run_process()
         # rcont = rxn.reaction_pool['C_p+_B_[C]']

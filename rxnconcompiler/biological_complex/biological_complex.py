@@ -225,6 +225,8 @@ class BiologicalComplex:
         # get all molecule-state data:
         mol_state = []
         mols = sorted(self.molecules, key=lambda mol: mol.name)
+        #print "mols: ", mols
+        #print ""
         for mol in mols:
             for state in mol.binding_partners:
                 mol_state.append((mol, state))
@@ -257,12 +259,6 @@ class BiologicalComplex:
                 counter += 1
             else:   
                 print 'Adding bond - sth strange', self 
-                #print 'dir(self): ', dir(self)
-                print self.get_contingencies()
-                print "self.inspect(): ", self.inspect()
-                print "p: ", p
-                print "dir(p[0][1].type): ", dir(p[0][1])
-                print "p[0][1].type: ", p[0][1].type
         return bonds
 
 

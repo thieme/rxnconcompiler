@@ -91,6 +91,7 @@ from parser.rxncon_parser import parse_rxncon
 from contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state
 import re
+import copy
 
 
 class ConflictSolver:
@@ -149,11 +150,12 @@ class ConflictSolver:
                     required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
 
                     conflicted_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
-                    print "##############"
-                    print "product_contingency.target_reaction: ", product_contingency.target_reaction
-                    print "required_cont.target_reaction: ", required_cont.target_reaction
-                    print "conflicted_state: ", conflicted_state
-                    print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
+                   #  print "##############"
+                   #  print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                   #  print "required_cont.target_reaction: ", required_cont.target_reaction
+                   # #print dir(required_cont.target_reaction)
+                   #  print "conflicted_state: ", conflicted_state
+                   #  print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
                     cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
                     cap = ContingencyApplicator()
                     # apply a k+ contingency to our product contingency target reaction
@@ -164,6 +166,32 @@ class ConflictSolver:
 
         return react_container
 
+    def change_reversibility(self, reaction):
+        if reaction.definition['Reversibility'] == 'reversible':
+            reaction.reversibility = 'irreversible'
+            reaction.rate.set_basic_rates(reaction)
+        return reaction
+
+    def reorder_molecules(self, new_complex, comp, found_no_complex, already_in_complex):
+        tmp_complex = copy.deepcopy(new_complex)
+        for i, new_comp in enumerate(tmp_complex):
+            for single_new_comp_mol in new_comp.molecules:
+                if single_new_comp_mol.binding_partners:  # there is only one molecule in the new complex and we want to add all other binding partners
+                    for mol in comp.molecules:
+
+                        if mol._id not in already_in_complex and mol._id != new_complex[i].molecules[0]._id:  # != new_complex[i].molecules[0]._id:# not in new_complex[i].molecules:
+                            for binding_partners in single_new_comp_mol.binding_partners:
+                                if binding_partners.has_component(mol):
+                                    new_complex[i].molecules.append(mol)
+                                    already_in_complex.append(mol._id)
+                                    if mol._id in found_no_complex:
+                                        found_no_complex = found_no_complex.difference(set([mol._id]))
+                                    break
+                            else:
+                                found_no_complex.add(mol._id)
+        if found_no_complex:
+            self.reorder_molecules(new_complex, comp, found_no_complex, already_in_complex)
+        return new_complex
     def solve_conlict(self, react_container):
         """
         change the reactions responsible for the conflict 
@@ -183,7 +211,7 @@ class ConflictSolver:
         """
         from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
         from rxnconcompiler.molecule.molecule import Molecule
-        import copy
+        
 
         product_contingency = react_container.product_contingency
         reversible = False
@@ -194,38 +222,50 @@ class ConflictSolver:
                 cont_reaction_dict = {}
                 for cont_reaction in reaction.get_contingencies():
                     cont_reaction_dict[str(cont_reaction).split()[1]] = str(cont_reaction).split()[0]  # later we need to distinguish when which reaction combination of the k+ was applied
-                print  "cont_reaction_dict: ", cont_reaction_dict
                 new_complex = []
+                to_change_in_reaction = reaction.to_change
+
                 for i, comp in enumerate(reaction.product_complexes):
+
                     conflicted_mol = []
                     # check if the conflict state was applied on this complex and if this was a ! contingency
+
                     if str(conflicted_state) in cont_reaction_dict and cont_reaction_dict[str(conflicted_state)] == "!":
 
                         conflicted_mol = self.get_molecules_on_state(comp, conflicted_state)
 
                         if conflicted_mol:
+                            
                             # if there are conflicted molecules create for each of them a separated complex
+                            already_in_complex = []
                             for mol in conflicted_mol:
-                                new = BiologicalComplex()
-                                new.side = 'LR'
-                                mol.remove_bond(conflicted_state)
-                                new.molecules.append(mol)
-                                new_complex.append(new)
-                            tmp_complex = copy.deepcopy(new_complex)
+
+                                if mol._id not in already_in_complex:
+
+                                    new = BiologicalComplex()
+                                    new.side = 'LR'
+                                    mol.remove_bond(conflicted_state)
+                                    new.molecules.append(mol)
+                                    already_in_complex.append(mol._id)
+                                    for comp_mol in comp.molecules:
+                                        if comp_mol._id != mol._id and comp_mol._id not in already_in_complex:
+                                            if len(to_change_in_reaction.components) == 2 and ((to_change_in_reaction.components[0].name == comp_mol.name and to_change_in_reaction.components[1].name == mol.name) or (to_change_in_reaction.components[1].name == comp_mol.name and to_change_in_reaction.components[0].name == mol.name)):
+                                                for binding_partners in new.molecules[0].binding_partners:
+                                                    if binding_partners in comp_mol.binding_partners:
+                                                        reaction = self.change_reversibility(reaction)
+                                                        comp_mol.remove_bond(conflicted_state)
+                                                        new.molecules.append(comp_mol)
+                                                        already_in_complex.append(comp_mol._id)
+                                                        break # if we find a binding partner we don't have to look further
+
+                                    new_complex.append(new)
+
                             if len(conflicted_mol) != len(comp.molecules):  # find binding partners which are left
-                                if reaction.definition['Reversibility'] == 'reversible':
-                                    reaction.reversibility = 'irreversible'
-                                    reaction.rate.set_basic_rates(reaction)
+                                reaction = self.change_reversibility(reaction)
+# #seen_mols = []               
+                                found_no_complex = set([])
+                                new_complex = self.reorder_molecules(new_complex, comp, found_no_complex, already_in_complex)
 
-                                for i, single_new_comp in enumerate(tmp_complex):
-
-                                    if single_new_comp.molecules[0].binding_partners:  # there is only one molecule in the new complex and we want to add all other binding partners
-                                        print "single_new_comp.molecules[0].binding_partners: ", single_new_comp.molecules[0].binding_partners
-                                        for mol in comp.molecules:
-                                            if mol not in new_complex[i].molecules:
-                                                for binding_partners in single_new_comp.molecules[0].binding_partners:
-                                                    if binding_partners.has_component(mol):
-                                                        new_complex[i].molecules.append(mol)
                         else:
                             new_complex.append(comp)
                     else:

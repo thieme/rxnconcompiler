@@ -44,7 +44,7 @@ class Component:
                 return -1
             elif self.cid > other.cid:
                 return 1
-        else: return 0        
+        else: return 0      
 
     def exact_compare(self, other):
         """
