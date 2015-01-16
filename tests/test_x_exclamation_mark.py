@@ -65,7 +65,7 @@ class x_exclamation_mark_Tests(TestCase):
         #conflict product_contingency:  ! Swi4_[n]--Swi4_[c]  required_cont:  x Swi4_[n]--Swi4_[c]       
         #rxncon = Rxncon('Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]')
         #rxncon = Rxncon('Swi4_ppi_SCBG1 \n Swi4_[n]_ppi_Swi4_[c]; ! Swi4--SCBG1')
-        #rxncon = Rxncon('Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]')
+        rxncon = Rxncon('Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]')
 
         #rxncon = Rxncon('Pkc1_[C1]_ppi_Rho1_[ED]; ! Rho1_[GnP]-{P} \n Rom1_[DH]_GEF_Rho1_[GnP]')
         
@@ -78,7 +78,7 @@ class x_exclamation_mark_Tests(TestCase):
 
         #rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11_[BD:Sho1]; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]; x Ste5_[MEKK]--Ste11 \n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11')
         #ste5--ste11 is missing
-        rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]\n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[Cyt]--Ste11')
+        #rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]\n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[Cyt]--Ste11')
         #rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11; k+ Hkr1_[TMD]--Sho1_[TMD]\n Ste5_[MEKK]_ppi_Ste11; x Sho1_[Cyt]--Ste11')
       
         #rxncon = Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; x Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]')

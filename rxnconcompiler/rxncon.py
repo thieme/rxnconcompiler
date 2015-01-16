@@ -73,23 +73,25 @@ Process steps:
 
 
 Classes:
-- Rxncon:        Input: rxncon dict. Output: rxncon objects. 
-                 out of initial reactions and contingencies produces reactions 
+- Rxncon:        Input: rxncon dict. Output: rxncon objects.
+                 out of initial reactions and contingencies produces reactions
                  similar to bngl rules.
 
 """
 
-from util.warnings import RxnconWarnings 
+from util.warnings import RxnconWarnings
 from molecule.domain_factory import DomainFactory
 from biological_complex.biological_complex import ComplexPool
 from biological_complex.complex_applicator import ComplexApplicator
-from biological_complex.complex_builder import ComplexBuilder 
+from biological_complex.complex_builder import ComplexBuilder
 from contingency.contingency_applicator import ContingencyApplicator
 from contingency.contingency_factory import ContingencyFactory
 from reaction.reaction_factory import ReactionFactory
 from parser.rxncon_parser import parse_rxncon
 from contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state
+from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
+from rxnconcompiler.molecule.molecule import Molecule
 import re
 import copy
 
@@ -126,13 +128,9 @@ class ConflictSolver:
         return the reaction container and all states which are conflicted by this reaction 
         """
         import re
-        # MR:
-        # Perhaps it will be easier to start some ConflictSolver,
-        # as you manipulate data at the end of run_process anyway?
 
         product_contingency = react_container.product_contingency
         conflicted_state = ""
-        # conflicted_states = []
         self.conflicted_states = []
         self.conflict_found = False
 
@@ -167,31 +165,66 @@ class ConflictSolver:
         return react_container
 
     def change_reversibility(self, reaction):
+        """
+        changes the reversibility of a reaction. This is needed if we change a reaction because of a conflict with an other reaction. This changes are not reversible.
+        """
         if reaction.definition['Reversibility'] == 'reversible':
             reaction.reversibility = 'irreversible'
             reaction.rate.set_basic_rates(reaction)
         return reaction
 
     def reorder_molecules(self, new_complex, comp, found_no_complex, already_in_complex):
+        """
+        This function is to reorder the molecules, meaning to bring molecules in a complex if they belong together.
+        This function is repeated recursively as long as there is a molecule we cannot assign.
+        """
         tmp_complex = copy.deepcopy(new_complex)
-        for i, new_comp in enumerate(tmp_complex):
-            for single_new_comp_mol in new_comp.molecules:
-                if single_new_comp_mol.binding_partners:  # there is only one molecule in the new complex and we want to add all other binding partners
-                    for mol in comp.molecules:
-
-                        if mol._id not in already_in_complex and mol._id != new_complex[i].molecules[0]._id:  # != new_complex[i].molecules[0]._id:# not in new_complex[i].molecules:
-                            for binding_partners in single_new_comp_mol.binding_partners:
-                                if binding_partners.has_component(mol):
-                                    new_complex[i].molecules.append(mol)
-                                    already_in_complex.append(mol._id)
-                                    if mol._id in found_no_complex:
-                                        found_no_complex = found_no_complex.difference(set([mol._id]))
-                                    break
+        for i, new_comp in enumerate(tmp_complex):  # iterate over the components of the new product_complexes
+            for single_new_comp_mol in new_comp.molecules:  # iterate over the molecules of the single component.
+                if single_new_comp_mol.binding_partners:  # There could be more than one molecule in the complex so we have to check the binding partners for each single molecule
+                    for mol in comp.molecules:  # check all the molecules which are in the original product complex
+                        if mol._id not in already_in_complex:  # check if a molecule is already bound a complex
+                            for binding_partners in single_new_comp_mol.binding_partners:  # iterate over the binding partners of the molecule of the complex we are looking at
+                                if binding_partners.has_component(mol):  # check if the molecule of the original complex is part of this complex.
+                                    new_complex[i].molecules.append(mol)  # if yeas add the molecule to this complex
+                                    already_in_complex.append(mol._id)  # mark this protein to be known
+                                    if mol._id in found_no_complex:  # if we found in a previous round no complex for this molecule it will be listed in found_no_complex.
+                                        found_no_complex = found_no_complex.difference(set([mol._id]))  # remove the id from this list
+                                    break # we found an complex were this molecule can be added so we can make a break 
                             else:
-                                found_no_complex.add(mol._id)
-        if found_no_complex:
+                                found_no_complex.add(mol._id)  # if we don't have a break in the for loop we will end up here, because we did not found a complex we can assign the respective molecule.
+        if found_no_complex:  # as long as there are a molecule we can not assign repeat the procedure
             self.reorder_molecules(new_complex, comp, found_no_complex, already_in_complex)
-        return new_complex
+        return new_complex  # if all molecules are assigned leave this function
+
+    def reassign_complexes(self, conflicted_mol, conflicted_state, comp, reaction, new_complex):
+        """
+        if there are conflicted molecules create for each of them a separated complex
+        """
+        already_in_complex = []  # to list all molecules we already assigned to a complex
+        to_change_in_reaction = reaction.to_change  # what should be changed in this reaction, this is important if we have symmetrical interactions which are conflicted
+        for mol in conflicted_mol:  # iterate over all molecules which are directly involved in the conflict
+
+            if mol._id not in already_in_complex: # check if we saw this molecule before
+
+                new = BiologicalComplex()  # initialise a new complex
+                new.side = 'LR'  # set the side
+                mol.remove_bond(conflicted_state)  # remove the bond of the conflicting state. This leads to a loose of the bond and should result in a disconnection later
+                new.molecules.append(mol)  # add the molecule to the new established complex
+                already_in_complex.append(mol._id)  # add the molecule to the known molecules
+                for comp_mol in comp.molecules:  # iterate of all the other molecules in the original product complex
+                    if comp_mol._id != mol._id and comp_mol._id not in already_in_complex:  # the molecule of the original product complex should not be the same as the conflicting molecule and not known.
+                        if len(to_change_in_reaction.components) == 2 and ((to_change_in_reaction.components[0].name == comp_mol.name and to_change_in_reaction.components[1].name == mol.name) or (to_change_in_reaction.components[1].name == comp_mol.name and to_change_in_reaction.components[0].name == mol.name)):
+                            if set(new.molecules[0].binding_partners) & set(comp_mol.binding_partners):  # check if there are overlapping binding partners
+                                    reaction = self.change_reversibility(reaction)  # if we change a reaction in this way we have to change the type to irreversible
+                                    comp_mol.remove_bond(conflicted_state)  # remove the bond of the conflicting state. This leads to a loose of the bond and should result in a disconnection later
+                                    new.molecules.append(comp_mol)  # add the molecule to the new product complex
+                                    already_in_complex.append(comp_mol._id)  # add the molecule to the known molecules
+                                    break  # if we find a binding partner we don't have to look further
+
+                new_complex.append(new)  # extend the product complexes
+        return new_complex, already_in_complex
+
     def solve_conlict(self, react_container):
         """
         change the reactions responsible for the conflict 
@@ -209,21 +242,16 @@ class ConflictSolver:
 
             Z + A(Z~U,AssocB) -> Z + A(Z~P,AssocB)    k1_2
         """
-        from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
-        from rxnconcompiler.molecule.molecule import Molecule
-        
 
         product_contingency = react_container.product_contingency
         reversible = False
 
         for conflicted_state in self.conflicted_states:
             for reaction in react_container:
-#                print reaction.name
                 cont_reaction_dict = {}
                 for cont_reaction in reaction.get_contingencies():
                     cont_reaction_dict[str(cont_reaction).split()[1]] = str(cont_reaction).split()[0]  # later we need to distinguish when which reaction combination of the k+ was applied
                 new_complex = []
-                to_change_in_reaction = reaction.to_change
 
                 for i, comp in enumerate(reaction.product_complexes):
 
@@ -235,34 +263,11 @@ class ConflictSolver:
                         conflicted_mol = self.get_molecules_on_state(comp, conflicted_state)
 
                         if conflicted_mol:
-                            
-                            # if there are conflicted molecules create for each of them a separated complex
-                            already_in_complex = []
-                            for mol in conflicted_mol:
-
-                                if mol._id not in already_in_complex:
-
-                                    new = BiologicalComplex()
-                                    new.side = 'LR'
-                                    mol.remove_bond(conflicted_state)
-                                    new.molecules.append(mol)
-                                    already_in_complex.append(mol._id)
-                                    for comp_mol in comp.molecules:
-                                        if comp_mol._id != mol._id and comp_mol._id not in already_in_complex:
-                                            if len(to_change_in_reaction.components) == 2 and ((to_change_in_reaction.components[0].name == comp_mol.name and to_change_in_reaction.components[1].name == mol.name) or (to_change_in_reaction.components[1].name == comp_mol.name and to_change_in_reaction.components[0].name == mol.name)):
-                                                for binding_partners in new.molecules[0].binding_partners:
-                                                    if binding_partners in comp_mol.binding_partners:
-                                                        reaction = self.change_reversibility(reaction)
-                                                        comp_mol.remove_bond(conflicted_state)
-                                                        new.molecules.append(comp_mol)
-                                                        already_in_complex.append(comp_mol._id)
-                                                        break # if we find a binding partner we don't have to look further
-
-                                    new_complex.append(new)
+                            new_complex, already_in_complex = self.reassign_complexes(conflicted_mol, conflicted_state, comp, reaction, new_complex)
 
                             if len(conflicted_mol) != len(comp.molecules):  # find binding partners which are left
                                 reaction = self.change_reversibility(reaction)
-# #seen_mols = []               
+
                                 found_no_complex = set([])
                                 new_complex = self.reorder_molecules(new_complex, comp, found_no_complex, already_in_complex)
 
@@ -276,11 +281,11 @@ class ConflictSolver:
 
 class Rxncon:
     """
-    Manage the process that leads from the tabular data representation 
+    Manage the process that leads from the tabular data representation
     to the object oriented representation of reactions and contingencies.
     The process and objects are bngl-oriented.
     #KR: better 'The process and objects were designed to allow...'
-    E.g. they were design to allow flexible and unambiguous 
+    E.g. they were design to allow flexible and unambiguous
     translation to bngl string in later stage.
 
     The end product is a pool of ReactionContainer objects.
@@ -293,19 +298,19 @@ class Rxncon:
     def __init__(self, xls_tables):
         """
         Constructor creates basic objects with explicitly given information:
-        - MoleculePool created by Reaction Factory  
+        - MoleculePool created by Reaction Factory
         - ReactionPool created by Reaction Factory
         - ContingencyPool created by ContingencyFactory
         - ComplexPool created here using ComplexBuilder
         Data is supplemented by domain info for ppis with no domain specified by the user.
 
         MoleculePool - list of all right and left reactants from all reactions.
-        ReactionPool - dict of all reactions. 
-                       rxncon reaction str: ReactionContiner object 
+        ReactionPool - dict of all reactions.
+                       rxncon reaction str: ReactionContiner object
                        (captures all possible alternative reactions
-                       depending on conditions in which reaction can happen). 
+                       depending on conditions in which reaction can happen).
         ContingencyPool - dictionary of all contingencies.
-                          rxncon_reaction_str: root contingency 
+                          rxncon_reaction_str: root contingency
                           (which contains all contingencies assign to this reaction).
         ComplexPool - dict of all complexes (defined as children-containing contingencies with '<>').
                       '<name>': AlternativeComplexes (which contains BiologicalComplex objects).
@@ -319,7 +324,6 @@ class Rxncon:
         self.reaction_pool = reaction_factory.reaction_pool
         contingency_factory = ContingencyFactory(self.xls_tables)
         self.contingency_pool = contingency_factory.parse_contingencies()
-        #self.find_conflicts_on_mol()
         self.complex_pool = ComplexPool()
         self.create_complexes()
         self.update_contingencies()
@@ -346,14 +350,14 @@ class Rxncon:
                         result += '; %s' % str(cont)
                     for cont in later:
                         result += '\n%s; %s %s' % (cont.target_reaction, cont.ctype, str(cont.state))
-            result = result.strip() + '\n'       
+            result = result.strip() + '\n'
         return result
 
     def create_complexes(self):
         """
         Uses ComplexBuilder to create ComplexPool.
         """
-        bools = self.contingency_pool.get_top_booleans() 
+        bools = self.contingency_pool.get_top_booleans()
         for bool_cont in bools:
             builder = ComplexBuilder()
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
@@ -375,11 +379,11 @@ class Rxncon:
 
         @type  reaction_name: string
         @param reaction_name: reaction string e.g. A_ppi_B_[bd_A].
-    
+
         @rtype:  list of AlternativeComplexes object
-        @return: all complexes defined by boolean contingencies 
-                 applicable to a given reaction.  
-        """   
+        @return: all complexes defined by boolean contingencies
+                 applicable to a given reaction.
+        """
         if not self.contingency_pool.has_key(reaction_name):
             return []
         cont_root = self.contingency_pool[reaction_name]
@@ -404,9 +408,9 @@ class Rxncon:
 
     def update_contingencies(self):
         """
-        Function that changes domain name in contingencies 
+        Function that changes domain name in contingencies
         with modification state (when domain is not provide by the user).
-        Domain indicates which enzyme creates the state. 
+        Domain indicates which enzyme creates the state.
         State must match one of the states produced in the reactions.
         """
         # TODO: make ContingencyUpdator class out of it.
@@ -500,7 +504,6 @@ class Rxncon:
             ComplexApplicator(react_container, complexes).apply_complexes()
 
             # after applying complexes we may have more reactions in a single container.
-            
             react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
             if add_contingencies or self.solve_conflict.conflict_found:
                 self.apply_contingencies(react_container)
@@ -517,5 +520,3 @@ class Rxncon:
 
 if __name__ == '__main__':
     main()
-
-
