@@ -26,6 +26,7 @@ from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicator
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
 from rxnconcompiler.molecule.molecule import Molecule
+from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder
 
 
 class x_exclamation_mark_Tests(TestCase):
@@ -44,7 +45,60 @@ class x_exclamation_mark_Tests(TestCase):
         input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
         # self.xls_tables = parse_rxncon(input_data)
         #self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
+        #rxncon = Rxncon('A_P+_B_[A]\n B_ppi_C; x B_[A]-{P}\n C_ppi_D; ! B--C')
 
+
+        #rxncon = Rxncon('A_ppi_B; ! <c> \n <c>; AND A--C \n <c>; AND A--F')
+        
+        rxncon = Rxncon('A_ppi_B')
+        rcont = rxncon.reaction_pool['A_ppi_B']
+        #print "rxncon.get_complexes(rcont.name) 1: ", rxncon.get_complexes(rcont.name)
+        #rxncon.create_complexes()
+        #build_positive_complexes_from_boolean
+        ComplexApplicator(rcont, []).apply_complexes()
+
+        cont = Contingency('A_ppi_B', '!', get_state('<c>'))
+        cont1 = Contingency('<c>', 'AND', get_state('A--C'))
+        #cont2 = Contingency('<c>', 'AND', get_state('A--F'))
+        cont.add_child(cont1)
+        cont.add_child(cont2)
+        print dir(get_state('A--C'))
+        print get_state('A--C').components
+
+       #cont.state.components = get_state('A--C').components
+        builder = ComplexBuilder()
+        alter_comp = builder.build_positive_complexes_from_boolean(cont)
+        rxncon.complex_pool[str(cont.state)] = alter_comp
+        #rxncon.update_contingencies()
+
+        print "str(cont.state): ", str(cont.state)
+        print "rxncon.complex_pool[str(cont.state)]: ", rxncon.complex_pool[str(cont.state)]
+        print "cont.state.components: ", cont.state.components
+        #print dir(rxncon.complex_pool[str(cont.state)][0])
+        
+        
+        #
+        cap = ContingencyApplicator()
+        cap.apply_on_container(rcont, cont)
+
+        #rxncon.create_complexes()
+        #rxncon.update_contingencies()
+        # # cont.add_child(cont2)
+        # # # #print "rxn.contingency_pool: ", rxn.contingency_pool.get_required_contingencies()
+        # print "cont.state.components: ", cont.state.components
+
+        # #rxncon.create_complexes()
+        print "rxncon.get_complexes(rcont.name) 2: ", rxncon.get_complexes(rcont.name)
+        #cap = ContingencyApplicator()
+
+        #cap.apply_on_container(rcont, cont)
+        # print "JO"
+        rxncon.apply_contingencies(rcont)
+        for reaction in rcont:
+            reaction.run_reaction()
+
+        #self.boolean = Contingency('A_ppi_B', 'K+', get_state('<MM>'))
+        #cont1 = Contingency('<MM>', 'AND', get_state('B-{P}'))
         #rxncon = Rxncon('A_ppi_B; ! A_[Z]-{P} \n C_ppi_B; ! A--B \n X_p-_A_[Z]')
         #rxncon = Rxncon('Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P} \n Sln1_[HK(H576)]_PT_Sln1_[RR(D1144)] \n Sln1_[RR(D1144)]_PT_Ypd1_[(H64)] \n Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]')
 
@@ -65,7 +119,7 @@ class x_exclamation_mark_Tests(TestCase):
         #conflict product_contingency:  ! Swi4_[n]--Swi4_[c]  required_cont:  x Swi4_[n]--Swi4_[c]       
         #rxncon = Rxncon('Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]')
         #rxncon = Rxncon('Swi4_ppi_SCBG1 \n Swi4_[n]_ppi_Swi4_[c]; ! Swi4--SCBG1')
-        rxncon = Rxncon('Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]')
+        #rxncon = Rxncon('Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c]; x Swi4--B \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]')
 
         #rxncon = Rxncon('Pkc1_[C1]_ppi_Rho1_[ED]; ! Rho1_[GnP]-{P} \n Rom1_[DH]_GEF_Rho1_[GnP]')
         
@@ -84,36 +138,16 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; x Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]')
         #rxncon = Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]')
 
-        #Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 
- #Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]
-        #Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4], Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4]
-        #rxncon = Rxncon('Z_p+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z]')
-        #rxncon = Rxncon("Z_P+_A_[Z] \n A_ppi_B; ! A_[Z]-{P} \n X_p-_A_[Z] \n X_[PD]_P+_Hog1_[(T174)] \n Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P} \n Ptc1_[PD]_P-_Hog1_[(T174)]")
-        #rxncon = Rxncon('Z_p+_A_[Z]; ! Z--A \n Z_ppi_A \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
-        #rxncon = Rxncon('Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]; ! Ypd1--Ssk1 \n Ssk1_[RR]_ppi_Ssk2_[BDSsk1]; x Ssk1_[RRD544]-{P}; x Ssk1--Ssk22 \n Ssk1_[RR]_ppi_Ssk22; x Ssk1_[RRD544]-{P}; x Ssk1--Ssk2')
-        #rxncon = Rxncon('Ypd1_[(H64)]_PT_Ssk1_[RR(D544)] \n Ssk1_[RR]_ppi_Ssk2_[BDSsk1]; x Ssk1_[RRD544]-{P} \n Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P}')
-        #rxncon = Rxncon('Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]')
+
         #rxncon = Rxncon('A_p+_X1_[A]; k+ <S1S2> \n <S1S2>; AND X1--X2; AND X2--X3')
         #rxncon = Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]') # changed in master
 
-        #
-
-        #rxncon = Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[KD+CRIB]--Ste20_[KD+CRIB] \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
-
-        # conflicted example x! mutual exclusive domains
-        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20] \n Ste20_[CRIB]_ppi_Ste20_[CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
-        #rxncon =  Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD]_ppi_Ste20_[CRIB]; x Cdc42--Ste20 \n Ste20_[BR]_ppi_PIP2')
-
-        # conflicted example in master branch
-        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
-        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[KD]--Ste20_[CRIB2] \n Ste20_[KD]_ppi_Ste20_[CRIB2]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
-        #rxncon =  Rxncon('Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]; k+ Ste20_[CRIB]--Ste20_[CRIB] \n Ste20_[CRIB]_ppi_Ste20_[CRIB]; x Cdc42_[ED]--Ste20_[CRIB] \n Ste20_[BR]_ppi_PIP2')
-
+      
         # works in master branch
         
 
         #rxncon = Rxncon(input_data)
-        rxncon.run_process()
+        #rxncon.run_process()
         self.bngl_src = Bngl(
             rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
         # print bngl_src.get_src()

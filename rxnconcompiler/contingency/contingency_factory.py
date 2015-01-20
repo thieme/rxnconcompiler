@@ -35,7 +35,7 @@ class ContingencyWrapper:
         """
         Returns contingency type based on
         the mode (positive or negative)
-        and the oryginal type. 
+        and the original type. 
         """
         if self.mode == 'positive':
             if self.contingency.ctype in ['!', 'k+', 'and', 'or']:
@@ -51,7 +51,7 @@ class ContingencyWrapper:
     def get_contingency(self):
         """
         Creates new contingency object with 
-        type asign based on mode and old type.
+        type assign based on mode and old type.
         """
         new_type = self.get_ctype()
         return self.contingency.clone(new_type)
@@ -70,7 +70,7 @@ class ContingencyPool(dict):
         """
         Returns a list of all boolean contingencies.
         """
-        result =  []
+        result = []
         for root in self.values():
             leafs = root.get_children()
             for leaf in leafs:
@@ -83,7 +83,7 @@ class ContingencyPool(dict):
         Returns a list of boolean contingencies 
         that are direct children of the root contingency.
         """
-        result =  []
+        result = []
         for root in self.values():
             for leaf in root.children:
                 if leaf.state.type == 'Boolean':
@@ -162,13 +162,13 @@ class ContingencyPool(dict):
         Used when updating contingencies.
         """
         return self.get_kind_contingencies("Covalent Modification")
+
     def get_Intraprotein_contingencies(self):
         """
         Returns all contingencies with Covalent Modification state.
 
         Used when updating contingencies.
         """
-
 
     def get_relocalisation_contingencies(self):
         """
@@ -177,6 +177,32 @@ class ContingencyPool(dict):
         Used when updating contingencies.
         """
         return self.get_kind_contingencies("Relocalisation")
+
+    def get_mutual_exclusive_contingencies(self):
+        """
+        Returns a dictionary of reactions (key) and a list of states (value). 
+        The states and the reactions are mutual exclusive. 
+        """
+        result = {}
+        for root in self.values():
+            children = root.get_leafs()
+            for cont in children:
+                if cont.ctype in ['x'] or cont.inherited_ctype in ['x']:
+                    if cont.state.type in ['Association', 'Covalent Modification', 'Relocalisation', 'Intraprotein']:
+                        if not result.has_key(cont.target_reaction):
+                            result[cont.target_reaction] = [cont.state]
+                        else:
+                            result[cont.target_reaction].append(cont.state)
+        return result
+
+    def print_mutual_exclusive_contingencies(self):
+        mut_ex_con = self.get_mutual_exclusive_contingencies()
+        string = "reaction\tcontingency\tstate\n"
+        for reaction, states in mut_ex_con.iteritems():
+            for state in states:
+                string += "{0}\tx\t{1}\n".format(reaction, state)
+        print string
+
 
 
 class ContingencyFactory(dict):

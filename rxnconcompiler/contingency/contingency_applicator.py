@@ -152,8 +152,6 @@ class ContingencyApplicator():
         right = reaction.get_substrate_complex('R')
         left_right = reaction.get_substrate_complex('LR')
 
-
-        
         if left_right:
             mols1 = left_right.get_molecules(component1.name, component1.cid)
             mols2 = left_right.get_molecules(component2.name, component2.cid)
@@ -197,8 +195,7 @@ class ContingencyApplicator():
             else:
                 for compl in reaction.substrat_complexes:
                     self._add_components_to_complex(compl, component1, component2, cont, reaction)
-
-                        
+             
     def _add_components_to_complex(self, compl, component1, component2, cont, reaction):
         """
         Helper function.
@@ -219,7 +216,6 @@ class ContingencyApplicator():
 
         elif mols2:
             self.add_molecule_to_complex(mols2, cont, component1, compl, reaction)
-                
 
     def apply_on_complex(self, compl, cont):
         """
@@ -256,7 +252,6 @@ class ContingencyApplicator():
         for compl in reaction.product_complexes:
                 self.apply_on_complex(compl, cont)
 
-
     def apply_input_on_container(self, container, cont):
         """
         Applys all input contingencies.
@@ -286,7 +281,6 @@ class ContingencyApplicator():
         if cont.ctype in ['x', '!']:
             for reaction in container:
 
-                #if reaction.definition['Reversibility'] == 'reversible':
                 if reaction.reversibility == 'reversible':
 
                     # we will have two rates here (because of reverse reaction).
@@ -404,9 +398,6 @@ class ContingencyApplicator():
                 reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
                 temp2.append(reaction)
 
-            #for reaction in temp2:
-            #    print 'Reaction in temp2:', reaction.substrat_complexes[0].molecules[0].modifications, reaction.substrat_complexes[0].molecules[0].modification_sites
-                
             container.empty()
             for reaction in temp2:
                 container.add_reaction(reaction)

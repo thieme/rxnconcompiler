@@ -121,6 +121,44 @@ class ConflictSolver:
         result = [mol for mol in comp.molecules if mol.has_state(conflicted_state)]
         return result
 
+    def create_complexes(self):
+        """
+        Uses ComplexBuilder to create ComplexPool.
+        """
+        bools = self.contingency_pool.get_top_booleans()
+        for bool_cont in bools:
+            builder = ComplexBuilder()
+            alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
+            self.complex_pool[str(bool_cont.state)] = alter_comp
+
+    def find_conflicts_recursive(self, product_contingency, conflicted_state):
+        
+        
+        conflict_complex = Contingency('<conflictComplex>', 'AND', conflicted_state)
+
+        for required_cont in self.contingency_pool.get_required_contingencies():
+            if required_cont.state == conflicted_state:
+                conflict_complex.add_child(Contingency('<conflictComplex>', 'AND', required_cont.state))
+
+                print "conflicted_state: ", conflicted_state
+                print "required_cont: ", required_cont
+        print dir(conflict_complex)
+        
+        if conflict_complex.count_leafs() == 0:
+            cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
+            return cont_k
+
+        cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=get_state('<conflictComplex>'))
+        print "conflict_complex: ", conflict_complex
+        print cont_k.state
+        cont_k.add_child(conflict_complex)
+        print "after add"
+        print cont_k.state
+        print cont_k.state.type
+        print cont_k.state.components
+        self.create_complexes()
+        return cont_k
+
     def find_conflicts_on_mol(self, react_container):
         """
         find all conflicts a specific reaction/reaction_container is involved in
@@ -133,6 +171,7 @@ class ConflictSolver:
         conflicted_state = ""
         self.conflicted_states = []
         self.conflict_found = False
+        self.conflict_recursion = True
 
         for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
             #  the change should only be applied if the dependence reaction is reversible like ppi, ipi ...
@@ -140,27 +179,37 @@ class ConflictSolver:
             self.is_conflict(product_contingency, required_cont)
             if self.is_conflict(product_contingency, required_cont):  # self.conflict_found: #and self.reaction_pool[required_cont.target_reaction][0].definition['Reversibility'] == 'reversible':
                     self.conflict_found = True
-
-                    # step 4
-                    # # get reaction from reaction_pool
-                    # # get reaction to which contingency belongs
-
                     required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
 
                     conflicted_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
-                   #  print "##############"
-                   #  print "product_contingency.target_reaction: ", product_contingency.target_reaction
-                   #  print "required_cont.target_reaction: ", required_cont.target_reaction
-                   # #print dir(required_cont.target_reaction)
-                   #  print "conflicted_state: ", conflicted_state
-                   #  print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
-                    cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
+
+                    if self.conflict_recursion:
+                        cont_k = self.find_conflicts_recursive(product_contingency, conflicted_state)
+                    #else:
+                        # step 4
+                        # # get reaction from reaction_pool
+                        # # get reaction to which contingency belongs
+
+                       #  print "##############"
+                       #  print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                       #  print "required_cont.target_reaction: ", required_cont.target_reaction
+                       # #print dir(required_cont.target_reaction)
+                       #  print "conflicted_state: ", conflicted_state
+                       #  print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
+                    #print conflicted_state
+                    #cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
+
+                        #cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
                     cap = ContingencyApplicator()
-                    # apply a k+ contingency to our product contingency target reaction
-                    # step 5.1, 5.2, 5.3
-                    # this approach also solves problems with adapting the reaction rates
+
+                        # apply a k+ contingency to our product contingency target reaction
+                        # step 5.1, 5.2, 5.3
+                        # this approach also solves problems with adapting the reaction rates
+                    print "HIER"
                     cap.apply_on_container(react_container, cont_k)
+
                     self.conflicted_states.append(conflicted_state)
+
 
         return react_container
 
@@ -324,8 +373,10 @@ class Rxncon:
         self.reaction_pool = reaction_factory.reaction_pool
         contingency_factory = ContingencyFactory(self.xls_tables)
         self.contingency_pool = contingency_factory.parse_contingencies()
+        print "self.contingency_pool: ", self.contingency_pool
         self.complex_pool = ComplexPool()
         self.create_complexes()
+        print self.complex_pool
         self.update_contingencies()
         self.solve_conflict = ConflictSolver(self.reaction_pool, self.contingency_pool)
 
@@ -358,6 +409,7 @@ class Rxncon:
         Uses ComplexBuilder to create ComplexPool.
         """
         bools = self.contingency_pool.get_top_booleans()
+        print "bools: ", bools
         for bool_cont in bools:
             builder = ComplexBuilder()
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
@@ -384,9 +436,12 @@ class Rxncon:
         @return: all complexes defined by boolean contingencies
                  applicable to a given reaction.
         """
+        print "self.contingency_pool: ", self.contingency_pool
+        #print "self.contingency_pool[reaction_name]: ", self.contingency_pool[reaction_name]
         if not self.contingency_pool.has_key(reaction_name):
             return []
         cont_root = self.contingency_pool[reaction_name]
+
         for cont in cont_root.children:
             if cont.state.type == 'Boolean':
                 if self.complex_pool.has_key(str(cont.state)):
@@ -486,6 +541,9 @@ class Rxncon:
         add_complexes: when True applys boolean contingencies.
         add_contingencies: when True applys non-boolean contingencies.
         """
+        #print self.contingency_pool.get_mutual_exclusive_contingencies()
+        #self.contingency_pool.print_mutual_exclusive_contingencies()
+
         # print 'Contingencies', self.contingency_pool['Ste11_[KD]_P+_Ste7_[AL(T363)]'].children[1].children
         self.war.calculate_missing_states(self.reaction_pool, self.contingency_pool)
         if add_missing_reactions:
@@ -499,8 +557,9 @@ class Rxncon:
             # (changes after running the process because of OR and K+/K-)
             complexes = []
             if add_complexes:
+                print "complex"
                 complexes = self.get_complexes(react_container.name)
-
+            print "no complex: ", complexes
             ComplexApplicator(react_container, complexes).apply_complexes()
 
             # after applying complexes we may have more reactions in a single container.
