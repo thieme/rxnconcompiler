@@ -49,53 +49,59 @@ class x_exclamation_mark_Tests(TestCase):
 
 
         #rxncon = Rxncon('A_ppi_B; ! <c> \n <c>; AND A--C \n <c>; AND A--F')
+        #rxncon = Rxncon("A_ppi_B_[a] \n C_ppi_B_[a]")
+        #rxncon = Rxncon("A_ppi_B; ! B-{P} \n C_ppi_B; ! B-{P}")
+        #rxncon = Rxncon("A_p+_B; ! C--D \n A_p+_B")
+        #rxncon = Rxncon("A_p+_B_[A]; ! B-{P} \n C_p+_B_[A]; ! B-{P}")
+        #rxncon = Rxncon("a_[1]_ppi_b \n a_[1]_ppi_c \n a_ppi_d; ! <complex> \n <complex>; AND a_[1]--b; AND a_[1]--c")
+        rxncon = Rxncon("a_[1]_ppi_b \n a_[1]_ppi_c")
+       #  rxncon = Rxncon('A_ppi_B')
+       #  rcont = rxncon.reaction_pool['A_ppi_B']
+       #  #print "rxncon.get_complexes(rcont.name) 1: ", rxncon.get_complexes(rcont.name)
+       #  #rxncon.create_complexes()
+       #  #build_positive_complexes_from_boolean
+       #  ComplexApplicator(rcont, []).apply_complexes()
+
+       #  cont = Contingency('A_ppi_B', '!', get_state('<c>'))
+       #  cont1 = Contingency('<c>', 'AND', get_state('A--C'))
+       #  #cont2 = Contingency('<c>', 'AND', get_state('A--F'))
+       #  cont.add_child(cont1)
+       #  #cont.add_child(cont2)
+       #  print dir(get_state('A--C'))
+       #  print get_state('A--C').components
+
+       # #cont.state.components = get_state('A--C').components
+       #  builder = ComplexBuilder()
+       #  alter_comp = builder.build_positive_complexes_from_boolean(cont)
+       #  rxncon.complex_pool[str(cont.state)] = alter_comp
+       #  #rxncon.update_contingencies()
+
+       #  print "str(cont.state): ", str(cont.state)
+       #  print "rxncon.complex_pool[str(cont.state)]: ", rxncon.complex_pool[str(cont.state)]
+       #  print "cont.state.components: ", cont.state.components
+       #  #print dir(rxncon.complex_pool[str(cont.state)][0])
+       #  #ComplexApplicator(rcont, []]).prepare_complexes_to_apply()
+       #  print "ComplexApplicator(rcont, []).prepare_complexes_to_apply(rxncon.complex_pool[str(cont.state)]): ", ComplexApplicator(rcont, []).prepare_complexes_to_apply(rxncon.complex_pool[str(cont.state)])
         
-        rxncon = Rxncon('A_ppi_B')
-        rcont = rxncon.reaction_pool['A_ppi_B']
-        #print "rxncon.get_complexes(rcont.name) 1: ", rxncon.get_complexes(rcont.name)
-        #rxncon.create_complexes()
-        #build_positive_complexes_from_boolean
-        ComplexApplicator(rcont, []).apply_complexes()
+       #  #
+       #  #cap = ContingencyApplicator()
+       #  #cap.apply_on_container(rcont, cont)
 
-        cont = Contingency('A_ppi_B', '!', get_state('<c>'))
-        cont1 = Contingency('<c>', 'AND', get_state('A--C'))
-        #cont2 = Contingency('<c>', 'AND', get_state('A--F'))
-        cont.add_child(cont1)
-        cont.add_child(cont2)
-        print dir(get_state('A--C'))
-        print get_state('A--C').components
+       #  #rxncon.create_complexes()
+       #  #rxncon.update_contingencies()
+       #  # # cont.add_child(cont2)
+       #  # # # #print "rxn.contingency_pool: ", rxn.contingency_pool.get_required_contingencies()
+       #  # print "cont.state.components: ", cont.state.components
 
-       #cont.state.components = get_state('A--C').components
-        builder = ComplexBuilder()
-        alter_comp = builder.build_positive_complexes_from_boolean(cont)
-        rxncon.complex_pool[str(cont.state)] = alter_comp
-        #rxncon.update_contingencies()
+       #  # #rxncon.create_complexes()
+       #  print "rxncon.get_complexes(rcont.name) 2: ", rxncon.get_complexes(rcont.name)
+       #  #cap = ContingencyApplicator()
 
-        print "str(cont.state): ", str(cont.state)
-        print "rxncon.complex_pool[str(cont.state)]: ", rxncon.complex_pool[str(cont.state)]
-        print "cont.state.components: ", cont.state.components
-        #print dir(rxncon.complex_pool[str(cont.state)][0])
-        
-        
-        #
-        cap = ContingencyApplicator()
-        cap.apply_on_container(rcont, cont)
-
-        #rxncon.create_complexes()
-        #rxncon.update_contingencies()
-        # # cont.add_child(cont2)
-        # # # #print "rxn.contingency_pool: ", rxn.contingency_pool.get_required_contingencies()
-        # print "cont.state.components: ", cont.state.components
-
-        # #rxncon.create_complexes()
-        print "rxncon.get_complexes(rcont.name) 2: ", rxncon.get_complexes(rcont.name)
-        #cap = ContingencyApplicator()
-
-        #cap.apply_on_container(rcont, cont)
-        # print "JO"
-        rxncon.apply_contingencies(rcont)
-        for reaction in rcont:
-            reaction.run_reaction()
+       #  #cap.apply_on_container(rcont, cont)
+       #  # print "JO"
+       #  rxncon.apply_contingencies(rcont)
+       #  for reaction in rcont:
+       #      reaction.run_reaction()
 
         #self.boolean = Contingency('A_ppi_B', 'K+', get_state('<MM>'))
         #cont1 = Contingency('<MM>', 'AND', get_state('B-{P}'))
@@ -147,7 +153,7 @@ class x_exclamation_mark_Tests(TestCase):
         
 
         #rxncon = Rxncon(input_data)
-        #rxncon.run_process()
+        rxncon.run_process()
         self.bngl_src = Bngl(
             rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
         # print bngl_src.get_src()

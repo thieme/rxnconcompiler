@@ -203,7 +203,7 @@ class ReactionPool(dict):
             product_cont = react_cont.product_contingency
             if product_cont and product_cont.ctype == '!':
                 result.append(product_cont.state)
-        return set(result)
+        return result
 
     def get_product_contingencies(self):
         """

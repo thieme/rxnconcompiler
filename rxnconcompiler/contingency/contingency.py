@@ -36,10 +36,6 @@ class Contingency:
         """
         self.target_reaction = target_reaction
         self.ctype = str(ctype).lower() if ctype else None
-        print "state: ", state
-        if state != None:
-
-            print "state.components: ", state.components
         self.state = state
         self.children = []
         self.inherited_ctype = None

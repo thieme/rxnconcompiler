@@ -187,7 +187,7 @@ class ComplexBuilder:
         Returns AlternativeComplexes object.
         Information about Input states is stored in AlternativeComplex.input_condition.
         """
-        print "build_positive_complexes_from_boolean"
+        #print "build_positive_complexes_from_boolean"
         alter_comp = AlternativeComplexes(str(bool_cont.state))
         alter_comp.ctype = bool_cont.ctype
 
@@ -290,7 +290,7 @@ class ComplexBuilder:
 
         #TODO: What if we have two root molecules
         """
-        print "build_negative_complexes"
+        #print "build_negative_complexes"
         ordered_states = self.get_states_from_complex(compl, root_molecule)
         alter_comp = AlternativeComplexes('')
         counter = len(ordered_states) -1

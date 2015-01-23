@@ -140,8 +140,6 @@ class ConflictSolver:
             if required_cont.state == conflicted_state:
                 conflict_complex.add_child(Contingency('<conflictComplex>', 'AND', required_cont.state))
 
-                print "conflicted_state: ", conflicted_state
-                print "required_cont: ", required_cont
         print dir(conflict_complex)
         
         if conflict_complex.count_leafs() == 0:
@@ -149,13 +147,9 @@ class ConflictSolver:
             return cont_k
 
         cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=get_state('<conflictComplex>'))
-        print "conflict_complex: ", conflict_complex
-        print cont_k.state
+
         cont_k.add_child(conflict_complex)
-        print "after add"
-        print cont_k.state
-        print cont_k.state.type
-        print cont_k.state.components
+
         self.create_complexes()
         return cont_k
 
@@ -373,10 +367,10 @@ class Rxncon:
         self.reaction_pool = reaction_factory.reaction_pool
         contingency_factory = ContingencyFactory(self.xls_tables)
         self.contingency_pool = contingency_factory.parse_contingencies()
-        print "self.contingency_pool: ", self.contingency_pool
+        
         self.complex_pool = ComplexPool()
         self.create_complexes()
-        print self.complex_pool
+
         self.update_contingencies()
         self.solve_conflict = ConflictSolver(self.reaction_pool, self.contingency_pool)
 
@@ -409,7 +403,7 @@ class Rxncon:
         Uses ComplexBuilder to create ComplexPool.
         """
         bools = self.contingency_pool.get_top_booleans()
-        print "bools: ", bools
+       #print "bools: ", bools
         for bool_cont in bools:
             builder = ComplexBuilder()
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
@@ -436,7 +430,7 @@ class Rxncon:
         @return: all complexes defined by boolean contingencies
                  applicable to a given reaction.
         """
-        print "self.contingency_pool: ", self.contingency_pool
+      #  print "self.contingency_pool: ", self.contingency_pool
         #print "self.contingency_pool[reaction_name]: ", self.contingency_pool[reaction_name]
         if not self.contingency_pool.has_key(reaction_name):
             return []
@@ -470,8 +464,10 @@ class Rxncon:
         """
         # TODO: make ContingencyUpdator class out of it.
         # TODO: separate functions for different updates.
+
         modifications = self.contingency_pool.get_modification_contingencies()
         if modifications:
+
             for cont in modifications:
                 if cont.state.has_bd_domain():
                     available = self.reaction_pool.find_modification_product(cont.state)
@@ -498,7 +494,7 @@ class Rxncon:
                         cont.state.not_modifier = available[0].not_modifier
                     else:
                         cont.state.not_modifier = available[0].modifier
-            
+
     def update_reactions(self):
         """
         TODO: To be implemented.
@@ -546,6 +542,7 @@ class Rxncon:
 
         # print 'Contingencies', self.contingency_pool['Ste11_[KD]_P+_Ste7_[AL(T363)]'].children[1].children
         self.war.calculate_missing_states(self.reaction_pool, self.contingency_pool)
+        #self.war.get_mutual_exclusive_reactions(self.reaction_pool)
         if add_missing_reactions:
             self.add_missing_reactions(list(self.war.not_in_products))
         if add_translation:
@@ -557,13 +554,12 @@ class Rxncon:
             # (changes after running the process because of OR and K+/K-)
             complexes = []
             if add_complexes:
-                print "complex"
                 complexes = self.get_complexes(react_container.name)
-            print "no complex: ", complexes
+
             ComplexApplicator(react_container, complexes).apply_complexes()
 
             # after applying complexes we may have more reactions in a single container.
-            react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
+            #react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
             if add_contingencies or self.solve_conflict.conflict_found:
                 self.apply_contingencies(react_container)
 
@@ -571,10 +567,11 @@ class Rxncon:
             self.update_reactions()
 
             for reaction in react_container:
+                #print dir(reaction)
                 reaction.run_reaction()
 
-            if self.solve_conflict.conflict_found:
-                self.solve_conflict.solve_conlict(react_container)
+            #if self.solve_conflict.conflict_found:
+            #   self.solve_conflict.solve_conlict(react_container)
 
 
 if __name__ == '__main__':

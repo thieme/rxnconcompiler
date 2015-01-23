@@ -32,13 +32,14 @@ class State:
     def __init__(self):
         self.components = []
         self.state_str = ''
-        self.type = None #: string that keeps information about state type
+        self.type = None  #: string that keeps information about state type
 
-        self.sid = None #: valid only for association
-        self.modifier = None #: valid only for covalent modification e.g. Ub, P and Relocalisation.
-        self.not_modifier = None #: valid only for covalent modification (always U) and Relocalisation (substrate localisation).
-        self.loc = False # only for localisation, distinguishes between products and substrates.
-        self.homodimer = False # only for asocciation, when A--A
+        self.sid = None  #: valid only for association
+        self.modifier = None  #: valid only for covalent modification e.g. Ub, P and Relocalisation.
+        self.not_modifier = None  #: valid only for covalent modification (always U) and Relocalisation (substrate localisation).
+        self.loc = False  # only for localisation, distinguishes between products and substrates.
+        self.homodimer = False  # only for association, when A--A
+        self.reaction_str = ''  # string keeps information about the reaction which was used to generate this state
        
     def __repr__(self):
         if self.type == 'Intraprotein':
@@ -75,14 +76,16 @@ class State:
         """
         #return (str(self) + str(self.sid)).__hash__()
         return (str(self)).__hash__()
+
     def __len__(self):
         counter = 0
         for comp in self.components:
             counter += 1
         return counter
+
     def has_component(self, component):
         """
-        Checks wchether stat contains a component.
+        Checks whether state contains a component.
         @type component:  Component
         @param component: component to check.
         @rtype:  True / False
@@ -94,7 +97,7 @@ class State:
     def get_component(self, name, side = 'L'):
         """
         Returns component when given a name.
-        If state is Assosiation and homodimer
+        If state is Association and homodimer
         returns component based on side:
         L - left component
         R - right component
@@ -143,6 +146,30 @@ class State:
             if component.domain == 'bd':
                 return True
         return False
+
+    def get_state_domains(self):
+        """
+        Returns all the domains of a state.
+        @return: List of domains of a state
+        @rtype:  list
+        """
+        domains = [comp.domain for comp in self.components]
+
+        return domains
+
+    def exact_compare(self, components):
+        """
+        checks complete components list and compare it with another component list
+        @return result: List of components which are exact identical in both component lists
+        @rtype: list 
+        """
+        result = [other_comp for self_comp in self.components for other_comp in components if self_comp.exact_compare(other_comp)]
+        # result = []
+        # for self_comp in self.components:
+        #     for other_comp in components:
+        #         if self_comp.exact_compare(other_comp):
+        #             result.append(other_comp)
+        return result
 
 
 class StateFactory:
@@ -252,6 +279,8 @@ class StateFactory:
             comp = Component(comp_name, comp_dom)
             state.components.append(comp)
             state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom, state.modifier)
+            state.reaction_str = reaction.name
+
 
         elif category == 'PT':
             # this is a special case
@@ -264,6 +293,7 @@ class StateFactory:
             comp = Component(comp_name, comp_dom)
             state.components.append(comp)
             state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom, state.modifier)
+            state.reaction_str = reaction.name
 
         elif category == 'Intraprotein': 
             l_dsr = self.df.get_intraprotein_domain_from_dict(row, 'A')
@@ -271,6 +301,7 @@ class StateFactory:
             state_str = '%s_[%s]--[%s]' %(row['ComponentA[Name]'], \
                 l_dsr, r_dsr)
             state = self.get_state_from_string(state_str)
+            state.reaction_str = reaction.name
 
         elif category == 'Association': 
             l_dsr = self.df.get_association_domain_from_dict(row, 'A')
@@ -278,6 +309,7 @@ class StateFactory:
             state_str = '%s_[%s]--%s_[%s]' %(row['ComponentA[Name]'], \
                 l_dsr, row['ComponentB[Name]'], r_dsr) 
             state = self.get_state_from_string(state_str)
+            state.reaction_str = reaction.name
         
         elif category == 'Relocalisation':
             comp_name = row['ComponentB[Name]'].split('_')[0]
@@ -290,8 +322,8 @@ class StateFactory:
                 state.modifier = row['ProductState'].split('-{')[-1].replace('}','')
                 state.not_modifier = row['SourceState'].split('-{')[-1].replace('}','')
             state.state_str = '%s_[%s]-{%s}' % (comp_name, dom, state.modifier)
+            state.reaction_str = reaction.name
         return state
-
 
     def get_state(self, first_arg=None, sec_arg=None, third_arg=None):
         """
