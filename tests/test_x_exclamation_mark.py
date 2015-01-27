@@ -27,6 +27,7 @@ from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicat
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
 from rxnconcompiler.molecule.molecule import Molecule
 from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder
+import copy
 
 
 class x_exclamation_mark_Tests(TestCase):
@@ -44,7 +45,8 @@ class x_exclamation_mark_Tests(TestCase):
         # basic reaction with one contingency.
         input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
         # self.xls_tables = parse_rxncon(input_data)
-        #self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
+        self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
+        #rxncon = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon('A_P+_B_[A]\n B_ppi_C; x B_[A]-{P}\n C_ppi_D; ! B--C')
 
 
@@ -54,15 +56,58 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon("A_p+_B; ! C--D \n A_p+_B")
         #rxncon = Rxncon("A_p+_B_[A]; ! B-{P} \n C_p+_B_[A]; ! B-{P}")
         #rxncon = Rxncon("a_[1]_ppi_b \n a_[1]_ppi_c \n a_ppi_d; ! <complex> \n <complex>; AND a_[1]--b; AND a_[1]--c")
-        rxncon = Rxncon("a_[1]_ppi_b \n a_[1]_ppi_c")
-       #  rxncon = Rxncon('A_ppi_B')
-       #  rcont = rxncon.reaction_pool['A_ppi_B']
-       #  #print "rxncon.get_complexes(rcont.name) 1: ", rxncon.get_complexes(rcont.name)
-       #  #rxncon.create_complexes()
-       #  #build_positive_complexes_from_boolean
-       #  ComplexApplicator(rcont, []).apply_complexes()
+        #rxncon = Rxncon("a_[1]_ppi_b \n a_[1]_ppi_c")
+        # X_p-_A_[X]
+        #S1) A_ppi_B; ! A_[X]-{P}
+        #S2) B_ppi_C; ! A--B
+        #S3) C_ppi_D; ! B--C
 
-       #  cont = Contingency('A_ppi_B', '!', get_state('<c>'))
+#####################################################################################################################################
+
+        #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
+        rxncon = Rxncon('Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n  Swi4_[n]_ppi_Swi4_[c] \n [SBF(FSK2)-transcrtiption]; ! Swi4--SCBFKS2')
+        # rcont = rxncon.reaction_pool['X_p-_A']
+
+        # ComplexApplicator(rcont, []).apply_complexes()
+
+        # cont_k1 = Contingency('X_p-_A', 'k+', get_state('A--B'))
+        # cont_k2 = Contingency('X_p-_A', 'k+', get_state('B--C'))
+        # cont_k3 = Contingency('X_p-_A', 'k+', get_state('C--D'))
+
+        # cap = ContingencyApplicator()
+        # cap.apply_on_container(rcont, cont_k1)
+        # cap.apply_on_container(rcont, cont_k2) 
+        # cap.apply_on_container(rcont, cont_k3)
+
+
+        # rxncon.apply_contingencies(rcont)
+        # common_cont = rcont.get_common_contingencies()
+        # print "common_cont: ", common_cont
+        # print "reaction: ", dir(rcont[0])
+        # already_applied = []
+
+        # #copy_rcont = copy.deepcopy(rcont)
+        # print len(rcont)
+        # remove_reaction = []
+        # for i, reaction in enumerate(rcont):
+        #     if reaction.get_contingencies() in already_applied:
+        #         print "in list: ", i 
+        #         print "reaction.get_contingencies(): ", reaction.get_contingencies()
+        #         #del rcont[i]
+        #         remove_reaction.append(i)
+        #         #rcont.remove(reaction)
+        #     else:
+        #         print "first time: ", i
+        #         print "reaction.get_contingencies(): ", reaction.get_contingencies()
+        #         already_applied.append(reaction.get_contingencies())
+        #         reaction.run_reaction()
+        
+        # for i in reversed(remove_reaction):
+        #     del rcont[i]
+        # common_cont = rcont.get_common_contingencies()
+        # print "common_cont: ", common_cont
+#####################################################################################################################################
+
        #  cont1 = Contingency('<c>', 'AND', get_state('A--C'))
        #  #cont2 = Contingency('<c>', 'AND', get_state('A--F'))
        #  cont.add_child(cont1)

@@ -79,6 +79,6 @@ class RxnconWarnings:
         (list of objects).
         Removes redundant reactions.
         """
-        print "get_problem_reaction_str"
+        #print "get_problem_reaction_str"
         result = [str(react) for react in self.not_applied_contingencies]
         return set(result)

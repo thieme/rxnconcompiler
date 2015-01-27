@@ -135,7 +135,7 @@ class ComplexBuilder:
 
     def build_required_complexes(self, positive_complexes, root):
         """
-        Builds all required complexes for one boolean contingeny.
+        Builds all required complexes for one boolean contingency.
 
         @type root:  Molecule object
         @param root: a molecule from a reaction for which complex will be applied.

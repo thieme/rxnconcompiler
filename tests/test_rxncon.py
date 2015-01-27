@@ -170,10 +170,6 @@ class RxnconTests(TestCase):
         self.assertTrue(len(self.cont.reaction_pool), 3)
 
 
-
-
-
-
 class BnglTests(TestCase):
     """
     Tests that based on rxncon objects 
@@ -194,8 +190,6 @@ class BnglTests(TestCase):
         self.assertTrue('# Product states: A_[AssocB]--B_[AssocA] True' in source)
         self.assertFalse('# Absolute requirements:' in source)
         self.assertFalse('kf1_1' in source)
-
-
 
 if __name__ == '__main__':
     main()
