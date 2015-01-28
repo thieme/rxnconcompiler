@@ -45,7 +45,7 @@ class x_exclamation_mark_Tests(TestCase):
         # basic reaction with one contingency.
         input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
         # self.xls_tables = parse_rxncon(input_data)
-        self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
+        #self.basic_cont = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon('Z_P+_A_[Z] \n A_ppi_B; x A_[Z]-{P} \n X_p-_A_[Z]')
         #rxncon = Rxncon('A_P+_B_[A]\n B_ppi_C; x B_[A]-{P}\n C_ppi_D; ! B--C')
 
@@ -64,8 +64,10 @@ class x_exclamation_mark_Tests(TestCase):
 
 #####################################################################################################################################
 
-        #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
-        rxncon = Rxncon('Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n  Swi4_[n]_ppi_Swi4_[c] \n [SBF(FSK2)-transcrtiption]; ! Swi4--SCBFKS2')
+        rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
+        rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P}')
+        #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
+        #rxncon = Rxncon('Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n  Swi4_[n]_ppi_Swi4_[c] \n [SBF(FSK2)-transcrtiption]; ! Swi4--SCBFKS2')
         # rcont = rxncon.reaction_pool['X_p-_A']
 
         # ComplexApplicator(rcont, []).apply_complexes()

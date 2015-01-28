@@ -131,27 +131,155 @@ class ConflictSolver:
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
             self.complex_pool[str(bool_cont.state)] = alter_comp
 
-    def find_conflicts_recursive(self, product_contingency, conflicted_state):
-        
-        
-        conflict_complex = Contingency('<conflictComplex>', 'AND', conflicted_state)
+    def delet_redundant_reactions(self, rcont):
+        """
+        in find_conflicts_recursive we are applying k+ for each state we found in a chain. 
+        This result in redundant reactions, which has to be deleted. This is done here.
+        """
 
+        common_cont = rcont.get_common_contingencies()
+
+        already_applied = []
+
+        remove_reaction = []
+        for i, reaction in enumerate(rcont):
+            if reaction.get_contingencies() in already_applied:
+                remove_reaction.append(i)
+            else:
+                already_applied.append(reaction.get_contingencies())
+                reaction.run_reaction()
+        
+        for i in reversed(remove_reaction):
+            del rcont[i]
+        return rcont
+
+    def get_conflict_chain_save(self, conflicted_state, chain=[]):
+        """
+        find a possible chain of conflicts which are resulting from an initial conflict state.
+        
+        @param conflicted_state: A--B
+        @type conflicted_state: string
+        @param chain: List of all follow up states which are conflicted.
+        @type chain: list
+        @return chain: A list of all follow up conflicts resulting from the initial conflicting state
+        """
+        
+        chain.append(conflicted_state)  # the conflict we have found is at least the conflict we have to deal with.
         for required_cont in self.contingency_pool.get_required_contingencies():
-            if required_cont.state == conflicted_state:
-                conflict_complex.add_child(Contingency('<conflictComplex>', 'AND', required_cont.state))
 
-        print dir(conflict_complex)
+            if required_cont.target_reaction in self.reaction_pool and self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association":
+                if required_cont.ctype == "!" and required_cont.state == conflicted_state:  # find states which are dependent on this conflicting state
+
+                    conflicted_state = self.reaction_pool[required_cont.target_reaction].sp_state  # get the state of the reaction which is conflicted
+                    self.get_conflict_chain(conflicted_state, chain)  # this state is a new conflicting state and is used for the next iteration.
+        #print chain
+        return chain  # return a chain of all follow up conflicts
+
+    def _get_contingency_reaction_dict(self):
+        info_dict = {}
+        for required_cont in self.contingency_pool.get_required_contingencies():
+            if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "!":
+                if required_cont.state not in info_dict:
+
+                    info_dict[required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
+                else:
+                    info_dict[required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
+        return info_dict
+
+    def get_conflict_chain_save(self, conflicted_state, chain=[]):
+        """
+        find a possible chain of conflicts which are resulting from an initial conflict state.
         
-        if conflict_complex.count_leafs() == 0:
-            cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
-            return cont_k
+        @param conflicted_state: A--B
+        @type conflicted_state: string
+        @param chain: List of all follow up states which are conflicted.
+        @type chain: list
+        @return chain: A list of all follow up conflicts resulting from the initial conflicting state
+        """
+        self._get_contingency_reaction_dict()
+        #chain[conflicted_state] = {}  # the conflict we have found is at least the conflict we have to deal with.
+        for required_cont in self.contingency_pool.get_required_contingencies():
 
-        cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=get_state('<conflictComplex>'))
+            if required_cont.target_reaction in self.reaction_pool and self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association":
+                if required_cont.ctype == "!" and required_cont.state == conflicted_state:  # find states which are dependent on this conflicting state
 
-        cont_k.add_child(conflict_complex)
+                    #chain[conflicted_state][]
+                    conflicted_state = self.reaction_pool[required_cont.target_reaction].sp_state  # get the state of the reaction which is conflicted
+                    self.get_conflict_chain(conflicted_state, chain)  # this state is a new conflicting state and is used for the next iteration.
+        #print chain
+        return chain  # return a chain of all follow up conflicts
+        
+    def _add_chain(self, chain):
+        if chain not in self.chain_collection:
+            self.chain_collection.append(chain)
 
-        self.create_complexes()
-        return cont_k
+    def _merge_chains(self):
+        new_chain = []
+        for chain in self.chain_collection:
+            new_chain.extend(chain)
+        new_chain = list(set(new_chain))
+
+        return new_chain
+
+    def search_conflicte_chains(self, conflicted_state, chain=[]):
+
+        copy_mapping_info_dict = copy.deepcopy(self.mapping_info_dict)
+
+        chain, found_more_elements = self.get_conflict_chain(conflicted_state, copy_mapping_info_dict, [conflicted_state], set())  # get all follow up conflicts/consequences of the first conflict
+        self._add_chain(chain)
+
+        if found_more_elements:
+            for element in found_more_elements: 
+                index = self.chain_collection[-1].index(element)
+                if index == 0:
+                    chain = [self.chain_collection[-1][0]]
+                else:
+                    chain = self.chain_collection[-1][0:index]
+                found_more_elements = found_more_elements - set([element])
+                chain, found_more_elements = self.get_conflict_chain(chain[-1], copy_mapping_info_dict, chain, found_more_elements)
+
+        self._add_chain(chain)
+        chain = self._merge_chains()
+
+        return chain
+
+    def get_conflict_chain(self, conflicted_state, copy_mapping_info_dict, chain=[], found_more_elements=set()):
+        """
+        find a possible chain of conflicts which are resulting from an initial conflict state.
+        
+        @param conflicted_state: A--B
+        @type conflicted_state: string
+        @param chain: List of all follow up states which are conflicted.
+        @type chain: list
+        @return chain: A list of all follow up conflicts resulting from the initial conflicting state
+        """
+        
+        if conflicted_state in copy_mapping_info_dict:
+
+            if copy_mapping_info_dict[conflicted_state] != []:
+                chain.append(copy_mapping_info_dict[conflicted_state].pop())
+                if copy_mapping_info_dict[conflicted_state] != []:
+                    found_more_elements.add(conflicted_state)
+                self.get_conflict_chain(chain[-1], copy_mapping_info_dict, chain, found_more_elements)
+
+        return chain, found_more_elements
+        #return chain  # return a chain of all follow up conflicts
+
+    def find_conflicts_recursive(self, product_contingency, conflicted_state, react_container):
+        """
+        find all follow up conflicts, which result from the initial conflict. Apply a k+ contingency for each. 
+        """
+        self.chain_collection = []
+        self.mapping_info_dict = self._get_contingency_reaction_dict()
+        chain = self.search_conflicte_chains(conflicted_state)
+
+        cap = ContingencyApplicator()
+        for element in chain:  # apply k+ contingency for all the conflicted states
+            cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=element)
+            cap.apply_on_container(react_container, cont_k)
+            self.conflicted_states.append(element)
+
+        return react_container
 
     def find_conflicts_on_mol(self, react_container):
         """
@@ -165,7 +293,7 @@ class ConflictSolver:
         conflicted_state = ""
         self.conflicted_states = []
         self.conflict_found = False
-        self.conflict_recursion = True
+        #self.conflict_recursion = True
 
         for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
             #  the change should only be applied if the dependence reaction is reversible like ppi, ipi ...
@@ -176,13 +304,11 @@ class ConflictSolver:
                     required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
 
                     conflicted_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
-
-                    if self.conflict_recursion:
-                        cont_k = self.find_conflicts_recursive(product_contingency, conflicted_state)
+                    #print "conflicted_state: ", conflicted_state
+                    #if self.conflict_recursion:
+                    react_container = self.find_conflicts_recursive(product_contingency, conflicted_state, react_container)
                     #else:
-                        # step 4
-                        # # get reaction from reaction_pool
-                        # # get reaction to which contingency belongs
+                        
 
                        #  print "##############"
                        #  print "product_contingency.target_reaction: ", product_contingency.target_reaction
@@ -194,15 +320,15 @@ class ConflictSolver:
                     #cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
 
                         #cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
-                    cap = ContingencyApplicator()
+                    #cap = ContingencyApplicator()
 
                         # apply a k+ contingency to our product contingency target reaction
                         # step 5.1, 5.2, 5.3
                         # this approach also solves problems with adapting the reaction rates
-                    print "HIER"
-                    cap.apply_on_container(react_container, cont_k)
+                    #print "HIER"
+                    #cap.apply_on_container(react_container, cont_k)
 
-                    self.conflicted_states.append(conflicted_state)
+                    #self.conflicted_states.append(conflicted_state)
 
 
         return react_container
@@ -218,7 +344,7 @@ class ConflictSolver:
 
     def reorder_molecules(self, new_complex, comp, found_no_complex, already_in_complex):
         """
-        This function is to reorder the molecules, meaning to bring molecules in a complex if they belong together.
+        This function is to reorder the molecules, meaning to bring molecules together in a complex if they belong together.
         This function is repeated recursively as long as there is a molecule we cannot assign.
         """
         tmp_complex = copy.deepcopy(new_complex)
@@ -233,7 +359,7 @@ class ConflictSolver:
                                     already_in_complex.append(mol._id)  # mark this protein to be known
                                     if mol._id in found_no_complex:  # if we found in a previous round no complex for this molecule it will be listed in found_no_complex.
                                         found_no_complex = found_no_complex.difference(set([mol._id]))  # remove the id from this list
-                                    break # we found an complex were this molecule can be added so we can make a break 
+                                    break  # we found an complex were this molecule can be added so we can make a break
                             else:
                                 found_no_complex.add(mol._id)  # if we don't have a break in the for loop we will end up here, because we did not found a complex we can assign the respective molecule.
         if found_no_complex:  # as long as there are a molecule we can not assign repeat the procedure
@@ -248,7 +374,7 @@ class ConflictSolver:
         to_change_in_reaction = reaction.to_change  # what should be changed in this reaction, this is important if we have symmetrical interactions which are conflicted
         for mol in conflicted_mol:  # iterate over all molecules which are directly involved in the conflict
 
-            if mol._id not in already_in_complex: # check if we saw this molecule before
+            if mol._id not in already_in_complex:  # check if we saw this molecule before
 
                 new = BiologicalComplex()  # initialise a new complex
                 new.side = 'LR'  # set the side
@@ -559,19 +685,20 @@ class Rxncon:
             ComplexApplicator(react_container, complexes).apply_complexes()
 
             # after applying complexes we may have more reactions in a single container.
-            #react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
+            react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
             if add_contingencies or self.solve_conflict.conflict_found:
                 self.apply_contingencies(react_container)
 
             # single contingency is applied for all reactions. If K+/K- reactions are doubled.
             self.update_reactions()
 
-            for reaction in react_container:
+            react_container = self.solve_conflict.delet_redundant_reactions(react_container)
+            #for reaction in react_container:
                 #print dir(reaction)
-                reaction.run_reaction()
+            #    reaction.run_reaction()
 
-            #if self.solve_conflict.conflict_found:
-            #   self.solve_conflict.solve_conlict(react_container)
+            if self.solve_conflict.conflict_found:
+                self.solve_conflict.solve_conlict(react_container)
 
 
 if __name__ == '__main__':
