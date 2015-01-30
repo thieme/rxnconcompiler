@@ -131,19 +131,40 @@ class ConflictSolver:
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
             self.complex_pool[str(bool_cont.state)] = alter_comp
 
+    def _check_exclusiveness(self, reaction):
+        for ele, x_value in self.mapping_info_dict["x"].iteritems():
+            ele_ctype_req = False
+            cont_ctype_req = False
+            for cont in reaction.get_contingencies():
+                if cont.state == ele and cont.ctype == "!":
+                    ele_ctype_req = True
+                    print "cont_state: ", cont.state
+                elif cont.state in x_value and cont.ctype == "!":
+                    cont_ctype_req = True
+                    print "cont.ctype: ", cont.state
+            print "#############################"
+            if ele_ctype_req and cont_ctype_req:
+                print "HIER"
+                return True
+        return False
+                    
+
     def delet_redundant_reactions(self, rcont):
         """
         in find_conflicts_recursive we are applying k+ for each state we found in a chain. 
         This result in redundant reactions, which has to be deleted. This is done here.
         """
 
-        common_cont = rcont.get_common_contingencies()
-
+        #common_cont = rcont.get_common_contingencies()
+        
         already_applied = []
 
         remove_reaction = []
         for i, reaction in enumerate(rcont):
-            if reaction.get_contingencies() in already_applied:
+            if self._check_exclusiveness(reaction):
+                print "reaction.get_contingencies(): ", reaction.get_contingencies()
+                remove_reaction.append(i)
+            elif reaction.get_contingencies() in already_applied:
                 remove_reaction.append(i)
             else:
                 already_applied.append(reaction.get_contingencies())
@@ -153,62 +174,21 @@ class ConflictSolver:
             del rcont[i]
         return rcont
 
-    def get_conflict_chain_save(self, conflicted_state, chain=[]):
-        """
-        find a possible chain of conflicts which are resulting from an initial conflict state.
-        
-        @param conflicted_state: A--B
-        @type conflicted_state: string
-        @param chain: List of all follow up states which are conflicted.
-        @type chain: list
-        @return chain: A list of all follow up conflicts resulting from the initial conflicting state
-        """
-        
-        chain.append(conflicted_state)  # the conflict we have found is at least the conflict we have to deal with.
-        for required_cont in self.contingency_pool.get_required_contingencies():
-
-            if required_cont.target_reaction in self.reaction_pool and self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association":
-                if required_cont.ctype == "!" and required_cont.state == conflicted_state:  # find states which are dependent on this conflicting state
-
-                    conflicted_state = self.reaction_pool[required_cont.target_reaction].sp_state  # get the state of the reaction which is conflicted
-                    self.get_conflict_chain(conflicted_state, chain)  # this state is a new conflicting state and is used for the next iteration.
-        #print chain
-        return chain  # return a chain of all follow up conflicts
-
     def _get_contingency_reaction_dict(self):
-        info_dict = {}
+        info_dict = {"!": {}, "x": {}}
         for required_cont in self.contingency_pool.get_required_contingencies():
             if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "!":
-                if required_cont.state not in info_dict:
-
-                    info_dict[required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
+                if required_cont.state not in info_dict["!"]:
+                    info_dict["!"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
                 else:
-                    info_dict[required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
+                    info_dict["!"][required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
+            if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "x":
+                if required_cont.state not in info_dict["x"]:
+                    info_dict["x"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
+                else:
+                    info_dict["x"][required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
         return info_dict
 
-    def get_conflict_chain_save(self, conflicted_state, chain=[]):
-        """
-        find a possible chain of conflicts which are resulting from an initial conflict state.
-        
-        @param conflicted_state: A--B
-        @type conflicted_state: string
-        @param chain: List of all follow up states which are conflicted.
-        @type chain: list
-        @return chain: A list of all follow up conflicts resulting from the initial conflicting state
-        """
-        self._get_contingency_reaction_dict()
-        #chain[conflicted_state] = {}  # the conflict we have found is at least the conflict we have to deal with.
-        for required_cont in self.contingency_pool.get_required_contingencies():
-
-            if required_cont.target_reaction in self.reaction_pool and self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association":
-                if required_cont.ctype == "!" and required_cont.state == conflicted_state:  # find states which are dependent on this conflicting state
-
-                    #chain[conflicted_state][]
-                    conflicted_state = self.reaction_pool[required_cont.target_reaction].sp_state  # get the state of the reaction which is conflicted
-                    self.get_conflict_chain(conflicted_state, chain)  # this state is a new conflicting state and is used for the next iteration.
-        #print chain
-        return chain  # return a chain of all follow up conflicts
-        
     def _add_chain(self, chain):
         if chain not in self.chain_collection:
             self.chain_collection.append(chain)
@@ -223,13 +203,13 @@ class ConflictSolver:
 
     def search_conflicte_chains(self, conflicted_state, chain=[]):
 
-        copy_mapping_info_dict = copy.deepcopy(self.mapping_info_dict)
+        copy_mapping_info_dict = copy.deepcopy(self.mapping_info_dict["!"])
 
         chain, found_more_elements = self.get_conflict_chain(conflicted_state, copy_mapping_info_dict, [conflicted_state], set())  # get all follow up conflicts/consequences of the first conflict
         self._add_chain(chain)
 
         if found_more_elements:
-            for element in found_more_elements: 
+            for element in found_more_elements:
                 index = self.chain_collection[-1].index(element)
                 if index == 0:
                     chain = [self.chain_collection[-1][0]]
@@ -272,7 +252,8 @@ class ConflictSolver:
         self.chain_collection = []
         self.mapping_info_dict = self._get_contingency_reaction_dict()
         chain = self.search_conflicte_chains(conflicted_state)
-
+        #print "self.mapping_info_dict: ", self.mapping_info_dict
+        #print "chain: ", chain
         cap = ContingencyApplicator()
         for element in chain:  # apply k+ contingency for all the conflicted states
             cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=element)
