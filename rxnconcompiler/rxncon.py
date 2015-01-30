@@ -138,18 +138,14 @@ class ConflictSolver:
             for cont in reaction.get_contingencies():
                 if cont.state == ele and cont.ctype == "!":
                     ele_ctype_req = True
-                    print "cont_state: ", cont.state
                 elif cont.state in x_value and cont.ctype == "!":
                     cont_ctype_req = True
-                    print "cont.ctype: ", cont.state
-            print "#############################"
             if ele_ctype_req and cont_ctype_req:
-                print "HIER"
                 return True
         return False
                     
 
-    def delet_redundant_reactions(self, rcont):
+    def delet_redundant_reactions(self, rcont, conflict):
         """
         in find_conflicts_recursive we are applying k+ for each state we found in a chain. 
         This result in redundant reactions, which has to be deleted. This is done here.
@@ -161,7 +157,7 @@ class ConflictSolver:
 
         remove_reaction = []
         for i, reaction in enumerate(rcont):
-            if self._check_exclusiveness(reaction):
+            if conflict and self._check_exclusiveness(reaction):
                 print "reaction.get_contingencies(): ", reaction.get_contingencies()
                 remove_reaction.append(i)
             elif reaction.get_contingencies() in already_applied:
@@ -673,7 +669,7 @@ class Rxncon:
             # single contingency is applied for all reactions. If K+/K- reactions are doubled.
             self.update_reactions()
 
-            react_container = self.solve_conflict.delet_redundant_reactions(react_container)
+            react_container = self.solve_conflict.delet_redundant_reactions(react_container, self.solve_conflict.conflict_found)
             #for reaction in react_container:
                 #print dir(reaction)
             #    reaction.run_reaction()
