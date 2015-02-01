@@ -95,13 +95,267 @@ from rxnconcompiler.molecule.molecule import Molecule
 import re
 import copy
 
+class Rxncon:
+    """
+    Manage the process that leads from the tabular data representation
+    to the object oriented representation of reactions and contingencies.
+    The process and objects are bngl-oriented.
+    #KR: better 'The process and objects were designed to allow...'
+    E.g. they were design to allow flexible and unambiguous
+    translation to bngl string in later stage.
 
-class ConflictSolver:
+    The end product is a pool of ReactionContainer objects.
+    Single ReactionContainer object corresponds to a RuleContainer object.
+    Single ReactionContainer has all data necessary for translation into bngl.
+
+    @type xls_tables:  dictionary
+    @param xls_tables: rxncon input data
+    """
+    def __init__(self, xls_tables):
+        """
+        Constructor creates basic objects with explicitly given information:
+        - MoleculePool created by Reaction Factory
+        - ReactionPool created by Reaction Factory
+        - ContingencyPool created by ContingencyFactory
+        - ComplexPool created here using ComplexBuilder
+        Data is supplemented by domain info for ppis with no domain specified by the user.
+
+        MoleculePool - list of all right and left reactants from all reactions.
+        ReactionPool - dict of all reactions.
+                       rxncon reaction str: ReactionContiner object
+                       (captures all possible alternative reactions
+                       depending on conditions in which reaction can happen).
+        ContingencyPool - dictionary of all contingencies.
+                          rxncon_reaction_str: root contingency
+                          (which contains all contingencies assign to this reaction).
+        ComplexPool - dict of all complexes (defined as children-containing contingencies with '<>').
+                      '<name>': AlternativeComplexes (which contains BiologicalComplex objects).
+        """
+        self.solved_conflicts = []
+        self.war = RxnconWarnings()
+        self.df = DomainFactory()
+        self.xls_tables = parse_rxncon(xls_tables)
+        reaction_factory = ReactionFactory(self.xls_tables)
+        self.molecule_pool = reaction_factory.molecule_pool
+        self.reaction_pool = reaction_factory.reaction_pool
+        contingency_factory = ContingencyFactory(self.xls_tables)
+        self.contingency_pool = contingency_factory.parse_contingencies()
+        
+        self.complex_pool = ComplexPool()
+        self.create_complexes()
+
+        self.update_contingencies()
+        self.solve_conflict = ConflictSolver(self.reaction_pool, self.contingency_pool, self.complex_pool)
+
+    def __repr__(self):
+        """
+        Rxncon object is represented as rxncon string 
+        (quick format).
+        """
+
+        result = ''
+        react_keys = [(self.reaction_pool[reaction].rid, reaction) for reaction in self.reaction_pool.keys()]
+        for reaction in sorted(react_keys):
+            result += reaction[1]
+            if self.contingency_pool.has_key(reaction[1]):
+                cont_root = self.contingency_pool[reaction[1]]
+                all_cont = cont_root.get_children()
+                for cont in all_cont:
+                    later = []
+                    if cont.ctype in ['or', 'and'] or '--' in cont.ctype:
+                        later.append(cont)
+                    else:
+                        result += '; %s' % str(cont)
+                    for cont in later:
+                        result += '\n%s; %s %s' % (cont.target_reaction, cont.ctype, str(cont.state))
+            result = result.strip() + '\n'
+        return result
+
+    def create_complexes(self):
+        """
+        Uses ComplexBuilder to create ComplexPool.
+        """
+        bools = self.contingency_pool.get_top_booleans()
+
+        for bool_cont in bools:
+            builder = ComplexBuilder()
+            alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
+            self.complex_pool[str(bool_cont.state)] = alter_comp
+
+    def get_requirements_dict(self):
+        """
+        """
+        req_dict = {}
+        for rname in self.reaction_pool.keys():
+            req_dict[rname] = []
+            for reaction in self.reaction_pool[rname]:
+                req_dict[rname].append(reaction.get_contingencies())
+        return req_dict
+
+    def get_complexes(self, reaction_name):
+        """
+        Prepares a list of complexes applicable to a give reaction.
+
+        @type  reaction_name: string
+        @param reaction_name: reaction string e.g. A_ppi_B_[bd_A].
+
+        @rtype:  list of AlternativeComplexes object
+        @return: all complexes defined by boolean contingencies
+                 applicable to a given reaction.
+        """
+
+        if not self.contingency_pool.has_key(reaction_name):
+            return []
+        cont_root = self.contingency_pool[reaction_name]
+
+        for cont in cont_root.children:
+            if cont.state.type == 'Boolean':
+                if self.complex_pool.has_key(str(cont.state)):
+                    #print "reaction_name: ", reaction_name
+                    #print "cont.state: ", cont.state
+                    return self.complex_pool[str(cont.state)]
+
+    def apply_contingencies(self, container):
+        """
+        Applys non-boolean contingencies.
+        0, ? are ignored
+        """
+        contingencies = []
+        if self.contingency_pool.has_key(container.name):
+            for cont in self.contingency_pool[container.name].children:
+                if cont.children == []:
+                    contingencies.append(cont)
+        cap = ContingencyApplicator(self.war)
+        for cont in contingencies:            
+            cap.apply_on_container(container, cont)
+
+    def update_contingencies(self):
+        """
+        Function that changes domain name in contingencies
+        with modification state (when domain is not provide by the user).
+        Domain indicates which enzyme creates the state.
+        State must match one of the states produced in the reactions.
+        """
+        # TODO: make ContingencyUpdator class out of it.
+        # TODO: separate functions for different updates.
+
+        modifications = self.contingency_pool.get_modification_contingencies()
+        if modifications:
+
+            for cont in modifications:
+                if cont.state.has_bd_domain():
+                    available = self.reaction_pool.find_modification_product(cont.state)
+                    available = sorted(available, key=lambda state: state.components[0].name)
+                    default_domain_present = False
+                    for state in available:
+                        if state.has_bd_domain():
+                            default_domain_present = True
+                    if not default_domain_present:
+                        if len(available) > 1: 
+                            self.war.produced_in_more[cont] = available
+                            cont.state = available[0]
+                        elif len(available) == 1:
+                            cont.state = state
+                        else:
+                            self.war.not_in_products.append(cont)
+        # TODO: refine this function. Add warnings.
+        relocalisations = self.contingency_pool.get_relocalisation_contingencies()
+        for cont in relocalisations:
+            if not cont.state.not_modifier:
+                available = self.reaction_pool.find_relocalisation_product(cont.state)
+                if available:
+                    if available[0].modifier == cont.state.modifier:
+                        cont.state.not_modifier = available[0].not_modifier
+                    else:
+                        cont.state.not_modifier = available[0].modifier
+
+    def update_reactions(self):
+        """
+        TODO: To be implemented.
+        translation - get empty domains
+        x, ! - get additional reaction / modify existing ones.
+        """
+        pass
+
+    def get_input_dict(self):
+        """"""
+        pass
+
+    def add_missing_reactions(self, states_list):
+        """
+        Creates pool of reaction that produce states required in the system
+        and adds them to the systems reaction pool (self.reaction_pool).
+        """
+        reaction_factory = ReactionFactory(states_list)
+        missing_molecule_pool = reaction_factory.molecule_pool
+        missing_reaction_pool = reaction_factory.reaction_pool
+        self.reaction_pool.update_pool(missing_reaction_pool)
+        self.molecule_pool += missing_molecule_pool
+        self.war.not_in_products = []
+
+    def add_translation(self):
+        """
+        Adds translation reaction for each protein to reaction_pool.
+        """
+        # Add appropriate reaction_factory
+        pass
+
+    def run_process(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True):
+        """
+        Transforms table into objects.
+        Groups the information that belong together.
+        Adds implicit information.
+
+        add_translation: when True add translation reaction for each protein # not available yet.
+        add_missing_reactions: when True looks for required states that are not produced and adds proper reactions.
+        add_complexes: when True apply boolean contingencies.
+        add_contingencies: when True apply non-boolean contingencies.
+        """
+        #print self.contingency_pool.get_mutual_exclusive_contingencies()
+        #self.contingency_pool.print_mutual_exclusive_contingencies()
+
+        # print 'Contingencies', self.contingency_pool['Ste11_[KD]_P+_Ste7_[AL(T363)]'].children[1].children
+        self.war.calculate_missing_states(self.reaction_pool, self.contingency_pool)
+        #self.war.get_mutual_exclusive_reactions(self.reaction_pool)
+        if add_missing_reactions:
+            self.add_missing_reactions(list(self.war.not_in_products))
+        if add_translation:
+            self.add_translation()
+
+        for react_container in self.reaction_pool:
+
+            # initially container has one reaction
+            # (changes after running the process because of OR and K+/K-)
+            complexes = []
+            if add_complexes:
+                complexes = self.get_complexes(react_container.name)
+
+            ComplexApplicator(react_container, complexes).apply_complexes()
+
+            # after applying complexes we may have more reactions in a single container.
+            react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
+            if add_contingencies or self.solve_conflict.conflict_found:
+                self.apply_contingencies(react_container)
+
+            # single contingency is applied for all reactions. If K+/K- reactions are doubled.
+            self.update_reactions()
+
+            react_container = self.solve_conflict.delet_redundant_reactions(react_container, self.solve_conflict.conflict_found)
+            #for reaction in react_container:
+                #print dir(reaction)
+            #    reaction.run_reaction()
+
+            if self.solve_conflict.conflict_found:
+                self.solve_conflict.solve_conlict(react_container)
+
+
+class ConflictSolver(Rxncon):
     """
     """
-    def __init__(self, reaction_pool, contingency_pool):
+    def __init__(self, reaction_pool, contingency_pool, complex_pool):
         self.contingency_pool = contingency_pool
         self.reaction_pool = reaction_pool
+        self.complex_pool = complex_pool
 
     def is_conflict(self, product_contingency, required_cont):
         if re.search('^(?!_)\[(.*?)\]', required_cont.target_reaction) or re.search('<(.*?)>', required_cont.target_reaction):
@@ -143,16 +397,13 @@ class ConflictSolver:
             if ele_ctype_req and cont_ctype_req:
                 return True
         return False
-                    
 
     def delet_redundant_reactions(self, rcont, conflict):
         """
-        in find_conflicts_recursive we are applying k+ for each state we found in a chain. 
+        in find_conflicts_recursive we are applying k+ for each state we found in a chain.
         This result in redundant reactions, which has to be deleted. This is done here.
         """
 
-        #common_cont = rcont.get_common_contingencies()
-        
         already_applied = []
 
         remove_reaction = []
@@ -164,16 +415,36 @@ class ConflictSolver:
             else:
                 already_applied.append(reaction.get_contingencies())
                 reaction.run_reaction()
-        
+
         for i in reversed(remove_reaction):
             del rcont[i]
         return rcont
 
     def _get_contingency_reaction_dict(self):
         info_dict = {"!": {}, "x": {}}
+
+        bools = self.contingency_pool.get_top_booleans()
+        for bool_cont in bools:
+            if bool_cont.target_reaction in self.reaction_pool:
+                if self.reaction_pool[bool_cont.target_reaction].sp_state.type == "Association" and bool_cont.ctype == "!":
+                    for bool_ele in self.complex_pool[str(bool_cont.state)][0].get_contingencies():
+                        if bool_cont.state not in info_dict["!"]:
+                            info_dict["!"][bool_ele.state] = [self.reaction_pool[bool_cont.target_reaction].sp_state]
+                        else:
+                            info_dict["!"][bool_ele.state].append(self.reaction_pool[bool_cont.target_reaction].sp_state)
+                if self.reaction_pool[bool_cont.target_reaction].sp_state.type == "Association" and bool_cont.ctype == "x":
+                    for bool_ele in self.complex_pool[str(bool_cont.state)][0].get_contingencies():
+                        if bool_cont.state not in info_dict["!"]:
+                            info_dict["!"][bool_ele.state] = [self.reaction_pool[bool_cont.target_reaction].sp_state]
+                        else:
+                            info_dict["!"][bool_ele.state].append(self.reaction_pool[bool_cont.target_reaction].sp_state)
+
         for required_cont in self.contingency_pool.get_required_contingencies():
+
             if required_cont.target_reaction in self.reaction_pool:
+
                 if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "!":
+
                     if required_cont.state not in info_dict["!"]:
                         info_dict["!"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
                     else:
@@ -183,6 +454,7 @@ class ConflictSolver:
                         info_dict["x"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
                     else:
                         info_dict["x"][required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
+
         return info_dict
 
     def _add_chain(self, chain):
@@ -250,6 +522,7 @@ class ConflictSolver:
         chain = self.search_conflicte_chains(conflicted_state)
         #print "self.mapping_info_dict: ", self.mapping_info_dict
         #print "chain: ", chain
+
         cap = ContingencyApplicator()
         for element in chain:  # apply k+ contingency for all the conflicted states
             cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=element)
@@ -397,258 +670,6 @@ class ConflictSolver:
                         new_complex.append(comp)
                 if new_complex:
                     reaction.product_complexes = new_complex
-
-
-class Rxncon:
-    """
-    Manage the process that leads from the tabular data representation
-    to the object oriented representation of reactions and contingencies.
-    The process and objects are bngl-oriented.
-    #KR: better 'The process and objects were designed to allow...'
-    E.g. they were design to allow flexible and unambiguous
-    translation to bngl string in later stage.
-
-    The end product is a pool of ReactionContainer objects.
-    Single ReactionContainer object corresponds to a RuleContainer object.
-    Single ReactionContainer has all data necessary for translation into bngl.
-
-    @type xls_tables:  dictionary
-    @param xls_tables: rxncon input data
-    """
-    def __init__(self, xls_tables):
-        """
-        Constructor creates basic objects with explicitly given information:
-        - MoleculePool created by Reaction Factory
-        - ReactionPool created by Reaction Factory
-        - ContingencyPool created by ContingencyFactory
-        - ComplexPool created here using ComplexBuilder
-        Data is supplemented by domain info for ppis with no domain specified by the user.
-
-        MoleculePool - list of all right and left reactants from all reactions.
-        ReactionPool - dict of all reactions.
-                       rxncon reaction str: ReactionContiner object
-                       (captures all possible alternative reactions
-                       depending on conditions in which reaction can happen).
-        ContingencyPool - dictionary of all contingencies.
-                          rxncon_reaction_str: root contingency
-                          (which contains all contingencies assign to this reaction).
-        ComplexPool - dict of all complexes (defined as children-containing contingencies with '<>').
-                      '<name>': AlternativeComplexes (which contains BiologicalComplex objects).
-        """
-        self.solved_conflicts = []
-        self.war = RxnconWarnings()
-        self.df = DomainFactory()
-        self.xls_tables = parse_rxncon(xls_tables)
-        reaction_factory = ReactionFactory(self.xls_tables)
-        self.molecule_pool = reaction_factory.molecule_pool
-        self.reaction_pool = reaction_factory.reaction_pool
-        contingency_factory = ContingencyFactory(self.xls_tables)
-        self.contingency_pool = contingency_factory.parse_contingencies()
-        
-        self.complex_pool = ComplexPool()
-        self.create_complexes()
-
-        self.update_contingencies()
-        self.solve_conflict = ConflictSolver(self.reaction_pool, self.contingency_pool)
-
-    def __repr__(self):
-        """
-        Rxncon object is represented as rxncon string 
-        (quick format).
-        """
-
-        result = ''
-        react_keys = [(self.reaction_pool[reaction].rid, reaction) for reaction in self.reaction_pool.keys()]
-        for reaction in sorted(react_keys):
-            result += reaction[1]
-            if self.contingency_pool.has_key(reaction[1]):
-                cont_root = self.contingency_pool[reaction[1]]
-                all_cont = cont_root.get_children()
-                for cont in all_cont:
-                    later = []
-                    if cont.ctype in ['or', 'and'] or '--' in cont.ctype:
-                        later.append(cont)
-                    else:
-                        result += '; %s' % str(cont)
-                    for cont in later:
-                        result += '\n%s; %s %s' % (cont.target_reaction, cont.ctype, str(cont.state))
-            result = result.strip() + '\n'
-        return result
-
-    def create_complexes(self):
-        """
-        Uses ComplexBuilder to create ComplexPool.
-        """
-        bools = self.contingency_pool.get_top_booleans()
-
-        for bool_cont in bools:
-            builder = ComplexBuilder()
-            alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
-            self.complex_pool[str(bool_cont.state)] = alter_comp
-
-    def get_requirements_dict(self):
-        """
-        """
-        req_dict = {}
-        for rname in self.reaction_pool.keys():
-            req_dict[rname] = []
-            for reaction in self.reaction_pool[rname]:
-                req_dict[rname].append(reaction.get_contingencies())
-        return req_dict
-
-    def get_complexes(self, reaction_name):
-        """
-        Prepares a list of complexes applicable to a give reaction.
-
-        @type  reaction_name: string
-        @param reaction_name: reaction string e.g. A_ppi_B_[bd_A].
-
-        @rtype:  list of AlternativeComplexes object
-        @return: all complexes defined by boolean contingencies
-                 applicable to a given reaction.
-        """
-
-        if not self.contingency_pool.has_key(reaction_name):
-            return []
-        cont_root = self.contingency_pool[reaction_name]
-
-        for cont in cont_root.children:
-            if cont.state.type == 'Boolean':
-                if self.complex_pool.has_key(str(cont.state)):
-                    return self.complex_pool[str(cont.state)]
-
-    def apply_contingencies(self, container):
-        """
-        Applys non-boolean contingencies.
-        0, ? are ignored
-        """
-        contingencies = []
-        if self.contingency_pool.has_key(container.name):
-            for cont in self.contingency_pool[container.name].children:
-                if cont.children == []:
-                    contingencies.append(cont)
-        cap = ContingencyApplicator(self.war)
-        for cont in contingencies:            
-            cap.apply_on_container(container, cont)
-
-    def update_contingencies(self):
-        """
-        Function that changes domain name in contingencies
-        with modification state (when domain is not provide by the user).
-        Domain indicates which enzyme creates the state.
-        State must match one of the states produced in the reactions.
-        """
-        # TODO: make ContingencyUpdator class out of it.
-        # TODO: separate functions for different updates.
-
-        modifications = self.contingency_pool.get_modification_contingencies()
-        if modifications:
-
-            for cont in modifications:
-                if cont.state.has_bd_domain():
-                    available = self.reaction_pool.find_modification_product(cont.state)
-                    available = sorted(available, key=lambda state: state.components[0].name)
-                    default_domain_present = False
-                    for state in available:
-                        if state.has_bd_domain():
-                            default_domain_present = True
-                    if not default_domain_present:
-                        if len(available) > 1: 
-                            self.war.produced_in_more[cont] = available
-                            cont.state = available[0]
-                        elif len(available) == 1:
-                            cont.state = state
-                        else:
-                            self.war.not_in_products.append(cont)
-        # TODO: refine this function. Add warnings.
-        relocalisations = self.contingency_pool.get_relocalisation_contingencies()
-        for cont in relocalisations:
-            if not cont.state.not_modifier:
-                available = self.reaction_pool.find_relocalisation_product(cont.state)
-                if available:
-                    if available[0].modifier == cont.state.modifier:
-                        cont.state.not_modifier = available[0].not_modifier
-                    else:
-                        cont.state.not_modifier = available[0].modifier
-
-    def update_reactions(self):
-        """
-        TODO: To be implemented.
-        translation - get empty domains
-        x, ! - get additional reaction / modify existing ones.
-        """
-        pass
-
-    def get_input_dict(self):
-        """"""
-        pass
-
-    def add_missing_reactions(self, states_list):
-        """
-        Creates pool of reaction that produce states required in the system
-        and adds them to the systems reaction pool (self.reaction_pool).
-        """
-        reaction_factory = ReactionFactory(states_list)
-        missing_molecule_pool = reaction_factory.molecule_pool
-        missing_reaction_pool = reaction_factory.reaction_pool
-        self.reaction_pool.update_pool(missing_reaction_pool)
-        self.molecule_pool += missing_molecule_pool
-        self.war.not_in_products = []
-
-    def add_translation(self):
-        """
-        Adds translation reaction for each protein to reaction_pool.
-        """
-        # Add appropriate reaction_factory
-        pass
-
-    def run_process(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True):
-        """
-        Transforms table into objects.
-        Groups the information that belong together.
-        Adds implicit information.
-
-        add_translation: when True add translation reaction for each protein # not available yet.
-        add_missing_reactions: when True looks for required states that are not produced and adds proper reactions.
-        add_complexes: when True apply boolean contingencies.
-        add_contingencies: when True apply non-boolean contingencies.
-        """
-        #print self.contingency_pool.get_mutual_exclusive_contingencies()
-        #self.contingency_pool.print_mutual_exclusive_contingencies()
-
-        # print 'Contingencies', self.contingency_pool['Ste11_[KD]_P+_Ste7_[AL(T363)]'].children[1].children
-        self.war.calculate_missing_states(self.reaction_pool, self.contingency_pool)
-        #self.war.get_mutual_exclusive_reactions(self.reaction_pool)
-        if add_missing_reactions:
-            self.add_missing_reactions(list(self.war.not_in_products))
-        if add_translation:
-            self.add_translation()
-
-        for react_container in self.reaction_pool:
-
-            # initially container has one reaction
-            # (changes after running the process because of OR and K+/K-)
-            complexes = []
-            if add_complexes:
-                complexes = self.get_complexes(react_container.name)
-
-            ComplexApplicator(react_container, complexes).apply_complexes()
-
-            # after applying complexes we may have more reactions in a single container.
-            react_container = self.solve_conflict.find_conflicts_on_mol(react_container)
-            if add_contingencies or self.solve_conflict.conflict_found:
-                self.apply_contingencies(react_container)
-
-            # single contingency is applied for all reactions. If K+/K- reactions are doubled.
-            self.update_reactions()
-
-            react_container = self.solve_conflict.delet_redundant_reactions(react_container, self.solve_conflict.conflict_found)
-            #for reaction in react_container:
-                #print dir(reaction)
-            #    reaction.run_reaction()
-
-            if self.solve_conflict.conflict_found:
-                self.solve_conflict.solve_conlict(react_container)
 
 
 if __name__ == '__main__':

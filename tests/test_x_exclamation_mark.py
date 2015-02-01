@@ -65,7 +65,10 @@ class x_exclamation_mark_Tests(TestCase):
 #####################################################################################################################################
 
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
-        rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]\n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[Cyt]--Ste11')
+        #rxncon = Rxncon('Sho1_[Cyt]_ppi_Ste11; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]\n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[Cyt]--Ste11')
+
+        rxncon = Rxncon('A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! <complex> \n <complex>; AND A--B; AND B--D \n C_ppi_E; ! B--C \n X_p-_A_[X] ')
+        #rxncon = Rxncon('A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! A--B; ! B--D \n <complex>; AND A--B; AND B--D \n C_ppi_E; ! B--C \n X_p-_A_[X] ')
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! B--C')
