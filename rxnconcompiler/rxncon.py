@@ -158,7 +158,6 @@ class ConflictSolver:
         remove_reaction = []
         for i, reaction in enumerate(rcont):
             if conflict and self._check_exclusiveness(reaction):
-                print "reaction.get_contingencies(): ", reaction.get_contingencies()
                 remove_reaction.append(i)
             elif reaction.get_contingencies() in already_applied:
                 remove_reaction.append(i)
@@ -173,16 +172,17 @@ class ConflictSolver:
     def _get_contingency_reaction_dict(self):
         info_dict = {"!": {}, "x": {}}
         for required_cont in self.contingency_pool.get_required_contingencies():
-            if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "!":
-                if required_cont.state not in info_dict["!"]:
-                    info_dict["!"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
-                else:
-                    info_dict["!"][required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
-            if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "x":
-                if required_cont.state not in info_dict["x"]:
-                    info_dict["x"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
-                else:
-                    info_dict["x"][required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
+            if required_cont.target_reaction in self.reaction_pool:
+                if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "!":
+                    if required_cont.state not in info_dict["!"]:
+                        info_dict["!"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
+                    else:
+                        info_dict["!"][required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
+                if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "x":
+                    if required_cont.state not in info_dict["x"]:
+                        info_dict["x"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
+                    else:
+                        info_dict["x"][required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
         return info_dict
 
     def _add_chain(self, chain):
@@ -270,7 +270,6 @@ class ConflictSolver:
         conflicted_state = ""
         self.conflicted_states = []
         self.conflict_found = False
-        #self.conflict_recursion = True
 
         for required_cont in self.contingency_pool.get_required_contingencies():  # step 2 get required contingency, for possible conflicts
             #  the change should only be applied if the dependence reaction is reversible like ppi, ipi ...
@@ -281,32 +280,7 @@ class ConflictSolver:
                     required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
 
                     conflicted_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
-                    #print "conflicted_state: ", conflicted_state
-                    #if self.conflict_recursion:
                     react_container = self.find_conflicts_recursive(product_contingency, conflicted_state, react_container)
-                    #else:
-                        
-
-                       #  print "##############"
-                       #  print "product_contingency.target_reaction: ", product_contingency.target_reaction
-                       #  print "required_cont.target_reaction: ", required_cont.target_reaction
-                       # #print dir(required_cont.target_reaction)
-                       #  print "conflicted_state: ", conflicted_state
-                       #  print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
-                    #print conflicted_state
-                    #cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
-
-                        #cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=conflicted_state)
-                    #cap = ContingencyApplicator()
-
-                        # apply a k+ contingency to our product contingency target reaction
-                        # step 5.1, 5.2, 5.3
-                        # this approach also solves problems with adapting the reaction rates
-                    #print "HIER"
-                    #cap.apply_on_container(react_container, cont_k)
-
-                    #self.conflicted_states.append(conflicted_state)
-
 
         return react_container
 
@@ -482,7 +456,7 @@ class Rxncon:
         Rxncon object is represented as rxncon string 
         (quick format).
         """
-        #KR: this is cool! I see both MR's handwriting here.
+
         result = ''
         react_keys = [(self.reaction_pool[reaction].rid, reaction) for reaction in self.reaction_pool.keys()]
         for reaction in sorted(react_keys):
@@ -506,7 +480,7 @@ class Rxncon:
         Uses ComplexBuilder to create ComplexPool.
         """
         bools = self.contingency_pool.get_top_booleans()
-       #print "bools: ", bools
+
         for bool_cont in bools:
             builder = ComplexBuilder()
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
@@ -533,8 +507,7 @@ class Rxncon:
         @return: all complexes defined by boolean contingencies
                  applicable to a given reaction.
         """
-      #  print "self.contingency_pool: ", self.contingency_pool
-        #print "self.contingency_pool[reaction_name]: ", self.contingency_pool[reaction_name]
+
         if not self.contingency_pool.has_key(reaction_name):
             return []
         cont_root = self.contingency_pool[reaction_name]
@@ -635,10 +608,10 @@ class Rxncon:
         Groups the information that belong together.
         Adds implicit information.
 
-        add_translation: when Trues add translation reaction for each protein # not available yet.
+        add_translation: when True add translation reaction for each protein # not available yet.
         add_missing_reactions: when True looks for required states that are not produced and adds proper reactions.
-        add_complexes: when True applys boolean contingencies.
-        add_contingencies: when True applys non-boolean contingencies.
+        add_complexes: when True apply boolean contingencies.
+        add_contingencies: when True apply non-boolean contingencies.
         """
         #print self.contingency_pool.get_mutual_exclusive_contingencies()
         #self.contingency_pool.print_mutual_exclusive_contingencies()
