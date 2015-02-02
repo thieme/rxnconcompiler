@@ -246,7 +246,6 @@ class Interaction(Reaction):
             self.product_complexes.append(new)
 
 
-
 class Modification(Reaction):
     """"""
     def get_modifier(self):
@@ -258,7 +257,7 @@ class Modification(Reaction):
         A substrate complex is returned.
         (it is the same as product but has different _id)
         """
-        lcompl = self.get_substrate_complex('L')  
+        lcompl = self.get_substrate_complex('L')
         if lcompl:
             return [lcompl]
         return []

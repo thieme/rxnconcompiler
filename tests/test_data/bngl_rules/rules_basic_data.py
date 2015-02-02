@@ -239,7 +239,15 @@ CONTINGENCIES_DATA = {
     'Rules':[
     'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a,b) <-> ProtA(AssocProtC!1,a,b).ProtC(Gnp~P,AssocProtA!1)'],
     'Tags': [
+    1, 'ipi', 'contingencies']},
+
+    'Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]': {
+    'Rules':[
+    'Cdc42(GnP~P,AssocSte20) + Ste20(AssocCdc42,CRIB2!1,KD!1) <-> Cdc42(GnP~P,AssocSte20!1).Ste20(AssocCdc42!1,CRIB2!2,KD!2)',
+    'Ste20(CRIB2,KD) <-> Ste20(CRIB2!1,KD!1)'],
+    'Tags': [
     1, 'ipi', 'contingencies']}
+
 
 }
 

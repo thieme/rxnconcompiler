@@ -177,6 +177,7 @@ class ComplexApplicator:
             self.update_reaction_rate(reaction, compl, pos_and_neg_compl)
 
         if self.complexes == []:
+
             reaction = self.reaction_container[0]
             if reaction.left_reactant._id == reaction.right_reactant._id:
                 self.molecule2complex(reaction.left_reactant, reaction, 'LR')

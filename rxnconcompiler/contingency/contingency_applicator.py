@@ -117,7 +117,7 @@ class ContingencyApplicator():
         """
         it requires to set the binding_partners for the Intraprotein
         """
-
+        print "hier"
         component = cont.state.components[0]
         left = reaction.get_substrate_complex('L')
         right = reaction.get_substrate_complex('R')
@@ -135,6 +135,17 @@ class ContingencyApplicator():
             if new_mols:
                 mol[0].binding_partners.append(cont.state)
 
+        elif left.has_molecule(component.name) and not cont.state == reaction.to_change:
+            side = left.side
+            mol = left.get_molecules(component.name, component.cid)
+            new_mols = []
+
+            occupied_doms = mol[0].get_domains('binding', True)
+
+            if component.domain not in occupied_doms:
+                new_mols.append(mol)
+            if new_mols:
+                mol[0].binding_partners.append(cont.state)
 
     def apply_positive_association(self, reaction, cont):
         """

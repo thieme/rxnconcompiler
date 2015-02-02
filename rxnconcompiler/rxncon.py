@@ -375,16 +375,6 @@ class ConflictSolver(Rxncon):
         result = [mol for mol in comp.molecules if mol.has_state(conflicted_state)]
         return result
 
-    def create_complexes(self):
-        """
-        Uses ComplexBuilder to create ComplexPool.
-        """
-        bools = self.contingency_pool.get_top_booleans()
-        for bool_cont in bools:
-            builder = ComplexBuilder()
-            alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
-            self.complex_pool[str(bool_cont.state)] = alter_comp
-
     def _check_exclusiveness(self, reaction):
         for ele, x_value in self.mapping_info_dict["x"].iteritems():
             ele_ctype_req = False
