@@ -117,7 +117,6 @@ class ContingencyApplicator():
         """
         it requires to set the binding_partners for the Intraprotein
         """
-        print "hier"
         component = cont.state.components[0]
         left = reaction.get_substrate_complex('L')
         right = reaction.get_substrate_complex('R')
@@ -400,6 +399,8 @@ class ContingencyApplicator():
                 #print 'Mod site after cloning', reaction.substrat_complexes[0].molecules[0].modification_sites
                 if cont.state.type == 'Association':
                     self.apply_positive_association(reaction, pos_cont)
+                elif cont.state.type == "Intraprotein":
+                    self.apply_positive_intraprotein(reaction, pos_cont)
                 else:
                     ############### BUG
                     self.apply_on_reaction(reaction, pos_cont)

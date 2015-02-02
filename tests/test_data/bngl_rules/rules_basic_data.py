@@ -129,24 +129,22 @@ REACTIONS_DATA = {
     1, 'CONSUME', 'no contingencies']},
 }
 
-
-
 CONTINGENCIES_DATA = {
     # basic reactions with contingencies.
     'A_ppi_C': {
-    'Rules':[
+    'Rules': [
     'A(AssocC) + C(AssocA) <-> A(AssocC!1).C(AssocA!1)'],
     'Tags': [
     1, 'ppi', 'no contingencies']},
 
     'A_ppi_B; ! A--C': {
-    'Rules':[
+    'Rules': [
     'A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1)'],
     'Tags': [
     1, 'ppi', 'contingencies']},
 
     'X_p-_A_[Z] \n A_ppi_B; ! A_[Z]-{P}': {
-    'Rules':[
+    'Rules': [
     'A(Z~P,AssocB) + B(AssocA) <-> A(Z~P,AssocB!1).B(AssocA!1)',
     'X + A(Z~P,AssocB!1).B(AssocA!1) -> X + A(Z~U,AssocB) + B(AssocA)',
     'X + A(Z~P,AssocB) -> X + A(Z~U,AssocB)'],
@@ -154,7 +152,7 @@ CONTINGENCIES_DATA = {
     1, 'p-', 'contingencies']},
 
     'Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]': {
-    'Rules':[
+    'Rules': [
     'Cdc42(GnP~P,ED) + PIP2(AssocSte20!2).Ste20(BR!2,CRIB,KD+CRIB!1).Ste20(KD+CRIB!1) -> Cdc42(GnP~P,ED!1).PIP2(AssocSte20!2).Ste20(BR!2,CRIB!1,KD+CRIB) + Ste20(KD+CRIB)',
     'Cdc42(GnP~P,ED) + PIP2(AssocSte20!1).Ste20(BR!1,CRIB,KD+CRIB) <-> Cdc42(GnP~P,ED!1).PIP2(AssocSte20!2).Ste20(BR!2,CRIB!1,KD+CRIB)',
     'Cdc42(GnP~P,ED) + Ste20(BR,CRIB,KD+CRIB!1).Ste20(KD+CRIB!1) -> Cdc42(GnP~P,ED!1).Ste20(BR,CRIB!1,KD+CRIB) + Ste20(KD+CRIB)',
@@ -163,15 +161,15 @@ CONTINGENCIES_DATA = {
     'Tags': [
     1, 'ppi', 'contingencies']},
 
-    'Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]':{
-    'Rules':[
+    'Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]': {
+    'Rules': [
     'SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,n) + SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c) -> Swi4(AssocSCBG1,n!1).Swi4(AssocSCBG1,c!1) + SCBG1(AssocSwi4) + SCBG1(AssocSwi4)',
     'Swi4(AssocSCBG1,n) + Swi4(AssocSCBG1,c) <-> Swi4(AssocSCBG1,n!1).Swi4(AssocSCBG1,c!1)'],
     'Tags': [
     1, 'ppi', 'contingencies']},
 
-    'Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]':{
-    'Rules':[
+    'Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]': {
+    'Rules': [
     'SCBFKS2(AssocSwi4!1).SCBG1(AssocSwi4!2).Swi4(AssocSCBFKS2!1,AssocSCBG1!2,n) + SCBFKS2(AssocSwi4!1).SCBG1(AssocSwi4!2).Swi4(AssocSCBFKS2!1,AssocSCBG1!2,c) -> Swi4(AssocSCBFKS2,AssocSCBG1,n!1).Swi4(AssocSCBFKS2,AssocSCBG1,c!1) + SCBFKS2(AssocSwi4) + SCBFKS2(AssocSwi4) + SCBG1(AssocSwi4) + SCBG1(AssocSwi4)',
     'SCBFKS2(AssocSwi4!1).Swi4(AssocSCBFKS2!1,AssocSCBG1,n) + SCBFKS2(AssocSwi4!1).Swi4(AssocSCBFKS2!1,AssocSCBG1,c) -> Swi4(AssocSCBFKS2,AssocSCBG1,n!1).Swi4(AssocSCBFKS2,AssocSCBG1,c!1) + SCBFKS2(AssocSwi4) + SCBFKS2(AssocSwi4)',
     'SCBG1(AssocSwi4!1).Swi4(AssocSCBFKS2,AssocSCBG1!1,n) + SCBG1(AssocSwi4!1).Swi4(AssocSCBFKS2,AssocSCBG1!1,c) -> Swi4(AssocSCBFKS2,AssocSCBG1,n!1).Swi4(AssocSCBFKS2,AssocSCBG1,c!1) + SCBG1(AssocSwi4) + SCBG1(AssocSwi4)',
@@ -180,7 +178,7 @@ CONTINGENCIES_DATA = {
     1, 'ppi', 'contingencies']},
 
     'Sho1_[Cyt]_ppi_Ste11; ! <complex>; k+ Hkr1_[TMD]--Sho1_[TMD]\n <complex>; AND Opy_[BD:Ste50]--Ste50_[RA]; AND Ste11_[SAM]--Ste50_[SAM] \n Ste5_[MEKK]_ppi_Ste11; x Sho1_[Cyt]--Ste11':{
-    'Rules':[
+    'Rules': [
     'Hkr1(TMD!1).Sho1(Cyt,TMD!1) + Opy(BDSte50!1).Ste11(AssocSho1,AssocSte5!3,SAM!2).Ste5(MEKK!3).Ste50(RA!1,SAM!2) -> Hkr1(TMD!4).Opy(BDSte50!1).Sho1(Cyt!3,TMD!4).Ste11(AssocSho1!3,AssocSte5,SAM!2).Ste50(RA!1,SAM!2) + Ste5(MEKK)',
     'Hkr1(TMD!1).Sho1(Cyt,TMD!1) + Opy(BDSte50!1).Ste11(AssocSho1,AssocSte5,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy(BDSte50!1).Sho1(Cyt!3,TMD!4).Ste11(AssocSho1!3,AssocSte5,SAM!2).Ste50(RA!1,SAM!2)',
     'Sho1(Cyt,TMD) + Opy(BDSte50!1).Ste11(AssocSho1,AssocSte5!3,SAM!2).Ste5(MEKK!3).Ste50(RA!1,SAM!2) -> Opy(BDSte50!1).Sho1(Cyt!3,TMD).Ste11(AssocSho1!3,AssocSte5,SAM!2).Ste50(RA!1,SAM!2) + Ste5(MEKK)',
@@ -188,9 +186,17 @@ CONTINGENCIES_DATA = {
     'Tags': [
     1, 'ppi', 'contingencies']},
 
+    # conflict with ipi reaction
+    'Swi6_[c]_ppi_Swi4_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Swi6_[c]--Swi4_[c]': {
+    'Rules': [
+    'Swi6(c) + Swi4(c!1,n!1) -> Swi4(c!1,n).Swi6(c!1)',
+    'Swi6(c) + Swi4(c,n) <-> Swi4(c!1,n).Swi6(c!1)'],
+    'Tags': [
+    1, 'ppi', 'contingencies']},
+
 ### simple conflict chain
     'X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C':{
-    'Rules':[
+    'Rules': [
     'X + A(X~P,AssocB!3).B(AssocA!3,AssocC!2).C(AssocB!2,AssocD!1).D(AssocC!1) -> X + A(X~U,AssocB) + B(AssocA,AssocC) + C(AssocB,AssocD) + D(AssocC)',
     'X + A(X~P,AssocB) -> X + A(X~U,AssocB)',
     'X + A(X~P,AssocB!1).B(AssocA!1,AssocC) -> X + A(X~U,AssocB) + B(AssocA,AssocC)',
@@ -199,7 +205,7 @@ CONTINGENCIES_DATA = {
     1, 'ppi', 'contingencies']},
 ### conflict chain with two alternative paths
     'X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C':{
-    'Rules':[
+    'Rules': [
     'X + A(X~P,AssocB,AssocF) -> X + A(X~U,AssocB,AssocF)',
     'X + A(X~P,AssocB,AssocF!1).F(AssocA!1) -> X + A(X~U,AssocB,AssocF) + F(AssocA)',
     'X + A(X~P,AssocB!1,AssocF).B(AssocA!1,AssocC) -> X + A(X~U,AssocB,AssocF) + B(AssocA,AssocC)',
@@ -214,7 +220,7 @@ CONTINGENCIES_DATA = {
 
 #### conflict chain with two alternative path excluding each other
     'X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C':{
-    'Rules':[
+    'Rules': [
     'X + A(X~P,AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) -> X + A(X~U,AssocB,AssocC,AssocF) + F(AssocA) + B(AssocA)',
     'X + A(X~P,AssocB,AssocC,AssocF!1).F(AssocA!1) -> X + A(X~U,AssocB,AssocC,AssocF) + F(AssocA)',
     'X + A(X~P,AssocB!3,AssocC!2,AssocF).B(AssocA!3).C(AssocA!2,AssocD!1).D(AssocC!1) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + D(AssocC) + B(AssocA)',
@@ -230,19 +236,19 @@ CONTINGENCIES_DATA = {
 
 #### negative ipi contingency ####
     'ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; ! ProtA_[a]--[b]': {
-    'Rules':[
+    'Rules': [
     'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a!1,b!1) <-> ProtA(AssocProtC!1,a!2,b!2).ProtC(Gnp~P,AssocProtA!1)'],
     'Tags': [
     1, 'ipi', 'contingencies']},
 ##### positive ipi contingency
     'ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; x ProtA_[a]--[b]': {
-    'Rules':[
+    'Rules': [
     'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a,b) <-> ProtA(AssocProtC!1,a,b).ProtC(Gnp~P,AssocProtA!1)'],
     'Tags': [
     1, 'ipi', 'contingencies']},
 
     'Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]': {
-    'Rules':[
+    'Rules': [
     'Cdc42(GnP~P,AssocSte20) + Ste20(AssocCdc42,CRIB2!1,KD!1) <-> Cdc42(GnP~P,AssocSte20!1).Ste20(AssocCdc42!1,CRIB2!2,KD!2)',
     'Ste20(CRIB2,KD) <-> Ste20(CRIB2!1,KD!1)'],
     'Tags': [

@@ -58,16 +58,13 @@ class x_exclamation_mark_Tests(TestCase):
 
         rxncon = Rxncon('Swi4_ppi_Swi6; ! Swi4_[n]--[d] \n Swi4_[n]_ipi_Swi4_[c]')
 
-        rxncon = Rxncon('ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; ! ProtA_[a]--[b]')
+        rxncon = Rxncon('Swi6_[c]_ppi_Swi4_[c]; ! Swi4_[n]--[c]')
 
-        rxncon = Rxncon('Swi6_[c]_ppi_Swi4_[c]; ! Swi4_[n]--[d]')
-
-        rxncon = Rxncon('Swi4_[c]_ppi_Swi6_[c]; ! Swi4_[n]--[d]')
+        #rxncon = Rxncon('Swi4_[c]_ppi_Swi6_[c]; k+ Swi4_[n]--[d]')
 
         #rxncon = Rxncon('Swi6_[c]_ppi_Swi4_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Swi6_[c]--Swi4_[c]')
 
         #rxncon = Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2')
-        
 
 
         #rxncon = Rxncon(input_data)
