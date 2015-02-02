@@ -511,7 +511,7 @@ class ConflictSolver(Rxncon):
         self.mapping_info_dict = self._get_contingency_reaction_dict()
         chain = self.search_conflicte_chains(conflicted_state)
         #print "self.mapping_info_dict: ", self.mapping_info_dict
-        #print "chain: ", chain
+        print "conflict chain: ", chain
 
         cap = ContingencyApplicator()
         for element in chain:  # apply k+ contingency for all the conflicted states
@@ -543,6 +543,12 @@ class ConflictSolver(Rxncon):
                     required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
 
                     conflicted_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
+                    print "##############"
+                    print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                    print "conflicted state: ", conflicted_state
+                    print "conflicted reaction: ", required_cont.target_reaction
+                    print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
+
                     react_container = self.find_conflicts_recursive(product_contingency, conflicted_state, react_container)
 
         return react_container
