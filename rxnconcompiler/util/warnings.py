@@ -46,7 +46,7 @@ class RxnconWarnings:
         """
         if key not in self.mutual_exclusive_reactions.keys():
             self.mutual_exclusive_reactions[key] = [value]
-        else: 
+        else:
             self.mutual_exclusive_reactions.append(value)
 
     def get_mutual_exclusive_reactions(self, reaction_pool):

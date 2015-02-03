@@ -181,7 +181,7 @@ class ContingencyPool(dict):
     def get_mutual_exclusive_contingencies(self):
         """
         Returns a dictionary of reactions (key) and a list of states (value). 
-        The states and the reactions are mutual exclusive. 
+        The states and the reactions are mutual exclusive by contingency. 
         """
         result = {}
         for root in self.values():

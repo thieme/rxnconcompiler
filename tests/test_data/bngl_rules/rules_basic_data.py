@@ -151,6 +151,20 @@ CONTINGENCIES_DATA = {
     'Tags': [
     1, 'p-', 'contingencies']},
 
+    'A_ppi_B \n B_ppi_C; x A--B': {
+    'Rules': [
+    'A(AssocB) + B(AssocA,AssocC!1).C(AssocB!1) -> A(AssocB!1).B(AssocA!1,AssocC) + C(AssocB)',
+    'A(AssocB) + B(AssocA,AssocC) <-> A(AssocB!1).B(AssocA!1,AssocC)'],
+    'Tags': [
+    1, 'ppi', 'contingencies']},
+
+    'A_ppi_B; x B--C \n B_ppi_C; x A--B': {
+    'Rules': [
+    'A(AssocB) + B(AssocA,AssocC) <-> A(AssocB!1).B(AssocA!1,AssocC)',
+    'B(AssocA,AssocC) + C(AssocB) <-> B(AssocA,AssocC!1).C(AssocB!1)'],
+    'Tags': [
+    1, 'ppi', 'contingencies']},
+
     'Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2 \n Ste20_[KD+CRIB]_ppi_Ste20_[KD+CRIB]; x Cdc42_[ED]--Ste20_[CRIB]': {
     'Rules': [
     'Cdc42(GnP~P,ED) + PIP2(AssocSte20!2).Ste20(BR!2,CRIB,KD+CRIB!1).Ste20(KD+CRIB!1) -> Cdc42(GnP~P,ED!1).PIP2(AssocSte20!2).Ste20(BR!2,CRIB!1,KD+CRIB) + Ste20(KD+CRIB)',
@@ -166,7 +180,7 @@ CONTINGENCIES_DATA = {
     'SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,n) + SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c) -> Swi4(AssocSCBG1,n!1).Swi4(AssocSCBG1,c!1) + SCBG1(AssocSwi4) + SCBG1(AssocSwi4)',
     'Swi4(AssocSCBG1,n) + Swi4(AssocSCBG1,c) <-> Swi4(AssocSCBG1,n!1).Swi4(AssocSCBG1,c!1)'],
     'Tags': [
-    1, 'ppi', 'contingencies']},
+    1, 'BIND', 'contingencies']},
 
     'Swi4_BIND_SCBFKS2; x Swi4_[n]--Swi4_[c] \n Swi4_BIND_SCBG1; x Swi4_[n]--Swi4_[c] \n Swi4_[n]_ppi_Swi4_[c]': {
     'Rules': [
@@ -202,12 +216,11 @@ CONTINGENCIES_DATA = {
     'X + A(X~P,AssocB!1).B(AssocA!1,AssocC) -> X + A(X~U,AssocB) + B(AssocA,AssocC)',
     'X + A(X~P,AssocB!2).B(AssocA!2,AssocC!1).C(AssocB!1,AssocD) -> X + A(X~U,AssocB) + B(AssocA,AssocC) + C(AssocB,AssocD)'],
     'Tags': [
-    1, 'ppi', 'contingencies']},
+    1, 'p-', 'contingencies']},
 ### conflict chain with two alternative paths
     'X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C':{
     'Rules': [
     'X + A(X~P,AssocB,AssocF) -> X + A(X~U,AssocB,AssocF)',
-    'X + A(X~P,AssocB,AssocF!1).F(AssocA!1) -> X + A(X~U,AssocB,AssocF) + F(AssocA)',
     'X + A(X~P,AssocB!1,AssocF).B(AssocA!1,AssocC) -> X + A(X~U,AssocB,AssocF) + B(AssocA,AssocC)',
     'X + A(X~P,AssocB!2,AssocF!1).B(AssocA!2,AssocC).F(AssocA!1) -> X + A(X~U,AssocB,AssocF) + F(AssocA) + B(AssocA,AssocC)',
     'X + A(X~P,AssocB!2,AssocF).B(AssocA!2,AssocC!1).C(AssocB!1,AssocD) -> X + A(X~U,AssocB,AssocF) + B(AssocA,AssocC) + C(AssocB,AssocD)',
@@ -216,22 +229,18 @@ CONTINGENCIES_DATA = {
     'X + A(X~P,AssocB!4,AssocF!1).B(AssocA!4,AssocC!3).C(AssocB!3,AssocD!2).D(AssocC!2).F(AssocA!1) -> X + A(X~U,AssocB,AssocF) + F(AssocA) + B(AssocA,AssocC) + C(AssocB,AssocD) + D(AssocC)'],
     
     'Tags': [
-    1, 'ppi', 'contingencies']},
+    1, 'p-', 'contingencies']},
 
 #### conflict chain with two alternative path excluding each other
     'X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C':{
     'Rules': [
     'X + A(X~P,AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) -> X + A(X~U,AssocB,AssocC,AssocF) + F(AssocA) + B(AssocA)',
-    'X + A(X~P,AssocB,AssocC,AssocF!1).F(AssocA!1) -> X + A(X~U,AssocB,AssocC,AssocF) + F(AssocA)',
     'X + A(X~P,AssocB!3,AssocC!2,AssocF).B(AssocA!3).C(AssocA!2,AssocD!1).D(AssocC!1) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + D(AssocC) + B(AssocA)',
-    'X + A(X~P,AssocB,AssocC!2,AssocF).C(AssocA!2,AssocD!1).D(AssocC!1) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + D(AssocC)',
     'X + A(X~P,AssocB!1,AssocC,AssocF).B(AssocA!1) -> X + A(X~U,AssocB,AssocC,AssocF) + B(AssocA)',
     'X + A(X~P,AssocB,AssocC,AssocF) -> X + A(X~U,AssocB,AssocC,AssocF)',
-    'X + A(X~P,AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + B(AssocA)',
-    'X + A(X~P,AssocB,AssocC!1,AssocF).C(AssocA!1,AssocD) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD)'],
-    
+    'X + A(X~P,AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + B(AssocA)'],
     'Tags': [
-    1, 'ppi', 'contingencies']},
+    1, 'p-', 'contingencies']},
 
 
 #### negative ipi contingency ####

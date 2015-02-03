@@ -340,10 +340,10 @@ class Rxncon:
             # single contingency is applied for all reactions. If K+/K- reactions are doubled.
             self.update_reactions()
 
-            react_container = self.solve_conflict.delet_redundant_reactions(react_container, self.solve_conflict.conflict_found)
-            #for reaction in react_container:
+            #react_container = self.solve_conflict.delet_redundant_reactions(react_container, self.solve_conflict.conflict_found)
+            for reaction in react_container:
                 #print dir(reaction)
-            #    reaction.run_reaction()
+                reaction.run_reaction()
 
             if self.solve_conflict.conflict_found:
                 self.solve_conflict.solve_conlict(react_container)
@@ -356,6 +356,7 @@ class ConflictSolver(Rxncon):
         self.contingency_pool = contingency_pool
         self.reaction_pool = reaction_pool
         self.complex_pool = complex_pool
+        self.exclusive_by_contingency = self.contingency_pool.get_mutual_exclusive_contingencies()
 
     def is_conflict(self, product_contingency, required_cont):
         if re.search('^(?!_)\[(.*?)\]', required_cont.target_reaction) or re.search('<(.*?)>', required_cont.target_reaction):
@@ -375,17 +376,49 @@ class ConflictSolver(Rxncon):
         result = [mol for mol in comp.molecules if mol.has_state(conflicted_state)]
         return result
 
+    def get_contingencies_as_string(self, reaction):
+        result = [cont.state for cont in reaction.get_contingencies()]
+        return result
+
     def _check_exclusiveness(self, reaction):
-        for ele, x_value in self.mapping_info_dict["x"].iteritems():
-            ele_ctype_req = False
-            cont_ctype_req = False
+        """
+        we apply k+ contingencies for solving conflicts. This leads to more and redundant reactions.
+        This function is implemented to delete all the redundant and not possible/needed reactions.
+        """
+
+        def _loop(contingency_state, depending_reactions, key_mark, value_mark):
+            """
+            @param contingency_state: current contingency state 
+            @type contingency_state: string
+            @param depending_reactions: List of reaction states depending on the current contingency
+            @type depending_reactions: list
+            @return contingency_state_ctype_req: True if there is a contingency combination of the contingency state name and the key mark
+            @return depending_reactions_ctype_req: True if there is a contingency combination matching a reaction and the value mark 
+            """
+
+            contingency_state_ctype_req = False
+            depending_reactions_ctype_req = False
             for cont in reaction.get_contingencies():
-                if cont.state == ele and cont.ctype == "!":
-                    ele_ctype_req = True
-                elif cont.state in x_value and cont.ctype == "!":
-                    cont_ctype_req = True
-            if ele_ctype_req and cont_ctype_req:
+                if cont.state == contingency_state and cont.ctype == key_mark:
+                    contingency_state_ctype_req = True
+                elif cont.state in depending_reactions and cont.ctype == value_mark:
+                    depending_reactions_ctype_req = True
+                if contingency_state_ctype_req and depending_reactions_ctype_req:
+                    return contingency_state_ctype_req, depending_reactions_ctype_req
+            return contingency_state_ctype_req, depending_reactions_ctype_req
+
+        for contingency_state, depending_reactions in self.mapping_info_dict["x"].iteritems():
+            # if the reactions excluding each other they cannot be true at the same time
+            contingency_state_ctype_req, depending_reactions_ctype_req = _loop(contingency_state, depending_reactions, "!", "!")
+            if contingency_state_ctype_req and depending_reactions_ctype_req:
                 return True
+
+        for contingency_state, depending_reactions in self.mapping_info_dict["!"].iteritems():
+            # if the requirement is false the reactions depending on this cannot be true
+            contingency_state_ctype_req, depending_reactions_ctype_req = _loop(contingency_state, depending_reactions, "x", "!")
+            if contingency_state_ctype_req and depending_reactions_ctype_req:
+                return True
+
         return False
 
     def delet_redundant_reactions(self, rcont, conflict):
@@ -404,13 +437,16 @@ class ConflictSolver(Rxncon):
                 remove_reaction.append(i)
             else:
                 already_applied.append(reaction.get_contingencies())
-                reaction.run_reaction()
+                #reaction.run_reaction()
 
         for i in reversed(remove_reaction):
             del rcont[i]
         return rcont
 
     def _get_contingency_reaction_dict(self):
+        """
+        dict[contingecy_state] = [reaction]
+        """
         info_dict = {"!": {}, "x": {}}
 
         bools = self.contingency_pool.get_top_booleans()
@@ -501,7 +537,6 @@ class ConflictSolver(Rxncon):
                 self.get_conflict_chain(chain[-1], copy_mapping_info_dict, chain, found_more_elements)
 
         return chain, found_more_elements
-        #return chain  # return a chain of all follow up conflicts
 
     def find_conflicts_recursive(self, product_contingency, conflicted_state, react_container):
         """
@@ -511,13 +546,20 @@ class ConflictSolver(Rxncon):
         self.mapping_info_dict = self._get_contingency_reaction_dict()
         chain = self.search_conflicte_chains(conflicted_state)
         #print "self.mapping_info_dict: ", self.mapping_info_dict
-        print "conflict chain: ", chain
-
+        #print "conflict chain: ", chain
+        
         cap = ContingencyApplicator()
-        for element in chain:  # apply k+ contingency for all the conflicted states
-            cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=element)
+        for element in chain:
+            if element.reaction_str in self.exclusive_by_contingency.keys() and product_contingency.target_reaction in self.exclusive_by_contingency.keys():
+                if self.reaction_pool[product_contingency.target_reaction].sp_state in self.exclusive_by_contingency[element.reaction_str] and element in self.exclusive_by_contingency[product_contingency.target_reaction]:
+                    cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="x",state=element)
+                else:
+                    cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=element)
+            else:
+                cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=element)
             cap.apply_on_container(react_container, cont_k)
             self.conflicted_states.append(element)
+        react_container = self.delet_redundant_reactions(react_container, chain)
 
         return react_container
 
@@ -543,11 +585,11 @@ class ConflictSolver(Rxncon):
                     required_cont_reaction_container = self.reaction_pool[required_cont.target_reaction]  # get reaction object of conflict reaction
 
                     conflicted_state = required_cont_reaction_container.sp_state  # get the state of the conflict reaction
-                    print "##############"
-                    print "product_contingency.target_reaction: ", product_contingency.target_reaction
-                    print "conflicted state: ", conflicted_state
-                    print "conflicted reaction: ", required_cont.target_reaction
-                    print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
+                    # print "##############"
+                    # print "product_contingency.target_reaction: ", product_contingency.target_reaction
+                    # print "conflicted state: ", conflicted_state
+                    # print "conflicted reaction: ", required_cont.target_reaction
+                    # print "conflict product_contingency: ", product_contingency, " required_cont: ", required_cont
 
                     react_container = self.find_conflicts_recursive(product_contingency, conflicted_state, react_container)
 
