@@ -58,7 +58,7 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon('A_ppi_B; x B--C \n B_ppi_C; x A--B')
         #rxncon = Rxncon('A_ppi_B \n B_ppi_C; x A--B')
         
-        rxncon = Rxncon('Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--[c] \n Slt2_[DB]_ppi_Swi4_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]')
+        rxncon = Rxncon('Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]')
         #rxncon = Rxncon('A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! <complex> \n <complex>; AND A--B; AND B--D \n C_ppi_E; ! B--C \n X_p-_A_[X] ')
         #rxncon = Rxncon('Swi4_[c]_ppi_Swi6_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Swi4_[c]--Swi6_[c]')
 
