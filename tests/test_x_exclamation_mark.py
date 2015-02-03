@@ -51,14 +51,14 @@ class x_exclamation_mark_Tests(TestCase):
 
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
 
-        rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')  ## prob
+        rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')  ## prob
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; x A--F')  ## prob
         ### states koennen nicht existieren wenn sie mutually exclussive sind (ueberschreibe nicht die orginal contingencies)
 
-        rxncon = Rxncon('A_ppi_B; x B--C \n B_ppi_C; x A--B')
+        #rxncon = Rxncon('A_ppi_B; x B--C \n B_ppi_C; x A--B')
         #rxncon = Rxncon('A_ppi_B \n B_ppi_C; x A--B')
         
-        #rxncon = Rxncon('Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--Swi4_[c] \n Slt2_[DB]_ppi_Swi4_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]')
+        rxncon = Rxncon('Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--[c] \n Slt2_[DB]_ppi_Swi4_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]')
         #rxncon = Rxncon('A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! <complex> \n <complex>; AND A--B; AND B--D \n C_ppi_E; ! B--C \n X_p-_A_[X] ')
         #rxncon = Rxncon('Swi4_[c]_ppi_Swi6_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Swi4_[c]--Swi6_[c]')
 

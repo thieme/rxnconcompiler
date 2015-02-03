@@ -418,7 +418,6 @@ class ConflictSolver(Rxncon):
             contingency_state_ctype_req, depending_reactions_ctype_req = _loop(contingency_state, depending_reactions, "x", "!")
             if contingency_state_ctype_req and depending_reactions_ctype_req:
                 return True
-
         return False
 
     def delet_redundant_reactions(self, rcont, conflict):
@@ -452,13 +451,13 @@ class ConflictSolver(Rxncon):
         bools = self.contingency_pool.get_top_booleans()
         for bool_cont in bools:
             if bool_cont.target_reaction in self.reaction_pool:
-                if self.reaction_pool[bool_cont.target_reaction].sp_state.type == "Association" and bool_cont.ctype == "!":
+                if self.reaction_pool[bool_cont.target_reaction].sp_state.type in ["Association", 'Intraprotein'] and bool_cont.ctype == "!":
                     for bool_ele in self.complex_pool[str(bool_cont.state)][0].get_contingencies():
                         if bool_cont.state not in info_dict["!"]:
                             info_dict["!"][bool_ele.state] = [self.reaction_pool[bool_cont.target_reaction].sp_state]
                         else:
                             info_dict["!"][bool_ele.state].append(self.reaction_pool[bool_cont.target_reaction].sp_state)
-                if self.reaction_pool[bool_cont.target_reaction].sp_state.type == "Association" and bool_cont.ctype == "x":
+                if self.reaction_pool[bool_cont.target_reaction].sp_state.type in ["Association", 'Intraprotein'] and bool_cont.ctype == "x":
                     for bool_ele in self.complex_pool[str(bool_cont.state)][0].get_contingencies():
                         if bool_cont.state not in info_dict["!"]:
                             info_dict["!"][bool_ele.state] = [self.reaction_pool[bool_cont.target_reaction].sp_state]
@@ -468,14 +467,13 @@ class ConflictSolver(Rxncon):
         for required_cont in self.contingency_pool.get_required_contingencies():
 
             if required_cont.target_reaction in self.reaction_pool:
-
-                if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "!":
+                if self.reaction_pool[required_cont.target_reaction].sp_state.type in ["Association", 'Intraprotein'] and required_cont.ctype == "!":
 
                     if required_cont.state not in info_dict["!"]:
                         info_dict["!"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
                     else:
                         info_dict["!"][required_cont.state].append(self.reaction_pool[required_cont.target_reaction].sp_state)
-                if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association" and required_cont.ctype == "x":
+                if self.reaction_pool[required_cont.target_reaction].sp_state.type in ["Association", 'Intraprotein'] and required_cont.ctype == "x":
                     if required_cont.state not in info_dict["x"]:
                         info_dict["x"][required_cont.state] = [self.reaction_pool[required_cont.target_reaction].sp_state]
                     else:
@@ -559,6 +557,7 @@ class ConflictSolver(Rxncon):
                 cont_k = Contingency(target_reaction=product_contingency.target_reaction,ctype="k+",state=element)
             cap.apply_on_container(react_container, cont_k)
             self.conflicted_states.append(element)
+        #print react_container.get_common_contingencies()
         react_container = self.delet_redundant_reactions(react_container, chain)
 
         return react_container

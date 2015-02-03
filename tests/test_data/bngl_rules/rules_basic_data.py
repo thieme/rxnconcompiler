@@ -200,6 +200,17 @@ CONTINGENCIES_DATA = {
     'Tags': [
     1, 'ppi', 'contingencies']},
 
+    'Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--[c] \n Slt2_[DB]_ppi_Swi4_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]': {
+    'Rules': [
+    'Swi4(AssocSCBG1,c,n) + SCBG1(AssocSwi4) <-> SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n)',
+    'Slt2(DB) + Swi4(AssocSCBG1,c!1,n!1) -> Slt2(DB!1).Swi4(AssocSCBG1,c!1,n)',
+    'Slt2(DB) + SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n) -> Slt2(DB!1).Swi4(AssocSCBG1,c!1,n) + SCBG1(AssocSwi4)',
+    'Slt2(DB) + Swi4(AssocSCBG1,c,n) <-> Slt2(DB!1).Swi4(AssocSCBG1,c!1,n)',
+    'SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n) <-> Swi4(AssocSCBG1,c!1,n!1) + SCBG1(AssocSwi4)',
+    'Swi4(AssocSCBG1,c,n) <-> Swi4(AssocSCBG1,c!1,n!1)'],
+    'Tags': [
+    1, 'ppi', 'contingencies']},
+
     # conflict with ipi reaction
     'Swi6_[c]_ppi_Swi4_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Swi6_[c]--Swi4_[c]': {
     'Rules': [
