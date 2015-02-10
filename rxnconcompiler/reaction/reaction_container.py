@@ -59,6 +59,29 @@ class ReactionContainer(list):
         else:
             reaction.rid = self.rid
         self.append(reaction)
+
+    def insert_reaction(self, idx, reaction):
+        """
+        Adds given reaction to the container.
+
+        @type reaction:  Reaction object
+        @param reaction: Reaction to add.
+        """
+        # TODO: check whether it is reaction. 
+        # TODO: check whether it belongs to the container (same name).
+        # TODO: check whether id is free.
+        if len(self) != 0:
+            temp_rid = str(self[-1].rid).split('_')
+            main_rid = temp_rid[0]
+            if len(temp_rid) == 1:
+                self[-1].rid = '%s_%s' % (main_rid, '1')
+                sup_rid = 2
+            else:
+                sup_rid = int(temp_rid[1]) + 1
+            reaction.rid = "%s_%s" % (main_rid, str(sup_rid))
+        else:
+            reaction.rid = self.rid
+        self.insert(idx, reaction)
   
     def update_rid(self, new_id):
         """
@@ -80,8 +103,9 @@ class ReactionContainer(list):
     @property
     def sp_state(self):
         """
-        The source/product state of all reactions present in the continer.
+        The source/product state of all reactions present in the container.
         """
+
         if len(self) > 0:
             return self[0].get_sp_state()
         else:
@@ -90,7 +114,7 @@ class ReactionContainer(list):
     @property
     def product_contingency(self):
         """
-        The product state of all reactions present in the continer.
+        The product state of all reactions present in the container.
         """
         if len(self) > 0:
             return self[0].get_product_contingency()
@@ -100,7 +124,7 @@ class ReactionContainer(list):
     @property
     def source_contingency(self):
         """
-        The source state of all reactions present in the continer.
+        The source state of all reactions present in the container.
         """
         if len(self) > 0:
             return self[0].get_source_contingency()

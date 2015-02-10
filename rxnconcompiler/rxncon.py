@@ -326,6 +326,7 @@ class Rxncon:
 
             # initially container has one reaction
             # (changes after running the process because of OR and K+/K-)
+            print "react_container.name: ", react_container.name
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name)
@@ -333,24 +334,30 @@ class Rxncon:
             ComplexApplicator(react_container, complexes).apply_complexes()
 
             # after applying complexes we may have more reactions in a single container.
-            orignial_react_container_reaction = copy.deepcopy(react_container[0])
+            orignial_react_container_reaction = copy.deepcopy(react_container)
             react_container = self.solve_conflict.find_conflicts_on_mol(react_container) # find conflicts within the different reactions
             if self.solve_conflict.requirement_found:
-                react_container.add_reaction(orignial_react_container_reaction)  # we add an unmodified reaction again to the container to cover all possible reactions
+                react_container.insert_reaction(0, orignial_react_container_reaction[0])  # we add an unmodified reaction again to the container to cover all possible reactions
             if add_contingencies or self.solve_conflict.conflict_found:
                 self.apply_contingencies(react_container)
+                self.apply_contingencies(orignial_react_container_reaction)
 
             # single contingency is applied for all reactions. If K+/K- reactions are doubled.
             self.update_reactions()
             
             for reaction in react_container:
                 reaction.run_reaction()  # apply all the information given in a reaction and generate the product complex
+                print reaction.get_contingencies()
 
+            #for react in orignial_react_container_reaction:
+            #    react.run_reaction()
+            #print "ori: ", react.get_contingencies()
             if self.solve_conflict.conflict_found:  # solve all conflicts we have found
                 self.solve_conflict.solve_conlict(react_container)
 
             if self.solve_conflict.requirement_found:  # consider all absolute requirements of an reaction in all other reactions where the product is used
-                self.solve_conflict.adapt_requirement(react_container)
+                self.solve_conflict.adapt_requirement(react_container, orignial_react_container_reaction)
+            print "HIER"
 
 
 class ConflictSolver(Rxncon):
@@ -475,23 +482,25 @@ class ConflictSolver(Rxncon):
 
         bools = self.contingency_pool.get_top_booleans()
         for bool_cont in bools:
-            if bool_cont.target_reaction in self.reaction_pool:
+            if bool_cont.target_reaction in self.reaction_pool and self.reaction_pool[bool_cont.target_reaction][0].class_name != "SyntDeg":
                 if self.reaction_pool[bool_cont.target_reaction].sp_state.type in ["Association", 'Intraprotein'] and bool_cont.ctype == "!":
-                    for bool_ele in self.complex_pool[str(bool_cont.state)][0].get_contingencies():
-                        if bool_cont.state not in info_dict["!"]:
-                            info_dict["!"][bool_ele.state] = [self.reaction_pool[bool_cont.target_reaction].sp_state]
-                        else:
-                            info_dict["!"][bool_ele.state].append(self.reaction_pool[bool_cont.target_reaction].sp_state)
+                    if len(self.complex_pool[str(bool_cont.state)]) > 0:
+                        for bool_ele in self.complex_pool[str(bool_cont.state)][0].get_contingencies():
+                            if bool_cont.state not in info_dict["!"]:
+                                info_dict["!"][bool_ele.state] = [self.reaction_pool[bool_cont.target_reaction].sp_state]
+                            else:
+                                info_dict["!"][bool_ele.state].append(self.reaction_pool[bool_cont.target_reaction].sp_state)
                 if self.reaction_pool[bool_cont.target_reaction].sp_state.type in ["Association", 'Intraprotein'] and bool_cont.ctype == "x":
-                    for bool_ele in self.complex_pool[str(bool_cont.state)][0].get_contingencies():
-                        if bool_cont.state not in info_dict["!"]:
-                            info_dict["!"][bool_ele.state] = [self.reaction_pool[bool_cont.target_reaction].sp_state]
-                        else:
-                            info_dict["!"][bool_ele.state].append(self.reaction_pool[bool_cont.target_reaction].sp_state)
+                    if len(self.complex_pool[str(bool_cont.state)]) > 0:
+                        for bool_ele in self.complex_pool[str(bool_cont.state)][0].get_contingencies():
+                            if bool_cont.state not in info_dict["!"]:
+                                info_dict["!"][bool_ele.state] = [self.reaction_pool[bool_cont.target_reaction].sp_state]
+                            else:
+                                info_dict["!"][bool_ele.state].append(self.reaction_pool[bool_cont.target_reaction].sp_state)
 
         for required_cont in self.contingency_pool.get_required_contingencies():
 
-            if required_cont.target_reaction in self.reaction_pool:
+            if required_cont.target_reaction in self.reaction_pool and self.reaction_pool[required_cont.target_reaction][0].class_name != "SyntDeg":
                 if self.reaction_pool[required_cont.target_reaction].sp_state.type in ["Association", 'Intraprotein'] and required_cont.ctype == "!":
 
                     if required_cont.state not in info_dict["!"]:
@@ -570,7 +579,7 @@ class ConflictSolver(Rxncon):
         #chain = []
         chain = self.search_conflicte_chains(conflicted_state)
         #print "self.mapping_info_dict: ", self.mapping_info_dict
-       # print "conflict chain: ", chain
+        print "conflict chain: ", chain
 
         cap = ContingencyApplicator()
         for element in chain:
@@ -585,7 +594,6 @@ class ConflictSolver(Rxncon):
             self.conflicted_states.append(element)
 
         react_container = self.delet_redundant_reactions(react_container, chain)
-
         return react_container
 
     def find_conflicts_on_mol(self, react_container):
@@ -634,13 +642,13 @@ class ConflictSolver(Rxncon):
 
         return react_container
 
-    def change_reversibility(self, reaction):
+    def change_reversibility(self, reaction, direction="forward"):
         """
         changes the reversibility of a reaction. This is needed if we change a reaction because of a conflict with an other reaction. This changes are not reversible.
         """
         if reaction.definition['Reversibility'] == 'reversible':
             reaction.reversibility = 'irreversible'
-            reaction.rate.set_basic_rates(reaction)
+            reaction.rate.set_basic_rates(reaction, manual_change=True, direction=direction)
         return reaction
 
     def reorder_molecules(self, new_complex, comp, found_no_complex, already_in_complex):
@@ -695,7 +703,7 @@ class ConflictSolver(Rxncon):
                 new_complex.append(new)  # extend the product complexes
         return new_complex, already_in_complex
 
-    def adapt_requirement(self, react_container):
+    def adapt_requirement(self, react_container, ori_react_container):
 
         """"
         problem wenn zwei contingencies die selbe reaction beeinflussen wie A--C und C--D, dann wird die reaction zweimal geaendert und das substrate auch
@@ -717,11 +725,17 @@ A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) <-> A(AssocB,AssocC,AssocF) 
 
         """
         #print "self.conflicted_states: ", self.conflicted_states
+        ori_contingencies = [react.get_contingencies() for react in ori_react_container]
+        print "ori_contingencies: ", ori_contingencies
         new_substrate = {}
         self.conflicted_states.append(react_container[0].get_sp_state())
         for conflicted_state in self.conflicted_states:
          #   print "conflict_state: ", conflicted_state
-            for reaction in react_container:
+            for i, reaction in enumerate(react_container):
+
+                if reaction.get_contingencies() in ori_contingencies:
+                    reaction = self.change_reversibility(reaction, "forward")
+                    continue
                 found_conflicted_mol = False
           #      print "before reaction.get_contingencies(): ", reaction.get_contingencies()
 
@@ -782,6 +796,10 @@ A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) <-> A(AssocB,AssocC,AssocF) 
                     #print "tmp_substrate: ", tmp_substrate
 
                     reaction.substrat_complexes = tmp_substrate
+                else:
+                    reaction.product_complexes = copy.deepcopy(reaction.substrat_complexes)
+                    reaction.substrat_complexes = tmp_substrate
+
         #self.conflicted_states = reaction.get_sp_state()
                     
     def build_new_complexes(self, conflicted_state, new_complex, cont_reaction_dict, reaction, reaction_part, substrate_complexes=False):
@@ -798,12 +816,18 @@ A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) <-> A(AssocB,AssocC,AssocF) 
 
                 if conflicted_mol:
                     found_conflicted_mol = True
-                    reaction = self.change_reversibility(reaction)
+                    if substrate_complexes:
+                        reaction = self.change_reversibility(reaction, "reverse")
+                    else:
+                        reaction = self.change_reversibility(reaction)
                   
                     new_complex, already_in_complex = self.reassign_complexes(conflicted_mol, conflicted_state, comp, reaction, new_complex)
 
                     if len(conflicted_mol) != len(comp.molecules):  # find binding partners which are left
-                        reaction = self.change_reversibility(reaction)
+                        if substrate_complexes:
+                            reaction = self.change_reversibility(reaction, "reverse")
+                        else:
+                            reaction = self.change_reversibility(reaction)
                         found_no_complex = set([])
                         new_complex = self.reorder_molecules(new_complex, comp, found_no_complex, already_in_complex)
 

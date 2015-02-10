@@ -43,7 +43,8 @@ class x_exclamation_mark_Tests(TestCase):
         """
 
         # basic reaction with one contingency.
-        input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
+        #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
+        input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
 
 #####################################################################################################################################
         #simple chain
@@ -59,11 +60,20 @@ class x_exclamation_mark_Tests(TestCase):
 
         #rxncon = Rxncon('A_ppi_B; x B--C \n B_ppi_C; x A--B')
         rxncon = Rxncon('A_ppi_B \n B_ppi_C; ! A--B')
-        rxncon = Rxncon('A_ppi_B; k+ A--F \n B_ppi_C; ! A--B')
+        #rxncon = Rxncon('A_ppi_B; k+ A--F \n B_ppi_C; ! A--B')
         #rxncon = Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]')
         
         #rxncon = Rxncon('Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]')
-        #rxncon = Rxncon('A_ppi_B; ! A_[X]-{P} \n B_ppi_C; ! <complex> \n <complex>; AND A--B; AND B--D \n C_ppi_E; ! B--C \n X_p-_A_[X] ')
+        #rxncon = Rxncon('A_ppi_B; ! A_[X]-{P} \n Z_TRSC_C \n B_TRSL_C; x <complex> \n <complex>; OR A--B; OR D--B \n X_p-_A_[X] ')
+
+        #rxncon = Rxncon('X_p-_A_[X] \n A_ppi_B; ! A_[X]-{P} Fus3_[docking_site]_ppi_Sst2_[MAPK_site]; ! <Fus3_phos> \n <Fus3_phos>; OR  Fus3_[(T180)]-{P}; OR  Fus3_[(Y182)]-{P}')
+        #complex issue AND OR
+        #rxncon = Rxncon('Enzyme_GEF_Gpa1; K+  <Ste2_state> \n <Ste2_state>; AND  Gpa1_[Ste2_site]--Ste2_[Gpa1_site]; OR  Pheromone_[Ste2_site]--Ste2_[Pheromone_site]')
+
+        #rxncon = Rxncon('Fus3_[docking_site]_ppi_Sst2_[MAPK_site] \n Kss1_[docking_site]_ppi_Sst2_[MAPK_site]')
+        #print dir(rxncon.reaction_pool['B_TRSL_C'])
+        #print rxncon.reaction_pool['B_TRSL_C'].sp_state
+        #rxncon = Rxncon('A_ppi_B; ! A_[X]-{P} \n Ste12_TRSL_Dig2; x <Ste12_non_monomer> \n <Ste12_non_monomer>; OR Dig1_[Ste12_site]--Ste12_[Dig1_site]; OR Dig2_[Ste12_site]--Ste12_[Dig2_site]; OR Kss1_[docking_site]--Ste12_[MAPK_site]; OR Fus3_[docking_site]--Ste12_[MAPK_site] \n X_p-_A_[X]')
         #rxncon = Rxncon('Swi4_[c]_ppi_Swi6_[c] \n Swi4_[n]_ipi_Swi4_[c]; x Swi4_[c]--Swi6_[c]')
 
         #rxncon = Rxncon('Swi4_ppi_Swi6; ! Swi4_[n]--[d] \n Swi4_[n]_ipi_Swi4_[c]')

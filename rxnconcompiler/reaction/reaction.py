@@ -36,6 +36,7 @@ class Reaction:
     right_reactant:
     substrate_complexes:
     """
+    class_name = "Reaction"
     def __init__(self):
         self.name = None
         self.rid = None
@@ -210,6 +211,7 @@ class Reaction:
 
 class Interaction(Reaction):
     """"""
+    class_name = "Interaction"
     def run_ipi_reaction(self):
         """
         Creates product_complexes.
@@ -248,6 +250,7 @@ class Interaction(Reaction):
 
 class Modification(Reaction):
     """"""
+    class_name = "Modification"
     def get_modifier(self):
         """
         Returns complex that doesn't change during reaction.
@@ -360,6 +363,7 @@ class SyntDeg(Reaction):
     trsl (translation)
     deg (degradation)
     """
+    class_name = "SyntDeg"
     def get_modifier(self):
         """
         Returns complex that doesn't change during reaction:
