@@ -143,6 +143,16 @@ CONTINGENCIES_DATA = {
     'Tags': [
     1, 'ppi', 'contingencies']},
 
+    'A_ppi_B \n B_ppi_C; ! A--B': {
+    'Rules': [
+    'A(AssocB) + B(AssocA) -> A(AssocB!1).B(AssocA!1)',  # forward
+    'A(AssocB!2).B(AssocA!2,AssocC!1).C(AssocB!1) -> A(AssocB) + B(AssocA,AssocC) + C(AssocB)',  # reverse
+    'A(AssocB!1).B(AssocA!1,AssocC) -> A(AssocB) + B(AssocA,AssocC)',  # reverse
+    'A(AssocB!1).B(AssocA!1,AssocC) + C(AssocB) <-> A(AssocB!2).B(AssocA!2,AssocC!1).C(AssocB!1)'],
+    'Tags': [
+    1, 'ppi', 'contingencies']},
+
+
     'X_p-_A_[Z] \n A_ppi_B; ! A_[Z]-{P}': {
     'Rules': [
     'A(Z~P,AssocB) + B(AssocA) <-> A(Z~P,AssocB!1).B(AssocA!1)',
@@ -202,11 +212,11 @@ CONTINGENCIES_DATA = {
 
     'Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]': {
     'Rules': [
-    'Swi4(AssocSCBG1,c,n) + SCBG1(AssocSwi4) <-> SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n)',
     'Slt2(DB) + Swi4(AssocSCBG1,c!1,n!1) -> Slt2(DB!1).Swi4(AssocSCBG1,c!1,n)',
     'Slt2(DB) + SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n) -> Slt2(DB!1).Swi4(AssocSCBG1,c!1,n) + SCBG1(AssocSwi4)',
     'Slt2(DB) + Swi4(AssocSCBG1,c,n) <-> Slt2(DB!1).Swi4(AssocSCBG1,c!1,n)',
-    'SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n) <-> Swi4(AssocSCBG1,c!1,n!1) + SCBG1(AssocSwi4)',
+    'Swi4(AssocSCBG1,c,n) + SCBG1(AssocSwi4) <-> SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n)',
+    'SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n) -> Swi4(AssocSCBG1,c!1,n!1) + SCBG1(AssocSwi4)',
     'Swi4(AssocSCBG1,c,n) <-> Swi4(AssocSCBG1,c!1,n!1)'],
     'Tags': [
     1, 'ppi', 'contingencies']},
@@ -242,17 +252,88 @@ CONTINGENCIES_DATA = {
     'Tags': [
     1, 'p-', 'contingencies']},
 
-#### conflict chain with two alternative path excluding each other
+
     'X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C':{
     'Rules': [
+    ###########################  1####X p- A###
     'X + A(X~P,AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) -> X + A(X~U,AssocB,AssocC,AssocF) + F(AssocA) + B(AssocA)',
     'X + A(X~P,AssocB!3,AssocC!2,AssocF).B(AssocA!3).C(AssocA!2,AssocD!1).D(AssocC!1) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + D(AssocC) + B(AssocA)',
     'X + A(X~P,AssocB!1,AssocC,AssocF).B(AssocA!1) -> X + A(X~U,AssocB,AssocC,AssocF) + B(AssocA)',
     'X + A(X~P,AssocB,AssocC,AssocF) -> X + A(X~U,AssocB,AssocC,AssocF)',
-    'X + A(X~P,AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + B(AssocA)'],
+    'X + A(X~P,AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + B(AssocA)',
+    ###########################  2####A ppi B###
+    'A(X~P,AssocB) + B(AssocA) -> A(X~P,AssocB!1).B(AssocA!1)',
+    'A(X~P,AssocB!3,AssocC!2,AssocF).B(AssocA!3).C(AssocA!2,AssocD!1).D(AssocC!1) -> A(X~P,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + D(AssocC) + B(AssocA)',
+    'A(X~P,AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) -> A(X~P,AssocB,AssocC,AssocF) + F(AssocA) + B(AssocA)',
+    'A(X~P,AssocB!1,AssocC,AssocF).B(AssocA!1) -> A(X~P,AssocB,AssocC,AssocF) + B(AssocA)',
+    'A(X~P,AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) -> A(X~P,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + B(AssocA)',
+    ###########################  3####A ppi F###
+    'A(AssocB!1,AssocC,AssocF).B(AssocA!1) + F(AssocA) <-> A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1)',
+    ###########################  4####A ppi C###
+    'A(AssocB!1,AssocC,AssocF).B(AssocA!1) + C(AssocA) -> A(AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1)',
+    'A(AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) + D(AssocC) -> A(AssocB!1,AssocC,AssocF).B(AssocA!1) + C(AssocA,AssocD) + D(AssocC)',
+    'A(AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) -> A(AssocB!1,AssocC,AssocF).B(AssocA!1) + C(AssocA,AssocD)',
+    ###########################  5####C ppi D###
+    'A(AssocC!1).C(AssocA!1,AssocD) + D(AssocC) <-> A(AssocC!2).C(AssocA!2,AssocD!1).D(AssocC!1)'],
     'Tags': [
     1, 'p-', 'contingencies']},
 
+    'X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C':{
+    'Rules': [
+    ###########################  1####X p- A###
+    'X + A(X~P,AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) -> X + A(X~U,AssocB,AssocC,AssocF) + F(AssocA) + B(AssocA)',
+    'X + A(X~P,AssocB!3,AssocC!2,AssocF).B(AssocA!3).C(AssocA!2,AssocD!1).D(AssocC!1) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + D(AssocC) + B(AssocA)',
+    'X + A(X~P,AssocB!1,AssocC,AssocF).B(AssocA!1) -> X + A(X~U,AssocB,AssocC,AssocF) + B(AssocA)',
+    'X + A(X~P,AssocB,AssocC,AssocF) -> X + A(X~U,AssocB,AssocC,AssocF)',
+    'X + A(X~P,AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) -> X + A(X~U,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + B(AssocA)',
+    ###########################  2####A ppi B###
+    'A(X~P,AssocB) + B(AssocA) -> A(X~P,AssocB!1).B(AssocA!1)',
+    'A(X~P,AssocB!3,AssocC!2,AssocF).B(AssocA!3).C(AssocA!2,AssocD!1).D(AssocC!1) -> A(X~P,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + D(AssocC) + B(AssocA)',
+    'A(X~P,AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) -> A(X~P,AssocB,AssocC,AssocF) + F(AssocA) + B(AssocA)',
+    'A(X~P,AssocB!1,AssocC,AssocF).B(AssocA!1) -> A(X~P,AssocB,AssocC,AssocF) + B(AssocA)',
+    'A(X~P,AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) -> A(X~P,AssocB,AssocC,AssocF) + C(AssocA,AssocD) + B(AssocA)',
+    ###########################  3####A ppi F###
+    'A(AssocB!3,AssocC!2,AssocF).B(AssocA!3).C(AssocA!2,AssocD!1).D(AssocC!1) + F(AssocA) -> A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) + C(AssocA,AssocD) + D(AssocC)',
+    'A(AssocB!1,AssocC,AssocF).B(AssocA!1) + F(AssocA) <-> A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1)',
+    'A(AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) + F(AssocA) -> A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) + C(AssocA,AssocD)',
+    ###########################  4####A ppi C###
+    'A(AssocB!1,AssocC,AssocF).B(AssocA!1) + C(AssocA) -> A(AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1)',
+    'A(AssocB!3,AssocC!2,AssocF).B(AssocA!3).C(AssocA!2,AssocD!1).D(AssocC!1) -> A(AssocB!1,AssocC,AssocF).B(AssocA!1) + C(AssocA,AssocD) + D(AssocC)',
+    'A(AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1,AssocD) -> A(AssocB!1,AssocC,AssocF).B(AssocA!1) + C(AssocA,AssocD)',
+    ###########################  5####C ppi D###
+    'A(AssocC!1).C(AssocA!1,AssocD) + D(AssocC) <-> A(AssocC!2).C(AssocA!2,AssocD!1).D(AssocC!1)'],
+    'Tags': [
+    1, 'p-', 'contingencies']},
+
+#### conflict chain with two alternative path excluding each other (small example without p+)
+
+    'A_ppi_B \n A_ppi_F; ! A--B \n A_ppi_C; ! A--B; x A--F': {
+    'Rules': [
+    # A_ppi_B
+    'A(AssocB) + B(AssocA) -> A(AssocB!1).B(AssocA!1)',
+    'A(AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1) -> A(AssocB,AssocC,AssocF) + C(AssocA) + B(AssocA)',
+    'A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) -> A(AssocB,AssocC,AssocF) + F(AssocA) + B(AssocA)',
+    'A(AssocB!1,AssocC,AssocF).B(AssocA!1) -> A(AssocB,AssocC,AssocF) + B(AssocA)',
+    # A_ppi_F
+    'A(AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1) + F(AssocA) -> A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) + C(AssocA)',
+    'A(AssocB!1,AssocC,AssocF).B(AssocA!1) + F(AssocA) <-> A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1)',
+    # A_ppi_C
+    'A(AssocB!1,AssocC,AssocF).B(AssocA!1) + C(AssocA) <-> A(AssocB!2,AssocC!1,AssocF).B(AssocA!2).C(AssocA!1)'
+    ],
+    'Tags': [
+    1, 'ppi', 'contingencies']},
+
+    'A_ppi_C; ! A--B \n C_ppi_D; ! A--C': {
+    'Rules': [
+    # first reaction
+    'A(AssocB!1,AssocC).B(AssocA!1) + C(AssocA) -> A(AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1)',
+    'A(AssocB!3,AssocC!2).B(AssocA!3).C(AssocA!2,AssocD!1).D(AssocC!1) -> A(AssocB!1,AssocC).B(AssocA!1) + C(AssocA,AssocD) + D(AssocC)',
+    'A(AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1,AssocD) -> A(AssocB!1,AssocC).B(AssocA!1) + C(AssocA,AssocD)',
+    # second reaction
+    'A(AssocC!1).C(AssocA!1,AssocD) + D(AssocC) <-> A(AssocC!2).C(AssocA!2,AssocD!1).D(AssocC!1)'
+    ],
+    'Tags': [
+    1, 'ppi', 'contingencies']},
 
 #### negative ipi contingency ####
     'ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; ! ProtA_[a]--[b]': {
@@ -267,10 +348,19 @@ CONTINGENCIES_DATA = {
     'Tags': [
     1, 'ipi', 'contingencies']},
 
+    # 'Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]': {
+    # 'Rules': [
+    # 'Cdc42(GnP~P,AssocSte20) + Ste20(AssocCdc42,CRIB2!1,KD!1) <-> Cdc42(GnP~P,AssocSte20!1).Ste20(AssocCdc42!1,CRIB2!2,KD!2)',
+    # 'Ste20(CRIB2,KD) <-> Ste20(CRIB2!1,KD!1)'],
+    # 'Tags': [
+    # 1, 'ipi', 'contingencies']}
+
     'Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]': {
     'Rules': [
     'Cdc42(GnP~P,AssocSte20) + Ste20(AssocCdc42,CRIB2!1,KD!1) <-> Cdc42(GnP~P,AssocSte20!1).Ste20(AssocCdc42!1,CRIB2!2,KD!2)',
-    'Ste20(CRIB2,KD) <-> Ste20(CRIB2!1,KD!1)'],
+    'Ste20(CRIB2,KD) -> Ste20(CRIB2!1,KD!1)',
+    'Cdc42(AssocSte20!2).Ste20(AssocCdc42!2,CRIB2!1,KD!1) -> Ste20(AssocCdc42,CRIB2,KD) + Cdc42(AssocSte20)',
+    'Ste20(AssocCdc42,CRIB2!1,KD!1) -> Ste20(AssocCdc42,CRIB2,KD)'],
     'Tags': [
     1, 'ipi', 'contingencies']}
 

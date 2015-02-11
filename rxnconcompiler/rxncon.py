@@ -326,7 +326,7 @@ class Rxncon:
 
             # initially container has one reaction
             # (changes after running the process because of OR and K+/K-)
-            print "react_container.name: ", react_container.name
+            #print "react_container.name: ", react_container.name
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name)
@@ -334,30 +334,30 @@ class Rxncon:
             ComplexApplicator(react_container, complexes).apply_complexes()
 
             # after applying complexes we may have more reactions in a single container.
-            orignial_react_container_reaction = copy.deepcopy(react_container)
+            orignial_react_container = copy.deepcopy(react_container)
             react_container = self.solve_conflict.find_conflicts_on_mol(react_container) # find conflicts within the different reactions
             if self.solve_conflict.requirement_found:
-                react_container.insert_reaction(0, orignial_react_container_reaction[0])  # we add an unmodified reaction again to the container to cover all possible reactions
+                # we have to add a deepcopy of originial_react_container because other wise
+                # the self.apply_contingencies will manipulate twice on the same object (internal referencing of python)
+                react_container.insert_reaction(0, copy.deepcopy(orignial_react_container[0]))  # we add an unmodified reaction again to the container to cover all possible reactions
             if add_contingencies or self.solve_conflict.conflict_found:
                 self.apply_contingencies(react_container)
-                self.apply_contingencies(orignial_react_container_reaction)
+                self.apply_contingencies(orignial_react_container)
 
             # single contingency is applied for all reactions. If K+/K- reactions are doubled.
             self.update_reactions()
             
             for reaction in react_container:
                 reaction.run_reaction()  # apply all the information given in a reaction and generate the product complex
-                print reaction.get_contingencies()
+                #print reaction.get_contingencies()
 
-            #for react in orignial_react_container_reaction:
-            #    react.run_reaction()
             #print "ori: ", react.get_contingencies()
             if self.solve_conflict.conflict_found:  # solve all conflicts we have found
                 self.solve_conflict.solve_conlict(react_container)
 
             if self.solve_conflict.requirement_found:  # consider all absolute requirements of an reaction in all other reactions where the product is used
-                self.solve_conflict.adapt_requirement(react_container, orignial_react_container_reaction)
-            print "HIER"
+                self.solve_conflict.adapt_requirement(react_container, orignial_react_container)
+            #print "HIER"
 
 
 class ConflictSolver(Rxncon):
@@ -384,7 +384,10 @@ class ConflictSolver(Rxncon):
             return False
         elif str(required_cont.state) == str(product_contingency.state):
             if str(required_cont.ctype) == "!" and str(product_contingency.ctype) == "!":
-                if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association":
+                #print "required_cont.target_reaction: ", dir(self.reaction_pool[required_cont.target_reaction])
+                #print "required_cont.target_reaction: ", required_cont.target_reaction
+                if self.reaction_pool[required_cont.target_reaction][0].class_name != "SyntDeg":
+                    if self.reaction_pool[required_cont.target_reaction].sp_state.type == "Association":
                         return True
         return False
 
@@ -579,7 +582,7 @@ class ConflictSolver(Rxncon):
         #chain = []
         chain = self.search_conflicte_chains(conflicted_state)
         #print "self.mapping_info_dict: ", self.mapping_info_dict
-        print "conflict chain: ", chain
+        #print "conflict chain: ", chain
 
         cap = ContingencyApplicator()
         for element in chain:
@@ -726,11 +729,12 @@ A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) <-> A(AssocB,AssocC,AssocF) 
         """
         #print "self.conflicted_states: ", self.conflicted_states
         ori_contingencies = [react.get_contingencies() for react in ori_react_container]
-        print "ori_contingencies: ", ori_contingencies
+        #print "ori_contingencies: ", ori_contingencies
         new_substrate = {}
         self.conflicted_states.append(react_container[0].get_sp_state())
+        check = set()
+        #print "self.conflicted_states: ", self.conflicted_states
         for conflicted_state in self.conflicted_states:
-         #   print "conflict_state: ", conflicted_state
             for i, reaction in enumerate(react_container):
 
                 if reaction.get_contingencies() in ori_contingencies:
@@ -792,11 +796,13 @@ A(AssocB!2,AssocC,AssocF!1).B(AssocA!2).F(AssocA!1) <-> A(AssocB,AssocC,AssocF) 
                 #     else:
                 #         new_complex.append(comp)
                 if found_conflicted_mol:
+                    check.add(reaction.rid)
                     reaction.product_complexes = new_complex
                     #print "tmp_substrate: ", tmp_substrate
 
                     reaction.substrat_complexes = tmp_substrate
-                else:
+                elif reaction.rid not in check:
+                #    print ""
                     reaction.product_complexes = copy.deepcopy(reaction.substrat_complexes)
                     reaction.substrat_complexes = tmp_substrate
 

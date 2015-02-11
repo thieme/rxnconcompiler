@@ -76,8 +76,14 @@ class DomainAcceptanceTests(TestCase):
         Uper and lower case preserved as it is.
         """
         bngl = Compiler(DOMAINS_ASSOSIATION).translate()
-        rule = "A(AssocDNA) + DNA(AssocA) <-> A(AssocDNA!1).DNA(AssocA!1)"
-        self.assertIn(rule, bngl)
+        #print "bngl: ", bngl
+        #rule = "A(AssocDNA) + DNA(AssocA) <-> A(AssocDNA!1).DNA(AssocA!1)"
+        rule1 = "A(AssocDNA) + DNA(AssocA) -> A(AssocDNA!1).DNA(AssocA!1)"
+        rule2 = "A(AssocC!2,AssocDNA!1).C(AssocA!2).DNA(AssocA!1) -> A(AssocC,AssocDNA) + C(AssocA) + DNA(AssocA)"
+        rule3 = "A(AssocC,AssocDNA!1).DNA(AssocA!1) -> A(AssocC,AssocDNA) + DNA(AssocA)"
+        self.assertIn(rule1, bngl)
+        self.assertIn(rule2, bngl)
+        self.assertIn(rule3, bngl)
 
     def test_modification(self):
         """

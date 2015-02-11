@@ -44,26 +44,31 @@ class x_exclamation_mark_Tests(TestCase):
 
         # basic reaction with one contingency.
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
-        input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
+        input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150210_PheromoneModel_BNGL2rxncon.xls"
 
 #####################################################################################################################################
         #simple chain
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; x A--B \n C_ppi_D; ! B--C')
 
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
+        rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')
+        #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')  ## prob
+        #rxncon = Rxncon('A_ppi_C; ! A--B \n C_ppi_D; ! A--C')
+                        
+        #rxncon = Rxncon('A_ppi_B \n A_ppi_F; ! A--B \n A_ppi_C; ! A--B; x A--F')# \n C_ppi_D; ! A--C')
+        #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
+        #rxncon = Rxncon('A_ppi_B; x B--C \n B_ppi_C; x A--B')
+        #rxncon = Rxncon('A_ppi_B \n B_ppi_C; ! A--B')
+        #rxncon = Rxncon('A_ppi_B; k+ A--F \n B_ppi_C; ! A--B')
+        
+        #rxncon = Rxncon('Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]')
 
-        rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')  ## prob
-
-        rxncon = Rxncon('A_ppi_B \n A_ppi_F; ! A--B \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; x A--F')  ## prob
         ### states koennen nicht existieren wenn sie mutually exclussive sind (ueberschreibe nicht die orginal contingencies)
 
-        #rxncon = Rxncon('A_ppi_B; x B--C \n B_ppi_C; x A--B')
-        rxncon = Rxncon('A_ppi_B \n B_ppi_C; ! A--B')
-        #rxncon = Rxncon('A_ppi_B; k+ A--F \n B_ppi_C; ! A--B')
         #rxncon = Rxncon('Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]')
         
-        #rxncon = Rxncon('Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]')
+        
         #rxncon = Rxncon('A_ppi_B; ! A_[X]-{P} \n Z_TRSC_C \n B_TRSL_C; x <complex> \n <complex>; OR A--B; OR D--B \n X_p-_A_[X] ')
 
         #rxncon = Rxncon('X_p-_A_[X] \n A_ppi_B; ! A_[X]-{P} Fus3_[docking_site]_ppi_Sst2_[MAPK_site]; ! <Fus3_phos> \n <Fus3_phos>; OR  Fus3_[(T180)]-{P}; OR  Fus3_[(Y182)]-{P}')
@@ -87,7 +92,7 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon('Cdc42_ppi_Ste20_[CRIB2]; ! Cdc42_[GnP]-{P}; x Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]')
 
 
-        #rxncon = Rxncon(input_data)
+        rxncon = Rxncon(input_data)
         rxncon.run_process()
         self.bngl_src = Bngl(
             rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
