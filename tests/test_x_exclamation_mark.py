@@ -44,14 +44,23 @@ class x_exclamation_mark_Tests(TestCase):
 
         # basic reaction with one contingency.
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
-        input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150210_PheromoneModel_BNGL2rxncon.xls"
+        input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
 
+
+
+        rxncon = Rxncon("""
+                        Kss1_[dockingSite]_ppi_Sst2_[MAPKSite]; ! <Kss1phos>; x <Sst2mod>
+                        <Kss1phos>; OR  Kss1_[(T183)]-{P}; OR  Kss1_[(Y185)]-{P}
+                        <Sst2mod>; AND Ste2_[Sst2Site]--Sst2_[Ste2Site]; AND Sst2_[(S539)]-{P}
+                        Kss1_P+_Sst2_[(S539)]; ! Kss1_[dockingSite]--Sst2_[MAPKSite]
+                        Kss1_P+_Sst2_[(S539)]; ! <Kss1phos>
+                        """)
 #####################################################################################################################################
         #simple chain
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; x A--B \n C_ppi_D; ! B--C')
 
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
-        rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')
+        #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B; x A--C \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n A_ppi_C; ! A--B; x A--F \n C_ppi_D; ! A--C')  ## prob
         #rxncon = Rxncon('A_ppi_C; ! A--B \n C_ppi_D; ! A--C')
                         
@@ -92,7 +101,7 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon('Cdc42_ppi_Ste20_[CRIB2]; ! Cdc42_[GnP]-{P}; x Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]')
 
 
-        rxncon = Rxncon(input_data)
+        #rxncon = Rxncon(input_data)
         rxncon.run_process()
         self.bngl_src = Bngl(
             rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
