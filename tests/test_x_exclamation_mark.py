@@ -48,13 +48,13 @@ class x_exclamation_mark_Tests(TestCase):
 
 
 
-        rxncon = Rxncon("""
-                        Kss1_[dockingSite]_ppi_Sst2_[MAPKSite]; ! <Kss1phos>; x <Sst2mod>
-                        <Kss1phos>; OR  Kss1_[(T183)]-{P}; OR  Kss1_[(Y185)]-{P}
-                        <Sst2mod>; AND Ste2_[Sst2Site]--Sst2_[Ste2Site]; AND Sst2_[(S539)]-{P}
-                        Kss1_P+_Sst2_[(S539)]; ! Kss1_[dockingSite]--Sst2_[MAPKSite]
-                        Kss1_P+_Sst2_[(S539)]; ! <Kss1phos>
-                        """)
+        # rxncon = Rxncon("""
+        #                 Kss1_[dockingSite]_ppi_Sst2_[MAPKSite]; ! <Kss1phos>; x <Sst2mod>
+        #                 <Kss1phos>; OR  Kss1_[(T183)]-{P}; OR  Kss1_[(Y185)]-{P}
+        #                 <Sst2mod>; AND Ste2_[Sst2Site]--Sst2_[Ste2Site]; AND Sst2_[(S539)]-{P}
+        #                 Kss1_P+_Sst2_[(S539)]; ! Kss1_[dockingSite]--Sst2_[MAPKSite]
+        #                 Kss1_P+_Sst2_[(S539)]; ! <Kss1phos>
+        #                 """)
 #####################################################################################################################################
         #simple chain
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; x A--B \n C_ppi_D; ! B--C')
@@ -67,7 +67,7 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon('A_ppi_B \n A_ppi_F; ! A--B \n A_ppi_C; ! A--B; x A--F')# \n C_ppi_D; ! A--C')
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n A_ppi_F; ! A--B \n B_ppi_C; ! A--B \n C_ppi_D; ! B--C')
         #rxncon = Rxncon('A_ppi_B; x B--C \n B_ppi_C; x A--B')
-        #rxncon = Rxncon('A_ppi_B \n B_ppi_C; ! A--B')
+        rxncon = Rxncon('A_ppi_B \n B_ppi_C; ! A--B')
         #rxncon = Rxncon('A_ppi_B; k+ A--F \n B_ppi_C; ! A--B')
         
         #rxncon = Rxncon('Slt2_[DB]_ppi_Swi4_[c] \n Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--[c] \n Swi4_[n]_ipi_Swi4_[c]; x Slt2_[DB]--Swi4_[c]')
