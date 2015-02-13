@@ -123,6 +123,7 @@ class Contingency:
         """
         Adds given contingency to children list.
         """
+
         if self.inherited_ctype and self.inherited_ctype != 'none':
             contingency.inherited_ctype = self.inherited_ctype
         else:

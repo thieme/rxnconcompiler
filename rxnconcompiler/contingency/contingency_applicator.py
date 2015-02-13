@@ -135,7 +135,6 @@ class ContingencyApplicator():
             if new_mols:
                 mol[0].binding_partners.append(cont.state)
 
-
     def apply_positive_association(self, reaction, cont):
         """
         it requires either
@@ -152,8 +151,6 @@ class ContingencyApplicator():
         right = reaction.get_substrate_complex('R')
         left_right = reaction.get_substrate_complex('LR')
 
-
-        
         if left_right:
             mols1 = left_right.get_molecules(component1.name, component1.cid)
             mols2 = left_right.get_molecules(component2.name, component2.cid)
@@ -197,8 +194,7 @@ class ContingencyApplicator():
             else:
                 for compl in reaction.substrat_complexes:
                     self._add_components_to_complex(compl, component1, component2, cont, reaction)
-
-                        
+    
     def _add_components_to_complex(self, compl, component1, component2, cont, reaction):
         """
         Helper function.
@@ -219,7 +215,6 @@ class ContingencyApplicator():
 
         elif mols2:
             self.add_molecule_to_complex(mols2, cont, component1, compl, reaction)
-                
 
     def apply_on_complex(self, compl, cont):
         """

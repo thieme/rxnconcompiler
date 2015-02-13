@@ -56,15 +56,23 @@ class x_exclamation_mark_Tests(TestCase):
         #                 Kss1_P+_Sst2_[(S539)]; ! <Kss1phos>
         #                 """)
 
+        #rxncon = Rxncon("""
+        #                A_ppi_B; ! <AorC>
+        #                <AorC>; AND A--C; AND A--D
+        #                """)
         rxncon = Rxncon("""
-                        A_ppi_B; x <AorC>
-                        <AorC>; OR A--C; OR A--D
-                        """)
-        rxncon = Rxncon("""
-                        A_ppi_B; ! <AorC>
-                        <AorC>; AND A_[z]-{P}; AND A_[y]-{P}
-                        """)
-
+                       A_ppi_B; ! <AorC>
+                       <AorC>; AND A_[y]-{P}
+                       <AorC>; AND A_[x]-{P}
+                       <AorC>; AND A--C      
+                       """)
+#                      #<AorC>; AND A_[x]-{P}; AND A_[y]-{P} 
+        #rxncon = Rxncon("""
+        #                A_ppi_B; ! <MM>
+        #                <MM>; OR A-{P}
+        #                <MM>; OR B-{P}
+        #                <MM>; OR A--C
+         #               """)
 #####################################################################################################################################
         #simple chain
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; x A--B \n C_ppi_D; ! B--C')
@@ -113,6 +121,7 @@ class x_exclamation_mark_Tests(TestCase):
 
         #rxncon = Rxncon(input_data)
         rxncon.run_process()
+        print rxncon.complex_pool
         self.bngl_src = Bngl(
             rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
         # print bngl_src.get_src()
@@ -159,7 +168,7 @@ class x_exclamation_mark_Tests(TestCase):
                     reaction.run_reaction()
         """
         # print "self.basic_cont: ", self.basic_cont
-        print "bngl_src: ", self.bngl_src.get_src()
+        #print "bngl_src: ", self.bngl_src.get_src()
         pass
         # rxn = Rxncon('C_p+_B_[C] \n A_ppi_B; x B_[C]-{P}'
         # rxn.run_process()

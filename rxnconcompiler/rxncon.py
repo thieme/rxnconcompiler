@@ -129,6 +129,7 @@ class Rxncon:
         contingency_factory = ContingencyFactory(self.xls_tables)
         self.contingency_pool = contingency_factory.parse_contingencies()
         self.complex_pool = ComplexPool()
+        print "self.complex_pool: ", self.complex_pool
         self.create_complexes()
         self.update_contingencies()
 
@@ -162,6 +163,8 @@ class Rxncon:
         """
         bools = self.contingency_pool.get_top_booleans() 
         for bool_cont in bools:
+            print "bool_cont: ", bool_cont
+            print "bool_cont.children: ", bool_cont.children
             builder = ComplexBuilder()
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
             self.complex_pool[str(bool_cont.state)] = alter_comp

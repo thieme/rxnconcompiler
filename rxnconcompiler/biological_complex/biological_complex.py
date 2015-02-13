@@ -300,7 +300,6 @@ class BiologicalComplex:
             return True
         return False
 
-
     def add_state(self, state):
         """
         """
@@ -313,7 +312,6 @@ class BiologicalComplex:
             mol2 = Molecule(state.components[1].name)
             mol2.mid = state.components[1].cid
             mol2.binding_partners.append(state)
-
             partners = self.get_molecules(mol1.name, mol1.mid)
             if not partners:
                 self.molecules.append(mol1)
@@ -330,6 +328,25 @@ class BiologicalComplex:
             else:
                 if state not in partners[0].binding_partners:
                     partners[0].add_bond(state)
+        # elif state.type == "Covalent Modification":
+        #     print "Its covalent"
+        #     print "state.components: ", state.components
+        #     mol1 = Molecule(state.components[0].name)
+        #     mol1.mid = state.components[0].cid
+        #     print "mol1: ", mol1
+        #     print "mol1.name: ", mol1.name
+        #     #self.molecules.append(mol1)
+            
+        #     # mol1.add_modification(state)
+        #     # mol1.binding_partners.append(state)
+        #     # print "self.molecules: ", self.molecules
+        #     # for mol in self.molecules:
+        #     #     print "mol: ", mol
+        #     partners = self.get_molecules(mol1.name, mol1.mid)
+        #     # print "partners: ", partners
+        #     if not partners:
+        #         self.molecules.append(mol1)
+        #         print "HIER"
 
     def get_contingencies(self):
         """

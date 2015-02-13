@@ -6,6 +6,7 @@ Class Component    - cleaps information about name, domain and id.
 
 from domain_factory import DomainFactory
 
+
 class Component:
     """
     Component object keeps informations about name, domain and id.

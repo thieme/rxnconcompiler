@@ -187,25 +187,34 @@ class ComplexBuilder:
         Returns AlternativeComplexes object.
         Information about Input states is stored in AlternativeComplex.input_condition.
         """
+
         alter_comp = AlternativeComplexes(str(bool_cont.state))
         alter_comp.ctype = bool_cont.ctype
 
         complexes = []
         self.get_state_sets(bool_cont)
+        #print "build_positive_complexes_from_boolean"
+        #print "self.final_states: ", self.final_states
         for state_group in self.final_states:
             comp = BiologicalComplex()
             if self.check_conection(state_group):
                 self.stack = state_group
+        #        print "self.stack: ", self.stack
                 while self.stack:
                     state = self.stack.pop()
                     if state.state.type == 'Input':
                         alter_comp.input_condition = state
                     else:
+        #                print "state.state.type: ", state.state.type
+        #                print "state.state: " , state.state
+        #                print "comp: ", comp
                         result = comp.add_state(state.state)
+        #                print "result: ", result
                         if result:
                             self.stack = result + self.stack
             if comp.molecules:
                 complexes.append(comp)
+        #        print "complexes: ", complexes
 
         complexes = sorted(complexes, key=lambda comp: len(comp))
         for cid, comp in enumerate(complexes):
@@ -245,6 +254,7 @@ class ComplexBuilder:
         for node in node_list:
             if node.has_children:
                 to_remove.append(node)
+                print "node.children: ", node.children
                 for child in node.children:
                     if child.ctype == 'and' or '--' in child.ctype:
                         to_add.append(child)

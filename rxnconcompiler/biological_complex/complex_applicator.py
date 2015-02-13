@@ -40,9 +40,11 @@ class ComplexApplicator:
         #print complexes
         self.reaction_container = reaction_container        
         self.builder = ComplexBuilder()
+
         if not complexes:
             self.complexes = []
         else:
+
             #if len(complexes) > 2: #more than two booleans
             #    raise TypeError('Cannot apply more than two boolean contingencies on a reaction.')
             self.complexes = self.prepare_complexes_to_apply(complexes)
