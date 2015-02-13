@@ -60,12 +60,7 @@ class x_exclamation_mark_Tests(TestCase):
         #                A_ppi_B; ! <AorC>
         #                <AorC>; AND A--C; AND A--D
         #                """)
-        rxncon = Rxncon("""
-                       A_ppi_B; ! <AorC>
-                       <AorC>; AND A_[y]-{P}
-                       <AorC>; AND A_[x]-{P}
-                       <AorC>; AND A--C      
-                       """)
+        rxncon = Rxncon("A_ppi_B; ! <AorC> \n <AorC>; OR A_[y]-{P} \n <AorC>; OR A_[x]-{P}")
 #                      #<AorC>; AND A_[x]-{P}; AND A_[y]-{P} 
         #rxncon = Rxncon("""
         #                A_ppi_B; ! <MM>
@@ -168,7 +163,7 @@ class x_exclamation_mark_Tests(TestCase):
                     reaction.run_reaction()
         """
         # print "self.basic_cont: ", self.basic_cont
-        #print "bngl_src: ", self.bngl_src.get_src()
+        print "bngl_src: ", self.bngl_src.get_src()
         pass
         # rxn = Rxncon('C_p+_B_[C] \n A_ppi_B; x B_[C]-{P}'
         # rxn.run_process()

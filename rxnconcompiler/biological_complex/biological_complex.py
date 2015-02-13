@@ -194,7 +194,6 @@ class BiologicalComplex:
         result = sorted(result, key=lambda x: str(x))
         return result[0]
         
-
     def clone(self):
         """
         Creates a new instance of BiologicalComplex identical to itself.
@@ -258,7 +257,6 @@ class BiologicalComplex:
                 print 'Adding bond - sth strange', self 
         return bonds
 
-
     def get_molecules(self, name, mid=None, _id=None):
         """
         Returns a list of molecules with given: name, mid and _id.
@@ -309,9 +307,12 @@ class BiologicalComplex:
             mol1 = Molecule(state.components[0].name)
             mol1.mid = state.components[0].cid
             mol1.binding_partners.append(state)
+            print "mol1: ", mol1.inspect()
+
             mol2 = Molecule(state.components[1].name)
             mol2.mid = state.components[1].cid
             mol2.binding_partners.append(state)
+            print "mol2: ", mol2.inspect()
             partners = self.get_molecules(mol1.name, mol1.mid)
             if not partners:
                 self.molecules.append(mol1)
@@ -328,13 +329,14 @@ class BiologicalComplex:
             else:
                 if state not in partners[0].binding_partners:
                     partners[0].add_bond(state)
-        # elif state.type == "Covalent Modification":
-        #     print "Its covalent"
+        elif state.type == "Covalent Modification":
+            print "Its covalent"
         #     print "state.components: ", state.components
-        #     mol1 = Molecule(state.components[0].name)
-        #     mol1.mid = state.components[0].cid
+            mol1 = Molecule(state.components[0].name)
+            mol1.mid = state.components[0].cid
         #     print "mol1: ", mol1
-        #     print "mol1.name: ", mol1.name
+            mol1.add_modification(state)
+            print "mol1.name: ", mol1.inspect()
         #     #self.molecules.append(mol1)
             
         #     # mol1.add_modification(state)
@@ -342,10 +344,14 @@ class BiologicalComplex:
         #     # print "self.molecules: ", self.molecules
         #     # for mol in self.molecules:
         #     #     print "mol: ", mol
-        #     partners = self.get_molecules(mol1.name, mol1.mid)
+            partners = self.get_molecules(mol1.name, mol1.mid)
+            print partners
         #     # print "partners: ", partners
-        #     if not partners:
-        #         self.molecules.append(mol1)
+            if not partners:
+                print "hier"
+                self.molecules.append(mol1)
+            else:
+                partners[0].add_modification(state)
         #         print "HIER"
 
     def get_contingencies(self):

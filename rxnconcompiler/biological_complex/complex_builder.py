@@ -214,7 +214,7 @@ class ComplexBuilder:
                             self.stack = result + self.stack
             if comp.molecules:
                 complexes.append(comp)
-        #        print "complexes: ", complexes
+                print "complexes: ", complexes
 
         complexes = sorted(complexes, key=lambda comp: len(comp))
         for cid, comp in enumerate(complexes):
@@ -299,9 +299,14 @@ class ComplexBuilder:
 
         #TODO: What if we have two root molecules
         """
+        #print "compl: ", dir(compl)
+        print "root_molecule: ", root_molecule
         ordered_states = self.get_states_from_complex(compl, root_molecule)
+        
+        print "ordered_states: ", ordered_states
         alter_comp = AlternativeComplexes('')
         counter = len(ordered_states) -1
+        print counter
         while counter: 
             comp = BiologicalComplex()
             comp.is_positive = False
@@ -309,8 +314,9 @@ class ComplexBuilder:
                 comp.add_state(state)
             last_state = ordered_states[counter]
             mols = comp.get_molecules(last_state.components[0].name)
-            mols += comp.get_molecules(last_state.components[1].name)
-            mols[0].add_binding_site(last_state)
+            if len(last_state.components) > 1:
+                mols += comp.get_molecules(last_state.components[1].name)
+                mols[0].add_binding_site(last_state)
             alter_comp.add_complex(comp)
             counter -=1
 
@@ -350,8 +356,12 @@ class ComplexBuilder:
         """
         result = []
         stack = [root_molecule]
+
         while stack:
+            print "stack: ", stack
+            print "compl: ", compl
             states_mols = self._get_complex_layer(compl, stack, result)
+            print "states_mols: ", states_mols
             result += states_mols[0]
             stack = states_mols[1]
         return result
@@ -364,11 +374,24 @@ class ComplexBuilder:
             already = []
         result = []
         new_roots = []
+        print "compl: ", compl
+        print "root_list: ", root_list
         for root_molecule in root_list:
+            print "root_molecule: ", root_molecule
+            mol = compl.get_molecules(root_molecule.name)
+           
             mol = compl.get_molecules(root_molecule.name)[0]
+            print "mol: ", mol.modifications
             for bond in mol.binding_partners:
                 if bond not in already:
                     result.append(bond)
                     new_root = bond.get_partner(mol.get_component())
                     new_roots.append(new_root)
+            for mod in mol.modifications:
+                if mod not in already:
+                    result.append(mod)
+                    new_root = mod.get_partner(mol.get_component())
+                    print "new_root: ", new_root
+                    #new_roots.append(new_root)
+                    new_roots = []
         return result, new_roots

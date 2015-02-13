@@ -205,7 +205,6 @@ class ContingencyFactory(dict):
             self.parse_contingency(row)
 
         #self.parse_complexes(complexes)
-        print self.pool
         return self.pool
 
     def check_cont_in_children(self, cont, children):
@@ -232,8 +231,7 @@ class ContingencyFactory(dict):
             self.pool.setdefault(reaction, Contingency(reaction))        
             self.pool[reaction].add_child(cont)
         elif reaction.startswith('<'):
-            parents  = self.find_parent(cont)
-            print parents
+            parents = self.find_parent(cont)
             if not parents:
                 return 'no parent', row
             for parent in parents:
