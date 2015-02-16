@@ -48,6 +48,8 @@ from biological_complex import BiologicalComplex, \
 from rxnconcompiler.molecule.molecule import Molecule
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.util.util import product
+import copy
+
 
 class ComplexBuilder:
     """
@@ -58,7 +60,7 @@ class ComplexBuilder:
         self.states = []
         self.final_states = []
 
-    def helper_required_complexes(self, all_single_complexes, root):
+    def helper_required_complexes(self, all_single_complexes, root_list):
         """
         Gets all positive and negative complexes as a list of tuples:
         [(PositiveComplex: (NegativeComplex, NegativeComplex, ...)), ...)]
@@ -81,24 +83,42 @@ class ComplexBuilder:
         and list of negative complexes from the last iteration.
         """
 
-        required_complexes= AlternativeComplexes('')
+        required_complexes = AlternativeComplexes('')
         negative = []
-        for comp in all_single_complexes:
-            if negative == []:
-                required_complexes.add_complex(comp[0])
-                negative = comp[1]
-            else:
-                for neg in negative:
-                    required_complexes.add_complex(neg.complex_addition(comp[0], root))
-                # What is this
-                negative = [first_comp.complex_addition(sec_comp, root) for first_comp, sec_comp in product(negative, comp[1])]
+        for root in root_list:
+            found_one = False
+            for comp in all_single_complexes:
+                if negative == []:
+                    required_complexes.add_complex(comp[0])
+                    negative = comp[1]
+                else:
+                    if comp[0].get_molecules(str(root)):
+                        for neg in negative:
+                            if neg.get_molecules(str(root)):
+                                found_one = True
+                                required_complexes.add_complex(neg.complex_addition(comp[0], root))
+                        if not found_one:
+                            required_complexes.add_complex(comp[0])
+                            negative.extend(comp[1])
+                        # What is this
+                        #negative = [first_comp.complex_addition(sec_comp, root) for first_comp, sec_comp in product(negative, comp[1])]
+
+                        for first_comp, sec_comp in product(negative, comp[1]):
+                            if first_comp.get_molecules(str(root)):# or sec_comp.get_molecules(str(root)):
+
+                                #negative.append(first_comp.complex_addition(sec_comp, root))
+                                negative.append(first_comp.complex_addition(sec_comp, root))
+         #                       print "negative after addition: ", negative
+
+        print "helper_required_complexes required_complexes: ", required_complexes
+        print "helper_required_complexes negative: ", negative
         return required_complexes, negative
 
     def apply_input_contingency(self, bool_ctype, input_cont, required_complexes, result):
         """
         Sets input_conditions parameter 
         for complexes in a ready required complexes
-        (it ia a Contingency).
+        (it is a Contingency).
 
         It does it based on main contingency (!, x, K+, K-) 
         and type of boolean (AND, OR).
@@ -133,7 +153,7 @@ class ComplexBuilder:
             compl.input_conditions = [Contingency(None, '!', input_cont.state), Contingency(None, 'x', input_cont.state)]
             compl.is_positive = 'both'
 
-    def build_required_complexes(self, positive_complexes, root):
+    def build_required_complexes(self, positive_complexes, root_list):
         """
         Builds all required complexes for one boolean contingeny.
 
@@ -141,17 +161,24 @@ class ComplexBuilder:
         @param root: a molecule from a reaction for which complex will be applied.
         """
         # Build all posibilities
+        print "build_required_complexes root_list: ", root_list
+        
         all_single_complexes = []
-        for comp in positive_complexes:
-            negative = self.build_negative_complexes(comp, root)
-            all_single_complexes.append((comp, negative))
-        result = self.helper_required_complexes(all_single_complexes, root)
+        for root in root_list:
+            for comp in positive_complexes: 
+                negative = self.build_negative_complexes(comp, root)
+                if negative:
+                    all_single_complexes.append((comp, negative))
+        print "all_single_complexes: ", all_single_complexes
 
+        result = self.helper_required_complexes(all_single_complexes, root_list)
+        print "result: ", result
         # Chooses required complexes from all possibilities (result)
         # based on main contingencies type (x, !, K+, K-).
         if positive_complexes.ctype == "!": 
             # C1; not C1, C2; not C1, not C2, C3 ...
             required_complexes = result[0]
+            print "required_complexes: ", required_complexes
             if positive_complexes.input_condition:
                 self.apply_input_contingency('!', \
                     positive_complexes.input_condition, required_complexes, result)
@@ -176,6 +203,26 @@ class ComplexBuilder:
 
         return required_complexes
 
+    def apply_not_connected_complexes(self, complexes, bool_cont):
+        self.get_state_sets(bool_cont)
+        for state_group in self.final_states:
+            comp = BiologicalComplex()
+            self.stack = state_group
+            print "self.stack: ", self.stack
+            for not_connected in self.not_connected:
+                while self.stack:
+                    state = self.stack.pop()
+                    if str(state.state) != str(not_connected.state):
+                        print "state.state: ", state.state
+                        print "not_connected.state: ", not_connected.state
+                        if state.state.type == "Covalent Modification":
+                            comp.add_non_connected_mod_state(not_connected.state, state.state)
+            print "apply_not_connected_complexes comp: ", comp
+            if comp.molecules:
+                complexes.append(comp)
+        return complexes
+            
+
     def build_positive_complexes_from_boolean(self, bool_cont):
         """
         Builds positive complexes from boolean (containing children) contingency <cont>.
@@ -190,41 +237,69 @@ class ComplexBuilder:
 
         alter_comp = AlternativeComplexes(str(bool_cont.state))
         alter_comp.ctype = bool_cont.ctype
-
+        self.not_connected = []
         complexes = []
         self.get_state_sets(bool_cont)
         #print "build_positive_complexes_from_boolean"
-        #print "self.final_states: ", self.final_states
+        print "self.final_states: ", self.final_states
         for state_group in self.final_states:
             comp = BiologicalComplex()
             if self.check_conection(state_group):
                 self.stack = state_group
-        #        print "self.stack: ", self.stack
+                print "self.stack: ", self.stack
                 while self.stack:
                     state = self.stack.pop()
+                   # print "state: ", dir(state)
                     if state.state.type == 'Input':
                         alter_comp.input_condition = state
+                    elif state.state.type == "Covalent Modification":
+                        comp.add_state_mod(complexes, state.state)
                     else:
         #                print "state.state.type: ", state.state.type
         #                print "state.state: " , state.state
         #                print "comp: ", comp
                         result = comp.add_state(state.state)
-        #                print "result: ", result
+                        #print "result: ", result
                         if result:
                             self.stack = result + self.stack
             if comp.molecules:
                 complexes.append(comp)
                 print "complexes: ", complexes
+                print "self.stack: ", self.stack
 
+        #print "not_connected: ", self.not_connected
+        #complexes = self.apply_not_connected_complexes(complexes, bool_cont)
         complexes = sorted(complexes, key=lambda comp: len(comp))
         for cid, comp in enumerate(complexes):
             comp.cid = str(cid + 1)
             alter_comp.add_complex(comp)
+        print "alter_comp: ", alter_comp
 
         return alter_comp
+    #def order_connection(self, state_group):
+    #    stack = []
 
     def check_conection(self, states):
-        """Asures that all molecules within given group of states are conected."""
+        """Assumes that all molecules within given group of states are connected."""
+        # states_copy = copy.deepcopy(states)
+        # stack = states_copy
+        # #print dir(states[0])
+        # state = stack.pop()
+        # #print "state: ", dir(state)
+        # print "state.ctype: ", state.ctype
+        # print "comp: ", complexes
+        # #mol = Molecule(state.state)
+        # print "state: ", state
+        # if state.ctype == "or" and complexes:
+        #     for comp in complexes:
+        #         print "comp of complex: ", comp.get_molecules(state.state.components[0].name)
+        #         if comp.get_molecules(state.state.components[0].name):
+        #             if state in self.not_connected:
+        #                 self.not_connected.remove(state)
+        #             return True
+        #     self.not_connected.append(state)
+        #     return False
+        # else: 
         return True
 
     def get_state_sets(self, bool_cont):
@@ -299,34 +374,34 @@ class ComplexBuilder:
 
         #TODO: What if we have two root molecules
         """
-        #print "compl: ", dir(compl)
         print "root_molecule: ", root_molecule
         ordered_states = self.get_states_from_complex(compl, root_molecule)
-        
-        print "ordered_states: ", ordered_states
-        alter_comp = AlternativeComplexes('')
-        counter = len(ordered_states) -1
-        print counter
-        while counter: 
+        print ordered_states
+        if ordered_states:
+            alter_comp = AlternativeComplexes('')
+            counter = len(ordered_states) -1
+            
+            while counter: 
+                comp = BiologicalComplex()
+                comp.is_positive = False
+                for state in ordered_states[:counter]:
+                    comp.add_state(state)
+                last_state = ordered_states[counter]
+                mols = comp.get_molecules(last_state.components[0].name)
+                if len(last_state.components) > 1:
+                    mols += comp.get_molecules(last_state.components[1].name)
+                    mols[0].add_binding_site(last_state)
+                alter_comp.add_complex(comp)
+                counter -=1
+
             comp = BiologicalComplex()
             comp.is_positive = False
-            for state in ordered_states[:counter]:
-                comp.add_state(state)
-            last_state = ordered_states[counter]
-            mols = comp.get_molecules(last_state.components[0].name)
-            if len(last_state.components) > 1:
-                mols += comp.get_molecules(last_state.components[1].name)
-                mols[0].add_binding_site(last_state)
+            mol = Molecule(root_molecule.name)
+            mol.add_binding_site(ordered_states[0])
+            comp.molecules.append(mol)
             alter_comp.add_complex(comp)
-            counter -=1
-
-        comp = BiologicalComplex()
-        comp.is_positive = False
-        mol = Molecule(root_molecule.name)
-        mol.add_binding_site(ordered_states[0])
-        comp.molecules.append(mol)
-        alter_comp.add_complex(comp)
-        return alter_comp
+            print "build_negative_complexes alter_comp: ", alter_comp
+            return alter_comp
 
     
     def get_states_from_complex(self, compl, root_molecule):
@@ -358,10 +433,7 @@ class ComplexBuilder:
         stack = [root_molecule]
 
         while stack:
-            print "stack: ", stack
-            print "compl: ", compl
             states_mols = self._get_complex_layer(compl, stack, result)
-            print "states_mols: ", states_mols
             result += states_mols[0]
             stack = states_mols[1]
         return result
@@ -374,24 +446,24 @@ class ComplexBuilder:
             already = []
         result = []
         new_roots = []
-        print "compl: ", compl
-        print "root_list: ", root_list
         for root_molecule in root_list:
-            print "root_molecule: ", root_molecule
             mol = compl.get_molecules(root_molecule.name)
-           
-            mol = compl.get_molecules(root_molecule.name)[0]
-            print "mol: ", mol.modifications
-            for bond in mol.binding_partners:
-                if bond not in already:
-                    result.append(bond)
-                    new_root = bond.get_partner(mol.get_component())
-                    new_roots.append(new_root)
-            for mod in mol.modifications:
-                if mod not in already:
-                    result.append(mod)
-                    new_root = mod.get_partner(mol.get_component())
-                    print "new_root: ", new_root
-                    #new_roots.append(new_root)
-                    new_roots = []
+            print "compl: ", compl
+            print "root_list: ", root_list
+            if mol:
+                mol = mol[0]
+            #mol = compl.get_molecules(root_molecule.name)[0]
+                for bond in mol.binding_partners:
+                    if bond not in already:
+                        result.append(bond)
+                        new_root = bond.get_partner(mol.get_component())
+                        new_roots.append(new_root)
+                for mod in mol.modifications:
+                    if mod not in already:
+                        result.append(mod)
+                        new_root = mod.get_partner(mol.get_component())
+                        #new_roots.append(new_root)
+                        new_roots = []
+            else:
+                continue
         return result, new_roots

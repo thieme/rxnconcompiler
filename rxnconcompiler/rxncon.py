@@ -167,6 +167,8 @@ class Rxncon:
             print "bool_cont.children: ", bool_cont.children
             builder = ComplexBuilder()
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
+            #builder.apply_modifications_from boolean(bool_cont)
+            print "alter_comp outside: ", alter_comp
             self.complex_pool[str(bool_cont.state)] = alter_comp
 
     def get_requirements_dict(self):

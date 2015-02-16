@@ -64,8 +64,9 @@ class ComplexApplicator:
         for comp in to_remove:
             alter_complex.remove(comp)
         #############################################
-        root = self.get_root_molecules(alter_complex.get_first_non_empty())[0]
-        #print 'Root', root
+        root = self.get_root_molecules(alter_complex.get_first_non_empty())
+        root = list(set(root))
+        print 'Root', root
         com = self.builder.build_required_complexes(alter_complex, root)
         return com
        
@@ -163,6 +164,7 @@ class ComplexApplicator:
     def apply_complexes(self):
         """
         """
+        print "self.complexes: ", self.complexes
         while self.complexes and len(self.reaction_container) != len(self.complexes) and len(self.complexes) > 0:
             new_reaction = self.reaction_container[0].clone()
             self.reaction_container.add_reaction(new_reaction)
@@ -174,6 +176,7 @@ class ComplexApplicator:
             if len(self.reaction_container) > 1: 
                 reaction.rid = "%i_%i" %(self.reaction_container.rid, counter)  
                 counter +=1
+            print "compl: ", compl
             self.add_substrate_complexes(reaction, compl)
             self.update_reaction_rate(reaction, compl, pos_and_neg_compl)
 
@@ -187,14 +190,29 @@ class ComplexApplicator:
                 if reaction.right_reactant:
                     self.molecule2complex(reaction.right_reactant, reaction, 'R')
 
-
     def get_root_molecules(self, compl):
         """"""
         root = []
-        lmol = self.reaction_container[0].left_reactant
-        rmol = self.reaction_container[0].right_reactant
-        root += compl.get_molecules(lmol.name, lmol.mid)
-        root += compl.get_molecules(rmol.name, rmol.mid)
+        known_root = []
+        for comp in compl:
+            lmol = self.reaction_container[0].left_reactant
+            rmol = self.reaction_container[0].right_reactant
+            print "#### lmol: ", lmol
+            print "#### rmol: ", rmol
+            if lmol.name not in known_root:
+                if comp.get_molecules(lmol.name, lmol.mid):
+                    known_root.append(lmol.name)
+            #    print "########### add lmol:", comp.get_molecules(lmol.name, lmol.mid)
+                    root += comp.get_molecules(lmol.name, lmol.mid)
+            if rmol.name not in known_root:
+                if comp.get_molecules(rmol.name, rmol.mid):
+                    known_root.append(rmol.name)
+            #    print "########### add rmol:", comp.get_molecules(rmol.name, rmol.mid)
+                    root += comp.get_molecules(rmol.name, rmol.mid)
+            # root += compl.get_molecules(lmol.name, lmol.mid)
+            # root += compl.get_molecules(rmol.name, rmol.mid)
+            print "known_root: ", known_root
+        print "get_root_molecules root: ", root
         return root
 
     def add_substrate_complexes(self, reaction, complexes):

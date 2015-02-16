@@ -57,17 +57,41 @@ class x_exclamation_mark_Tests(TestCase):
         #                 """)
 
         #rxncon = Rxncon("""
-        #                A_ppi_B; ! <AorC>
-        #                <AorC>; AND A--C; AND A--D
-        #                """)
-        rxncon = Rxncon("A_ppi_B; ! <AorC> \n <AorC>; OR A_[y]-{P} \n <AorC>; OR A_[x]-{P}")
-#                      #<AorC>; AND A_[x]-{P}; AND A_[y]-{P} 
+        #               A_ppi_B; ! <AorC>
+        #               <AorC>; AND A--C; AND A--D
+        #               """)  # works
+
+
+        rxncon = Rxncon("""
+                      A_ppi_B; ! <AorC>
+                      <AorC>; OR A_[x]-{P}
+                      <AorC>; OR B_[y]-{P}
+                      <AorC>; OR A--C
+                      
+                      """)  # works
+        #
+        #rxncon = Rxncon('A_ppi_B; ! A-{P} \n A_ppi_B; x A-{P}; ! B-{P}')
+
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <MM> 
+        #                 <MM>; AND B--E
+        #                 <MM>; AND <MM2>
+        #                 <MM2>; OR B_[x]-{P}
+        #                 <MM2>; OR B_[y]-{P}""")  # Prob
+
         #rxncon = Rxncon("""
+        #                A_ppi_B; ! <MM> 
+        #                <MM>; AND B--E
+        #                <MM>; AND <MM2>
+        #                <MM2>; OR A--C
+        #                <MM2>; OR A--D""")  # Prob
+
+#                      #<AorC>; AND A_[x]-{P}; AND A_[y]-{P} 
+        # rxncon = Rxncon("""
         #                A_ppi_B; ! <MM>
-        #                <MM>; OR A-{P}
-        #                <MM>; OR B-{P}
         #                <MM>; OR A--C
-         #               """)
+        #                <MM>; OR A--D
+        #                """)  # Prob
 #####################################################################################################################################
         #simple chain
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; x A--B \n C_ppi_D; ! B--C')
