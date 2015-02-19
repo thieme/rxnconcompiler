@@ -193,7 +193,7 @@ class BiologicalComplex:
         result = [path for path in all_paths if len(path) == length]
         result = sorted(result, key=lambda x: str(x))
         return result[0]
-        
+ 
     def clone(self):
         """
         Creates a new instance of BiologicalComplex identical to itself.
@@ -227,7 +227,7 @@ class BiologicalComplex:
         for mol in mols:
             for state in mol.binding_partners:
                 mol_state.append((mol, state))
-        
+
         # get pairs molecule-state & molecule-state
         pairs = []
         while mol_state:
@@ -235,7 +235,7 @@ class BiologicalComplex:
             done = False
             for p in pairs:
                 if len(p) == 1:
-                   if p[0][1] == ms[1]:  # state is the same
+                    if p[0][1] == ms[1]:  # state is the same
                         if not done and (ms[1].homodimer or p[0][0].name != ms[0].name):
                             p.append(ms)
                             done = True
@@ -307,12 +307,10 @@ class BiologicalComplex:
             mol1 = Molecule(state.components[0].name)
             mol1.mid = state.components[0].cid
             mol1.binding_partners.append(state)
-            print "mol1: ", mol1.inspect()
-
             mol2 = Molecule(state.components[1].name)
             mol2.mid = state.components[1].cid
             mol2.binding_partners.append(state)
-            print "mol2: ", mol2.inspect()
+
             partners = self.get_molecules(mol1.name, mol1.mid)
             if not partners:
                 self.molecules.append(mol1)
@@ -330,37 +328,6 @@ class BiologicalComplex:
                 if state not in partners[0].binding_partners:
                     partners[0].add_bond(state)
 
-    def add_non_connected_mod_state(self, not_connected, state):
-
-        if not_connected.type == "Covalent Modification":
-            mol1 = Molecule(not_connected.components[0].name)
-            mol1.mid = not_connected.components[0].cid
-    #     print "mol1: ", mol1
-            mol1.add_modification(not_connected)
-
-            mol2 = Molecule(state.components[0].name)
-            mol2.mid = state.components[0].cid
-    #     print "mol1: ", mol1
-            #print "dir(mol1): ", dir(mol1)
-            mol2.add_modification(state)
-            partners = self.get_molecules(mol1.name, mol1.mid)
-            print "partners mol1: ", partners
-            if not partners:
-                self.molecules.append(mol1)
-            else:
-                partners[0].add_modification(not_connected)
-            print "HIRE"
-
-            partners = self.get_molecules(mol2.name, mol2.mid)
-            print "partners mol2: ", partners
-            if not partners:
-                self.molecules.append(mol2)
-            else:
-                partners[0].add_modification(state)
-            print self.molecules
-
-
-
     def add_state_mod(self, complexes, state):
         print "Its covalent"
         print "add_state_mod state: ", state
@@ -373,7 +340,6 @@ class BiologicalComplex:
             for comp in complexes:
                 molecules = comp.get_molecules(state.components[0].name)
                 if molecules:
-                    print "HEIR: "
                     for mol in molecules:
                         #print "dir(comp): ", dir(mol) 
                         if state not in mol.modifications:
@@ -440,16 +406,10 @@ class AlternativeComplexes(list):
         Returns  first complex that is not empty
         (contains molecules).
         """
-        result = []
         for comp in self:
             if comp.molecules:
-                result.append(comp)
-                continue
-                #return comp
+                return comp
 
-        print "result: ", result
-
-        return result
     def empty(self):
         """
         Removes all complexes from the AlternativeComplexes object
