@@ -337,8 +337,16 @@ class Molecule:
             return True
         return False
 
+    def set_site(self, state, side='L'):
+        """
+        set the domain by considering the state type
+        """
+        if state.type == "Covalent Modification":
+            self.add_modification_site(state)
+        elif state.type == "Association":
+            self.add_binding_site(state, side)
 
-    def add_binding_site(self, state, side = 'L'):
+    def add_binding_site(self, state, side='L'):
         """
         side indicates in case of homodimers which 
         component (domain) should be taken into account.

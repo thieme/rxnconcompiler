@@ -201,9 +201,11 @@ class BiologicalComplex:
         @rtype:  BiologicalComplex
         @return: identical complex
         """
+        print "Cloning complex"
         new = BiologicalComplex()
         temp = []
         for mol in self.molecules:
+            print mol.inspect()
             temp.append(mol.clone())
         new.molecules = temp
         #new.molecules = copy.deepcopy(self.molecules)
@@ -328,22 +330,19 @@ class BiologicalComplex:
                 if state not in partners[0].binding_partners:
                     partners[0].add_bond(state)
 
-    def add_state_mod(self, complexes, state):
+    def add_state_mod(self, complexes, state, ctype):
         print "Its covalent"
-        print "add_state_mod state: ", state
         mol1 = Molecule(state.components[0].name)
         mol1.mid = state.components[0].cid
     #     print "mol1: ", mol1
         mol1.add_modification(state)
         found = False
-        if complexes:
+        if complexes and ctype != "or":
             for comp in complexes:
                 molecules = comp.get_molecules(state.components[0].name)
                 if molecules:
                     for mol in molecules:
-                        #print "dir(comp): ", dir(mol) 
                         if state not in mol.modifications:
-                            print state
                             found = True
                             mol.add_modification(state)
             if found:
@@ -397,6 +396,7 @@ class AlternativeComplexes(list):
         self.name = name
         self.ctype = None #: contingency type
         self.input_condition = None 
+        self.not_connected_states = {}
 
     def add_complex(self, comp):
         self.append(comp)
@@ -429,7 +429,43 @@ class AlternativeComplexes(list):
         new.input_condition = self.input_condition
         return new
 
+    def set_not_connected_state_dict(self, current_state, other_state, connected):
+        if current_state not in self.not_connected_states:
+            self.not_connected_states[current_state] = {}
+            self.not_connected_states[current_state]['connected'] = [other_state]
+            self.not_connected_states[current_state]['not_connected'] = connected
+        else:
+            self.not_connected_states[current_state]['connected'].append(other_state)
+        #return not_connected_states
 
+    def check_not_connected_states(self, not_connected_states, connected):
+        """
+        this function checks the connection between all not connected states
+        """
+        #not_connected_states_dict = {}
+        already = []
+
+        for current_state in not_connected_states:
+            found_connection = False
+            if current_state not in already:
+                for other_state in not_connected_states:
+                    if str(current_state) != str(other_state):
+                        if current_state.has_component(other_state.components[0]):
+                            found_connection = True
+                            self.set_not_connected_state_dict(current_state, other_state, connected)
+                            already.append(other_state)
+                        elif len(other_state.components) > 1 and current_state.has_component(other_state.components[1]):
+                            found_connection= True
+                            self.set_not_connected_state_dict(current_state, other_state, connected)
+                            already.append(other_state)
+                if not found_connection:
+                    self.not_connected_states[current_state] = {}
+                    self.not_connected_states[current_state]['connected'] = []
+                    self.not_connected_states[current_state]['not_connected'] = connected
+
+
+        #print "self.not_connected_states: ", self.not_connected_states
+        #return not_connected_states_dict
 class ComplexPool(dict):
     """
     """

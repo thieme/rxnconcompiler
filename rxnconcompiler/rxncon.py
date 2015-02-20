@@ -166,12 +166,11 @@ class Rxncon:
             print "bool_cont: ", bool_cont
             print "bool_cont.children: ", bool_cont.children
             builder = ComplexBuilder()
-            alter_comp, not_connected = builder.build_positive_complexes_from_boolean(bool_cont)
+            alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
             #builder.apply_modifications_from boolean(bool_cont)
             print "alter_comp outside: ", alter_comp
-            self.complex_pool[str(bool_cont.state)] = {}
-            self.complex_pool[str(bool_cont.state)]["connected"] = alter_comp
-            self.complex_pool[str(bool_cont.state)]["not_connected"] = not_connected
+            self.complex_pool[str(bool_cont.state)] = alter_comp
+            #self.complex_pool[str(bool_cont.state)]["not_connected"] = []
 
     def get_requirements_dict(self):
         """

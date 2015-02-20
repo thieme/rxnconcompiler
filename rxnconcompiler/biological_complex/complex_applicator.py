@@ -30,6 +30,9 @@ import copy
 from biological_complex import BiologicalComplex
 from complex_builder import ComplexBuilder
 from rxnconcompiler.util.util import product
+from rxnconcompiler.contingency.contingency import Contingency
+from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
+
 
 class ComplexApplicator:
     """
@@ -40,8 +43,7 @@ class ComplexApplicator:
         #print complexes
         self.reaction_container = reaction_container        
         self.builder = ComplexBuilder()
-        self.not_connected = complexes['not_connected']
-        complexes = complexes["connected"]
+        self.not_connected_states = complexes.not_connected_states
 
         if not complexes:
             self.complexes = []
@@ -161,11 +163,48 @@ class ComplexApplicator:
             reaction.rate.update_function(compl.input_conditions[0], is_switch, \
                 '%s_1' % reaction.main_id, '%s_2' % reaction.main_id)
 
+    def set_basic_substrate_complex(self, reaction):
+        if reaction.left_reactant._id == reaction.right_reactant._id:
+            self.molecule2complex(reaction.left_reactant, reaction, 'LR')
+        else:
+            if reaction.left_reactant:
+                self.molecule2complex(reaction.left_reactant, reaction, 'L')
+            if reaction.right_reactant:
+                self.molecule2complex(reaction.right_reactant, reaction, 'R')
+
+    def set_not_connected_states(self, missing_condition, raw_reaction, cap, already):
+        for current_not_connected_state in self.not_connected_states[missing_condition]['not_connected']:
+            print "current_not_connected_state: ", current_not_connected_state
+            # we have to add a reaction for each combination. Therefore we copy an unmodified reaction
+            reaction = copy.deepcopy(raw_reaction)
+            self.set_basic_substrate_complex(reaction)  # set the basic molecules of the unmodified reaction
+
+            cont1 = Contingency(target_reaction=self.reaction_container.name, ctype="!", state=missing_condition)
+            cont2 = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=current_not_connected_state)
+            cap.apply_on_reaction(reaction, cont2)  # apply the not connected state contingency for this iteration step
+        #    reaction_copy = copy.deepcopy(reaction)  # take a copy of this modified reaction for later extension of the different combination of other states
+            cap.apply_on_reaction(reaction, cont1)  # apply the missing condition
+            
+            #self.reaction_container.add_reaction(reaction) # this results in a reaction with a first simple combination of the missing condition and the not connected states
+            # have a look at all states which are not connected to the missing condition to get all the combinations of missing condition and not connected states
+            # for other_not_connected_state in self.not_connected_states[missing_condition]['not_connected']:  
+            #     if other_not_connected_state != current_not_connected_state:
+            #         reaction_combi = copy.deepcopy(reaction_copy)
+            #         # as long as we have not connected states left add a x contingency
+            #         if other_not_connected_state not in already and current_not_connected_state not in already:
+            #             #cont1 = Contingency(target_reaction=self.reaction_container.name, ctype="!", state=missing_condition)
+            #             cont3 = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=other_not_connected_state)
+
+            #             already.append(other_not_connected_state)
+            #             cap.apply_on_reaction(reaction_combi, cont1)
+            #             cap.apply_on_reaction(reaction_combi, cont3)
+            #             self.reaction_container.add_reaction(reaction_combi)
+                    
+        return already
+
     def apply_complexes(self):
         """
         """
-        print "self.complexes: ", self.complexes
-        print "self.not_connected: ", self.not_connected
         raw_reaction = self.reaction_container[0].clone()
         while self.complexes and len(self.reaction_container) != len(self.complexes) and len(self.complexes) > 0:
             new_reaction = self.reaction_container[0].clone()
@@ -183,62 +222,55 @@ class ComplexApplicator:
 
         if self.complexes == []:
             reaction = self.reaction_container[0]
-            if reaction.left_reactant._id == reaction.right_reactant._id:
-                self.molecule2complex(reaction.left_reactant, reaction, 'LR')
-            else:
-                if reaction.left_reactant:
-                    self.molecule2complex(reaction.left_reactant, reaction, 'L')
-                if reaction.right_reactant:
-                    self.molecule2complex(reaction.right_reactant, reaction, 'R')
-        #cap = ContingencyApplicator()
-        from rxnconcompiler.contingency.contingency import Contingency
-        from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
+            self.set_basic_substrate_complex(reaction)
+            # if reaction.left_reactant._id == reaction.right_reactant._id:
+            #     self.molecule2complex(reaction.left_reactant, reaction, 'LR')
+            # else:
+            #     if reaction.left_reactant:
+            #         self.molecule2complex(reaction.left_reactant, reaction, 'L')
+            #     if reaction.right_reactant:
+            #         self.molecule2complex(reaction.right_reactant, reaction, 'R')
+
         cap = ContingencyApplicator()
 
-        print "self.not_connected: ", self.not_connected
+        print "self.not_connected_states: ", self.not_connected_states
         already = []
-        
-        for missing_condition in self.not_connected:
+        # ToDo: refactor
+        for missing_condition in self.not_connected_states:
             print "missing_condition: ", missing_condition
-            for not_connected_state in self.not_connected[missing_condition]['not_connected']:
-                print "not_connected_state: ", not_connected_state
-                reaction = copy.deepcopy(raw_reaction)
-                if reaction.left_reactant._id == reaction.right_reactant._id:
-                    self.molecule2complex(reaction.left_reactant, reaction, 'LR')
-                else:
-                    if reaction.left_reactant:
-                        self.molecule2complex(reaction.left_reactant, reaction, 'L')
-                    if reaction.right_reactant:
-                        self.molecule2complex(reaction.right_reactant, reaction, 'R')
-                product_contingency = self.reaction_container.product_contingency
-                cont1 = Contingency(target_reaction=product_contingency.target_reaction, ctype="!", state=missing_condition)
-                cont2 = Contingency(target_reaction=product_contingency.target_reaction, ctype="x", state=not_connected_state)
-                cap.apply_on_reaction(reaction, cont2)
-                reaction_copy = copy.deepcopy(reaction)
-                cap.apply_on_reaction(reaction, cont1)
+            #already = self.set_not_connected_states(missing_condition, raw_reaction, cap, already)
+            reaction = copy.deepcopy(raw_reaction)
+            reaction_neg = copy.deepcopy(raw_reaction)
+            self.set_basic_substrate_complex(reaction)  # set the basic molecules of the unmodified reaction
+            self.set_basic_substrate_complex(reaction_neg)  # set the basic molecules of the unmodified reaction
+            cont1 = Contingency(target_reaction=self.reaction_container.name, ctype="!", state=missing_condition)
+            cont1_neg = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=missing_condition)
+            cap.apply_on_reaction(reaction, cont1)  # apply the missing condition
+            cap.apply_on_reaction(reaction_neg, cont1_neg)
+            print "hier"
+            for current_not_connected_state in self.not_connected_states[missing_condition]['not_connected']:
+                print "current_not_connected_state: ", current_not_connected_state
+                # we have to add a reaction for each combination. Therefore we copy an unmodified reaction
                 
-                self.reaction_container.add_reaction(reaction)
-                for add_not_connected_state in self.not_connected[missing_condition]['not_connected']:
-                    add_reaction = copy.deepcopy(reaction_copy)
-                    if add_not_connected_state != not_connected_state:
-                        if add_not_connected_state not in already and not_connected_state not in already:
-                            cont1 = Contingency(target_reaction=product_contingency.target_reaction, ctype="!", state=missing_condition)
-                            cont3 = Contingency(target_reaction=product_contingency.target_reaction, ctype="x", state=add_not_connected_state)
+                cont2 = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=current_not_connected_state)
+                cap.apply_on_reaction(reaction, cont2)  # apply the not connected state contingency for this iteration step
+                cap.apply_on_reaction(reaction_neg, cont2)
 
-                            already.append(add_not_connected_state)
-                            cap.apply_on_reaction(add_reaction, cont1)
-                            cap.apply_on_reaction(add_reaction, cont3)
-                            self.reaction_container.add_reaction(add_reaction)
-                        else:
-                            cont1 = Contingency(target_reaction=product_contingency.target_reaction, ctype="x", state=missing_condition)
-                            cont3 = Contingency(target_reaction=product_contingency.target_reaction, ctype="x", state=add_not_connected_state)
-                            already.append(add_not_connected_state)
-                            cap.apply_on_reaction(add_reaction, cont1)
-                            cap.apply_on_reaction(add_reaction, cont3)
-                            self.reaction_container.add_reaction(add_reaction)
+            self.reaction_container.add_reaction(reaction)
 
-
-
+            for current_connected_state in self.not_connected_states[missing_condition]['connected']:
+                print "current_connected_state: ", current_connected_state
+                reaction_neg_last = copy.deepcopy(reaction_neg)
+                ## I have to add a modification or a binding partner at this position for the respective molecule
+                cont = Contingency(target_reaction=self.reaction_container.name, ctype="!", state=current_connected_state)
+                cap.apply_on_reaction(reaction_neg_last, cont)
+                self.reaction_container.add_reaction(reaction_neg_last)
+                #cont_neg = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=current_connected_state)
+                #cap.apply_on_reaction(reaction_neg, cont_neg)
+                #reaction_neg = copy.deepcopy(reaction_neg)
+            #    reaction_copy = copy.deepcopy(reaction)  # take a copy of this modified reaction for later extension of the different combination of other states
+                
+                
 
     def get_root_molecules(self, compl):
         """"""

@@ -145,8 +145,16 @@ class ComplexBuilder:
         # Build all posibilities
         all_single_complexes = []
         for comp in positive_complexes:
+            for mol in comp.molecules:
+                print " before processing mol.inspect: ", mol.inspect()  
             negative = self.build_negative_complexes(comp, root)
+
             all_single_complexes.append((comp, negative))
+        print "###all_single_complexes: ", all_single_complexes
+        for tupl in all_single_complexes:
+            for mol in tupl[0].molecules:
+                print "mol.inspect: ", mol.inspect() 
+
         result = self.helper_required_complexes(all_single_complexes, root)
 
         # Chooses required complexes from all possibilities (result)
@@ -197,56 +205,20 @@ class ComplexBuilder:
                 complexes.append(comp)
         return complexes
 
-    def check_not_connected(self, connected):
-        new_not_connected = {}
-        allready = []
-
-        for not_con_state1 in self.not_connected:
-            found_connection = False
-            if not_con_state1 not in allready:
-                for not_con_state_2 in self.not_connected:
-                    if str(not_con_state1) != str(not_con_state_2):
-                        if not_con_state1.components[0].name == not_con_state_2.components[0].name:
-                            found_connection = True
-                        elif len(not_con_state1.components) > 1 and not_con_state1.components[1].name == not_con_state_2.components[0].name:
-                            found_connection = True
-                        elif len(not_con_state2.components) > 1 and not_con_state1.components[0].name == not_con_state_2.components[1].name:
-                            found_connection = True
-                        elif len(not_con_state1.components) > 1 and len(not_con_state2.components) > 1 and not_con_state1.components[1].name == not_con_state_2.components[1].name:
-                            found_connection = True
-                    if found_connection:
-                        if not_con_state1 not in new_not_connected:
-                            new_not_connected[not_con_state1] = {}
-                            new_not_connected[not_con_state1]['connected'] = [not_con_state_2]
-                            new_not_connected[not_con_state1]['not_connected'] = connected
-
-                            allready.append(not_con_state_2)
-                        else:
-                            new_not_connected[not_con_state1]['connected'].append(not_con_state_2)
-                            allready.append(not_con_state_2)
-                if not found_connection:
-                    new_not_connected[not_con_state1] = {}
-                    new_not_connected[not_con_state1]['connected'] = []
-                    new_not_connected[not_con_state1]['not_connected'] = connected
-
-
-        print "new_not_connected: ", new_not_connected
-        return new_not_connected
-
     def build_positive_complexes_from_boolean(self, bool_cont):
         """
         Builds positive complexes from boolean (containing children) contingency <cont>.
         It can be normal boolean or defined complex
         (which is in fact AND boolean).
 
-        #WARNING: so far boolean can have only interaction states.
+        #WARNING: so far boolean can have only interaction and modification states
 
         Returns AlternativeComplexes object.
         Information about Input states is stored in AlternativeComplex.input_condition.
         """
         alter_comp = AlternativeComplexes(str(bool_cont.state))
         alter_comp.ctype = bool_cont.ctype
-        self.not_connected = {}
+        self.not_connected_states = []
         connected = []
         complexes = []
         self.get_state_sets(bool_cont)
@@ -261,7 +233,7 @@ class ComplexBuilder:
                     if state.state.type == 'Input':
                         alter_comp.input_condition = state
                     elif state.state.type == "Covalent Modification":
-                        comp.add_state_mod(complexes, state.state)
+                        comp.add_state_mod(complexes, state.state, state.ctype)
                     else:
                         result = comp.add_state(state.state)
                         if result:
@@ -269,42 +241,32 @@ class ComplexBuilder:
             if comp.molecules:
                 complexes.append(comp)
 
-        print "self.not_connected: ", self.not_connected
-        not_connected = self.check_not_connected(connected)
+        alter_comp.check_not_connected_states(self.not_connected_states, connected)
         complexes = sorted(complexes, key=lambda comp: len(comp))
         for cid, comp in enumerate(complexes):
             comp.cid = str(cid + 1)
             alter_comp.add_complex(comp)
 
-        return alter_comp, not_connected
+        return alter_comp
 
     def check_conection(self, complexes, states):
         """Assumes that all molecules within given group of states are connected."""
         
         states_copy = copy.deepcopy(states)
-        print "states_copy: ", states_copy
         stack = states_copy
-        # #print dir(states[0])
         state = stack.pop()
-        # #print "state: ", dir(state)
-        # print "state.ctype: ", state.ctype
-        # print "comp: ", complexes
-        # #mol = Molecule(state.state)
-        # print "state: ", state
+
         if complexes:
             if state.ctype == "or" and complexes:
                 for comp in complexes:
-                    #print "comp for: ", dir(comp)
-                    print "comp of complex: ", comp.get_molecules(state.state.components[0].name)
                     if comp.get_molecules(state.state.components[0].name):
-                        if state.state in self.not_connected:
-                            self.not_connected.pop(state.state, None)
+                        if state.state in self.not_connected_states:
+                            self.not_connected_states.remove(state.state)
                         return True
-                print "comp not connected: ", comp
-                if state.state not in self.not_connected:
-                    self.not_connected[state.state] = {}
+                if state.state not in self.not_connected_states:
+                    self.not_connected_states.append(state.state)
                 return False
-        else: 
+        else:
             return True
 
     def get_state_sets(self, bool_cont):
@@ -367,6 +329,12 @@ class ComplexBuilder:
                 else:
                     self.final_states.append(result)
 
+    def set_add_site(self, mol, state):
+        if state.type == "Covalent Modification":
+            mol.add_modification_site(state)
+        elif state.type == "Association":
+            mol.add_binding_site(state)
+
     def build_negative_complexes(self, compl, root_molecule):
         """
         @type complex:  BiologicalComplex
@@ -390,14 +358,15 @@ class ComplexBuilder:
             mols = comp.get_molecules(last_state.components[0].name)
             if len(last_state.components) > 1:
                 mols += comp.get_molecules(last_state.components[1].name)
-                mols[0].add_binding_site(last_state)
+                mol[0].set_site(state)
+                
             alter_comp.add_complex(comp)
             counter -=1
 
         comp = BiologicalComplex()
         comp.is_positive = False
         mol = Molecule(root_molecule.name)
-        mol.add_binding_site(ordered_states[0])
+        mol.set_site(ordered_states[0])
         comp.molecules.append(mol)
         alter_comp.add_complex(comp)
         return alter_comp
