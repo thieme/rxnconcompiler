@@ -111,6 +111,16 @@ BOOL_EXAMPLE = {
     'Fus3(AssocSte5,CD!2).Ste5(MEK!1,Unlock).Ste7(BDMAPK!2,Ste5!1) <-> Fus3(AssocSte5!3,CD!2).Ste5(MEK!1,Unlock!3).Ste7(BDMAPK!2,Ste5!1)'],
     'Tags': [
     1, 'ppi', 'Fus3', 'Ptp3', 'contingencies', '!', 'difficault']},
+    '''A_ppi_B; ! <AorC> 
+    
+<AorC>; OR A_[x]-{P}; OR B_[y]-{P}; OR A--C; OR B--D; OR B_[z]-{P}''': {
+    'Rules': [
+        'A(x~P,AssocB) + B(AssocA) <-> A(x~P,AssocB!1).B(AssocA!1)',
+        'A(x~U,AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <-> A(x~U,AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1)',
+        'A(x~U,AssocB,AssocC) + B(y~P,AssocA) <-> A(x~U,AssocB!1,AssocC).B(y~P,AssocA!1)',
+        'A(x~U,AssocB,AssocC) + B(y~U,AssocA,AssocD!1).D(AssocB!1) <-> A(x~U,AssocB!2,AssocC).B(y~U,AssocA!2,AssocD!1).D(AssocB!1)',
+        'A(x~U,AssocB,AssocC) + B(y~U,z~P,AssocA,AssocD) <-> A(x~U,AssocB!1,AssocC).B(y~U,z~P,AssocA!1,AssocD)'],
+    'Tags': [1, 'ppi', 'A', 'B', 'contingencies', '!', 'difficult']}
 }
 
 

@@ -146,7 +146,6 @@ class RequirementsGeneratorTests(TestCase):
         """Tests whether RequirementsGenerator produces right string from itself."""
         for input_str, expected_str in STRING_TEST:
             walker = self.get_walker(input_str) 
-            print "walker: ", str(walker)
             self.assertEqual(str(walker), expected_str)  
 
     def test_requirements(self):

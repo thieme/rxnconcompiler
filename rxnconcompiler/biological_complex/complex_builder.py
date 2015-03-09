@@ -145,15 +145,15 @@ class ComplexBuilder:
         # Build all posibilities
         all_single_complexes = []
         for comp in positive_complexes:
-            for mol in comp.molecules:
-                print " before processing mol.inspect: ", mol.inspect()  
+            #for mol in comp.molecules:
+                #print " before processing mol.inspect: ", mol.inspect()  
             negative = self.build_negative_complexes(comp, root)
 
             all_single_complexes.append((comp, negative))
-        print "###all_single_complexes: ", all_single_complexes
-        for tupl in all_single_complexes:
-            for mol in tupl[0].molecules:
-                print "mol.inspect: ", mol.inspect() 
+        #print "###all_single_complexes: ", all_single_complexes
+        #for tupl in all_single_complexes:
+        #    for mol in tupl[0].molecules:
+                #print "mol.inspect: ", mol.inspect() 
 
         result = self.helper_required_complexes(all_single_complexes, root)
 
@@ -191,16 +191,16 @@ class ComplexBuilder:
         for state_group in self.final_states:
             comp = BiologicalComplex()
             self.stack = state_group
-            print "self.stack: ", self.stack
+           # print "self.stack: ", self.stack
             for not_connected in self.not_connected:
                 while self.stack:
                     state = self.stack.pop()
                     if str(state.state) != str(not_connected.state):
-                        print "state.state: ", state.state
-                        print "not_connected.state: ", not_connected.state
+                     #   print "state.state: ", state.state
+                     #   print "not_connected.state: ", not_connected.state
                         if state.state.type == "Covalent Modification":
                             comp.add_non_connected_mod_state(not_connected.state, state.state)
-            print "apply_not_connected_complexes comp: ", comp
+            #print "apply_not_connected_complexes comp: ", comp
             if comp.molecules:
                 complexes.append(comp)
         return complexes
@@ -239,7 +239,7 @@ class ComplexBuilder:
                             self.stack = result + self.stack
             if comp.molecules:
                 complexes.append(comp)
-        print "self.not_connected_states: ", self.not_connected_states
+        #print "self.not_connected_states: ", self.not_connected_states
         alter_comp.check_not_connected_states(self.not_connected_states, connected)
         complexes = sorted(complexes, key=lambda comp: len(comp))
         for cid, comp in enumerate(complexes):
@@ -263,17 +263,18 @@ class ComplexBuilder:
         state = stack.pop()
 
         if complexes:
-            print "state: ", state
+            #print "state: ", state
             if state.ctype == "or" and complexes:
                 for comp in complexes:
                     if comp.get_molecules(state.state.components[0].name):
                         if state.state in self.not_connected_states:
                             self.not_connected_states.remove(state.state)
                         return True
-                "add state.state; ", state.state
                 if not self.check_state_in_component(state.state):
                     self.not_connected_states.append(state.state)
                 return False
+            else:  # if there is a complex and state.ctype == "and" we have to return something 
+                return True
         else:
             return True
 
@@ -360,7 +361,7 @@ class ComplexBuilder:
             mols = comp.get_molecules(last_state.components[0].name)
             if len(last_state.components) > 1:
                 mols += comp.get_molecules(last_state.components[1].name)
-                mol[0].set_site(state)
+                mols[0].set_site(last_state)
                 
             alter_comp.add_complex(comp)
             counter -=1

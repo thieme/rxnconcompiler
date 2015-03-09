@@ -43,11 +43,12 @@ class ComplexApplicator:
         #print complexes
         self.reaction_container = reaction_container        
         self.builder = ComplexBuilder()
-        self.not_connected_states = complexes.not_connected_states
 
         if not complexes:
             self.complexes = []
+            self.not_connected_states = {}
         else:
+            self.not_connected_states = complexes.not_connected_states
             #if len(complexes) > 2: #more than two booleans
             #    raise TypeError('Cannot apply more than two boolean contingencies on a reaction.')
             self.complexes = self.prepare_complexes_to_apply(complexes)
@@ -174,7 +175,7 @@ class ComplexApplicator:
 
     def set_not_connected_states(self, missing_condition, raw_reaction, cap, already):
         for current_not_connected_state in self.not_connected_states[missing_condition]['not_connected']:
-            print "current_not_connected_state: ", current_not_connected_state
+            #print "current_not_connected_state: ", current_not_connected_state
             # we have to add a reaction for each combination. Therefore we copy an unmodified reaction
             reaction = copy.deepcopy(raw_reaction)
             self.set_basic_substrate_complex(reaction)  # set the basic molecules of the unmodified reaction
@@ -233,11 +234,11 @@ class ComplexApplicator:
 
         cap = ContingencyApplicator()
 
-        print "self.not_connected_states: ", self.not_connected_states
+        #print "self.not_connected_states: ", self.not_connected_states
         already = []
         # ToDo: refactor
         for missing_condition in self.not_connected_states:
-            print "missing_condition: ", missing_condition
+            #print "missing_condition: ", missing_condition
             #already = self.set_not_connected_states(missing_condition, raw_reaction, cap, already)
             reaction = copy.deepcopy(raw_reaction)
             reaction_neg = copy.deepcopy(raw_reaction)
@@ -247,9 +248,9 @@ class ComplexApplicator:
             cont1_neg = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=missing_condition)
             cap.apply_on_reaction(reaction, cont1)  # apply the missing condition
             cap.apply_on_reaction(reaction_neg, cont1_neg)
-            print "hier"
+            #print "hier"
             for current_not_connected_state in self.not_connected_states[missing_condition]['not_connected']:
-                print "current_not_connected_state: ", current_not_connected_state
+              #  print "current_not_connected_state: ", current_not_connected_state
                 # we have to add a reaction for each combination. Therefore we copy an unmodified reaction
                 
                 cont2 = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=current_not_connected_state)
@@ -259,7 +260,7 @@ class ComplexApplicator:
             self.reaction_container.add_reaction(reaction)
 
             for current_connected_state in self.not_connected_states[missing_condition]['connected']:
-                print "current_connected_state: ", current_connected_state
+              #  print "current_connected_state: ", current_connected_state
                 reaction_neg_last = copy.deepcopy(reaction_neg)
                 ## I have to add a modification or a binding partner at this position for the respective molecule
                 if current_connected_state.type == "Association":

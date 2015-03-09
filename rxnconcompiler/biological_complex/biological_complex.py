@@ -201,11 +201,10 @@ class BiologicalComplex:
         @rtype:  BiologicalComplex
         @return: identical complex
         """
-        print "Cloning complex"
+
         new = BiologicalComplex()
         temp = []
         for mol in self.molecules:
-            print mol.inspect()
             temp.append(mol.clone())
         new.molecules = temp
         #new.molecules = copy.deepcopy(self.molecules)
