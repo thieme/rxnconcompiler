@@ -63,18 +63,24 @@ class x_exclamation_mark_Tests(TestCase):
 
 
         rxncon = Rxncon("""
-                      A_ppi_B; ! <AorC> \n <AorC>; OR A--C; OR B--D
+                      A_ppi_B; ! <AorC>     
+                      <AorC>; AND <comp1>
+                      <AorC>; AND <comp2>
+                      <comp1>; OR B_[x]-{P}
+                      <comp1>; OR B--D
+                      <comp2>; OR A_[y]-{P}
+                      <comp2>; OR A--C
                       """)  # works
-        # rxncon = Rxncon("""Cdc24_[GEF]_GEF_Cdc42_[GnP]; k+ <Cdc24^{M}>
-        #                     <Cdc24^{M}>; or <Cdc24^{M/4}>
-        #                     <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
-        #                     <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-        #                     <Cdc24^{M}>; or <Cdc24^{M/F}>
-        #                     <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
-        #                     <Cdc24^{M/F}>; and <Far1^{M}>
-        #                     <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
-        #                     <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-        #                     <Cdc24^{M}>; or [START]]""")
+        rxncon = Rxncon("""Cdc24_[GEF]_GEF_Cdc42_[GnP]; k+ <Cdc24^{M}>
+                            <Cdc24^{M}>; or <Cdc24^{M/4}>
+                            <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+                            <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+                            <Cdc24^{M}>; or <Cdc24^{M/F}>
+                            <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+                            <Cdc24^{M/F}>; and <Far1^{M}>
+                            <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+                            <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+                            <Cdc24^{M}>; or [START]]""")
 
     #     'Rules':[
     # # Cdc24,       Ste18, Ste4 
