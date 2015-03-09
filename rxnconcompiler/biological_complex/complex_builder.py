@@ -224,7 +224,6 @@ class ComplexBuilder:
         self.get_state_sets(bool_cont)
         for state_group in self.final_states:
             comp = BiologicalComplex()
-            print "state_group: ", state_group
             if self.check_conection(complexes, state_group):
                 self.stack = state_group
                 while self.stack:
@@ -240,7 +239,7 @@ class ComplexBuilder:
                             self.stack = result + self.stack
             if comp.molecules:
                 complexes.append(comp)
-
+        print "self.not_connected_states: ", self.not_connected_states
         alter_comp.check_not_connected_states(self.not_connected_states, connected)
         complexes = sorted(complexes, key=lambda comp: len(comp))
         for cid, comp in enumerate(complexes):
@@ -248,6 +247,13 @@ class ComplexBuilder:
             alter_comp.add_complex(comp)
 
         return alter_comp
+
+    def check_state_in_component(self, current_state):
+        for other_state in self.not_connected_states:
+            if str(current_state) == str(other_state):
+                return True
+        else:
+            return False
 
     def check_conection(self, complexes, states):
         """Assumes that all molecules within given group of states are connected."""
@@ -257,13 +263,15 @@ class ComplexBuilder:
         state = stack.pop()
 
         if complexes:
+            print "state: ", state
             if state.ctype == "or" and complexes:
                 for comp in complexes:
                     if comp.get_molecules(state.state.components[0].name):
                         if state.state in self.not_connected_states:
                             self.not_connected_states.remove(state.state)
                         return True
-                if state.state not in self.not_connected_states:
+                "add state.state; ", state.state
+                if not self.check_state_in_component(state.state):
                     self.not_connected_states.append(state.state)
                 return False
         else:
@@ -328,12 +336,6 @@ class ComplexBuilder:
                     self.states.append(result)
                 else:
                     self.final_states.append(result)
-
-    def set_add_site(self, mol, state):
-        if state.type == "Covalent Modification":
-            mol.add_modification_site(state)
-        elif state.type == "Association":
-            mol.add_binding_site(state)
 
     def build_negative_complexes(self, compl, root_molecule):
         """

@@ -262,15 +262,22 @@ class ComplexApplicator:
                 print "current_connected_state: ", current_connected_state
                 reaction_neg_last = copy.deepcopy(reaction_neg)
                 ## I have to add a modification or a binding partner at this position for the respective molecule
+                if current_connected_state.type == "Association":
+                    for comp in reaction_neg_last.substrat_complexes:
+                        if comp.has_molecule(current_connected_state.components[0].name): 
+                            comp.add_state(current_connected_state)
+
+                        elif comp.has_molecule(current_connected_state.components[1].name):
+                            comp.add_state(current_connected_state)
+
                 cont = Contingency(target_reaction=self.reaction_container.name, ctype="!", state=current_connected_state)
                 cap.apply_on_reaction(reaction_neg_last, cont)
                 self.reaction_container.add_reaction(reaction_neg_last)
-                #cont_neg = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=current_connected_state)
-                #cap.apply_on_reaction(reaction_neg, cont_neg)
-                #reaction_neg = copy.deepcopy(reaction_neg)
+                cont_neg = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=current_connected_state)
+                cap.apply_on_reaction(reaction_neg, cont_neg)
+                reaction_neg = copy.deepcopy(reaction_neg)
             #    reaction_copy = copy.deepcopy(reaction)  # take a copy of this modified reaction for later extension of the different combination of other states
-                
-                
+
 
     def get_root_molecules(self, compl):
         """"""
