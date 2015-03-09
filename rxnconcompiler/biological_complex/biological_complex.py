@@ -437,34 +437,107 @@ class AlternativeComplexes(list):
             self.not_connected_states[current_state]['connected'].append(other_state)
         #return not_connected_states
 
-    def check_not_connected_states(self, not_connected_states, connected):
-        """
-        this function checks the connection between all not connected states
-        """
-        #not_connected_states_dict = {}
-        already = []
+    # def check_not_connected_states(self, not_connected_states, connected):
+    #     """
+    #     this function checks the connection between all not connected states
+    #     """
+    #     #not_connected_states_dict = {}
+    #     already = []
 
-        for current_state in not_connected_states:
-            found_connection = False
-            if current_state not in already:
-                for other_state in not_connected_states:
-                    if str(current_state) != str(other_state):
-                        if current_state.has_component(other_state.components[0]):
-                            found_connection = True
-                            self.set_not_connected_state_dict(current_state, other_state, connected)
-                            already.append(other_state)
-                        elif len(other_state.components) > 1 and current_state.has_component(other_state.components[1]):
-                            found_connection= True
-                            self.set_not_connected_state_dict(current_state, other_state, connected)
-                            already.append(other_state)
-                if not found_connection:
-                    self.not_connected_states[current_state] = {}
-                    self.not_connected_states[current_state]['connected'] = []
-                    self.not_connected_states[current_state]['not_connected'] = connected
+    #     for current_state in not_connected_states:
+    #         found_connection = False
+    #         if current_state not in already:
+    #             for other_state in not_connected_states:
+    #                 if str(current_state) != str(other_state):
+    #                     if current_state.has_component(other_state.components[0]):
+    #                         found_connection = True
+    #                         self.set_not_connected_state_dict(current_state, other_state, connected)
+    #                         already.append(other_state)
+    #                     elif len(other_state.components) > 1 and current_state.has_component(other_state.components[1]):
+    #                         found_connection= True
+    #                         self.set_not_connected_state_dict(current_state, other_state, connected)
+    #                         already.append(other_state)
+    #             if not found_connection:
+    #                 self.not_connected_states[current_state] = {}
+    #                 self.not_connected_states[current_state]['connected'] = []
+    #                 self.not_connected_states[current_state]['not_connected'] = connected
 
 
         #print "self.not_connected_states: ", self.not_connected_states
         #return not_connected_states_dict
+    def check_not_connected_states(self, not_connected_states, connected):
+        already = []
+        for stack in not_connected_states:
+            found_connection =False
+            if len(stack) == 1:
+                print "stack: ", stack
+                for current_state in stack:
+                    if current_state not in already:
+                        for other_stack in not_connected_states:
+                            if stack != other_stack:
+                                if len(other_stack) == 1:
+                                    for other_state in other_stack:
+                                        if current_state.has_component(other_state.components[0]):
+                                            found_connection = True
+                                            #self.set_not_connected_state_dict(current_state, other_state, connected)
+                                            if current_state not in self.not_connected_states:
+                                                self.not_connected_states[current_state] = {}
+                                                self.not_connected_states[current_state]['connected'] = {}
+                                                self.not_connected_states[current_state]['connected']["or"] = [other_state]
+                                                self.not_connected_states[current_state]['not_connected'] = connected
+                                            else:
+                                                if "or" not in self.not_connected_states[current_state]['connected']:
+                                                    self.not_connected_states[current_state]['connected']["or"] = [other_state]
+                                                else:
+                                                    self.not_connected_states[current_state]['connected']["or"].append(other_state)
+                                            already.append(other_state)
+                                        elif len(other_state.components) > 1 and current_state.has_component(other_state.components[1]):
+                                            found_connection= True
+                                            #self.set_not_connected_state_dict(current_state, other_state, connected)
+                                            if current_state not in self.not_connected_states:
+                                                self.not_connected_states[current_state] = {}
+                                                self.not_connected_states[current_state]['connected']["or"] = [other_state]
+                                                self.not_connected_states[current_state]['not_connected'] = connected
+                                            else:
+                                                if "or" not in self.not_connected_states[current_state]['connected']:
+                                                    self.not_connected_states[current_state]['connected']["or"] = [other_state]
+                                                else:
+                                                    self.not_connected_states[current_state]['connected']["or"].append(other_state)
+                                            already.append(other_state)
+                                else:
+                                    for other_state in other_stack:
+                                        if current_state.has_component(other_state.components[0]):
+                                            found_connection = True
+                                            #self.set_not_connected_state_dict(current_state, other_state, connected)
+                                            if current_state not in self.not_connected_states:
+                                                self.not_connected_states[current_state] = {}
+                                                self.not_connected_states[current_state]['connected'] = {}
+                                                self.not_connected_states[current_state]['connected']["and"] = [other_state]
+                                                self.not_connected_states[current_state]['not_connected'] = connected
+                                            else:
+                                                if "and" not in self.not_connected_states[current_state]['connected']:
+                                                    self.not_connected_states[current_state]['connected']["and"] = [other_state]
+                                                else:
+                                                    self.not_connected_states[current_state]['connected']["and"].append(other_state)
+                                            already.append(other_state)
+                                        elif len(other_state.components) > 1 and current_state.has_component(other_state.components[1]):
+                                            found_connection= True
+                                            #self.set_not_connected_state_dict(current_state, other_state, connected)
+                                            if current_state not in self.not_connected_states:
+                                                self.not_connected_states[current_state] = {}
+                                                self.not_connected_states[current_state]['connected']["and"] = [other_state]
+                                                self.not_connected_states[current_state]['not_connected'] = connected
+                                            else:
+                                                if "and" not in self.not_connected_states[current_state]['connected']:
+                                                    self.not_connected_states[current_state]['connected']["and"] = [other_state]
+                                                else:
+                                                    self.not_connected_states[current_state]['connected']["and"].append(other_state)
+                                    #print other_stack
+                                            already.append(other_state)
+                        if not found_connection:
+                            self.not_connected_states[current_state] = {}
+                            self.not_connected_states[current_state]['connected'] = []
+                            self.not_connected_states[current_state]['not_connected'] = connected
 class ComplexPool(dict):
     """
     """

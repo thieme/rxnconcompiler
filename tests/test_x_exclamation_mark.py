@@ -61,26 +61,51 @@ class x_exclamation_mark_Tests(TestCase):
         #               <AorC>; AND A--C; AND A--D
         #               """)  # works
 
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <complAB>
+        #                 <complAB>; OR <complA>
+        #                 <complAB>; OR <complB>
+        #                 <complA>; AND A--E
+        #                 <complA>; AND A--F
+        #                 <complB>; OR A--C
+        #                 <complB>; OR A--D
+        #                 """)
 
         rxncon = Rxncon("""
-                      A_ppi_B; ! <AorC>     
-                      <AorC>; AND <comp1>
-                      <AorC>; AND <comp2>
-                      <comp1>; OR B_[x]-{P}
-                      <comp1>; OR B--D
-                      <comp2>; OR A_[y]-{P}
-                      <comp2>; OR A--C
-                      """)  # works
-        rxncon = Rxncon("""Cdc24_[GEF]_GEF_Cdc42_[GnP]; k+ <Cdc24^{M}>
-                            <Cdc24^{M}>; or <Cdc24^{M/4}>
-                            <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
-                            <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-                            <Cdc24^{M}>; or <Cdc24^{M/F}>
-                            <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
-                            <Cdc24^{M/F}>; and <Far1^{M}>
-                            <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
-                            <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-                            <Cdc24^{M}>; or [START]]""")
+                         A_ppi_B; ! <complAB>
+                         <complAB>; OR <complA>
+                         <complA>; OR A--D
+                         <complA>; OR B--C
+                         <complA>; OR <complB>
+                         <complA>; OR <complC>
+                         <complB>; AND B--E
+                         <complB>; AND B--F
+                         <complC>; OR B--G
+                         
+                        """)
+
+        # rxncon = Rxncon("""
+        #                A_ppi_B; ! <A^{M}>
+        #                      <A^{M}>; or <complA>
+        #                      <complA>; and A_[AssocSte4]--Ste4_[AssocA]
+        #                      <complA>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #                      <A^{M}>; or <complB>
+        #                      <complB>; and B_[AssocFar1]--Far1_[c]
+        #                      <complB>; and <Far1^{M}>
+        #                      <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+        #                      <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #                      <A^{M}>; or [START]]
+        #               """)  # works
+        # rxncon = Rxncon("""Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
+        #                     <Cdc24^{M}>; or <Cdc24^{M/4}>
+        #                     <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+        #                     <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #                     <Cdc24^{M}>; or <Cdc24^{M/F}>
+        #                     <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+        #                     <Cdc24^{M/F}>; and <Far1^{M}>
+        #                     <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+        #                     <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #                     <Cdc24^{M}>; or [START]]""")
 
     #     'Rules':[
     # # Cdc24,       Ste18, Ste4 

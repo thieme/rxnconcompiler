@@ -222,12 +222,16 @@ class ComplexBuilder:
         connected = []
         complexes = []
         self.get_state_sets(bool_cont)
+        print "self.final_states: ", self.final_states
         for state_group in self.final_states:
+            print "state_group: ", state_group
             comp = BiologicalComplex()
-            if self.check_conection(complexes, state_group):
-                self.stack = state_group
-                while self.stack:
-                    state = self.stack.pop()
+            #if self.check_conection(complexes, state_group):
+            new_stack = True
+            self.stack = state_group
+            while self.stack:
+                state = self.stack.pop()
+                if self.check_connection(complexes, state, new_stack):
                     connected.append(state.state)
                     if state.state.type == 'Input':
                         alter_comp.input_condition = state
@@ -237,8 +241,11 @@ class ComplexBuilder:
                         result = comp.add_state(state.state)
                         if result:
                             self.stack = result + self.stack
+                new_stack = False
             if comp.molecules:
                 complexes.append(comp)
+        print "connected: ", connected
+        print "self.not_connected_states: ", self.not_connected_states
         alter_comp.check_not_connected_states(self.not_connected_states, connected)
         complexes = sorted(complexes, key=lambda comp: len(comp))
         for cid, comp in enumerate(complexes):
@@ -248,29 +255,36 @@ class ComplexBuilder:
         return alter_comp
 
     def check_state_in_component(self, current_state):
-        for other_state in self.not_connected_states:
+        for other_state in self.not_connected_states[-1]:
             if str(current_state) == str(other_state):
                 return True
         else:
             return False
 
-    def check_conection(self, complexes, states):
-        """Assumes that all molecules within given group of states are connected."""
+    def check_connection(self, complexes, states, new_stack):
+        """Assumes that all molecules within given group of states are connected.
+            AND and OR differs in the number of stacks all with AND connected states belong to one stack all OR states have its own stack.
+            to distinguish between nested ANDs and ORs we have to consider this. 
+        """
         
         states_copy = copy.deepcopy(states)
-        stack = states_copy
-        state = stack.pop()
-
+        state = states_copy
+        #while stack:
+            #state = stack.pop()
+        print state
         if complexes:
             #print "state: ", state
-            if state.ctype == "or" and complexes:
+            if (state.ctype == "or" or len(self.final_states) > 1) and complexes:
                 for comp in complexes:
                     if comp.get_molecules(state.state.components[0].name):
-                        if state.state in self.not_connected_states:
-                            self.not_connected_states.remove(state.state)
+                        for i, stack in enumerate(self.not_connected_states):
+                            if state.state in stack:
+                                self.not_connected_states[i].remove(state.state)
                         return True
-                if not self.check_state_in_component(state.state):
-                    self.not_connected_states.append(state.state)
+                if new_stack:
+                    self.not_connected_states.append([state.state])
+                elif not self.check_state_in_component(state.state):
+                    self.not_connected_states[-1].append(state.state)
                 return False
             else:  # if there is a complex and state.ctype == "and" we have to return something 
                 return True

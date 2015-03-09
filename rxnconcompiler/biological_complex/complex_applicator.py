@@ -218,7 +218,7 @@ class ComplexApplicator:
         This function considers all the states/conditions connected to a missing state. 
         The positive and negative complexes are generated to capture all combinations.
         """
-        for current_connected_state in self.not_connected_states[missing_condition]['connected']:
+        for current_connected_state in self.not_connected_states[missing_condition]['connected']['or']:
             reaction_neg_last = copy.deepcopy(reaction_neg)
             ## A modification or a binding partner has to be added at this position for the respective molecule in reaction_neg_last
             self.set_missing_condition_for_type(current_connected_state, reaction_neg_last)
@@ -231,6 +231,22 @@ class ComplexApplicator:
             cap.apply_on_reaction(reaction_neg, cont_neg)  # apply the current connected state as inhibited for the next round
 
             reaction_neg = copy.deepcopy(reaction_neg)
+
+        reaction_neg_last = copy.deepcopy(reaction_neg)
+        
+        for current_connected_state in self.not_connected_states[missing_condition]['connected']['and']:
+            
+            ## A modification or a binding partner has to be added at this position for the respective molecule in reaction_neg_last
+            self.set_missing_condition_for_type(current_connected_state, reaction_neg_last)
+
+            cont = Contingency(target_reaction=self.reaction_container.name, ctype="!", state=current_connected_state)
+            cap.apply_on_reaction(reaction_neg_last, cont)  # apply the current connected state as required
+        self.reaction_container.add_reaction(reaction_neg_last)  # add the reaction to the reaction_container
+            #self.set_reaction_id(reaction_neg_last)
+            # cont_neg = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=current_connected_state)
+            # cap.apply_on_reaction(reaction_neg, cont_neg)  # apply the current connected state as inhibited for the next round
+
+            # reaction_neg = copy.deepcopy(reaction_neg)
 
     def apply_complexes(self):
         """
@@ -255,7 +271,7 @@ class ComplexApplicator:
 
         cap = ContingencyApplicator()
 
-        #print "self.not_connected_states: ", self.not_connected_states
+        print "self.not_connected_states: ", self.not_connected_states
         already = []
         # ToDo: refactor
         for missing_condition in self.not_connected_states:
