@@ -239,7 +239,6 @@ class ComplexBuilder:
                             self.stack = result + self.stack
             if comp.molecules:
                 complexes.append(comp)
-        #print "self.not_connected_states: ", self.not_connected_states
         alter_comp.check_not_connected_states(self.not_connected_states, connected)
         complexes = sorted(complexes, key=lambda comp: len(comp))
         for cid, comp in enumerate(complexes):

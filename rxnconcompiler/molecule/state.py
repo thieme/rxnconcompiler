@@ -55,11 +55,8 @@ class State:
         Compares states only in respect to component names.
         To include domains in comparison use hash function.
         """
-        print "JOER"
         if self.components:
             if sorted(self.components, key=lambda comp: comp.name) == sorted(other.components, key=lambda comp: comp.name):
-                print sorted(self.components, key=lambda comp: comp.name)
-                print sorted(other.components, key=lambda comp: comp.name)
                 return True
             else:
                 return False

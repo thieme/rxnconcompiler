@@ -238,19 +238,28 @@ class ComplexApplicator:
         already = []
         # ToDo: refactor
         for missing_condition in self.not_connected_states:
+            print "missing_condition: ", missing_condition
             #print "missing_condition: ", missing_condition
             #already = self.set_not_connected_states(missing_condition, raw_reaction, cap, already)
             reaction = copy.deepcopy(raw_reaction)
             reaction_neg = copy.deepcopy(raw_reaction)
             self.set_basic_substrate_complex(reaction)  # set the basic molecules of the unmodified reaction
             self.set_basic_substrate_complex(reaction_neg)  # set the basic molecules of the unmodified reaction
+            ### duplication
+            if missing_condition.type == "Association":
+                    for comp in reaction.substrat_complexes:
+                        if comp.has_molecule(missing_condition.components[0].name): 
+                            comp.add_state(missing_condition)
+                        elif comp.has_molecule(missing_condition.components[1].name):
+                            comp.add_state(missing_condition)
+
             cont1 = Contingency(target_reaction=self.reaction_container.name, ctype="!", state=missing_condition)
             cont1_neg = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=missing_condition)
             cap.apply_on_reaction(reaction, cont1)  # apply the missing condition
             cap.apply_on_reaction(reaction_neg, cont1_neg)
             #print "hier"
             for current_not_connected_state in self.not_connected_states[missing_condition]['not_connected']:
-              #  print "current_not_connected_state: ", current_not_connected_state
+                print "current_not_connected_state: ", current_not_connected_state
                 # we have to add a reaction for each combination. Therefore we copy an unmodified reaction
                 
                 cont2 = Contingency(target_reaction=self.reaction_container.name, ctype="x", state=current_not_connected_state)
@@ -260,9 +269,10 @@ class ComplexApplicator:
             self.reaction_container.add_reaction(reaction)
 
             for current_connected_state in self.not_connected_states[missing_condition]['connected']:
-              #  print "current_connected_state: ", current_connected_state
+                print "current_connected_state: ", current_connected_state
                 reaction_neg_last = copy.deepcopy(reaction_neg)
                 ## I have to add a modification or a binding partner at this position for the respective molecule
+                ### duplication
                 if current_connected_state.type == "Association":
                     for comp in reaction_neg_last.substrat_complexes:
                         if comp.has_molecule(current_connected_state.components[0].name): 
