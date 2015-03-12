@@ -185,37 +185,14 @@ class ComplexBuilder:
                     positive_complexes.input_condition, required_complexes, result)
 
         return required_complexes
-
-    def apply_not_connected_complexes(self, complexes, bool_cont):
-        self.get_state_sets(bool_cont)
-        for state_group in self.final_states:
-            comp = BiologicalComplex()
-            self.stack = state_group
-           # print "self.stack: ", self.stack
-            for not_connected in self.not_connected:
-                while self.stack:
-                    state = self.stack.pop()
-                    if str(state.state) != str(not_connected.state):
-                     #   print "state.state: ", state.state
-                     #   print "not_connected.state: ", not_connected.state
-                        if state.state.type == "Covalent Modification":
-                            comp.add_non_connected_mod_state(not_connected.state, state.state)
-            #print "apply_not_connected_complexes comp: ", comp
-            if comp.molecules:
-                complexes.append(comp)
-        return complexes
         
     def create_basic_complexes_from_boolean(self, final_states, alter_comp):
         complexes = []
         for state_group in final_states:
-           # print "state_group: ", state_group
             comp = BiologicalComplex()
-            #if self.check_conection(complexes, state_group):
-            #new_stack = True
             self.stack = state_group
             while self.stack:
                 state = self.stack.pop()
-                #connected.append(state.state)
                 if state.state.type == 'Input':
                     alter_comp.input_condition = state
                 elif state.state.type == "Covalent Modification":
@@ -224,7 +201,6 @@ class ComplexBuilder:
                     result = comp.add_state(state.state)
                     if result:
                         self.stack = result + self.stack
-                #new_stack = False
             if comp.molecules:
                 complexes.append(comp)
         return complexes, alter_comp
@@ -240,13 +216,10 @@ class ComplexBuilder:
         Returns AlternativeComplexes object.
         Information about Input states is stored in AlternativeComplex.input_condition.
         """
-        #alter_comp = AlternativeComplexes(str(bool_cont.state))
-        #alter_comp.ctype = bool_cont.ctype
-        #self.not_connected_states = [] separated 
-        #connected = []
+
         alter_complexes = []
         self.get_state_sets(bool_cont)
-        #print "self.final_states: ", self.final_states
+
         final_separated_states = self.check_state_connection()
         alter_complexes.append(copy.deepcopy(final_separated_states))
         for stacks in final_separated_states:
@@ -258,24 +231,8 @@ class ComplexBuilder:
                 comp.cid = str(cid + 1)
                 alter_comp.add_complex(comp)
             alter_complexes.append(alter_comp)
-        #print "alter_complexes: ", alter_complexes
-        # print "connected: ", connected
-        # print "self.not_connected_states: ", self.not_connected_states
-        # alter_comp.check_not_connected_states(self.not_connected_states, connected)
-        # complexes = sorted(complexes, key=lambda comp: len(comp))
-        # for cid, comp in enumerate(complexes):
-        #     comp.cid = str(cid + 1)
-        #     alter_comp.add_complex(comp)
 
-        #return alter_comp
         return alter_complexes
-
-    def check_state_in_component(self, current_state):
-        for other_state in self.not_connected_states[-1]:
-            if str(current_state) == str(other_state):
-                return True
-        else:
-            return False
 
     def check_state_connected_to_stack(self, state, state_stack):
         for ele in state_stack:
@@ -286,111 +243,112 @@ class ComplexBuilder:
         return False
 
     def check_if_input(self, stack):
+        """
+        This function checks if the state_group consists only of input
+        if one of the elements is not an input False is returned
+        """
         for ele in stack:
             if ele.state.type != 'Input':
                 return False
         return True
 
     def check_state_connection(self):
+        """
+        This function checks the connectivity of the different state_groups (the connectivity of the state_group elements is not yet checked)
+        The state_groups are assigned to lists one list for each molecule in the reaction.
+        Example:
+
+                        A_ppi_B; ! <comp>
+                        <comp>; or A-{P}
+                        <comp>; or B-{P}
+                        <comp>; or <compA>
+                        <compA>; and A--C
+                        <compA>; and A--D
+                        <comp>; or <compB>
+                        <compB>; and B--E
+                        <compB>; and B--F
+
+        final_states:  [[or A_[bd]-{P}], [or B_[bd]-{P}], [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]], [and A_[AssocC]--C_[AssocA], and A_[AssocD]--D_[AssocA]]]
+
+        Step 1: iterate over final_states (containing all state_groups defined)
+        Step 2: if its the first state_groupe generate a list in stacks containing the state_group
+                Round1: stacks = [[[or A_[bd]-{P}]]]
+        Step 3: check next state_group
+                Round2: state_group = [or B_[bd]-{P}]
+                Round3: state_group = [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]
+                Round4: state_group = [and A_[AssocC]--C_[AssocA], and A_[AssocD]--D_[AssocA]]
+            Step 3.1.: if one of the states in state_group overlaps with one already known in one of the lists of stacks than append
+                       the state_group to the respective list
+                Round3: stacks = [[[or A_[bd]-{P}]],[[or B_[bd]-{P}], [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]]]
+                Round4: stacks = [[[or A_[bd]-{P}],[and A_[AssocC]--C_[AssocA], and A_[AssocD]--D_[AssocA]]],[[or B_[bd]-{P}], [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]]]
+            Step 3.2.: if not create a new list stacks containing the state_group
+                Round2: stacks = [[[or A_[bd]-{P}]],[[or B_[bd]-{P}]]]
+            proceed with Step 3
+        The result is a list containing two lists.
+        One for A: [[or A_[bd]-{P}],[and A_[AssocC]--C_[AssocA], and A_[AssocD]--D_[AssocA]]]
+        One for B: [[or B_[bd]-{P}], [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]]
+
+        Inputs connected with an OR are saved during the process and added to the respective lists afterwords.
+        """
         stacks = []
-       # print "final_states: ", self.final_states
         input_stacks = []
-        for state_group in self.final_states:
+        for state_group in self.final_states:  # Step 1
             self.stack = state_group
-        #    print "self.stack: ", self.stack
-            #stacks.append([])
             new_stack = True
-            for state in  self.stack:
-                #state = self.stack.pop()
+            for state in  self.stack:  # Step 3
                 found_connection = False
-                #stack_copy = copy.deepcopy(stackes)
 
                 if stacks:
-                    for i, stack in enumerate(stacks):
-                        #print "first stack: ", stack
-                        for j, state_stack in enumerate(stack):
-                            #print "state: ", state
-                            #print "state_stack: ", state_stack
-                            # finde den stack in dem die Molecule vorkommen
-                            # wenn neuer stack generiere auch hier neuen stack
-                            # ansonsten erweiter den stack
-                            if new_stack and self.check_state_connected_to_stack(state, state_stack):
+                    for i, stack in enumerate(stacks):  # part of Step 3: iterate over stacks to get the single lists
+                        for j, state_stack in enumerate(stack):  # part of Step 3: iterate over the elements of the single lists
+                            # Step 3.1 if we have a new state_group we have to check if a list with overlapping Molecules exists
+                            if new_stack and self.check_state_connected_to_stack(state, state_stack):  # if the is an overlap append the state_group to the respective list
                                 stacks[i].append(self.stack)
-                                #print "NEW STACK FOUND: ", stack
                                 found_connection = True
                                 new_stack = False
                                 break
-                            elif not new_stack and self.check_state_connected_to_stack(state, state_stack):
-                                #stack[-1].append(state)
+                            # if not the first element has an overlap than might be that one of the following has one
+                            elif not new_stack and self.check_state_connected_to_stack(state, state_stack):  
                                 stacks[i].append(self.stack)
                                 found_connection = True
-                                #print "kein neuer STACK: ", stack
                                 break
      
                         if found_connection:
                             break
-                    if not found_connection:
-                        if not self.check_if_input(self.stack):
-                            stacks.append([self.stack])
+                    # Step 3.2 if there was no overlap in the existing lists we have an other group and append a new list to stacks
+                    if not found_connection:  
+                        if not self.check_if_input(self.stack):  # we have to distinguish between normal states and inputs like [START]
+                            # if the state_group is not a single input or a collection of and connected inputs we open a new list
+                            # this is also done if one of the elements in state_group is not an input
+                            stacks.append([self.stack])  
                         else:
-                            input_stacks.append(self.stack)
+                            input_stacks.append(self.stack)  # otherwise we save this state_group separately and apply it later to all the lists
                         new_stack = False
-                        #print "NO CONNECTION: ", stacks
                         break
                     else:
                         break
-                else:
-                    #print "NO STACKS HERE"
+                else:  # Step 2 
                     if not self.check_if_input(self.stack):
                         stacks.append([self.stack])
                     else:
                         input_stacks.append(self.stack)
                     break
+        # here we apply the inputs to the respective lists
         while input_stacks:
             input_stack = input_stacks.pop()
             for stack in stacks:
                 stack.append(input_stack)
-        #self.merge_tmp_stacks_and_stacks(stacks,tmp_stacks)
-        #print "stacks: ", stacks
-        return stacks
 
-    def check_connection(self, complexes, states, new_stack):
-        """Assumes that all molecules within given group of states are connected.
-            AND and OR differs in the number of stacks all with AND connected states belong to one stack all OR states have its own stack.
-            to distinguish between nested ANDs and ORs we have to consider this. 
-        """
-        
-        states_copy = copy.deepcopy(states)
-        state = states_copy
-        #while stack:
-            #state = stack.pop()
-        if complexes:
-            #print "state: ", state
-            if (state.ctype == "or" or len(self.final_states) > 1) and complexes:
-                for comp in complexes:
-                    if comp.get_molecules(state.state.components[0].name):
-                        for i, stack in enumerate(self.not_connected_states):
-                            if state.state in stack:
-                                self.not_connected_states[i].remove(state.state)
-                        return True
-                if new_stack:
-                    self.not_connected_states.append([state.state])
-                elif not self.check_state_in_component(state.state):
-                    self.not_connected_states[-1].append(state.state)
-                return False
-            else:  # if there is a complex and state.ctype == "and" we have to return something 
-                return True
-        else:
-            return True
+        return stacks
 
     def get_state_sets(self, bool_cont):
         """
-        Traverses through a contingenies list.
+        Traverses through a contingencies list.
         Starts with root contingency that keeps all other contingencies.
         Uses get_states to go one level deeper until there are no more
         contingencies with children. 
         At the end the self.final_states list contain lists with states.
-        Each list coresponding to a complex.
+        Each list corresponding to a complex.
         """
         self.states.append([bool_cont])
         while self.states:
@@ -450,7 +408,7 @@ class ComplexBuilder:
 
         @type root_molecule:  string
         @param root_molecule: name of reaction component - 
-                              the molecule that alvays needs to be there.
+                              the molecule that always needs to be there.
 
         #TODO: What if we have two root molecules
         """
@@ -479,7 +437,6 @@ class ComplexBuilder:
         alter_comp.add_complex(comp)
         return alter_comp
 
-    
     def get_states_from_complex(self, compl, root_molecule):
         """
         Given single BiologicalComplex returns a list of 
@@ -532,6 +489,5 @@ class ComplexBuilder:
                 if mod not in already:
                     result.append(mod)
                     new_root = mod.get_partner(mol.get_component())
-                    #new_roots.append(new_root)
                     new_roots = []
         return result, new_roots
