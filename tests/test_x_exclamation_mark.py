@@ -71,19 +71,40 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <complB>; OR A--D
         #                 """)
 
-        rxncon = Rxncon("""
-                         A_ppi_B; ! <complAB>
-                         <complAB>; OR <complA>
-                         <complA>; OR A--D
-                         <complA>; OR B--C
-                         <complA>; OR <complB>
-                         <complA>; OR <complC>
-                         <complB>; AND B--E
-                         <complB>; AND B--F
-                         <complC>; OR B--G
+        # rxncon = Rxncon("""
+        #                  A_ppi_B; ! <complAB>
+        #                  <complAB>; OR <complA>
+        #                  <complA>; OR A--D
+        #                  <complA>; OR B--C
+        #                  <complA>; OR <complB>
+        #                  <complA>; OR <complC>
+        #                  <complB>; AND B--E
+        #                  <complB>; AND B--F
+        #                  <complC>; OR B--G
                          
+        #                 """)
+        #rxncon = Rxncon("""A_ppi_B""")
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <AorC> 
+        #                 <AorC>; OR A_[x]-{P}
+        #                 <AorC>; OR B--C
+        #                 <AorC>; OR A--D
+        #                 <AorC>; OR B_[y]-{P}
+        #                 """)
+        rxncon = Rxncon("""
+                        Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5]; k+ Hkr1_[TMD]--Sho1_[TMD]; k+ Msb2_[TMD]--Sho1_[TMD]; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
+<Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+<Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
                         """)
-
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <AorC> 
+        #                 <AorC>; OR <complA>
+        #                 <complA>; AND A_[x]-{P}
+        #                 <complA>; AND A--D
+        #                 <AorC>; OR <complB>
+        #                 <complB>; AND B_[y]-{P}
+        #                 <complB>; AND B--C
+        #                 """)
         # rxncon = Rxncon("""
         #                A_ppi_B; ! <A^{M}>
         #                      <A^{M}>; or <complA>
