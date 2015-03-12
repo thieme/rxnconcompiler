@@ -32,6 +32,7 @@ from complex_builder import ComplexBuilder
 from rxnconcompiler.util.util import product
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
+from rxnconcompiler.molecule.molecule import Molecule
 
 
 class ComplexApplicator:
@@ -48,11 +49,17 @@ class ComplexApplicator:
             self.complexes = []
             self.not_connected_states = {}
         else:
-            self.not_connected_states = complexes.not_connected_states
+            self.not_connected_states = {} # complexes.not_connected_states
             #if len(complexes) > 2: #more than two booleans
             #    raise TypeError('Cannot apply more than two boolean contingencies on a reaction.')
-            self.complexes = self.prepare_complexes_to_apply(complexes)
-        
+            print "complexes in ComplexApplicator: ", complexes
+            self.complexes = []
+            self.final_separated_states = complexes[0]  # the last list contains all the separated boolean states
+            for compl in complexes[1:]:
+                print "compl: ", compl
+                #self.complexes = self.prepare_complexes_to_apply(complexes)
+                self.complexes.append(self.prepare_complexes_to_apply(compl))
+            print "self.complexes in ComplexApplicator: ", self.complexes
         #def check_complexes(self)
 
     def _prepare_alter_complex(self, alter_complex):
@@ -96,7 +103,7 @@ class ComplexApplicator:
                 alter.append(self._prepare_alter_complex(alter_complex))
                 return list(product(alter))
 
-    def both_complex_types_present(self):
+    def both_complex_types_present(self, com):
         """
         BiologicalComplex.is_positive can have three values:
         - True
@@ -116,7 +123,8 @@ class ComplexApplicator:
         pos = False
         neg = False
 
-        for reaction, compl in zip(self.reaction_container, self.complexes):
+        #for reaction, compl in zip(self.reaction_container, self.complexes):
+        for reaction, compl in zip(self.reaction_container, com):
             if reaction.definition['Reversibility'] == 'reversible' and compl.input_conditions:
                 return True
             elif compl.is_positive == 'both':
@@ -233,7 +241,7 @@ class ComplexApplicator:
             reaction_neg = copy.deepcopy(reaction_neg)
 
         reaction_neg_last = copy.deepcopy(reaction_neg)
-        
+
         for current_connected_state in self.not_connected_states[missing_condition]['connected']['and']:
             
             ## A modification or a binding partner has to be added at this position for the respective molecule in reaction_neg_last
@@ -247,45 +255,99 @@ class ComplexApplicator:
             # cap.apply_on_reaction(reaction_neg, cont_neg)  # apply the current connected state as inhibited for the next round
 
             # reaction_neg = copy.deepcopy(reaction_neg)
+    def change_non_complex_molecule(self, reactant):
+        for stackes in self.final_separated_states:
+            for stack in stackes:
+                for ele in stack:
+                    if ele.ctype == "or":
+                        mol1 = Molecule(ele.state.components[0].name)
+                        if mol1 == reactant:
+                            reactant.set_site(ele.state)
+                        elif len(ele.state.components) > 1:
+                            mol2 = Molecule(ele.state.components[1].name)
+                            if mol2 == reactant:
+                                reactant.set_site(ele.state)
+
+    def get_or_conditions_of_other_reactant(self, reaction, comp):
+#        print dir(comp)
+        #for mol in last_comp:
+        #    print mol
+#        print "reaction: ", dir(reaction)
+        reaction_left_reactant = reaction.left_reactant
+        reaction_right_reactant = reaction.right_reactant
+        print "comp: ", comp
+        if not comp.has_molecule(reaction_left_reactant.name):
+            print "reaction_left_reactant: ", reaction_left_reactant
+            self.change_non_complex_molecule(reaction_left_reactant)
+        elif not comp.has_molecule(reaction_right_reactant.name):
+            print "reaction_right_reactant: ", reaction_right_reactant
 
     def apply_complexes(self):
         """
-        applies the complexes 
+        applies the complexes as well as the alternative complexes
         """
-        raw_reaction = self.reaction_container[0].clone()
-        while self.complexes and len(self.reaction_container) != len(self.complexes) and len(self.complexes) > 0:
-            new_reaction = self.reaction_container[0].clone()
-            self.reaction_container.add_reaction(new_reaction)
-
+        #raw_reaction = self.reaction_container[0].clone()
+        com_number = 0
+        reaction_container_clone = self.reaction_container[0].clone()
         self.counter = 1
-        pos_and_neg_compl = self.both_complex_types_present()
- 
-        for reaction, compl in zip(self.reaction_container, self.complexes):
-            reaction = self.set_reaction_id(reaction)
-            self.add_substrate_complexes(reaction, compl)
-            self.update_reaction_rate(reaction, compl, pos_and_neg_compl)
+        print "self.complexes in apply_complexes: ", self.complexes
+        second_reactant = False
+        for com in self.complexes:
+            reaction_container_tmp = []
+            #print "com in apply_complexes: ", dir(com)
 
+            while com and len(self.reaction_container[com_number:]) != len(com) and len(com) > 0:
+                new_reaction = copy.deepcopy(reaction_container_clone)
+                self.reaction_container.add_reaction(new_reaction)
+
+            
+            pos_and_neg_compl = self.both_complex_types_present(com)
+            for reaction, compl in zip(self.reaction_container[com_number:], com):
+                reaction = self.set_reaction_id(reaction)
+                self.add_substrate_complexes(reaction, compl)
+                if second_reactant:
+                    self.get_or_conditions_of_other_reactant(reaction, compl)
+                self.update_reaction_rate(reaction, compl, pos_and_neg_compl)
+            com_number = len(com)
+            second_reactant = True
+            
         if self.complexes == []:
-            reaction = self.reaction_container[0]
-            self.set_basic_substrate_complex(reaction)
+                reaction = self.reaction_container[0]
+                self.set_basic_substrate_complex(reaction)
+        # raw_reaction = self.reaction_container[0].clone()
+        # while self.complexes and len(self.reaction_container) != len(self.complexes) and len(self.complexes) > 0:
+        #     new_reaction = self.reaction_container[0].clone()
+        #     self.reaction_container.add_reaction(new_reaction)
 
-        cap = ContingencyApplicator()
+        # self.counter = 1
+        # pos_and_neg_compl = self.both_complex_types_present()
+ 
+        # for reaction, compl in zip(self.reaction_container, self.complexes):
+        #     reaction = self.set_reaction_id(reaction)
+        #     self.add_substrate_complexes(reaction, compl)
+        #     self.update_reaction_rate(reaction, compl, pos_and_neg_compl)
 
-        print "self.not_connected_states: ", self.not_connected_states
-        already = []
-        # ToDo: refactor
-        for missing_condition in self.not_connected_states:
-            #print "missing_condition: ", missing_condition
-            reaction = copy.deepcopy(raw_reaction)
-            reaction_neg = copy.deepcopy(raw_reaction)
-            self.set_basic_substrate_complex(reaction)  # set the basic molecules of the unmodified reaction
-            self.set_basic_substrate_complex(reaction_neg)  # set the basic molecules of the unmodified reaction
+        # if self.complexes == []:
+        #     reaction = self.reaction_container[0]
+        #     self.set_basic_substrate_complex(reaction)
 
-            self.set_missing_condition_for_type(missing_condition, reaction)
+        # cap = ContingencyApplicator()
 
-            reaction_neg = self.set_not_connected_states(missing_condition, reaction, reaction_neg, cap)
+        # print "self.not_connected_states: ", self.not_connected_states
+        # already = []
+        # # ToDo: refactor
+        # for missing_condition in self.not_connected_states:
+        #     #print "missing_condition: ", missing_condition
+        #     reaction = copy.deepcopy(raw_reaction)
+        #     reaction_neg = copy.deepcopy(raw_reaction)
+        #     self.set_basic_substrate_complex(reaction)  # set the basic molecules of the unmodified reaction
+        #     self.set_basic_substrate_complex(reaction_neg)  # set the basic molecules of the unmodified reaction
 
-            self.set_connected_states(missing_condition, reaction_neg, cap)
+        #     self.set_missing_condition_for_type(missing_condition, reaction)
+
+        #     reaction_neg = self.set_not_connected_states(missing_condition, reaction, reaction_neg, cap)
+
+        #     self.set_connected_states(missing_condition, reaction_neg, cap)
 
     def get_root_molecules(self, compl):
         """"""

@@ -395,7 +395,8 @@ class AlternativeComplexes(list):
         self.name = name
         self.ctype = None #: contingency type
         self.input_condition = None 
-        self.not_connected_states = {}
+        self.final_separated_states = None
+        #self.not_connected_states = {}
 
     def add_complex(self, comp):
         self.append(comp)

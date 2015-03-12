@@ -204,6 +204,30 @@ class ComplexBuilder:
             if comp.molecules:
                 complexes.append(comp)
         return complexes
+        
+    def create_basic_complexes_from_boolean(self, final_states):
+        complexes = []
+        for state_group in final_states:
+            print "state_group: ", state_group
+            comp = BiologicalComplex()
+            #if self.check_conection(complexes, state_group):
+            #new_stack = True
+            self.stack = state_group
+            while self.stack:
+                state = self.stack.pop()
+                #connected.append(state.state)
+                if state.state.type == 'Input':
+                    alter_comp.input_condition = state
+                elif state.state.type == "Covalent Modification":
+                    comp.add_state_mod(complexes, state.state, state.ctype)
+                else:
+                    result = comp.add_state(state.state)
+                    if result:
+                        self.stack = result + self.stack
+                #new_stack = False
+            if comp.molecules:
+                complexes.append(comp)
+        return complexes
 
     def build_positive_complexes_from_boolean(self, bool_cont):
         """
@@ -216,43 +240,35 @@ class ComplexBuilder:
         Returns AlternativeComplexes object.
         Information about Input states is stored in AlternativeComplex.input_condition.
         """
-        alter_comp = AlternativeComplexes(str(bool_cont.state))
-        alter_comp.ctype = bool_cont.ctype
-        self.not_connected_states = []
-        connected = []
-        complexes = []
+        #alter_comp = AlternativeComplexes(str(bool_cont.state))
+        #alter_comp.ctype = bool_cont.ctype
+        #self.not_connected_states = [] separated 
+        #connected = []
+        alter_complexes = []
         self.get_state_sets(bool_cont)
         print "self.final_states: ", self.final_states
-        for state_group in self.final_states:
-            print "state_group: ", state_group
-            comp = BiologicalComplex()
-            #if self.check_conection(complexes, state_group):
-            new_stack = True
-            self.stack = state_group
-            while self.stack:
-                state = self.stack.pop()
-                if self.check_connection(complexes, state, new_stack):
-                    connected.append(state.state)
-                    if state.state.type == 'Input':
-                        alter_comp.input_condition = state
-                    elif state.state.type == "Covalent Modification":
-                        comp.add_state_mod(complexes, state.state, state.ctype)
-                    else:
-                        result = comp.add_state(state.state)
-                        if result:
-                            self.stack = result + self.stack
-                new_stack = False
-            if comp.molecules:
-                complexes.append(comp)
-        print "connected: ", connected
-        print "self.not_connected_states: ", self.not_connected_states
-        alter_comp.check_not_connected_states(self.not_connected_states, connected)
-        complexes = sorted(complexes, key=lambda comp: len(comp))
-        for cid, comp in enumerate(complexes):
-            comp.cid = str(cid + 1)
-            alter_comp.add_complex(comp)
+        final_separated_states = self.check_state_connection()
+        alter_complexes.append(copy.deepcopy(final_separated_states))
+        for stacks in final_separated_states:
+            alter_comp = AlternativeComplexes(str(bool_cont.state))
+            alter_comp.ctype = bool_cont.ctype
+            complexes = self.create_basic_complexes_from_boolean(stacks)
+            complexes = sorted(complexes, key=lambda comp: len(comp))
+            for cid, comp in enumerate(complexes):
+                comp.cid = str(cid + 1)
+                alter_comp.add_complex(comp)
+            alter_complexes.append(alter_comp)
+        print "alter_complexes: ", alter_complexes
+        # print "connected: ", connected
+        # print "self.not_connected_states: ", self.not_connected_states
+        # alter_comp.check_not_connected_states(self.not_connected_states, connected)
+        # complexes = sorted(complexes, key=lambda comp: len(comp))
+        # for cid, comp in enumerate(complexes):
+        #     comp.cid = str(cid + 1)
+        #     alter_comp.add_complex(comp)
 
-        return alter_comp
+        #return alter_comp
+        return alter_complexes
 
     def check_state_in_component(self, current_state):
         for other_state in self.not_connected_states[-1]:
@@ -260,6 +276,41 @@ class ComplexBuilder:
                 return True
         else:
             return False
+
+    def check_state_connected_to_stack(self, state, state_stack):
+        for ele in state_stack:
+            if state.state.has_component(ele.state.components[0]):
+                return True
+            elif len(ele.state.components) > 1 and state.state.has_component(ele.state.components[1]):
+                return True
+        return False
+
+    def check_state_connection(self):
+        stacks = []
+        for state_group in self.final_states:
+            self.stack = state_group
+            #stacks.append([])
+            new_stack = True
+            while self.stack:
+                state = self.stack.pop()
+                found_connection = False
+                #stack_copy = copy.deepcopy(stackes)
+                if stacks:
+                    for i, stack in enumerate(stacks):
+                        for state_stack in stack:
+                            if new_stack and self.check_state_connected_to_stack(state, state_stack):
+                                stack.append([state])
+                                stacks[i] = stack
+                                found_connection = True
+                                break
+                        if found_connection:
+                            break
+                    if not found_connection:
+                        stacks.append([[state]])
+                else:
+                    stacks.append([[state]])
+        print "stacks: ", stacks
+        return stacks
 
     def check_connection(self, complexes, states, new_stack):
         """Assumes that all molecules within given group of states are connected.
