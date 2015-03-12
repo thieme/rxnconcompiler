@@ -27,7 +27,7 @@ class RxnconTests(TestCase):
         # boolean contingencies allow to define complexes
         # and include in contingencies molecules that are not a part of reaction.
         self.bool = Rxncon('A_ppi_B; ! <b>\n<b>; AND A--C; AND C--D') 
-
+        self.bool2 = Rxncon('A_ppi_B; ! <b>\n<b>; or <compA>; or <compB> \n <compA>; AND A--C; AND C--D \n <compB>; AND B--E; AND B--F')
         # reaction with many contingencies.
         self.cont = Rxncon('A_ppi_B; ! A-{P}; K+ B-{Ub}; x B--G') 
 
@@ -106,9 +106,19 @@ class RxnconTests(TestCase):
         self.assertEqual(len(self.bool.complex_pool), 1)
         # one BiologicalComplex present in AlternativeComplexes
         self.assertEqual(len(self.bool.complex_pool['<b>']), 2)
+        # one alternative complex present
+        self.assertEqual(len(self.bool.complex_pool['<b>'][1]), 1)
         # three Molecule[a] present in BiologicalComplex. 
         self.assertEqual(len(self.bool.complex_pool['<b>'][1][0]), 3)
 
+        # two not connected alternative complexes
+        self.assertEqual(len(self.bool2.complex_pool['<b>'][1]), 1)
+        self.assertEqual(len(self.bool2.complex_pool['<b>'][2]), 1)
+
+        # three Molecule[a] present in each BiologicalComplex. 
+        self.assertEqual(len(self.bool2.complex_pool['<b>'][1][0]), 3)
+        self.assertEqual(len(self.bool2.complex_pool['<b>'][2][0]), 3)
+        
     def test_run_process(self):
         """
         Tests that after runing process 
