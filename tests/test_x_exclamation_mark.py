@@ -91,11 +91,45 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <AorC>; OR A--D
         #                 <AorC>; OR B_[y]-{P}
         #                 """)
+        # we don't tell that A D E cannot exist as long as F is not bound ?
+        # rxncon = Rxncon(""" A_ppi_B; ! <compA>
+        #                 <compA>; or <compA1>
+        #                 <compA>; or <compA2>
+        #                 <compA>; or <compB>
+        #                 <compB>; and B--T
+        #                 <compB>; and B--Z
+        #                 <compA1>; and A--C
+        #                 <compA1>; and A--D
+        #                 <compA2>; and A--E
+        #                 <compA2>; and A--F """)
         rxncon = Rxncon("""
-                        Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5]; k+ Hkr1_[TMD]--Sho1_[TMD]; k+ Msb2_[TMD]--Sho1_[TMD]; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
-<Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
-<Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
+                        Cdc24_[GEF]_GEF_Cdc42_[GnP]; k+ <Cdc24^{M}>
+<Cdc24^{M}>; or <Cdc24^{M/4}>
+<Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+<Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+<Cdc24^{M}>; or <Cdc24^{M/F}>
+<Cdc24^{M/F}>; and [START]
+<Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+<Cdc24^{M/F}>; and <Far1^{M}>
+<Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+<Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+
                         """)
+ #        rxncon = Rxncon("""
+ #                         Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5]; k+ Hkr1_[TMD]--Sho1_[TMD]; k+ Msb2_[TMD]--Sho1_[TMD]; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
+ # <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+ # <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
+ #                        """)
+#self.final_states:  [[or Sho1_[CyT]--Ste11_[BDSho1]], [and Ste5_[MEKK]--Ste11_[AssocSte5], and Ste4_[BDSte5]--Ste5_[nRING-H2], and Ste4_[AssocSte18]--Ste18_[AssocSte4]]]
+#         rxncon = Rxncon("""
+#                         Ste20_[KD]_P+_Ste11_[CBD(S302)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
+# <Ste11^{M}>; or Sho1_[CyT]--Ste11_[BDSho1]
+# <Ste11^{M}>; or <Ste11^{M/5}>
+# <Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
+# <Ste11^{M/5}>; and <Ste5^{M}>
+# <Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
+# <Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+#                         """)
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <AorC> 
         #                 <AorC>; OR <complA>
@@ -220,7 +254,7 @@ class x_exclamation_mark_Tests(TestCase):
 
         #rxncon = Rxncon(input_data)
         rxncon.run_process()
-        print rxncon.complex_pool
+        #print rxncon.complex_pool
         self.bngl_src = Bngl(
             rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
         # print bngl_src.get_src()

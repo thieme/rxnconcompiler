@@ -105,9 +105,9 @@ class RxnconTests(TestCase):
         # one AlternativeComplexes present in the complex_pool.
         self.assertEqual(len(self.bool.complex_pool), 1)
         # one BiologicalComplex present in AlternativeComplexes
-        self.assertEqual(len(self.bool.complex_pool['<b>']), 1)
+        self.assertEqual(len(self.bool.complex_pool['<b>']), 2)
         # three Molecule[a] present in BiologicalComplex. 
-        self.assertEqual(len(self.bool.complex_pool['<b>'][0]), 3)
+        self.assertEqual(len(self.bool.complex_pool['<b>'][1][0]), 3)
 
     def test_run_process(self):
         """

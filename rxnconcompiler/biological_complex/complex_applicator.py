@@ -52,15 +52,11 @@ class ComplexApplicator:
             self.not_connected_states = {} # complexes.not_connected_states
             #if len(complexes) > 2: #more than two booleans
             #    raise TypeError('Cannot apply more than two boolean contingencies on a reaction.')
-            print "complexes in ComplexApplicator: ", complexes
             self.complexes = []
             self.final_separated_states = complexes[0]  # the last list contains all the separated boolean states
             for compl in complexes[1:]:
-                print "compl: ", compl
                 #self.complexes = self.prepare_complexes_to_apply(complexes)
                 self.complexes.append(self.prepare_complexes_to_apply(compl))
-            print "self.complexes in ComplexApplicator: ", self.complexes
-        #def check_complexes(self)
 
     def _prepare_alter_complex(self, alter_complex):
         """
@@ -275,12 +271,11 @@ class ComplexApplicator:
 #        print "reaction: ", dir(reaction)
         reaction_left_reactant = reaction.left_reactant
         reaction_right_reactant = reaction.right_reactant
-        print "comp: ", comp
         if not comp.has_molecule(reaction_left_reactant.name):
-            print "reaction_left_reactant: ", reaction_left_reactant
+            #print "reaction_left_reactant: ", reaction_left_reactant
             self.change_non_complex_molecule(reaction_left_reactant)
         elif not comp.has_molecule(reaction_right_reactant.name):
-            print "reaction_right_reactant: ", reaction_right_reactant
+            self.change_non_complex_molecule(reaction_right_reactant)
 
     def apply_complexes(self):
         """
@@ -290,7 +285,6 @@ class ComplexApplicator:
         com_number = 0
         reaction_container_clone = self.reaction_container[0].clone()
         self.counter = 1
-        print "self.complexes in apply_complexes: ", self.complexes
         second_reactant = False
         for com in self.complexes:
             reaction_container_tmp = []

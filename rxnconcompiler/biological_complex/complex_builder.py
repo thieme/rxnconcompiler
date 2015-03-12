@@ -205,10 +205,10 @@ class ComplexBuilder:
                 complexes.append(comp)
         return complexes
         
-    def create_basic_complexes_from_boolean(self, final_states):
+    def create_basic_complexes_from_boolean(self, final_states, alter_comp):
         complexes = []
         for state_group in final_states:
-            print "state_group: ", state_group
+           # print "state_group: ", state_group
             comp = BiologicalComplex()
             #if self.check_conection(complexes, state_group):
             #new_stack = True
@@ -227,7 +227,7 @@ class ComplexBuilder:
                 #new_stack = False
             if comp.molecules:
                 complexes.append(comp)
-        return complexes
+        return complexes, alter_comp
 
     def build_positive_complexes_from_boolean(self, bool_cont):
         """
@@ -246,19 +246,19 @@ class ComplexBuilder:
         #connected = []
         alter_complexes = []
         self.get_state_sets(bool_cont)
-        print "self.final_states: ", self.final_states
+        #print "self.final_states: ", self.final_states
         final_separated_states = self.check_state_connection()
         alter_complexes.append(copy.deepcopy(final_separated_states))
         for stacks in final_separated_states:
             alter_comp = AlternativeComplexes(str(bool_cont.state))
             alter_comp.ctype = bool_cont.ctype
-            complexes = self.create_basic_complexes_from_boolean(stacks)
+            complexes, alter_comp = self.create_basic_complexes_from_boolean(stacks, alter_comp)
             complexes = sorted(complexes, key=lambda comp: len(comp))
             for cid, comp in enumerate(complexes):
                 comp.cid = str(cid + 1)
                 alter_comp.add_complex(comp)
             alter_complexes.append(alter_comp)
-        print "alter_complexes: ", alter_complexes
+        #print "alter_complexes: ", alter_complexes
         # print "connected: ", connected
         # print "self.not_connected_states: ", self.not_connected_states
         # alter_comp.check_not_connected_states(self.not_connected_states, connected)
@@ -285,31 +285,73 @@ class ComplexBuilder:
                 return True
         return False
 
+    def check_if_input(self, stack):
+        for ele in stack:
+            if ele.state.type != 'Input':
+                return False
+        return True
+
     def check_state_connection(self):
         stacks = []
+       # print "final_states: ", self.final_states
+        input_stacks = []
         for state_group in self.final_states:
             self.stack = state_group
+        #    print "self.stack: ", self.stack
             #stacks.append([])
             new_stack = True
-            while self.stack:
-                state = self.stack.pop()
+            for state in  self.stack:
+                #state = self.stack.pop()
                 found_connection = False
                 #stack_copy = copy.deepcopy(stackes)
+
                 if stacks:
                     for i, stack in enumerate(stacks):
-                        for state_stack in stack:
+                        #print "first stack: ", stack
+                        for j, state_stack in enumerate(stack):
+                            #print "state: ", state
+                            #print "state_stack: ", state_stack
+                            # finde den stack in dem die Molecule vorkommen
+                            # wenn neuer stack generiere auch hier neuen stack
+                            # ansonsten erweiter den stack
                             if new_stack and self.check_state_connected_to_stack(state, state_stack):
-                                stack.append([state])
-                                stacks[i] = stack
+                                stacks[i].append(self.stack)
+                                #print "NEW STACK FOUND: ", stack
                                 found_connection = True
+                                new_stack = False
                                 break
+                            elif not new_stack and self.check_state_connected_to_stack(state, state_stack):
+                                #stack[-1].append(state)
+                                stacks[i].append(self.stack)
+                                found_connection = True
+                                #print "kein neuer STACK: ", stack
+                                break
+     
                         if found_connection:
                             break
                     if not found_connection:
-                        stacks.append([[state]])
+                        if not self.check_if_input(self.stack):
+                            stacks.append([self.stack])
+                        else:
+                            input_stacks.append(self.stack)
+                        new_stack = False
+                        #print "NO CONNECTION: ", stacks
+                        break
+                    else:
+                        break
                 else:
-                    stacks.append([[state]])
-        print "stacks: ", stacks
+                    #print "NO STACKS HERE"
+                    if not self.check_if_input(self.stack):
+                        stacks.append([self.stack])
+                    else:
+                        input_stacks.append(self.stack)
+                    break
+        while input_stacks:
+            input_stack = input_stacks.pop()
+            for stack in stacks:
+                stack.append(input_stack)
+        #self.merge_tmp_stacks_and_stacks(stacks,tmp_stacks)
+        #print "stacks: ", stacks
         return stacks
 
     def check_connection(self, complexes, states, new_stack):
@@ -322,7 +364,6 @@ class ComplexBuilder:
         state = states_copy
         #while stack:
             #state = stack.pop()
-        print state
         if complexes:
             #print "state: ", state
             if (state.ctype == "or" or len(self.final_states) > 1) and complexes:
