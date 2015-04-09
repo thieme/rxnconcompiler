@@ -182,14 +182,14 @@ class ComplexApplicator:
         for stackes in self.final_separated_states:
             for stack in stackes:
                 for ele in stack:
-                    if ele.ctype == "or":
-                        mol1 = Molecule(ele.state.components[0].name)
-                        if mol1 == reactant:
+                    #if ele.ctype == "or":
+                    mol1 = Molecule(ele.state.components[0].name)
+                    if mol1 == reactant:
+                        reactant.set_site(ele.state)
+                    elif len(ele.state.components) > 1:
+                        mol2 = Molecule(ele.state.components[1].name)
+                        if mol2 == reactant:
                             reactant.set_site(ele.state)
-                        elif len(ele.state.components) > 1:
-                            mol2 = Molecule(ele.state.components[1].name)
-                            if mol2 == reactant:
-                                reactant.set_site(ele.state)
 
     def get_or_conditions_of_other_reactant(self, reaction, comp):
 
@@ -209,6 +209,7 @@ class ComplexApplicator:
         reaction_container_clone = self.reaction_container[0].clone()
         self.counter = 1
         second_reactant = False
+        print self.complexes
         for com in self.complexes:
             reaction_container_tmp = []
 

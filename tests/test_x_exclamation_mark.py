@@ -84,35 +84,45 @@ class x_exclamation_mark_Tests(TestCase):
                          
         #                 """)
         #rxncon = Rxncon("""A_ppi_B""")
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <AorC> 
+        #                 <AorC>; OR A_[x]-{P}
+        #                 <AorC>; OR B--C
+        #                 <AorC>; OR A--D
+        #                 <AorC>; OR B_[y]-{P}
+        #                 """)
         rxncon = Rxncon("""
-                        A_ppi_B; ! <AorC> 
-                        <AorC>; OR A_[x]-{P}
-                        <AorC>; OR B--C
-                        <AorC>; OR A--D
-                        <AorC>; OR B_[y]-{P}
+                        A_ppi_B; ! <III>
+                        <III>; AND <II>
+                        <III>; AND <I>
+                        <I>; OR A--C
+                        <I>; OR A--F
+                        <II>; OR A--D
+                        <II>; OR A--E
                         """)
 
-        rxncon = Rxncon("""
-                        A_ppi_B; ! <AorC> 
-                        <AorC>; OR <complA>
-                        <complA>; AND A_[x]-{P}
-                        <complA>; AND A--D
-                        <AorC>; OR <complB>
-                        <complB>; AND B_[y]-{P}
-                        <complB>; AND B--C
-                        """)
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <AorC> 
+        #                 <AorC>; OR <complA>
+        #                 <complA>; AND A_[x]-{P}
+        #                 <complA>; AND A--D
+        #                 <AorC>; OR <complB>
+        #                 <complB>; AND B_[y]-{P}
+        #                 <complB>; AND B--C
+        #                 """)
 
-        rxncon = Rxncon("""
-                        A_ppi_B; ! <comp>
-                        <comp>; or A-{P}
-                        <comp>; or B-{P}
-                        <comp>; or <compA>
-                        <compA>; and A--C
-                        <compA>; and A--D
-                        <comp>; or <compB>
-                        <compB>; and B--E
-                        <compB>; and B--F
-                        """)
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <comp>
+        #                 <comp>; or A-{P}
+        #                 <comp>; or B-{P}
+        #                 <comp>; or <compA>
+        #                 <compA>; and A--C
+        #                 <compA>; and A--D
+        #                 <comp>; or <compB>
+        #                 <compB>; and B--E
+        #                 <compB>; and B--F
+        #                 """)
+
         # we don't tell that A D E cannot exist as long as F is not bound ?
         # rxncon = Rxncon(""" A_ppi_B; ! <compA>
         #                 <compA>; or <compA1>
@@ -123,7 +133,7 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <compA1>; and A--C
         #                 <compA1>; and A--D
         #                 <compA2>; and A--E
-        #                 <compA2>; and A--F """)
+        #                 <compA2>; and A--F """) 
 
 
 

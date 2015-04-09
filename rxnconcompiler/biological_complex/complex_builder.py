@@ -231,7 +231,6 @@ class ComplexBuilder:
                 comp.cid = str(cid + 1)
                 alter_comp.add_complex(comp)
             alter_complexes.append(alter_comp)
-
         return alter_complexes
 
     def check_state_connected_to_stack(self, state, state_stack):
@@ -292,6 +291,7 @@ class ComplexBuilder:
         """
         stacks = []
         input_stacks = []
+        print "final_states: ", self.final_states
         for state_group in self.final_states:  # Step 1
             self.stack = state_group
             new_stack = True
