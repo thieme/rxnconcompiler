@@ -38,7 +38,7 @@ def get_dsr(row, ab='A', with_delimiters=False):
 
 def create_all_combinations(l):
     '''
-    Return all possible comination of items from a given list.
+    Return all possible combination of items from a given list.
     Only presence is important, not the order.
     >>> list(create_all_combinations([1,2,3]))
     [[3], [2], [2, 3], [1], [1, 3], [1, 2], [1, 2, 3]]

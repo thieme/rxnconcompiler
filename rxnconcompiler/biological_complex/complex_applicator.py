@@ -209,7 +209,9 @@ class ComplexApplicator:
         reaction_container_clone = self.reaction_container[0].clone()
         self.counter = 1
         second_reactant = False
-        print self.complexes
+        print "self.complexes: ", self.complexes
+        #self.complexes = [[self.complexes[0][0],self.complexes[0][2]]]
+        #print "self.complexes: ", self.complexes
         for com in self.complexes:
             reaction_container_tmp = []
 

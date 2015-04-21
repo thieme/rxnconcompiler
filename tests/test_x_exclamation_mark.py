@@ -91,16 +91,32 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <AorC>; OR A--D
         #                 <AorC>; OR B_[y]-{P}
         #                 """)
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <III>
+        #                 <III>; AND <II>
+        #                 <III>; AND <I>
+        #                 <I>; OR A--C
+        #                 <I>; OR A--F
+        #                 <II>; OR A--D
+        #                 <II>; OR A--E
+        #                 """)
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <comp>
+        #                 <comp>; AND A--C
+        #                 <comp>; AND <comp1>
+        #                 <comp1>; OR A--D
+        #                 <comp1>; OR A--E
+        #                 """)
         rxncon = Rxncon("""
-                        A_ppi_B; ! <III>
-                        <III>; AND <II>
-                        <III>; AND <I>
-                        <I>; OR A--C
-                        <I>; OR A--F
-                        <II>; OR A--D
-                        <II>; OR A--E
+                        A_ppi_B; ! <comp>
+                        <comp>; OR A--C
                         """)
+# expect:
 
+# C, D
+# C, not D, E
+# not C, F, D
+# not C, F, not D, E
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <AorC> 
         #                 <AorC>; OR <complA>

@@ -161,16 +161,14 @@ class Rxncon:
         """
         Uses ComplexBuilder to create ComplexPool.
         """
-        bools = self.contingency_pool.get_top_booleans() 
+        bools = self.contingency_pool.get_top_booleans()
         for bool_cont in bools:
             #print "bool_cont: ", bool_cont
             #print "bool_cont.children: ", bool_cont.children
             builder = ComplexBuilder()
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
-            #builder.apply_modifications_from boolean(bool_cont)
             #print "alter_comp outside: ", alter_comp
             self.complex_pool[str(bool_cont.state)] = alter_comp
-            #self.complex_pool[str(bool_cont.state)]["not_connected"] = []
 
     def get_requirements_dict(self):
         """

@@ -106,31 +106,31 @@ class ComplexBuilder:
         and type of boolean (AND, OR).
         """
         if bool_ctype == "!":
-            if  input_cont.ctype == 'or':
+            if input_cont.ctype == 'or':
                 compl = result[1][0]  # single negative complex
                 compl.input_conditions = [Contingency(None, '!', input_cont.state)]
                 compl.is_positive = True
                 required_complexes.add_complex(compl)
-            elif  input_cont.ctype == 'and':
+            elif input_cont.ctype == 'and':
                 compl = result[0][0] # single positive complex
                 compl.input_conditions = [Contingency(None, '!', input_cont.state)]  
 
         elif bool_ctype == "x":
-            if  input_cont.ctype == 'or':
+            if input_cont.ctype == 'or':
                 compl = result[1][0]  # single negative complex     
                 compl.input_conditions = [Contingency(None, 'x', input_cont.state)]
                 compl.is_positive = False          
-            elif  input_cont.ctype == 'and':
+            elif input_cont.ctype == 'and':
                 compl = result[0][0]  # single positive complex
                 compl.input_conditions = [Contingency(None, 'x', input_cont.state)]
                 compl.is_positive = False
                 required_complexes.add_complex(compl)
                 #required_complexes[0].input_condition = Contingency(None, '!', input_cont.state)  # single positive complex
 
-        else: # k+/k- (which means ! and x) 
-            if  input_cont.ctype == 'or':
+        else:  # k+/k- (which means ! and x) 
+            if input_cont.ctype == 'or':
                 compl = result[1][0]  # single negative complex
-            elif  input_cont.ctype == 'and':
+            elif input_cont.ctype == 'and':
                 compl = result[0][0]  # single positive complex
             compl.input_conditions = [Contingency(None, '!', input_cont.state), Contingency(None, 'x', input_cont.state)]
             compl.is_positive = 'both'
@@ -216,21 +216,24 @@ class ComplexBuilder:
         Returns AlternativeComplexes object.
         Information about Input states is stored in AlternativeComplex.input_condition.
         """
-
+        print "bool_cont: "
         alter_complexes = []
         self.get_state_sets(bool_cont)
 
         final_separated_states = self.check_state_connection()
+        print "final_separated_states: ", final_separated_states
         alter_complexes.append(copy.deepcopy(final_separated_states))
         for stacks in final_separated_states:
             alter_comp = AlternativeComplexes(str(bool_cont.state))
-            alter_comp.ctype = bool_cont.ctype
+            alter_comp.ctype = bool_cont.ctype  # set the ctype later its the same as positive_complexes.ctype
             complexes, alter_comp = self.create_basic_complexes_from_boolean(stacks, alter_comp)
             complexes = sorted(complexes, key=lambda comp: len(comp))
+            print "complexes: ", complexes
             for cid, comp in enumerate(complexes):
                 comp.cid = str(cid + 1)
                 alter_comp.add_complex(comp)
             alter_complexes.append(alter_comp)
+        print alter_complexes
         return alter_complexes
 
     def check_state_connected_to_stack(self, state, state_stack):
@@ -292,6 +295,8 @@ class ComplexBuilder:
         stacks = []
         input_stacks = []
         print "final_states: ", self.final_states
+        #print "final_states[]: ", self.final_states[0][0]
+        #self.final_states[0][0].ctype = "or"
         for state_group in self.final_states:  # Step 1
             self.stack = state_group
             new_stack = True
@@ -351,9 +356,12 @@ class ComplexBuilder:
         Each list corresponding to a complex.
         """
         self.states.append([bool_cont])
-        while self.states:
-            state_list = self.states.pop()
+        print "self.states: ", self.states
+        while self.states: [AND A--C, AND <NOT>]
+            state_list = self.states.pop() [AND A--C, AND <NOT>]
+            print "state_list: ", state_list [AND A--C] [AND <NOT>]
             self.get_states(state_list)
+
 
     def get_states(self, node_list):
         """
@@ -365,33 +373,47 @@ class ComplexBuilder:
         to_add = []
         to_clone = []
         
-        for node in node_list:
-            if node.has_children:
+        for node in node_list: [AND <NOT>]
+            if node.has_children: [NOT A--E]
+                print "node: ", node
                 to_remove.append(node)
+                print "node.children: ", node.children
                 for child in node.children:
+                    # here we have to add warning for mix of AND/OR at the same level
                     if child.ctype == 'and' or '--' in child.ctype:
                         to_add.append(child)
+                        print "child: ", child # [AND A--C, AND <NOT>]
                     if child.ctype == 'or':
                         to_clone.append(child)
+                    if child.ctype == 'not' and node.ctype == "and":
+                        # change child
+                        #replace 'not' with 'x' + 'state' # [AND A--C, AND <NOT>] -> # [AND A--C, AND xA--E]
+                                                                                     #[AND A--C, ANDNOT xec--E]
+                                                                                     # [AND A--C, ORNOT xec--E]
+                        to_add.append(child)
+                        
+
 
         for node in to_remove:
             node_list.remove(node)
 
         if to_add:
             for node in to_add:
-                node_list.append(node)
+                node_list.append(node) # [<complB>, A--F, A--E] AND A--C -> [AND A--C]
             bool_flag = False
             for node in node_list:
                 if node.has_children and len(node.children) > 0:
                     bool_flag = True
             if bool_flag:
-                self.states.append(node_list)
+                #print "bool_flag, ", node_list
+                self.states.append(node_list) # [<complA>, <complB>]
+                #self.to_extand = True
             else:
                 self.final_states.append(node_list)
 
         elif to_clone:
             for node in to_clone:
-                result = node_list + [node]
+                result = node_list + [node] # [] + [OR A--C] -> [[OR A--C]]
                 bool_flag = False
                 for node in result:
                     if node.has_children and len(node.children) > 0:
