@@ -84,7 +84,7 @@ from reaction.reaction_factory import ReactionFactory
 from parser.rxncon_parser import parse_rxncon
 
 
-class Rxncon:
+class Rxncon():
     """
     Manage the process that leads from the tabular data representation 
     to the object oriented representation of reactions and contingencies.
@@ -313,9 +313,5 @@ class Rxncon:
             for reaction in react_container:
                 reaction.run_reaction()
 
-
-
-if __name__ == '__main__':
-    main()
 
 

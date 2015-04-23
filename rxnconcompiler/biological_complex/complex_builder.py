@@ -185,11 +185,19 @@ class ComplexBuilder:
 
         return required_complexes
         
-    def create_basic_complexes_from_boolean(self, final_states, alter_comp):
+    def create_basic_complexes_from_boolean(self, alter_comp):
+        """
+        This function generates biological complexes from a flatten list of booleans (self.final_states)
+        @param alter_comp: AlternativeComplex obj
+        @return complexes: list of BiologicalComplex obj
+        @type complexes: list
+        @return alter_comp: AlternativeComplex obj
+        """
+
         complexes = []
         # if state appears more than 1 warning
         # if contra sign kill complex and make stronger warning 
-        for state_group in final_states:
+        for state_group in self.final_states:
             comp = BiologicalComplex()
             self.stack = state_group
             while self.stack:
@@ -202,8 +210,7 @@ class ComplexBuilder:
                     comp.add_state_mod(complexes, state.state, state.ctype)
                 # TODO: loc ...
                 else:
-
-                    result = comp.add_state(state.state) # A--B
+                    result = comp.add_state(state) # A--B
                     if result:
                         self.stack = result + self.stack
             if comp.molecules:
@@ -222,22 +229,26 @@ class ComplexBuilder:
 
         Returns AlternativeComplexes object.
         Information about Input states is stored in AlternativeComplex.input_condition.
+
+        @param bool_cont:  ContingencyFactory obj
+        @return alter_complexes: list of AlternativeComplex obj
+        @type alter_complexes: list
         """
         alter_complexes = []
         self.get_state_sets(bool_cont)
 
-        final_separated_states = self.check_state_connection()
-        alter_complexes.append(copy.deepcopy(final_separated_states))
-        for stacks in final_separated_states:
-            alter_comp = AlternativeComplexes(str(bool_cont.state))
-            alter_comp.ctype = bool_cont.ctype  # set the ctype later its the same as positive_complexes.ctype
-            complexes, alter_comp = self.create_basic_complexes_from_boolean(stacks, alter_comp)
-            complexes = sorted(complexes, key=lambda comp: len(comp))
-            for cid, comp in enumerate(complexes):# [ACDB, AC]
-                comp.cid = str(cid + 1)
-                alter_comp.add_complex(comp)
-            alter_complexes.append(alter_comp)
-        print alter_complexes
+        #final_separated_states = self.check_state_connection()
+        alter_complexes.append(copy.deepcopy(self.final_states))
+        #for stacks in final_separated_states:
+        alter_comp = AlternativeComplexes(str(bool_cont.state))
+        alter_comp.ctype = bool_cont.ctype  # set the ctype later its the same as positive_complexes.ctype
+        complexes, alter_comp = self.create_basic_complexes_from_boolean(alter_comp)
+        complexes = sorted(complexes, key=lambda comp: len(comp))
+        for cid, comp in enumerate(complexes):# [ACDB, AC]
+            comp.cid = str(cid + 1)
+            alter_comp.add_complex(comp)
+        alter_complexes.append(alter_comp)
+
         return alter_complexes
 
     def check_state_connected_to_stack(self, state, state_stack):
@@ -259,6 +270,7 @@ class ComplexBuilder:
         return True
 
     def check_state_connection(self):
+        # we do this later
         """
         This function checks the connectivity of the different state_groups (the connectivity of the state_group elements is not yet checked)
         The state_groups are assigned to lists one list for each molecule in the reaction.
@@ -371,9 +383,8 @@ class ComplexBuilder:
         Each list corresponding to a complex.
         """
         self.states.append([bool_cont])
-        while self.states: #[AND A--C, AND <NOT>]
-            state_list = self.states.pop() #[AND A--C, AND <NOT>]
-            print "state_list: ", state_list #[AND A--C] [AND <NOT>]
+        while self.states:  # [AND A--C, AND <NOT>]
+            state_list = self.states.pop()  # [AND A--C, AND <NOT>]
             self.get_states(state_list)
 
     def get_states(self, node_list):
@@ -393,13 +404,18 @@ class ComplexBuilder:
                     # here we have to add warning for mix of AND/OR at the same level
                     if child.ctype == 'and' or '--' in child.ctype:
                         to_add.append(child)
-                    if child.ctype == 'or':
+                    elif child.ctype == 'or':
                         to_clone.append(child)
-                    #if child.ctype == 'not' and node.ctype == "and":
+                    elif child.ctype == 'not' and node.ctype == "and":
+                        child.ctype = "andnot"
+                        to_add.append(child)
+                    elif child.ctype == 'not' and node.ctype == "or":
+                        child.ctype = "ornot"
+                        to_clone.append(child)
                         # change child
                         #replace 'not' with 'x' + 'state' # [AND A--C, AND <NOT>] -> # [AND A--C, AND xA--E]
                                                                                      #[AND A--C, ANDNOT xec--E]
-                                                                                     # [AND A--C, ORNOT xec--E]
+                                                                                  # [AND A--C, ORNOT xec--E]
                         #to_add.append(child)
                         
 

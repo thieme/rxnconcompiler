@@ -22,14 +22,58 @@ from rxnconcompiler.molecule.molecule import Molecule
 
 #KR: please complete docstrings
 
-class BiologicalComplex:
+class BiologicalComplex(object):
     """"""
     def __init__(self):
-        self.molecules = []
-        self.side = None #: indicate where complex appears: L, R, LR
-        self.input_conditions = [] # defines that e.g. complex exists only when Start, Osmostress ...
-        self.is_positive = True
-        self.is_modifier = False # indicates that complex does not change during the reaction
+        self.__molecules = []
+        self.__side = None #: indicate where complex appears: L, R, LR
+        self.__input_conditions = [] # defines that e.g. complex exists only when Start, Osmostress ...
+        self.__is_positive = True
+        self.__is_modifier = False # indicates that complex does not change during the reaction
+
+    @property
+    def molecules(self):
+        return self.__molecules
+
+    @molecules.setter
+    def molecules(self, molecules):
+        assert isinstance(molecules, list)
+        self.__molecules = molecules
+
+    @property
+    def side(self):
+        return self.__side
+
+    @side.setter
+    def side(self, side):
+        self.__side = side
+
+    @property
+    def input_conditions(self):
+        return self.__input_conditions
+
+    @input_conditions.setter
+    def input_conditions(self, input_conditions):
+        assert isinstance(input_conditions, list)
+        self.__input_conditions = input_conditions
+
+    @property
+    def is_positive(self):
+        return self.__is_positive
+
+    @is_positive.setter
+    def is_positive(self, is_positive):
+        assert isinstance(is_positive, bool)
+        self.__is_positive = is_positive
+
+    @property
+    def is_modifier(self):
+        return self.__is_modifier
+
+    @is_modifier.setter
+    def is_modifier(self, is_modifier):
+        assert isinstance(is_modifier, bool)
+        self.__is_modifier = is_modifier
 
     def __repr__(self):
         mols = ', '.join(sorted([mol.name for mol in self.molecules]))
@@ -302,23 +346,30 @@ class BiologicalComplex:
     def add_state(self, state):
         """
         """
-        if state.type == 'Input':  # artefact?
+        if state.state.type == 'Input':  # artefact?
             self.input_conditions = Contingency('','!',state)
-        elif state.type == 'Association':
-            # state: A--B
-            mol1 = Molecule(state.components[0].name)
-            #mol1 A
-            mol1.mid = state.components[0].cid
-            mol1.binding_partners.append(state)
-            mol2 = Molecule(state.components[1].name)
-            #mol B
-            mol2.mid = state.components[1].cid
-            mol2.binding_partners.append(state)
+        elif state.state.type == 'Association':
             # if ctype ANDNOT/ORNOT
             # add_binding_site if we have several mols bound to one side and use a NOT we keep this empty
             # A(C,D), C(A), D(A), B(....) drop C and D later
             # check if site is occupied by other then ignore
             # NOTs last always (if site is empty and later will be occupied then use the occupation)
+
+            # state: A--B
+            mol1 = Molecule(state.state.components[0].name)
+            #mol1 A
+            mol1.mid = state.state.components[0].cid
+
+            mol2 = Molecule(state.state.components[1].name)
+            #mol B
+            mol2.mid = state.state.components[1].cid
+            if state.ctype in ["ornot","andnot"]:
+                mol1.set_site(state.state)
+                mol2.set_site(state.state)
+            else:
+                mol1.binding_partners.append(state.state)
+                mol2.binding_partners.append(state.state)
+
             partners = self.get_molecules(mol1.name, mol1.mid)
             if not partners:
                 self.molecules.append(mol1)
@@ -328,14 +379,14 @@ class BiologicalComplex:
             else:
                 if state not in partners[0].binding_partners:
                     #KR: this if could be delegated to Molecule
-                    partners[0].add_bond(state)
+                    partners[0].add_bond(state.state)
           
             partners = self.get_molecules(mol2.name, mol2.mid)
             if not partners or mol1 == mol2:
                 self.molecules.append(mol2)
             else:
                 if state not in partners[0].binding_partners:
-                    partners[0].add_bond(state)
+                    partners[0].add_bond(state.state)
 
     def add_state_mod(self, complexes, state, ctype):
         print "Its covalent"
@@ -396,16 +447,40 @@ class BiologicalComplex:
             self.molecules.remove(cmol)
 
 
-class AlternativeComplexes(list):
+class AlternativeComplexes(list, object):
     """
     Object AlternativeComplexes keeps all complexes with the same identificator.
     E.g. obtained from the same boolean or complex contingency.
     """
     def __init__(self, name):
         list.__init__(self)
-        self.name = name
-        self.ctype = None #: contingency type
-        self.input_condition = None 
+        self.__name = name
+        self.__ctype = None #: contingency type
+        self.__input_condition = None
+
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self, name):
+        self.__name = name
+
+    @property
+    def ctype(self):
+        return self.__ctype
+
+    @ctype.setter
+    def ctype(self, ctype):
+        self.__ctype = ctype
+
+    @property
+    def input_condition(self):
+        return self.__input_condition
+
+    @input_condition.setter
+    def input_condition(self, input_condition):
+        self.__input_condition = input_condition
 
     def add_complex(self, comp):
         self.append(comp)

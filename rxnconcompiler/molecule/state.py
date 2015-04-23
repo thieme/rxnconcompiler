@@ -30,16 +30,84 @@ class State:
     - Component
     """
     def __init__(self):
-        self.components = []
-        self.state_str = ''
-        self.type = None #: string that keeps information about state type
+        self.__components = []
+        self.__state_str = ''
+        self.__type = None #: string that keeps information about state type
 
-        self.sid = None #: valid only for association
-        self.modifier = None #: valid only for covalent modification e.g. Ub, P and Relocalisation.
-        self.not_modifier = None #: valid only for covalent modification (always U) and Relocalisation (substrate localisation).
-        self.loc = False # only for localisation, distinguishes between products and substrates.
-        self.homodimer = False # only for asocciation, when A--A
-       
+        self.__sid = None #: valid only for association
+        self.__modifier = None #: valid only for covalent modification e.g. Ub, P and Relocalisation.
+        self.__not_modifier = None #: valid only for covalent modification (always U) and Relocalisation (substrate localisation).
+        self.__loc = False # only for localisation, distinguishes between products and substrates.
+        self.__homodimer = False # only for asocciation, when A--A
+
+    @property
+    def components(self):
+        return self.__components
+
+    @components.setter
+    def components(self, components):
+        assert isinstance(components, list)
+        self.__components = components
+
+    @property
+    def state_str(self):
+        return self.__state_str
+
+    @state_str.setter
+    def state_str(self, state_str):
+        assert isinstance(state_str, str)
+        self.__state_str = state_str
+
+    @property
+    def type(self):
+        return self.__type
+
+    @type.setter
+    def type(self, type):
+        self.__type = type
+
+    @property
+    def sid(self):
+        return self.__sid
+
+    @sid.setter
+    def sid(self, sid):
+        self.__sid = sid
+
+    @property
+    def modifier(self):
+        return self.__modifier
+
+    @modifier.setter
+    def modifier(self, modifier):
+        self.__modifier = modifier
+
+    @property
+    def not_modifier(self):
+        return self.__not_modifier
+
+    @not_modifier.setter
+    def not_modifier(self, not_modifier):
+        self.__not_modifier = not_modifier
+
+    @property
+    def loc(self):
+        return self.__loc
+
+    @loc.setter
+    def loc(self, loc):
+        assert isinstance(loc, bool)
+        self.__loc = loc
+
+    @property
+    def homodimer(self):
+        return self.__homodimer
+
+    @homodimer.setter
+    def homodimer(self, homodimer):
+        assert isinstance(homodimer, bool)
+        self.__homodimer = homodimer
+
     def __repr__(self):
         if self.type == 'Intraprotein':
             return '%s_[%s]--[%s]' % (self.components[0].name, \
