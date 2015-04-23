@@ -41,7 +41,7 @@ class ComplexApplicator:
     """
     def __init__(self, reaction_container, complexes):
         """"""
-        self.reaction_container = reaction_container        
+        self.reaction_container = reaction_container
         self.builder = ComplexBuilder()
 
         if not complexes:
@@ -62,10 +62,23 @@ class ComplexApplicator:
         Complexes can contain a complex with no molecules and just an input state.
         """
         # TODO: EMPTY COMPLEXES??? WHY???
+        # remove not connected complexes to one of the reaction molecules
+        # special cases are TRSL or other reactions with cofactors
         to_remove = [comp for comp in alter_complex if (comp.molecules == [] and not comp.input_conditions)]
         for comp in to_remove:
             alter_complex.remove(comp)
+        # we are in context of reactions -> know all roots and special things like mRNA need and so on
+        #  For each root:
+        #    find all connected states
+        #       add states to root
+        #       remove state from list
+        #   apply com = self.builder.build_required_complexes(alter_complex, root)
         #############################################
+        # AB
+        # [A,B] [C, D]
+        # A       C
+
+
         root = self.get_root_molecules(alter_complex.get_first_non_empty())[0]
         #print 'Root', root
         com = self.builder.build_required_complexes(alter_complex, root)
@@ -236,11 +249,11 @@ class ComplexApplicator:
     def get_root_molecules(self, compl):
         """"""
         root = []
-        lmol = self.reaction_container[0].left_reactant
-        rmol = self.reaction_container[0].right_reactant
+        lmol = self.reaction_container[0].left_reactant # [A]
+        rmol = self.reaction_container[0].right_reactant # 
         root += compl.get_molecules(lmol.name, lmol.mid)
         root += compl.get_molecules(rmol.name, rmol.mid)
-        return root
+        return root # [A,B]
 
     def add_substrate_complexes(self, reaction, complexes):
         """

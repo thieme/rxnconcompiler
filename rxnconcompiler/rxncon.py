@@ -129,7 +129,6 @@ class Rxncon:
         contingency_factory = ContingencyFactory(self.xls_tables)
         self.contingency_pool = contingency_factory.parse_contingencies()
         self.complex_pool = ComplexPool()
-        #print "self.complex_pool: ", self.complex_pool
         self.create_complexes()
         self.update_contingencies()
 
@@ -138,7 +137,6 @@ class Rxncon:
         Rxncon object is represented as rxncon string 
         (quick format).
         """
-        #KR: this is cool! I see both MR's handwriting here.
         result = ''
         react_keys = [(self.reaction_pool[reaction].rid, reaction) for reaction in self.reaction_pool.keys()]
         for reaction in sorted(react_keys):
@@ -163,11 +161,8 @@ class Rxncon:
         """
         bools = self.contingency_pool.get_top_booleans()
         for bool_cont in bools:
-            #print "bool_cont: ", bool_cont
-            #print "bool_cont.children: ", bool_cont.children
             builder = ComplexBuilder()
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
-            #print "alter_comp outside: ", alter_comp
             self.complex_pool[str(bool_cont.state)] = alter_comp
 
     def get_requirements_dict(self):
@@ -195,7 +190,7 @@ class Rxncon:
             return []
         cont_root = self.contingency_pool[reaction_name]
         for cont in cont_root.children:
-            if cont.state.type == 'Boolean':
+            if cont.state.type == 'Boolean':  # if it is a boolean we should have build it and it should appear in self.complex_pool
                 if self.complex_pool.has_key(str(cont.state)):
                     return self.complex_pool[str(cont.state)]
 
@@ -268,6 +263,7 @@ class Rxncon:
         Creates pool of reaction that produce states required in the system
         and adds them to the systems reaction pool (self.reaction_pool).
         """
+        ## How does it work????
         reaction_factory = ReactionFactory(states_list)
         missing_molecule_pool = reaction_factory.molecule_pool
         missing_reaction_pool = reaction_factory.reaction_pool

@@ -111,6 +111,14 @@ class x_exclamation_mark_Tests(TestCase):
                         A_ppi_B; ! <comp>
                         <comp>; OR A--C
                         """)
+
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <comp>
+        #                 <comp>; AND <
+        #                 <comp>; AND <comp1>
+        #                 <comp1>; OR A--D
+        #                 <comp1>; OR A--E
+        #                 """)
 # expect:
 
 # C, D

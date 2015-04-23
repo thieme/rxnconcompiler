@@ -302,19 +302,27 @@ class BiologicalComplex:
     def add_state(self, state):
         """
         """
-        if state.type == 'Input':
+        if state.type == 'Input':  # artefact?
             self.input_conditions = Contingency('','!',state)
         elif state.type == 'Association':
+            # state: A--B
             mol1 = Molecule(state.components[0].name)
+            #mol1 A
             mol1.mid = state.components[0].cid
             mol1.binding_partners.append(state)
             mol2 = Molecule(state.components[1].name)
+            #mol B
             mol2.mid = state.components[1].cid
             mol2.binding_partners.append(state)
-
+            # if ctype ANDNOT/ORNOT
+            # add_binding_site if we have several mols bound to one side and use a NOT we keep this empty
+            # A(C,D), C(A), D(A), B(....) drop C and D later
+            # check if site is occupied by other then ignore
+            # NOTs last always (if site is empty and later will be occupied then use the occupation)
             partners = self.get_molecules(mol1.name, mol1.mid)
             if not partners:
                 self.molecules.append(mol1)
+                #[A,B]
                 #KR: append to mol1.binding_partners here
                 #    or add method create_molecule(component)
             else:
@@ -336,6 +344,9 @@ class BiologicalComplex:
     #     print "mol1: ", mol1
         mol1.add_modification(state)
         found = False
+        # make only residues mutually exclusive
+        # if the residue is different apply mod on it
+        # not is only applied on residues which are not mentioned
         if complexes and ctype != "or":
             for comp in complexes:
                 molecules = comp.get_molecules(state.components[0].name)

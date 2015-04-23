@@ -50,7 +50,6 @@ from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.util.util import product
 import copy
 
-
 class ComplexBuilder:
     """
     Colection of algorithms creating groups of complexes.
@@ -188,21 +187,29 @@ class ComplexBuilder:
         
     def create_basic_complexes_from_boolean(self, final_states, alter_comp):
         complexes = []
+        # if state appears more than 1 warning
+        # if contra sign kill complex and make stronger warning 
         for state_group in final_states:
             comp = BiologicalComplex()
             self.stack = state_group
             while self.stack:
                 state = self.stack.pop()
                 if state.state.type == 'Input':
+                    # negative input
+                    # multiple inputs
                     alter_comp.input_condition = state
                 elif state.state.type == "Covalent Modification":
                     comp.add_state_mod(complexes, state.state, state.ctype)
+                # TODO: loc ...
                 else:
-                    result = comp.add_state(state.state)
+
+                    result = comp.add_state(state.state) # A--B
                     if result:
                         self.stack = result + self.stack
             if comp.molecules:
+                # each self.stack results in one comp
                 complexes.append(comp)
+                #[A, D, C, B]
         return complexes, alter_comp
 
     def build_positive_complexes_from_boolean(self, bool_cont):
@@ -216,20 +223,17 @@ class ComplexBuilder:
         Returns AlternativeComplexes object.
         Information about Input states is stored in AlternativeComplex.input_condition.
         """
-        print "bool_cont: "
         alter_complexes = []
         self.get_state_sets(bool_cont)
 
         final_separated_states = self.check_state_connection()
-        print "final_separated_states: ", final_separated_states
         alter_complexes.append(copy.deepcopy(final_separated_states))
         for stacks in final_separated_states:
             alter_comp = AlternativeComplexes(str(bool_cont.state))
             alter_comp.ctype = bool_cont.ctype  # set the ctype later its the same as positive_complexes.ctype
             complexes, alter_comp = self.create_basic_complexes_from_boolean(stacks, alter_comp)
             complexes = sorted(complexes, key=lambda comp: len(comp))
-            print "complexes: ", complexes
-            for cid, comp in enumerate(complexes):
+            for cid, comp in enumerate(complexes):# [ACDB, AC]
                 comp.cid = str(cid + 1)
                 alter_comp.add_complex(comp)
             alter_complexes.append(alter_comp)
@@ -276,7 +280,7 @@ class ComplexBuilder:
         Step 2: if its the first state_groupe generate a list in stacks containing the state_group
                 Round1: stacks = [[[or A_[bd]-{P}]]]
         Step 3: check next state_group
-                Round2: state_group = [or B_[bd]-{P}]
+                Round2: state_group = [or B_[bd]-{P}] _> [[[or A_[bd]-{P}]],[[or B_[bd]-{P}], ]]
                 Round3: state_group = [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]
                 Round4: state_group = [and A_[AssocC]--C_[AssocA], and A_[AssocD]--D_[AssocA]]
             Step 3.1.: if one of the states in state_group overlaps with one already known in one of the lists of stacks than append
@@ -291,12 +295,23 @@ class ComplexBuilder:
         One for B: [[or B_[bd]-{P}], [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]]
 
         Inputs connected with an OR are saved during the process and added to the respective lists afterwords.
+
+        A_ppi_B <comp>
+        <comp>; OR <A>
+        <comp>; OR <B>
+        <A>; AND A-{P}
+        <A>; AND <NOTB>
+        <NOTB>; NOT B-{P}
+        <B>; AND B-{P}
+        <B>; AND <NOTA>
+        <NOTA>; NOT A-{P}
+        #
+
+        final_states = [[AND A-{P}, ANDNOT B-{P}], [AND B-{P}, ANDNOT A-{P}]]
+
         """
         stacks = []
         input_stacks = []
-        print "final_states: ", self.final_states
-        #print "final_states[]: ", self.final_states[0][0]
-        #self.final_states[0][0].ctype = "or"
         for state_group in self.final_states:  # Step 1
             self.stack = state_group
             new_stack = True
@@ -356,12 +371,10 @@ class ComplexBuilder:
         Each list corresponding to a complex.
         """
         self.states.append([bool_cont])
-        print "self.states: ", self.states
-        while self.states: [AND A--C, AND <NOT>]
-            state_list = self.states.pop() [AND A--C, AND <NOT>]
-            print "state_list: ", state_list [AND A--C] [AND <NOT>]
+        while self.states: #[AND A--C, AND <NOT>]
+            state_list = self.states.pop() #[AND A--C, AND <NOT>]
+            print "state_list: ", state_list #[AND A--C] [AND <NOT>]
             self.get_states(state_list)
-
 
     def get_states(self, node_list):
         """
@@ -373,24 +386,21 @@ class ComplexBuilder:
         to_add = []
         to_clone = []
         
-        for node in node_list: [AND <NOT>]
-            if node.has_children: [NOT A--E]
-                print "node: ", node
+        for node in node_list: # [AND <NOT>]
+            if node.has_children: # [NOT A--E]
                 to_remove.append(node)
-                print "node.children: ", node.children
                 for child in node.children:
                     # here we have to add warning for mix of AND/OR at the same level
                     if child.ctype == 'and' or '--' in child.ctype:
                         to_add.append(child)
-                        print "child: ", child # [AND A--C, AND <NOT>]
                     if child.ctype == 'or':
                         to_clone.append(child)
-                    if child.ctype == 'not' and node.ctype == "and":
+                    #if child.ctype == 'not' and node.ctype == "and":
                         # change child
                         #replace 'not' with 'x' + 'state' # [AND A--C, AND <NOT>] -> # [AND A--C, AND xA--E]
                                                                                      #[AND A--C, ANDNOT xec--E]
                                                                                      # [AND A--C, ORNOT xec--E]
-                        to_add.append(child)
+                        #to_add.append(child)
                         
 
 
@@ -399,15 +409,13 @@ class ComplexBuilder:
 
         if to_add:
             for node in to_add:
-                node_list.append(node) # [<complB>, A--F, A--E] AND A--C -> [AND A--C]
+                node_list.append(node)  # [<complB>, A--F, A--E] AND A--C -> [AND A--C]
             bool_flag = False
             for node in node_list:
                 if node.has_children and len(node.children) > 0:
                     bool_flag = True
             if bool_flag:
-                #print "bool_flag, ", node_list
-                self.states.append(node_list) # [<complA>, <complB>]
-                #self.to_extand = True
+                self.states.append(node_list)  # [<complA>, <complB>]
             else:
                 self.final_states.append(node_list)
 
@@ -510,6 +518,6 @@ class ComplexBuilder:
             for mod in mol.modifications:
                 if mod not in already:
                     result.append(mod)
-                    new_root = mod.get_partner(mol.get_component())
+                    #new_root = mod.get_partner(mol.get_component())
                     new_roots = []
         return result, new_roots
