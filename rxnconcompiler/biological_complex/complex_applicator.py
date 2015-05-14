@@ -27,7 +27,7 @@ if AlternativeComplexes > 1 BiologicalComplex
 """
 
 import copy
-from biological_complex import BiologicalComplex
+from biological_complex import BiologicalComplex, AlternativeComplexes
 from complex_builder import ComplexBuilder
 from rxnconcompiler.util.util import product
 from rxnconcompiler.contingency.contingency import Contingency
@@ -50,8 +50,8 @@ class ComplexApplicator:
             
             self.complexes = []
             self.final_separated_states = complexes[0]  # the last list contains all the separated boolean states
-            for compl in complexes[1:]:
-                self.complexes.append(self.prepare_complexes_to_apply(compl))
+            #for compl in complexes[1:]:
+            self.complexes.append(self.prepare_complexes_to_apply(complexes[1]))
 
     def _prepare_alter_complex(self, alter_complex):
         """
@@ -67,7 +67,7 @@ class ComplexApplicator:
         to_remove = [comp for comp in alter_complex if (comp.molecules == [] and not comp.input_conditions)]
         for comp in to_remove:
             alter_complex.remove(comp)
-        # we are in context of reactions -> know all roots and special things like mRNA need and so on
+        # TODO: we are in context of reactions -> know all roots and special things like mRNA need and so on
         #  For each root:
         #    find all connected states
         #       add states to root
@@ -77,11 +77,22 @@ class ComplexApplicator:
         # AB
         # [A,B] [C, D]
         # A       C
+        possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
 
 
-        root = self.get_root_molecules(alter_complex.get_first_non_empty())[0]
+        for root in possible_roots:
+            alter_complex_of_root = AlternativeComplexes(alter_complex.name)
+            alter_complex_of_root.ctype = alter_complex.ctype
+            alter_complex_of_root.input_condition = alter_complex.input_condition
+            for comp in alter_complex:
+                if comp.has_molecule(root.name):  # we only consider those complexes which are directly connected to one of the roots
+                    alter_complex_of_root.append(comp)
+            if alter_complex_of_root:
+                com = self.builder.build_required_complexes(alter_complex_of_root, root)
+
+        #root = self.get_root_molecules(alter_complex.get_first_non_empty())[0]
         #print 'Root', root
-        com = self.builder.build_required_complexes(alter_complex, root)
+        #com = self.builder.build_required_complexes(alter_complex, root)
         return com
        
     def prepare_complexes_to_apply(self, input_complexes):

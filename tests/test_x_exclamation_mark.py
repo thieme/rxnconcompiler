@@ -85,12 +85,12 @@ class x_exclamation_mark_Tests(TestCase):
         #                 """)
         #rxncon = Rxncon("""A_ppi_B""")
         # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <AorC> 
+        #                 A_ppi_B; ! <AorC>
         #                 <AorC>; OR A_[x]-{P}
         #                 <AorC>; OR B--C
         #                 <AorC>; OR A--D
         #                 <AorC>; OR B_[y]-{P}
-        #                 """)
+        # #                 """)
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <III>
         #                 <III>; AND <II>
@@ -109,18 +109,20 @@ class x_exclamation_mark_Tests(TestCase):
         #                 """)
         rxncon = Rxncon("""
                         A_ppi_B; ! <comp>
-                        <comp>; OR A--C
-                        <comp>; OR <NOT>
-                        <NOT>; NOT A--D
+                        <comp>; AND A--C
+                        <comp>; AND <NOT>
+                        <NOT>; NOT A-{P}
                         """)
 
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <comp>
-        #                 <comp>; AND <
-        #                 <comp>; AND <comp1>
-        #                 <comp1>; OR A--D
-        #                 <comp1>; OR A--E
-        #                 """)
+        #                 <comp>; AND <c1>
+        #                 <comp>; AND <c2>
+        #                 <c1>; OR A--C
+        #                 <c1>; OR A--D
+        #                 <c2>; OR A_[x]-{P}
+        #                 <c2>; OR A_[y]-{P}
+        #                  """)
 # expect:
 
 # C, D

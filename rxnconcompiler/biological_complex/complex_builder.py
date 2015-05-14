@@ -42,6 +42,7 @@ How contingencies with Input states inside boolean are treated?
 - it is done at the end of the process.
 (- later in the flow when applying complexes on reaction it will change reaction rate.) 
 """
+from zeitgeist.datamodel import child
 
 from biological_complex import BiologicalComplex, \
         AlternativeComplexes
@@ -207,8 +208,10 @@ class ComplexBuilder:
                     # multiple inputs
                     alter_comp.input_condition = state
                 elif state.state.type == "Covalent Modification":
-                    comp.add_state_mod(complexes, state.state, state.ctype)
+                    comp.add_state_mod(complexes, state)
                 # TODO: loc ...
+                elif state.state.type == "loc":
+                    pass
                 else:
                     result = comp.add_state(state) # A--B
                     if result:
@@ -400,19 +403,39 @@ class ComplexBuilder:
         for node in node_list: # [AND <NOT>]
             if node.has_children: # [NOT A--E]
                 to_remove.append(node)
-                for child in node.children:
-                    # here we have to add warning for mix of AND/OR at the same level
-                    if child.ctype == 'and' or '--' in child.ctype:
-                        to_add.append(child)
-                    elif child.ctype == 'or':
-                        to_clone.append(child)
-                    elif child.ctype == 'not' and node.ctype == "and":
+                # we don't mix bool types hence if one child has a specific bool the other children have the same
+                child = node.children[0]
+
+                if child.ctype == 'and' or '--' in child.ctype:
+                    to_add.extend(node.children)
+                elif child.ctype == 'or':
+                    #if node.ctype == "and":
+                    #    to_clone.append(node.children)
+                    #else:
+                    to_clone.extend(node.children)
+                elif child.ctype == 'not' and node.ctype == "and":
+                    for child in node.children:
                         child.ctype = "andnot"
                         to_add.append(child)
-                    elif child.ctype == 'not' and node.ctype == "or":
+                elif child.ctype == 'not' and node.ctype == "or":
+                    for child in node.children:
                         child.ctype = "ornot"
                         to_clone.append(child)
-                        # change child
+                # for child in node.children:
+                #     # here we have to add warning for mix of AND/OR at the same level
+                #     if child.ctype == 'and' or '--' in child.ctype:
+                #         to_add.append(child)
+                #     elif child.ctype == 'or':
+                #         if node.ctype == "and":
+                #
+                #         to_clone.append(child)
+                #     elif child.ctype == 'not' and node.ctype == "and":
+                #         child.ctype = "andnot"
+                #         to_add.append(child)
+                #     elif child.ctype == 'not' and node.ctype == "or":
+                #         child.ctype = "ornot"
+                #         to_clone.append(child)
+                #         # change child
                         #replace 'not' with 'x' + 'state' # [AND A--C, AND <NOT>] -> # [AND A--C, AND xA--E]
                                                                                      #[AND A--C, ANDNOT xec--E]
                                                                                   # [AND A--C, ORNOT xec--E]
@@ -436,8 +459,10 @@ class ComplexBuilder:
                 self.final_states.append(node_list)
 
         elif to_clone:
+            #for nodes in to_clone:
+           # for x in itertools.product([1, 5, 8], [0.5, 4])
             for node in to_clone:
-                result = node_list + [node] # [] + [OR A--C] -> [[OR A--C]]
+                result = node_list + [node] # [] + [OR A--C] -> [[OR A--C]] # [AND A--D] + [OR A--C] -> [AND A--D, OR A--C]
                 bool_flag = False
                 for node in result:
                     if node.has_children and len(node.children) > 0:
@@ -458,9 +483,16 @@ class ComplexBuilder:
 
         #TODO: What if we have two root molecules
         """
+        # todo: we have to negate the negation at this point
         ordered_states = self.get_states_from_complex(compl, root_molecule)
+        if len(ordered_states[0]):
+            ordered_states = ordered_states[0]  # positive states with bond and/or mod
+        else:
+            ordered_states = ordered_states[1]  # states with negative bond and/or mod (sites)
         alter_comp = AlternativeComplexes('')
         counter = len(ordered_states) -1
+        # todo: write a function for positive states (those which have not a defined site)
+        # todo: write a function for negative states (those which have a site defined)
         while counter: 
             comp = BiologicalComplex()
             comp.is_positive = False
@@ -470,7 +502,7 @@ class ComplexBuilder:
             mols = comp.get_molecules(last_state.components[0].name)
             if len(last_state.components) > 1:
                 mols += comp.get_molecules(last_state.components[1].name)
-                mols[0].set_site(last_state)
+                mols[0].set_site(last_state) # todo: here we have to add a bond not a site
                 
             alter_comp.add_complex(comp)
             counter -=1
@@ -478,7 +510,7 @@ class ComplexBuilder:
         comp = BiologicalComplex()
         comp.is_positive = False
         mol = Molecule(root_molecule.name)
-        mol.set_site(ordered_states[0])
+        mol.set_site(ordered_states[0]) # todo: here we have to add a bond not a site
         comp.molecules.append(mol)
         alter_comp.add_complex(comp)
         return alter_comp
@@ -508,12 +540,13 @@ class ComplexBuilder:
           E--K, E--J ]
         Order within the layers is not important.
         """
-        result = []
+        result = [[],[]]
         stack = [root_molecule]
         while stack:
             states_mols = self._get_complex_layer(compl, stack, result)
-            result += states_mols[0]
-            stack = states_mols[1]
+            result[0] += states_mols[0]
+            result[1] += states_mols[1]
+            stack = states_mols[2]
         return result
 
     def _get_complex_layer(self, compl, root_list, already=None):
@@ -522,18 +555,29 @@ class ComplexBuilder:
         """
         if not already:
             already = []
-        result = []
+        result_pos = []
+        result_neg = []
         new_roots = []
         for root_molecule in root_list:
             mol = compl.get_molecules(root_molecule.name)[0]
             for bond in mol.binding_partners:
-                if bond not in already:
-                    result.append(bond)
+                if bond not in already[0]:
+                    result_pos.append(bond)
                     new_root = bond.get_partner(mol.get_component())
                     new_roots.append(new_root)
             for mod in mol.modifications:
-                if mod not in already:
-                    result.append(mod)
+                if mod not in already[0]:
+                    result_pos.append(mod)
                     #new_root = mod.get_partner(mol.get_component())
                     new_roots = []
-        return result, new_roots
+            # todo: we could have binding-sites negating binding sites means to establish a bond
+            for site in mol.binding_sites:
+                if site not in already[1]:
+                    result_neg.append(site)
+                    new_root = site.get_partner(mol.get_component())
+                    new_roots.append(new_root)
+            # todo: we could have modification-sites negating mod sites means to establish a mod
+            for mod_site in mol.modification_sites:
+                if mod_site not in already[1]:
+                    result_neg.append(mod_site)
+        return result_pos, result_neg, new_roots

@@ -388,34 +388,62 @@ class BiologicalComplex(object):
                 if state not in partners[0].binding_partners:
                     partners[0].add_bond(state.state)
 
-    def add_state_mod(self, complexes, state, ctype):
+    def add_state_mod(self, complexes, state):
         print "Its covalent"
-        mol1 = Molecule(state.components[0].name)
-        mol1.mid = state.components[0].cid
+        mol1 = Molecule(state.state.components[0].name)
+        mol1.mid = state.state.components[0].cid
     #     print "mol1: ", mol1
-        mol1.add_modification(state)
+        if state.ctype in ["and", "or"]:
+            mol1.add_modification(state.state)
+        else:
+            mol1.set_site(state.state)
+        #mol1.add_modification(state.state)
         found = False
-        # make only residues mutually exclusive
-        # if the residue is different apply mod on it
-        # not is only applied on residues which are not mentioned
-        if complexes and ctype != "or":
+        # todo: make only same residues mutually exclusive
+        # todo: if the residue is different apply modification on it
+        # todo: not is only applied on residues which are not mentioned as used
+
+        # if state.ctype in ["ornot","andnot"]:
+        #     mol1.set_site(state.state)
+        #     mol2.set_site(state.state)
+        # else:
+        #     mol1.binding_partners.append(state.state)
+        #     mol2.binding_partners.append(state.state)
+
+        #if state.ctype in ["ornot", "andnot"]:
+
+        if complexes and state.ctype in ["and", "andnot"]:
             for comp in complexes:
-                molecules = comp.get_molecules(state.components[0].name)
+                molecules = comp.get_molecules(state.state.components[0].name)
                 if molecules:
                     for mol in molecules:
-                        if state not in mol.modifications:
-                            found = True
-                            mol.add_modification(state)
+                        # if the state is not known and the ctype is and
+                        if state.state not in mol.modifications and state.ctype == "and":
+                            #check if the state was set as modification site before
+                            if state.state in mol.modification_site:
+                                # if yes remove this site and add the modification
+                                mol.remove_modification_site(state.state)
+                                mol.add_modification(state.state)
+                                found = True
+                            else:
+                                # if not just add the modification
+                                found = True
+                                mol.add_modification(state.state)
+                        elif state.state not in mol.modifications and state.ctype == "notand":
+                            # if the state is not known as modification and the ctype is notand set the modification site
+                            mol.set_site(state.state)
             if found:
                 return
 
         partners = self.get_molecules(mol1.name, mol1.mid)
 
         if not partners:
-
             self.molecules.append(mol1)
         else:
-            partners[0].add_modification(state)
+            if state.ctype in ["and", "or"]:
+                partners[0].add_modification(state.state)
+            else:
+                partners[0].set_site(state.state)
 
     def get_contingencies(self):
         """
