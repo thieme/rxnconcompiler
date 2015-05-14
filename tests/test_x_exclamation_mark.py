@@ -107,22 +107,31 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <comp1>; OR A--D
         #                 <comp1>; OR A--E
         #                 """)
-        rxncon = Rxncon("""
-                        A_ppi_B; ! <comp>
-                        <comp>; AND A--C
-                        <comp>; AND <NOT>
-                        <NOT>; NOT A-{P}
-                        """)
-
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <comp>
-        #                 <comp>; AND <c1>
-        #                 <comp>; AND <c2>
-        #                 <c1>; OR A--C
-        #                 <c1>; OR A--D
-        #                 <c2>; OR A_[x]-{P}
-        #                 <c2>; OR A_[y]-{P}
-        #                  """)
+        #                 <comp>; OR A--C
+        #                 <comp>; OR A--E
+        #                 """)
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <comp>
+        #                 <comp>; AND A--C
+        #                 <comp>; AND <NOT>
+        #                 <NOT>; NOT A-{P}
+        #                 """)
+
+        rxncon = Rxncon("""
+                        A_ppi_B; ! <comp>
+                        <comp>; AND <c1>
+                        <comp>; AND <c2>
+                        <comp>; AND A_[x]-{P}
+                        <c1>; OR A--C
+                        <c1>; OR A--D
+                        <c2>; OR A--E
+                        <c2>; OR A--F
+                         """)
+
+A_ppi_B; ! <comp> \n <comp>; AND <c1>; AND <c2>; AND A_[x]-{P} \n <c1>; OR A--C; OR A--D \n <c2>; OR A--E; OR A--F
+
 # expect:
 
 # C, D

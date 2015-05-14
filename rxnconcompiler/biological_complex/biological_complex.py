@@ -377,7 +377,7 @@ class BiologicalComplex(object):
                 #KR: append to mol1.binding_partners here
                 #    or add method create_molecule(component)
             else:
-                if state not in partners[0].binding_partners:
+                if state.state not in partners[0].binding_partners:
                     #KR: this if could be delegated to Molecule
                     partners[0].add_bond(state.state)
           
@@ -385,7 +385,7 @@ class BiologicalComplex(object):
             if not partners or mol1 == mol2:
                 self.molecules.append(mol2)
             else:
-                if state not in partners[0].binding_partners:
+                if state.state not in partners[0].binding_partners:
                     partners[0].add_bond(state.state)
 
     def add_state_mod(self, complexes, state):
@@ -403,15 +403,7 @@ class BiologicalComplex(object):
         # todo: if the residue is different apply modification on it
         # todo: not is only applied on residues which are not mentioned as used
 
-        # if state.ctype in ["ornot","andnot"]:
-        #     mol1.set_site(state.state)
-        #     mol2.set_site(state.state)
-        # else:
-        #     mol1.binding_partners.append(state.state)
-        #     mol2.binding_partners.append(state.state)
-
-        #if state.ctype in ["ornot", "andnot"]:
-
+        # todo: check if this is needed
         if complexes and state.ctype in ["and", "andnot"]:
             for comp in complexes:
                 molecules = comp.get_molecules(state.state.components[0].name)

@@ -49,6 +49,7 @@ from biological_complex import BiologicalComplex, \
 from rxnconcompiler.molecule.molecule import Molecule
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.util.util import product
+import itertools
 import copy
 
 class ComplexBuilder:
@@ -409,10 +410,10 @@ class ComplexBuilder:
                 if child.ctype == 'and' or '--' in child.ctype:
                     to_add.extend(node.children)
                 elif child.ctype == 'or':
-                    #if node.ctype == "and":
-                    #    to_clone.append(node.children)
-                    #else:
-                    to_clone.extend(node.children)
+                    if node.ctype == "and":
+                        to_clone.append(node.children)
+                    else:
+                        to_clone.extend(node.children)
                 elif child.ctype == 'not' and node.ctype == "and":
                     for child in node.children:
                         child.ctype = "andnot"
@@ -459,10 +460,23 @@ class ComplexBuilder:
                 self.final_states.append(node_list)
 
         elif to_clone:
+
             #for nodes in to_clone:
-           # for x in itertools.product([1, 5, 8], [0.5, 4])
+            to_clone_copy = copy.deepcopy(to_clone)
+            # remove all lists from to_clone and just keep single ORs
+            # lists are saved in another object for later combination
+            to_combine = [to_clone.pop(to_clone.index(ele)) for ele in reversed(to_clone_copy) if isinstance(ele,list)]
+
+            # get combinations of this boolean OR level if the previous lvl was an AND
+            to_combine = list(itertools.product(*to_combine))  # this returns at least an empty tuple
+            if to_combine[0]:
+                to_clone += to_combine # get combinations of this boolean OR level if the previous lvl was an AND
+
             for node in to_clone:
-                result = node_list + [node] # [] + [OR A--C] -> [[OR A--C]] # [AND A--D] + [OR A--C] -> [AND A--D, OR A--C]
+                if isinstance(node, tuple):
+                    result = node_list + list(node) # [] + [OR A--C] -> [[OR A--C]] # [AND A--D] + [OR A--C] -> [AND A--D, OR A--C]
+                else:
+                    result = node_list + [node]
                 bool_flag = False
                 for node in result:
                     if node.has_children and len(node.children) > 0:
@@ -497,7 +511,7 @@ class ComplexBuilder:
             comp = BiologicalComplex()
             comp.is_positive = False
             for state in ordered_states[:counter]:
-                comp.add_state(state)
+                comp.add_state(state)  # fixme state not state.state
             last_state = ordered_states[counter]
             mols = comp.get_molecules(last_state.components[0].name)
             if len(last_state.components) > 1:
