@@ -363,6 +363,11 @@ class BiologicalComplex(object):
             mol2 = Molecule(state.state.components[1].name)
             #mol B
             mol2.mid = state.state.components[1].cid
+
+            # todo: if not s1 to site x but s2 can bind to x occupy x by s2
+            # todo: check if site is occupied by other then ignore
+            # todo: split comp so that both criteria are fulfilled is an OR statement
+
             if state.ctype in ["ornot","andnot"]:
                 mol1.set_site(state.state)
                 mol2.set_site(state.state)
@@ -389,14 +394,23 @@ class BiologicalComplex(object):
                     partners[0].add_bond(state.state)
 
     def add_state_mod(self, complexes, state):
+        # AND and OR are defined by the bracket we don't have to consider this here again
+        # just check if we have notand or notor
+
         print "Its covalent"
         mol1 = Molecule(state.state.components[0].name)
         mol1.mid = state.state.components[0].cid
+
+        # todo: if multiple mol of the same name apply mod to all of them per default
+        # todo: A 1--2 A positional information for mod
+        # todo: say which subunit should be mod otherwise mod other wise grab just one
     #     print "mol1: ", mol1
         if state.ctype in ["and", "or"]:
             mol1.add_modification(state.state)
-        else:
+        elif state.ctype in ["notand", "notor"]:
             mol1.set_site(state.state)
+        else:
+            assert "not known bool state"
         #mol1.add_modification(state.state)
         found = False
         # todo: make only same residues mutually exclusive
@@ -404,7 +418,7 @@ class BiologicalComplex(object):
         # todo: not is only applied on residues which are not mentioned as used
 
         # todo: check if this is needed
-        if complexes and state.ctype in ["and", "andnot"]:
+        if complexes and state.ctype in ["and", "notand"]:  # or notor?
             for comp in complexes:
                 molecules = comp.get_molecules(state.state.components[0].name)
                 if molecules:
@@ -412,7 +426,7 @@ class BiologicalComplex(object):
                         # if the state is not known and the ctype is and
                         if state.state not in mol.modifications and state.ctype == "and":
                             #check if the state was set as modification site before
-                            if state.state in mol.modification_site:
+                            if state.state in mol.modification_site:  # fixme: this is a conflict raise this
                                 # if yes remove this site and add the modification
                                 mol.remove_modification_site(state.state)
                                 mol.add_modification(state.state)

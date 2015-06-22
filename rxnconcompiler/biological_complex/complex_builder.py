@@ -213,10 +213,13 @@ class ComplexBuilder:
                 # TODO: loc ...
                 elif state.state.type == "loc":
                     pass
-                else:
+                elif state.state.type == "Association":
                     result = comp.add_state(state) # A--B
                     if result:
                         self.stack = result + self.stack
+                else:
+                    # todo: make a clear error if the reaction is not defined
+                    assert "reaction not defined"
             if comp.molecules:
                 # each self.stack results in one comp
                 complexes.append(comp)
@@ -241,9 +244,7 @@ class ComplexBuilder:
         alter_complexes = []
         self.get_state_sets(bool_cont)
 
-        #final_separated_states = self.check_state_connection()
-        alter_complexes.append(copy.deepcopy(self.final_states))
-        #for stacks in final_separated_states:
+        alter_complexes.append(copy.deepcopy(self.final_states)
         alter_comp = AlternativeComplexes(str(bool_cont.state))
         alter_comp.ctype = bool_cont.ctype  # set the ctype later its the same as positive_complexes.ctype
         complexes, alter_comp = self.create_basic_complexes_from_boolean(alter_comp)
@@ -405,15 +406,18 @@ class ComplexBuilder:
             if node.has_children: # [NOT A--E]
                 to_remove.append(node)
                 # we don't mix bool types hence if one child has a specific bool the other children have the same
+                # todo: check if all children have the same bool type
+                # todo: if not implemented bool raise error/warning
                 child = node.children[0]
 
                 if child.ctype == 'and' or '--' in child.ctype:
                     to_add.extend(node.children)
                 elif child.ctype == 'or':
                     if node.ctype == "and":
-                        to_clone.append(node.children)
+                        # todo: check not --
+                        to_clone.append(node.children) # [[AND A--C, AND A--E], [AND A--F, AND A--D]]
                     else:
-                        to_clone.extend(node.children)
+                        to_clone.extend(node.children) # [AND A--C, AND A--E , AND A--F, AND A--D]
                 elif child.ctype == 'not' and node.ctype == "and":
                     for child in node.children:
                         child.ctype = "andnot"
@@ -422,27 +426,6 @@ class ComplexBuilder:
                     for child in node.children:
                         child.ctype = "ornot"
                         to_clone.append(child)
-                # for child in node.children:
-                #     # here we have to add warning for mix of AND/OR at the same level
-                #     if child.ctype == 'and' or '--' in child.ctype:
-                #         to_add.append(child)
-                #     elif child.ctype == 'or':
-                #         if node.ctype == "and":
-                #
-                #         to_clone.append(child)
-                #     elif child.ctype == 'not' and node.ctype == "and":
-                #         child.ctype = "andnot"
-                #         to_add.append(child)
-                #     elif child.ctype == 'not' and node.ctype == "or":
-                #         child.ctype = "ornot"
-                #         to_clone.append(child)
-                #         # change child
-                        #replace 'not' with 'x' + 'state' # [AND A--C, AND <NOT>] -> # [AND A--C, AND xA--E]
-                                                                                     #[AND A--C, ANDNOT xec--E]
-                                                                                  # [AND A--C, ORNOT xec--E]
-                        #to_add.append(child)
-                        
-
 
         for node in to_remove:
             node_list.remove(node)
@@ -470,7 +453,7 @@ class ComplexBuilder:
             # get combinations of this boolean OR level if the previous lvl was an AND
             to_combine = list(itertools.product(*to_combine))  # this returns at least an empty tuple
             if to_combine[0]:
-                to_clone += to_combine # get combinations of this boolean OR level if the previous lvl was an AND
+                to_clone += to_combine
 
             for node in to_clone:
                 if isinstance(node, tuple):

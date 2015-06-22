@@ -192,7 +192,7 @@ class Rxncon():
         for cont in cont_root.children:
             if cont.state.type == 'Boolean':  # if it is a boolean we should have build it and it should appear in self.complex_pool
                 if self.complex_pool.has_key(str(cont.state)):
-                    return self.complex_pool[str(cont.state)]
+                    return self.complex_pool[str(cont.state)]  # it directly returns the boolean contingency What happens if we have more than one?
 
     def apply_contingencies(self, container):
         """
@@ -254,10 +254,6 @@ class Rxncon():
         """
         pass
 
-    def get_input_dict(self):
-        """"""
-        pass
-
     def add_missing_reactions(self, states_list):
         """
         Creates pool of reaction that produce states required in the system
@@ -301,16 +297,16 @@ class Rxncon():
             # (changes after running the process because of OR and K+/K-)
             complexes = []
             if add_complexes:
-                complexes = self.get_complexes(react_container.name) 
-            ComplexApplicator(react_container, complexes).apply_complexes() 
+                complexes = self.get_complexes(react_container.name) #1
+            ComplexApplicator(react_container, complexes).apply_complexes() #2
 
             # after applying complexes we may have more reactions in a single container.
             if add_contingencies:
-                self.apply_contingencies(react_container)
+                self.apply_contingencies(react_container) #3
 
             # single contingency is applied for all reactions. If K+/K- reactions are dubbled.
-            self.update_reactions()
-            for reaction in react_container:
+            self.update_reactions() #4
+            for reaction in react_container: # 5
                 reaction.run_reaction()
 
 

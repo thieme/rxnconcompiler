@@ -67,6 +67,7 @@ class ComplexApplicator:
         to_remove = [comp for comp in alter_complex if (comp.molecules == [] and not comp.input_conditions)]
         for comp in to_remove:
             alter_complex.remove(comp)
+
         # TODO: we are in context of reactions -> know all roots and special things like mRNA need and so on
         #  For each root:
         #    find all connected states
@@ -84,7 +85,7 @@ class ComplexApplicator:
             alter_complex_of_root = AlternativeComplexes(alter_complex.name)
             alter_complex_of_root.ctype = alter_complex.ctype
             alter_complex_of_root.input_condition = alter_complex.input_condition
-            for comp in alter_complex:
+            for comp in alter_complex: # [Complex: A,C, Complex: A,D, Complex: B,E Complex G,F]
                 if comp.has_molecule(root.name):  # we only consider those complexes which are directly connected to one of the roots
                     alter_complex_of_root.append(comp)
             if alter_complex_of_root:
@@ -100,8 +101,8 @@ class ComplexApplicator:
         @type input_complexes:  list of AlternativeComplexes
         @param input_complexes: one or two AlternativeComplexes objects as a list.
                                 Alternative Complexes object keeps all complexes 
-                                from one boolean contingency. Maximaly two boolean 
-                                contingency can be applied on a reaction.
+                                from one boolean contingency. Maximal two boolean
+                                contingency can be applied on a reaction. why???? one can define arbitrary number of boolean contingencies to a reaction
         """
         if 'AlternativeComplexes' in str(input_complexes.__class__):
             # one boolean contingency
