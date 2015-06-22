@@ -146,8 +146,6 @@ class ComplexBuilder:
         # Build all posibilities
         all_single_complexes = []
         for comp in positive_complexes:
-            #for mol in comp.molecules:
-                #print " before processing mol.inspect: ", mol.inspect()  
             negative = self.build_negative_complexes(comp, root)
 
             all_single_complexes.append((comp, negative))
@@ -494,12 +492,12 @@ class ComplexBuilder:
             comp = BiologicalComplex()
             comp.is_positive = False
             for state in ordered_states[:counter]:
-                comp.add_state(state)  # fixme state not state.state
+                comp.add_state(state)
             last_state = ordered_states[counter]
             mols = comp.get_molecules(last_state.components[0].name)
             if len(last_state.components) > 1:
                 mols += comp.get_molecules(last_state.components[1].name)
-                mols[0].set_site(last_state) # todo: here we have to add a bond not a site
+                mols[0].set_site(last_state) # todo: here we have to add a bond not a site if we want to negate a bond
                 
             alter_comp.add_complex(comp)
             counter -=1
@@ -541,9 +539,9 @@ class ComplexBuilder:
         stack = [root_molecule]
         while stack:
             states_mols = self._get_complex_layer(compl, stack, result)
-            result[0] += states_mols[0]
-            result[1] += states_mols[1]
-            stack = states_mols[2]
+            result[0] += states_mols[0]  # result_pos
+            result[1] += states_mols[1]   # result_neg
+            stack = states_mols[2]   # new root
         return result
 
     def _get_complex_layer(self, compl, root_list, already=None):
@@ -566,13 +564,14 @@ class ComplexBuilder:
                 if mod not in already[0]:
                     result_pos.append(mod)
                     #new_root = mod.get_partner(mol.get_component())
-                    new_roots = []
+                    #new_roots = []
             # todo: we could have binding-sites negating binding sites means to establish a bond
             for site in mol.binding_sites:
                 if site not in already[1]:
                     result_neg.append(site)
-                    new_root = site.get_partner(mol.get_component())
-                    new_roots.append(new_root)
+                    # don't set a new root because we are looking on a site, that means that the partner is not bound hence there is no connection
+                    #new_root = site.get_partner(mol.get_component())
+                    #new_roots.append(new_root)
             # todo: we could have modification-sites negating mod sites means to establish a mod
             for mod_site in mol.modification_sites:
                 if mod_site not in already[1]:
