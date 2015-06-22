@@ -103,6 +103,7 @@ class x_exclamation_mark_Tests(TestCase):
         rxncon = Rxncon("""
                         A_ppi_B; ! <I>
                         <I>; AND A--C
+                        <I>; AND A--D
                         A_ppi_B; ! <II>
                         <II>; AND A--D
                         """)
