@@ -149,10 +149,6 @@ class ComplexBuilder:
             negative = self.build_negative_complexes(comp, root)
 
             all_single_complexes.append((comp, negative))
-        #print "###all_single_complexes: ", all_single_complexes
-        #for tupl in all_single_complexes:
-        #    for mol in tupl[0].molecules:
-                #print "mol.inspect: ", mol.inspect() 
 
         result = self.helper_required_complexes(all_single_complexes, root)
 
