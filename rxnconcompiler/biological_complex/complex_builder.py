@@ -235,20 +235,20 @@ class ComplexBuilder:
         @return alter_complexes: list of AlternativeComplex obj
         @type alter_complexes: list
         """
-        alter_complexes = []
-        self.get_state_sets(bool_cont)
-
-        alter_complexes.append(copy.deepcopy(self.final_states)
-        alter_comp = AlternativeComplexes(str(bool_cont.state))
-        alter_comp.ctype = bool_cont.ctype  # set the ctype later its the same as positive_complexes.ctype
-        complexes, alter_comp = self.create_basic_complexes_from_boolean(alter_comp)
-        complexes = sorted(complexes, key=lambda comp: len(comp))
-        for cid, comp in enumerate(complexes):# [ACDB, AC]
-            comp.cid = str(cid + 1)
-            alter_comp.add_complex(comp)
-        alter_complexes.append(alter_comp)
-
-        return alter_complexes
+        #alter_complexes = []
+        self.get_state_sets(bool_cont) # we want only the list
+        pass
+        # alter_complexes.append(copy.deepcopy(self.final_states)
+        # alter_comp = AlternativeComplexes(str(bool_cont.state))
+        # alter_comp.ctype = bool_cont.ctype  # set the ctype later its the same as positive_complexes.ctype
+        # complexes, alter_comp = self.create_basic_complexes_from_boolean(alter_comp)
+        # complexes = sorted(complexes, key=lambda comp: len(comp))
+        # for cid, comp in enumerate(complexes):# [ACDB, AC]
+        #     comp.cid = str(cid + 1)
+        #     alter_comp.add_complex(comp)
+        # alter_complexes.append(alter_comp)
+        #
+        # return alter_complexes
 
     def check_state_connected_to_stack(self, state, state_stack):
         for ele in state_stack:
@@ -386,6 +386,25 @@ class ComplexBuilder:
             state_list = self.states.pop()  # [AND A--C, AND <NOT>]
             self.get_states(state_list)
 
+    def check_bool_type(self, children):
+        """
+        It is not allowed to mix bool types hence if one child has a specific bool the other children should have the same
+        This function is written to test this
+        @param children: children of a specific boolean
+        @return: True if everything is fine
+        @return: False if booleans are mixed
+
+        # todo: if not implemented bool raise error/warning add it to warnings don't raise and break the program
+        """
+
+        reference_child_ctype = children[0].ctype
+        for child in children[1:]:
+            if reference_child_ctype != child.ctype:
+                raise Exception('Boolean not properly defined mix of {0} and {1}'.format(reference_child_ctype, child.ctype))
+        return True
+
+
+
     def get_states(self, node_list):
         """
         Moves contingencies from a given list to
@@ -398,10 +417,9 @@ class ComplexBuilder:
         
         for node in node_list: # [AND <NOT>]
             if node.has_children: # [NOT A--E]
+                if len(node.children) > 1:
+                    self.check_bool_type(node.children)
                 to_remove.append(node)
-                # we don't mix bool types hence if one child has a specific bool the other children have the same
-                # todo: check if all children have the same bool type
-                # todo: if not implemented bool raise error/warning
                 child = node.children[0]
 
                 if child.ctype == 'and' or '--' in child.ctype:

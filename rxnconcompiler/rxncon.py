@@ -159,7 +159,8 @@ class Rxncon():
         """
         Uses ComplexBuilder to create ComplexPool.
         """
-        bools = self.contingency_pool.get_top_booleans()
+        #bools = self.contingency_pool.get_top_booleans()
+        bools = self.contingency_pool.get_top_complex_booleans()
         for bool_cont in bools:
             builder = ComplexBuilder()
             alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
@@ -298,7 +299,7 @@ class Rxncon():
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name) #1
-            ComplexApplicator(react_container, complexes).apply_complexes() #2
+            #ComplexApplicator(react_container, complexes).apply_complexes() #2
 
             # after applying complexes we may have more reactions in a single container.
             if add_contingencies:
