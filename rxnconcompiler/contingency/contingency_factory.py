@@ -253,8 +253,11 @@ class ContingencyFactory(dict):
         state = get_state(row['Modifier'], sid)
         cont = self.create_contingency(reaction, ctype, state)
         if not reaction.startswith('<'):
-            self.pool.setdefault(reaction, Contingency(reaction))        
-            self.pool[reaction].add_child(cont)
+            if reaction in self.pool:
+                self.pool[reaction].add_child(cont)
+            else:
+                self.pool.setdefault(reaction, Contingency(reaction))
+                self.pool[reaction].add_child(cont)
             if state.state_str.startswith("<"):
                 # if the modifier is a boolean add this boolean to the list of required boolean
                 self.list_of_required_bools.append(state.state_str)

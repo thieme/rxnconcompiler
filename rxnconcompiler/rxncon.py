@@ -186,14 +186,18 @@ class Rxncon():
         @rtype:  list of AlternativeComplexes object
         @return: all complexes defined by boolean contingencies 
                  applicable to a given reaction.  
-        """   
+        """
+        complex_to_apply = []
         if not self.contingency_pool.has_key(reaction_name):
-            return []
+            return complex_to_apply
+
         cont_root = self.contingency_pool[reaction_name]
         for cont in cont_root.children:
             if cont.state.type == 'Boolean':  # if it is a boolean we should have build it and it should appear in self.complex_pool
                 if self.complex_pool.has_key(str(cont.state)):
-                    return self.complex_pool[str(cont.state)]  # it directly returns the boolean contingency What happens if we have more than one?
+                    #return self.complex_pool[str(cont.state)]  # it directly returns the boolean contingency What happens if we have more than one?
+                    complex_to_apply.append((cont.ctype, self.complex_pool[str(cont.state)]))
+        return complex_to_apply
 
     def apply_contingencies(self, container):
         """
@@ -299,7 +303,7 @@ class Rxncon():
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name) #1
-            #ComplexApplicator(react_container, complexes).apply_complexes() #2
+            ComplexApplicator(react_container, complexes).apply_complexes() #2
 
             # after applying complexes we may have more reactions in a single container.
             if add_contingencies:

@@ -237,7 +237,7 @@ class ComplexBuilder:
         """
         #alter_complexes = []
         self.get_state_sets(bool_cont) # we want only the list
-        pass
+        return self.final_states
         # alter_complexes.append(copy.deepcopy(self.final_states)
         # alter_comp = AlternativeComplexes(str(bool_cont.state))
         # alter_comp.ctype = bool_cont.ctype  # set the ctype later its the same as positive_complexes.ctype

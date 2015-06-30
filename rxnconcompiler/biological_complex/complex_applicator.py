@@ -27,6 +27,7 @@ if AlternativeComplexes > 1 BiologicalComplex
 """
 
 import copy
+import itertools
 from biological_complex import BiologicalComplex, AlternativeComplexes
 from complex_builder import ComplexBuilder
 from rxnconcompiler.util.util import product
@@ -42,16 +43,75 @@ class ComplexApplicator:
     def __init__(self, reaction_container, complexes):
         """"""
         self.reaction_container = reaction_container
-        self.builder = ComplexBuilder()
+        self.complexes = complexes
+        #self.builder = ComplexBuilder()
 
-        if not complexes:
-            self.complexes = []
-        else:
+        #if not complexes:
+        #    self.complexes = []
+        #else:
             
-            self.complexes = []
-            self.final_separated_states = complexes[0]  # the last list contains all the separated boolean states
+       #     self.complexes = []
+       #     self.final_separated_states = complexes[0]  # the last list contains all the separated boolean states
             #for compl in complexes[1:]:
-            self.complexes.append(self.prepare_complexes_to_apply(complexes[1]))
+       #     self.complexes.append(self.prepare_complexes_to_apply(complexes[1]))
+
+    def change_contingency_relation(self, inner_list, cont):
+        for entry in inner_list:
+            entry.ctype = cont
+
+    def apply_complexes(self):
+        self.association = []
+
+        for complex in self.complexes:
+
+            if complex[0] == "!":
+                self.positive_application(complex)
+            elif complex[0] == "x":
+                self.negative_application(complex)
+            elif complex[0] in ["k+","k-"]:
+                self.association.append(complex[1])
+                self.association.append(complex[1])
+
+        self.complex_combination()
+
+    def positive_application(self, complex):
+        for inner_list in complex[1]:
+            self.change_contingency_relation(inner_list, "!")
+        self.association.append(complex[1])
+
+    def negative_application(self,complex):
+        tmp = []
+        for inner_list in itertools.product(*complex[1]):
+            self.change_contingency_relation(inner_list, "x")
+            tmp.append(list(inner_list))
+        self.association.append(tmp)
+
+    def complex_combination(self):
+        """
+        this function applies complexes in case of !
+        """
+        new_list = []
+        already_seen = []
+        for outer_list in self.association:
+            if outer_list not in already_seen:
+                already_seen.append(outer_list)
+            for outer_list2 in self.association:
+                if outer_list2 not in already_seen:
+                    already_seen.append(outer_list2)
+                    for inner_list in outer_list:
+                        for inner_list2 in outer_list2:
+                            new_list.append(copy.deepcopy(inner_list))
+                            new_list[-1].extend(inner_list2)
+        pass
+#[
+# [xA1, xB1, xC1, xD1], [xA1, xB2, xC1, xD1], [xA2, xB1, xC1, xD1], [xA2, xB2, xC1, xD1]
+#[xA1, xB1, xC2, xD1], [xA1, xB2, xC2, xD1], [xA2, xB1, xC2, xD1], [xA2, xB2, xC2, xD1]
+#[xA1, xB1, xC1, xD2], [xA1, xB2, xC1, xD2], [xA2, xB1, xC1, xD2], [xA2, xB2, xC1, xD2]
+#[xA1, xB1, xC2, xD2], [xA1, xB2, xC2, xD2], [xA2, xB1, xC2, xD2], [xA2, xB2, xC2, xD2]]
+
+#[
+# [ A1, A2, xC1, xD1], [ A1, A2, xC1, xD2], [ A1, A2, xC2, xD1], [ A1, A2, xC2, xD2]
+#[ B1, B2, xC1, xD1], [ B1, B2, xC1, xD2], [ B1, B2, xC2, xD1], [ B1, B2, xC2, xD2] ]
 
     def _prepare_alter_complex(self, alter_complex):
         """
@@ -225,38 +285,38 @@ class ComplexApplicator:
         elif not comp.has_molecule(reaction_right_reactant.name):
             self.change_non_complex_molecule(reaction_right_reactant)
 
-    def apply_complexes(self):
-        """
-        applies the complexes as well as the alternative complexes
-        """
-
-        com_number = 0
-        reaction_container_clone = self.reaction_container[0].clone()
-        self.counter = 1
-        second_reactant = False
-        print "self.complexes: ", self.complexes
-        #self.complexes = [[self.complexes[0][0],self.complexes[0][2]]]
-        #print "self.complexes: ", self.complexes
-        for com in self.complexes:
-            reaction_container_tmp = []
-
-            while com and len(self.reaction_container[com_number:]) != len(com) and len(com) > 0:
-                new_reaction = copy.deepcopy(reaction_container_clone)
-                self.reaction_container.add_reaction(new_reaction)
-
-            pos_and_neg_compl = self.both_complex_types_present(com)
-            for reaction, compl in zip(self.reaction_container[com_number:], com):
-                reaction = self.set_reaction_id(reaction)
-                self.add_substrate_complexes(reaction, compl)
-                if second_reactant:
-                    self.get_or_conditions_of_other_reactant(reaction, compl)
-                self.update_reaction_rate(reaction, compl, pos_and_neg_compl)
-            com_number = len(com)
-            second_reactant = True
-            
-        if self.complexes == []:
-                reaction = self.reaction_container[0]
-                self.set_basic_substrate_complex(reaction)
+    # def apply_complexes(self):
+    #     """
+    #     applies the complexes as well as the alternative complexes
+    #     """
+    #
+    #     com_number = 0
+    #     reaction_container_clone = self.reaction_container[0].clone()
+    #     self.counter = 1
+    #     second_reactant = False
+    #     print "self.complexes: ", self.complexes
+    #     #self.complexes = [[self.complexes[0][0],self.complexes[0][2]]]
+    #     #print "self.complexes: ", self.complexes
+    #     for com in self.complexes:
+    #         reaction_container_tmp = []
+    #
+    #         while com and len(self.reaction_container[com_number:]) != len(com) and len(com) > 0:
+    #             new_reaction = copy.deepcopy(reaction_container_clone)
+    #             self.reaction_container.add_reaction(new_reaction)
+    #
+    #         pos_and_neg_compl = self.both_complex_types_present(com)
+    #         for reaction, compl in zip(self.reaction_container[com_number:], com):
+    #             reaction = self.set_reaction_id(reaction)
+    #             self.add_substrate_complexes(reaction, compl)
+    #             if second_reactant:
+    #                 self.get_or_conditions_of_other_reactant(reaction, compl)
+    #             self.update_reaction_rate(reaction, compl, pos_and_neg_compl)
+    #         com_number = len(com)
+    #         second_reactant = True
+    #
+    #     if self.complexes == []:
+    #             reaction = self.reaction_container[0]
+    #             self.set_basic_substrate_complex(reaction)
 
     def get_root_molecules(self, compl):
         """"""
