@@ -103,6 +103,8 @@ class ComplexApplicator:
         """
         new_list = []
         already_seen = []
+        if len(self.association) == 1:
+            new_list.extend(self.association[0])
         for outer_list in self.association:
             if outer_list not in already_seen:
                 already_seen.append(outer_list)

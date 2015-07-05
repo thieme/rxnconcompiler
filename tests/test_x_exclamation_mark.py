@@ -133,21 +133,31 @@ class x_exclamation_mark_Tests(TestCase):
         #                 A_ppi_B; ! A--C
         #                 """)
         rxncon = Rxncon("""
-                        A_ppi_B; ! <comp1>
-                        <comp1>; OR <comp1C1>
-                        <comp1>; OR <comp1C2>
-                        <comp1C1>; AND A--A1
-                        <comp1C1>; AND A--A2
-                        <comp1C2>; AND B--B1
-                        <comp1C2>; AND B--B2
-                        A_ppi_B; x <comp2>
-                        <comp2>; OR <comp2C1>
-                        <comp2>; OR <comp2C2>
-                        <comp2C1>; AND A--C1
-                        <comp2C1>; AND A--C2
-                        <comp2C2>; AND A--D1
-                        <comp2C2>; AND A--D2
+                          A_ppi_B; ! <comp1>
+                          <comp1>; OR <comp1C1>
+                          <comp1>; OR <comp2C1>
+                          <comp1C1>; AND A--C
+                          <comp1C1>; AND C--D
+                         <comp2C1>; AND A--C
+                         <comp2C1>; AND B--E
+
                         """)
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <comp1>
+        #                 <comp1>; OR <comp1C1>
+        #                 <comp1>; OR <comp1C2>
+        #                 <comp1C1>; AND A--A1
+        #                 <comp1C1>; AND A--A2
+        #                 <comp1C2>; AND B--B1
+        #                 <comp1C2>; AND B--B2
+        #                 A_ppi_B; x <comp2>
+        #                 <comp2>; OR <comp2C1>
+        #                 <comp2>; OR <comp2C2>
+        #                 <comp2C1>; AND A--C1
+        #                 <comp2C1>; AND A--C2
+        #                 <comp2C2>; AND A--D1
+        #                 <comp2C2>; AND A--D2
+        #                 """)
 
 # expect:
 
