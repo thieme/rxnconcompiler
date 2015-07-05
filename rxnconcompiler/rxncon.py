@@ -82,7 +82,7 @@ from contingency.contingency_applicator import ContingencyApplicator
 from contingency.contingency_factory import ContingencyFactory
 from reaction.reaction_factory import ReactionFactory
 from parser.rxncon_parser import parse_rxncon
-
+import copy
 
 class Rxncon():
     """
@@ -213,6 +213,22 @@ class Rxncon():
         for cont in contingencies:            
             cap.apply_on_container(container, cont)
 
+    def apply_rules(self, reaction_container, complex_rules):
+        cap = ContingencyApplicator(self.war)
+        reaction_container_clone = reaction_container[0].clone()
+        com_number = 0
+        for rule in complex_rules:
+            reaction = copy.deepcopy(reaction_container_clone)
+            for cont in rule:
+                if cont.state.type == 'Association' and cont.ctype == '!':
+                    cap.apply_positive_association(reaction, cont)
+                elif cont.state.type == "Intraprotein" and cont.ctype == '!':
+                    cap.apply_positive_intraprotein(reaction, cont)
+                else:
+                    cap.apply_on_reaction(reaction, cont)
+                #cap.apply_on_reaction(reaction, con)
+            reaction_container.add_reaction(reaction)
+
     def update_contingencies(self):
         """
         Function that changes domain name in contingencies 
@@ -304,10 +320,10 @@ class Rxncon():
             if add_complexes:
                 complexes = self.get_complexes(react_container.name) #1
             ComplexApplicator(react_container, complexes).apply_complexes() #2
-
+            #self.apply_rules(react_container, rules)
             # after applying complexes we may have more reactions in a single container.
-            if add_contingencies:
-                self.apply_contingencies(react_container) #3
+            #if add_contingencies:
+            #    self.apply_contingencies(react_container) #3
 
             # single contingency is applied for all reactions. If K+/K- reactions are dubbled.
             self.update_reactions() #4
