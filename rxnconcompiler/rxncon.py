@@ -199,7 +199,7 @@ class Rxncon():
                     complex_to_apply.append((cont.ctype, self.complex_pool[str(cont.state)]))
         return complex_to_apply
 
-    def apply_contingencies(self, container):
+    def apply_contingencies(self, container, complexes):
         """
         Applys non-boolean contingencies.
         0, ? are ignored
@@ -207,27 +207,56 @@ class Rxncon():
         contingencies = []
         if self.contingency_pool.has_key(container.name):
             for cont in self.contingency_pool[container.name].children:
-                if cont.children == []:
+                if not cont.state.state_str.startswith("<"):
                     contingencies.append(cont)
         cap = ContingencyApplicator(self.war)
-        for cont in contingencies:            
-            cap.apply_on_container(container, cont)
+        cont_list = [[]]
+        #complex_to_add = []
+        #complex_to_remove = []
+        new_complexes = copy.deepcopy(complexes)
+        run = True
+        for cont in contingencies:
+            if complexes:
+                for complex_tuple in complexes:
+                    exists = False
+                    complex_to_add = []
+                    complex_to_remove = []
+                    for complex in complex_tuple[1]:
+                        for entry in complex:
+                            if entry.state.state_str == cont.state.state_str:
+                                exists = True
+                        if not exists:
+                            if cont.ctype == "k+":
+                                # if we have a k+ we have to split the complex to apply the contingency as ! and as x
+                                complex_to_remove.append(complex)
+                                complex_to_add.append(copy.deepcopy(complex))
+                                cont_to_add_neg = copy.deepcopy(cont)
+                                cont_to_add_neg.ctype = "x"
+                                complex_to_add[-1].append(cont_to_add_neg)
 
-    def apply_rules(self, reaction_container, complex_rules):
-        cap = ContingencyApplicator(self.war)
-        reaction_container_clone = reaction_container[0].clone()
-        com_number = 0
-        for rule in complex_rules:
-            reaction = copy.deepcopy(reaction_container_clone)
-            for cont in rule:
-                if cont.state.type == 'Association' and cont.ctype == '!':
-                    cap.apply_positive_association(reaction, cont)
-                elif cont.state.type == "Intraprotein" and cont.ctype == '!':
-                    cap.apply_positive_intraprotein(reaction, cont)
-                else:
-                    cap.apply_on_reaction(reaction, cont)
-                #cap.apply_on_reaction(reaction, con)
-            reaction_container.add_reaction(reaction)
+                                complex_to_add.append(copy.deepcopy(complex))
+                                cont_to_add_pos = copy.deepcopy(cont)
+                                cont_to_add_pos.ctype = "!"
+                                complex_to_add[-1].append(cont_to_add_pos)
+
+                            else:
+                                complex.append(cont)
+                    for to_remove in complex_to_remove:
+                        complex_tuple[1].remove(to_remove)
+                    for to_add in complex_to_add:
+                        complex_tuple[1].append(to_add)
+
+            else:
+                #cont_list[0].append(cont)
+                if run:
+                    comp_applicator = ComplexApplicator(container, complexes)
+                    for reaction in container:
+                        comp_applicator.set_basic_substrate_complex(reaction)
+                    run = False
+                cap.apply_on_container(container, cont)
+
+        if complexes:
+            return complexes
 
     def update_contingencies(self):
         """
@@ -319,7 +348,12 @@ class Rxncon():
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name) #1
-            ComplexApplicator(react_container, complexes).apply_complexes() #2
+
+            if add_contingencies:
+                complexes = self.apply_contingencies(react_container, complexes)
+
+            if complexes:
+                ComplexApplicator(react_container, complexes).apply_complexes() #2
             #self.apply_rules(react_container, rules)
             # after applying complexes we may have more reactions in a single container.
             #if add_contingencies:

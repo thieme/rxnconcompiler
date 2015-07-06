@@ -55,9 +55,13 @@ class ComplexApplicator:
             #for compl in complexes[1:]:
        #     self.complexes.append(self.prepare_complexes_to_apply(complexes[1]))
 
-    def change_contingency_relation(self, inner_list, cont):
-        for entry in inner_list:
-            entry.ctype = cont
+    def change_contingency_relation(self, inner_list, cont_sign):
+        for cont in inner_list:
+            if cont.ctype in ["and", "or", "not"]:
+                cont.ctype = cont_sign
+            elif cont_sign == "x":
+                change_contingency_opposite(cont)
+
 
     def change_contingency_opposite(self, cont):
         if cont.ctype == "!":
@@ -68,7 +72,6 @@ class ComplexApplicator:
 
     def apply_complexes(self):
         self.association = []
-
         for complex in self.complexes:
 
             if complex[0] == "!":
@@ -83,7 +86,6 @@ class ComplexApplicator:
         rules = self.building_rules(complex_combination_list)
 
         self.apply_rules(self.reaction_container, rules)
-        #return rules
 
     def positive_application(self, complex):
         for inner_list in complex[1]:
@@ -105,6 +107,7 @@ class ComplexApplicator:
         already_seen = []
         if len(self.association) == 1:
             new_list.extend(self.association[0])
+            return new_list
         for outer_list in self.association:
             if outer_list not in already_seen:
                 already_seen.append(outer_list)
@@ -168,7 +171,7 @@ class ComplexApplicator:
             for complex in complex_combination_list:
                 root_exists = False
                 for cont in complex:
-                    if cont.state.has_component(root) and cont.ctype == "!":
+                    if cont.state.has_component(root): # and cont.ctype == "!":
                         root_exists = True
                         break
                 if root_exists and new_root:
@@ -210,7 +213,7 @@ class ComplexApplicator:
                             else:
                                 rules[-1].extend(states_to_change[:i])
                                 rules[-1].append(self.change_contingency_opposite(copy.deepcopy(state)))
-                    else:
+                    elif complex not in rules:
                         rules.append(complex)
         return rules
 
