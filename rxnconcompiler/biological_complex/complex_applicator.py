@@ -134,11 +134,23 @@ class ComplexApplicator:
         reaction_container_clone = reaction_container[0].clone()
         first_rule = True
         for rule in complex_rules:
+            apply_later = []
             if first_rule:
                 first_rule = False
                 reaction = copy.deepcopy(reaction_container_clone)
                 self.set_basic_substrate_complex(reaction)
                 for cont in rule:
+                    if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
+                        if cont.state.type == 'Association' and cont.ctype == '!':
+                            cap.apply_positive_association(reaction, cont)
+                        elif cont.state.type == "Intraprotein" and cont.ctype == '!':
+                            cap.apply_positive_intraprotein(reaction, cont)
+                        else:
+                            cap.apply_on_reaction(reaction, cont)
+                    else:
+                        apply_later.append(cont)
+
+                for cont in apply_later:
                     if cont.state.type == 'Association' and cont.ctype == '!':
                         cap.apply_positive_association(reaction, cont)
                     elif cont.state.type == "Intraprotein" and cont.ctype == '!':
@@ -150,13 +162,22 @@ class ComplexApplicator:
                 reaction = copy.deepcopy(reaction_container_clone)
                 self.set_basic_substrate_complex(reaction)
                 for cont in rule:
+                    if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
+                        if cont.state.type == 'Association' and cont.ctype == '!':
+                            cap.apply_positive_association(reaction, cont)
+                        elif cont.state.type == "Intraprotein" and cont.ctype == '!':
+                            cap.apply_positive_intraprotein(reaction, cont)
+                        else:
+                            cap.apply_on_reaction(reaction, cont)
+                    else:
+                        apply_later.append(cont)
+                for cont in apply_later:
                     if cont.state.type == 'Association' and cont.ctype == '!':
                         cap.apply_positive_association(reaction, cont)
                     elif cont.state.type == "Intraprotein" and cont.ctype == '!':
                         cap.apply_positive_intraprotein(reaction, cont)
                     else:
                         cap.apply_on_reaction(reaction, cont)
-                    #cap.apply_on_reaction(reaction, con)
 
                 reaction_container.add_reaction(reaction)
 

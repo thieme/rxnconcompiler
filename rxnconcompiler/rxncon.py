@@ -255,6 +255,11 @@ class Rxncon():
                     run = False
                 cap.apply_on_container(container, cont)
 
+        if not contingencies:
+            comp_applicator = ComplexApplicator(container, complexes)
+            for reaction in container:
+                    comp_applicator.set_basic_substrate_complex(reaction)
+
         if complexes:
             return complexes
 
