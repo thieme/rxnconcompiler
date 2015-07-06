@@ -2,26 +2,28 @@
 # versa
 
 type_identifier = "TableType"
+import csv
 
 def parse_csv(filename):
     '''
-    http://www.decalage.info/python/configparser
+    https://docs.python.org/2/library/csv.html
     '''
-    #filename = 'BIOMD0000000061_Reaction.csv' #mw
 
-    with open(filename, 'r') as f:
-        first_line= f.readline().strip()
-        type_pos_begin= (first_line.find(type_identifier))+11
-        type_pos_end= first_line.find(' ', type_pos_begin)-1
-        tableType=first_line[type_pos_begin:type_pos_end]
-        
-        print tableType
-        for line in f:
-            print line
-        
+    with open(filename, 'rb') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
+        try:
+            for row in csvreader:
+                print row
+
+        #error catching
+        except csv.Error as e:
+            sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
+                
 
 
 
 
 if __name__=="__main__":
-        parse_csv('BIOMD0000000061_Reaction.csv')
+    parse_csv('BIOMD0000000061_Reaction.csv')
+    print '--------------------------------------'
+    parse_csv('BIOMD0000000061_Compound.csv')
