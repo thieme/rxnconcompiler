@@ -47,9 +47,9 @@ class MoleculesTests(TestCase):
         """
         Test whether molecule section produced from simple example is correct.
         """ 
-        test_data = '''Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5]; k+ Hkr1_[TMD]--Sho1_[TMD]; k+ Msb2_[TMD]--Sho1_[TMD]; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
-<Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
-<Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]'''
+        test_data = '''Sho1_ppi_Ste11; x Ste5_[MEKK]--Ste11; k+ Hkr1--Sho1; k+ Msb2--Sho1; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
+                        <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+                        <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]'''
 
         bngl = Compiler(test_data).translate(True, True, True, True)
         molecule_pattern = 'begin molecule types.*?end molecule types'
