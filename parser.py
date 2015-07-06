@@ -16,7 +16,8 @@ def parse_csv(filename):
         tableType=first_line[type_pos_begin:type_pos_end]
         
         print tableType
-#    for line in f:
+        for line in f:
+            print line
         
 
 
