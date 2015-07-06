@@ -84,12 +84,15 @@ class RxnconTests(TestCase):
 
         ### Boolean contingency.
         # boolean contingencies can have children (matrioszki)
-        # one root contingency
-        self.assertEqual(len(self.bool.contingency_pool), 1)
-        # the root contingency has one child - bool contingency 
+        # one contingency for reaction one boolean contingency
+        self.assertEqual(len(self.bool.contingency_pool), 2)
+        # the reaction/root contingency has one child - bool contingency
         self.assertEqual(len(self.bool.contingency_pool['A_ppi_B'].children), 1)
+        # the child of the reaction/root contingency has not children. These are defined by the boolean contingency itself
+        self.assertEqual(len(self.bool.contingency_pool['A_ppi_B'].children[0].children), 0)
         # the boolean contingency has two children
-        self.assertEqual(len(self.bool.contingency_pool['A_ppi_B'].children[0].children), 2)
+        self.assertEqual(len(self.bool.contingency_pool['<b>'].children), 2)
+
 
     def test_complex_pool(self):
         """"""
@@ -105,19 +108,17 @@ class RxnconTests(TestCase):
         # one AlternativeComplexes present in the complex_pool.
         self.assertEqual(len(self.bool.complex_pool), 1)
         # one BiologicalComplex present in AlternativeComplexes
-        self.assertEqual(len(self.bool.complex_pool['<b>']), 2)
-        # one alternative complex present
-        self.assertEqual(len(self.bool.complex_pool['<b>'][1]), 1)
-        # three Molecule[a] present in BiologicalComplex. 
-        self.assertEqual(len(self.bool.complex_pool['<b>'][1][0]), 3)
+        # it is represented as list of states
+        self.assertEqual(len(self.bool.complex_pool['<b>']), 1)
+        # one alternative complex present with two states
+        self.assertEqual(len(self.bool.complex_pool['<b>'][0]), 2)
 
         # two not connected alternative complexes
-        self.assertEqual(len(self.bool2.complex_pool['<b>'][1]), 1)
-        self.assertEqual(len(self.bool2.complex_pool['<b>'][2]), 1)
+        self.assertEqual(len(self.bool2.complex_pool['<b>']), 2)
+        # each includes two states
+        self.assertEqual(len(self.bool2.complex_pool['<b>'][0]), 2)
+        self.assertEqual(len(self.bool2.complex_pool['<b>'][1]), 2)
 
-        # three Molecule[a] present in each BiologicalComplex. 
-        self.assertEqual(len(self.bool2.complex_pool['<b>'][1][0]), 3)
-        self.assertEqual(len(self.bool2.complex_pool['<b>'][2][0]), 3)
         
     def test_run_process(self):
         """

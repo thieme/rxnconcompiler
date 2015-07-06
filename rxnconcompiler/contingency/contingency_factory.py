@@ -124,7 +124,7 @@ class ContingencyPool(dict):
         for root in self.values():
             children = root.get_leafs()
             for cont in children:
-                if cont.ctype in ['!', 'k+', 'k-', 'x'] or cont.inherited_ctype in ['!', 'k+', 'k-', 'x']:
+                if cont.ctype in ['!', 'k+', 'k-', 'x', 'and', 'or', 'not'] or cont.inherited_ctype in ['!', 'k+', 'k-', 'x']:
                     if cont.state.type in ['Association', 'Covalent Modification', 'Relocalisation', 'Intraprotein']:
                         result.append(cont.state)
         return set(result)

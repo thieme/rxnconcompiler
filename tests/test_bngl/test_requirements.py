@@ -137,10 +137,10 @@ class RequirementsGeneratorTests(TestCase):
         factory = ContingencyFactory(table)
         pool = factory.parse_contingencies()
         if reaction_str in pool.keys():
-            return RequirementsGenerator(pool[reaction_str])
+            return RequirementsGenerator(pool, reaction_str)
         else:
-            emrty_root = Contingency(reaction_str)
-            return RequirementsGenerator(emrty_root)      
+            empty_root = Contingency(reaction_str)
+            return RequirementsGenerator(pool, empty_root)
 
     def test_str(self):
         """Tests whether RequirementsGenerator produces right string from itself."""
