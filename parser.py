@@ -38,7 +38,7 @@ def read_sbtab_csv(filename):
                     name_index=row.index('!Name')
                     id_index = row.index('!SBOTerm')
                     formula_index=row.index('!SumFormula')
-                    #componentA, componentB = getComponents(row[formula_index])
+                    componentA, componentB = getComponents(row[formula_index])
                     print row #mw
 
                 else:
