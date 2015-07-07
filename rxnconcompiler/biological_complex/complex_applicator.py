@@ -138,7 +138,7 @@ class ComplexApplicator:
             if first_rule:
                 first_rule = False
                 reaction = copy.deepcopy(reaction_container_clone)
-                #self.set_basic_substrate_complex(reaction)
+                self.set_basic_substrate_complex(reaction)
                 for cont in rule:
                     if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
                         if cont.state.type == 'Association' and cont.ctype == '!':
@@ -160,7 +160,7 @@ class ComplexApplicator:
                 reaction_container[0] = reaction
             else:
                 reaction = copy.deepcopy(reaction_container_clone)
-                #self.set_basic_substrate_complex(reaction)
+                self.set_basic_substrate_complex(reaction)
                 for cont in rule:
                     if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
                         if cont.state.type == 'Association' and cont.ctype == '!':

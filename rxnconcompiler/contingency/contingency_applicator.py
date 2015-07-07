@@ -79,7 +79,10 @@ class ContingencyApplicator():
         """
         #print 'add_molecule_to_complex'
         #print mols, cont, component, compl
-        # check whether contingency state in not equal to product state 
+        # check whether contingency state in not equal to product state
+        homodimer_consideration = False
+        if len(mols) == 2 and mols[0] == mols[1]:
+            homodimer_consideration = True
         add_partner = True
         for state in mols[0].binding_sites:
             if state == cont.state:
@@ -109,9 +112,17 @@ class ContingencyApplicator():
 
         if add_partner:
             mols[0].binding_partners.append(cont.state)
-            mol_ob = Molecule(component.name)
-            mol_ob.binding_partners.append(cont.state)
-            compl.molecules.append(mol_ob) 
+            if homodimer_consideration:
+                # TODO: is this needed?
+                for state in mols[1].binding_partners:
+                    if state not in mols[0].binding_partners:
+                        mols[0].binding_partners.append(state)
+                mols[1].binding_partners = []
+                mols[1].binding_partners.append(cont.state)
+            else:
+                mol_ob = Molecule(component.name)
+                mol_ob.binding_partners.append(cont.state)
+                compl.molecules.append(mol_ob)
 
     def apply_positive_intraprotein(self, reaction, cont):
         """
@@ -186,8 +197,35 @@ class ContingencyApplicator():
                     if component1.name == reaction.left_reactant.name \
                         or component2.name == reaction.left_reactant.name:
                         self._add_components_to_complex(left, component1, component2, cont, reaction)
-                    else: 
+                    elif component1.name == reaction.right_reactant.name \
+                        or component2.name == reaction.right_reactant.name:
                         self._add_components_to_complex(right, component1, component2, cont, reaction)
+                    else:
+
+
+                        #self._add_components_to_complex(right, component1, component2, cont, reaction)
+                        joined_complex = left.complex_addition(right)
+                        joined_complex.side = 'LR'
+                        reaction.substrat_complexes = [joined_complex]
+                        mols1 = joined_complex.get_molecules(component1.name, component1.cid)
+                        mols2 = joined_complex.get_molecules(component2.name, component2.cid)
+                        if mols1 and mols2:
+                            # what to do when two molecules are already in?
+                            # e.g. A.B + C ! A--B
+                            #print "PROBLEM", mols1, mols2
+                            pass
+                        if mols1:
+                            self.add_molecule_to_complex(mols1, cont, component2, joined_complex, reaction)
+
+                        elif mols2:
+                            self.add_molecule_to_complex(mols2, cont, component1, joined_complex, reaction)
+
+#                        self._add_components_to_complex(joined_complex, component1, component2, cont, reaction)
+
+                        #reaction.substrat_complexes = [joined_complex]
+                        #reaction.add_substrate_complex(left)
+                        pass
+
 
         # a molecule needs to be added to complexes 
         # or complexes are already joined:

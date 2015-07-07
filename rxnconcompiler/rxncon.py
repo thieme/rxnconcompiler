@@ -210,10 +210,7 @@ class Rxncon():
                 if not cont.state.state_str.startswith("<"):
                     contingencies.append(cont)
         cap = ContingencyApplicator(self.war)
-        cont_list = [[]]
-        #complex_to_add = []
-        #complex_to_remove = []
-        new_complexes = copy.deepcopy(complexes)
+
         run = True
         for cont in contingencies:
             if complexes:
@@ -255,7 +252,7 @@ class Rxncon():
                     run = False
                 cap.apply_on_container(container, cont)
 
-        if not contingencies:
+        if not contingencies and not complexes:
             comp_applicator = ComplexApplicator(container, complexes)
             for reaction in container:
                     comp_applicator.set_basic_substrate_complex(reaction)

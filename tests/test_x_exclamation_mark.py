@@ -145,16 +145,14 @@ class x_exclamation_mark_Tests(TestCase):
 # <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
 # <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
 #                         """)
-#         rxncon = Rxncon("""
-#                     Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
-# <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
-# <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
-#                         """)
-
         rxncon = Rxncon("""
-                        Ste11_[KD]_P+_Ste7_[(ALS359)]; ! Ste5_[MEKK]--Ste11; ! Ste5_[MEK]--Ste7; ! Ste5_[BDSte5]--Ste5_[BDSte5]
+                     Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste7-5-5-11>
+                    <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
+                         """)
 
-                        """)
+        #rxncon = Rxncon("""
+        #                Ste11_[KD]_P+_Ste7_[(ALS359)]; ! Ste5_[MEKK]--Ste11; ! Ste5_[MEK]--Ste7; ! Ste5_[BDSte5]--Ste5_[BDSte5]
+        #                """)
         # rxncon = Rxncon("""
         #                   A_ppi_B; ! <comp1>
         #                   <comp1>; OR <comp1C1>
