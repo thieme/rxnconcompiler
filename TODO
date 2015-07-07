@@ -5,7 +5,7 @@
    - Achtung: kann auch ein weiterem sheet stehen
 - es ist auch möglich, dass in einem Dokument mehrere tabellen mit dem
    selben tableType drinne stehen (oder sheet)
-- was ist mit tsv format?
+- was ist mit tsv format? oder xls? txt?
 - delimiters sind irgendwo declared. standart ist tabulator, aber wenn
   nicht steht das irgendwo
 - If table cells contain special characters that are also used as cell
@@ -27,8 +27,21 @@
   Compartment table as the standard compartment. The standard
   compartment will be used by default for all compounds that are not
   explicitly assigned to compartments
-
 - reaction formula should represent the actual stoichiometries
-  experienced by the en zyme (i.e.  A <=> 2 B)
-  - wichtig, sofern die rkt gelichung überhaupt interessant ist (vllt
-    doch mit regexp?)
+  experienced by the en zyme (i.e.  A <=> 2 B) 
+  - wichtig, sofern die
+    rkt gelichung überhaupt interessant ist (vllt doch mit regexp?)
+- Comment lines Table lines starting with a “%” character contain
+  comments a nd are ignored during parsin
+- Information about enzymes or genes and their regulation can be
+  stored in a Reaction table if there is a one-to- one relationship
+  between reactions, enzymes, and possibly genes. Otherwise, it is
+  stored in separate tables Enzyme and Gene and the tables are
+  interlinked via the columns !Enzyme (in table Reaction ) and !Gene (in
+  table Enzyme ) or !TargetReaction (in an Enzyme table) and
+  !GeneProduct (in a Gene table)
+- in der spezi steht, dass es einen parser geben soll, der sbtab
+  einliest und python dictionary zurück gibt. finde ich auf der hp
+  aber nirgends
+- desweiteren steht da, dass die zum lesen die tablib library zum
+  parsen verwenden. frag mal timo?
