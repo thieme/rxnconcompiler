@@ -1,6 +1,8 @@
 - kann eine sbtab reaction mehr als einen component haben?
   - wenn ja wie macht man das dann für rxncon?
 - domänen info in sbtab?
-- id richtig ausgelesen?
+- id richtig ausgelesen? SBO or kegg? manche (aber nicht alle) haben auch sbml id's. Was wird bevorzugt?
 - source state und product state, was ist das?
 - ist das überhaupt richtig die components aus summenformel zu holen? bei rxncon gehts doch eigentlich um die proteine, oder?
+- brauchen wir ids für metaboliten? stehen in compound tabelle
+- in sbtab können compunds mehrere compartments haben, wobei das erste dann als default angesehen werden soll. wie soll in rxncon damit umgegangen werde?

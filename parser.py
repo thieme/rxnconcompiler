@@ -10,9 +10,44 @@
 #| !SBOTerm    |      | ReactionID          |
 
 
-
+input_format=''
 type_identifier = "TableType"
 import csv
+import sys
+
+# Booleans to check whether all needed Tables
+found_reaction = False
+
+def isequal(a, b):
+    '''
+    Compares two strings case insensitively
+    '''
+    try:
+        return a.lower() == b.lower()
+    except AttributeError:
+        return a == b
+
+def check_format_csv(filename):
+    '''
+    Checks whether input File is in sbtab or rxncon Format (or none of it)
+    '''
+    with open(filename, 'rb') as csvfile:
+         csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
+        try:
+            first_line = csvfile.readline().strip()
+            if isequal(first_line[:6], '!!SBtab'):
+                input_format='SBtab'
+            #elif isequal(die stelle wo es in rxncon steht, der entsprechende string):
+            #    input_format = 'rxncon'
+            else:
+                sys.exit('Can not handel input file %s.\nInput files must be either in SBtab or rxncon format.' % (filename))
+
+
+
+        #error catching
+        except csv.Error as e:
+            sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
+
 
 def read_sbtab_csv(filename):
     '''
@@ -20,24 +55,31 @@ def read_sbtab_csv(filename):
     '''
     
     reaction_list=[]
-
     type_identifier = "TableType"
+
+    # default column indexes (for if header row is missing)
+    name_index = 1  # !Name
+    id_index = 6    # !SBOTerm
+    formula_index =  2 # !SumFormula
 
     with open(filename, 'rb') as csvfile:
         csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
         try:
-            #get Table Type
-            first_line= csvfile.readline().strip()
-            type_pos_begin= (first_line.find(type_identifier))+11
-            type_pos_end= first_line.find(' ', type_pos_begin)-1
-            tableType=first_line[type_pos_begin:type_pos_end] #e.g. Reaction, Compound etc.
+            # get Table Type
+            first_line = csvfile.readline().strip()
+            type_pos_begin = (first_line.find(type_identifier))+11
+            type_pos_end = first_line.find(' ', type_pos_begin)-1
+            tableType = first_line[type_pos_begin:type_pos_end] #e.g. Reaction, Compound etc.
+
+            if tableType == 'Reaction' or tableType=='reaction':
+                found_reaction=True
             
             for row in csvreader:
                 if row[0][0]=='!':
                     colNrHeader= len(row)
                     name_index=row.index('!Name')
                     id_index = row.index('!SBOTerm')
-                    formula_index=row.index('!SumFormula')
+                    formula_index = row.index('!SumFormula')
                     #componentA, componentB = getComponents(row[formula_index])
                     print row #mw
 
@@ -45,9 +87,9 @@ def read_sbtab_csv(filename):
                     reaction_list.append({
                         'Reaction': row[name_index].lower(),
                         'ReactionID': row[id_index]
-                    }) #usw.
+                    }) # usw
                     if colNrHeader != len(row):
-                        print 'oh oh'
+                        sys.exit('Error! Header length and row length differ in length!')
                     print row #mw
 
         #error catching
