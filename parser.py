@@ -112,6 +112,7 @@ def getComponents(formula):
     comps_l=[]
     comps_r=[]
 
+    # hier lese ich metaboliten, was ich aber will sind doch proteine (oder?) --> sebastian fragen
 
 
 if __name__=="__main__":
