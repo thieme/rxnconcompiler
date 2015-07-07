@@ -30,7 +30,7 @@ class RuleFactory:
             common_cont = reaction_container.get_common_contingencies()
             rule_container.common_reqs = common_cont
             if self.contingency_pool.has_key(reaction_container.name):
-                gen = RequirementsGenerator(self.contingency_pool[reaction_container.name])
+                gen = RequirementsGenerator(self.contingency_pool, reaction_container.name)
                 rule_container.contingencies = gen
             else:
                 rule_container.contingencies = None

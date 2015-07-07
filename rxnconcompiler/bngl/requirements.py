@@ -73,7 +73,7 @@ class RequirementNode:
 
     def get_leaf(self, node):
         """
-        Asignes requirements to contingencies
+        Assign requirements to contingencies
         with no children and which are not K+ and not K-.
         """
         if node.ctype == '!' or node.inherited_ctype == '!':
@@ -103,10 +103,19 @@ class RequirementsGenerator:
         self.nodes_dict = {}
         self._create_node_dict(self.root)
 
+    def child_assignment(self, children, ctype):
+        for child in children:
+            child.inherited_ctype = ctype
+            if child.has_children:
+                self.child_assignment(child.children, ctype)
+
     def set_structure(self):
         for child in self.root.children:
             if child.state.state_str.startswith("<") and child.target_reaction == self.root.target_reaction:
                 child.children = self.contingency_pool[child.state.state_str].children
+                self.child_assignment(child.children, child.ctype)
+                #or assigned_child in child.children:
+                #    assigned_child.inherited_ctype = child.ctype
 
     def __str__(self):
         """
@@ -209,7 +218,7 @@ class RequirementsFactory:
         """
         reqs = RequirementsPool()
         for reaction in self.contingencies.keys():
-            req_gen = RequirementsGenerator(self.contingencies[reaction])
+            req_gen = RequirementsGenerator(self.contingencies, reaction)
             reqs[reaction] = req_gen.get_requirements()
         return reqs
 
