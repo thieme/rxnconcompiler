@@ -123,7 +123,43 @@ class ContingencyMAPKTests(TestCase):
         self.pool = factory.parse_contingencies()
 
     def test_parsing(self):
-        self.assertEqual(len(self.pool),139)
+        # 139 reaction + used 8 complexes
+        self.assertEqual(len(self.pool),147)
+
+# <Cdc24^{M}>
+#   or <Cdc24^{M/4}>,
+#       [and Cdc24_[AssocSte4]--Ste4_[AssocCdc24], and Ste4_[AssocSte18]--Ste18_[AssocSte4]] correct
+#   or <Cdc24^{M/F}>,
+#       [and Cdc24_[AssocFar1]--Far1_[c], and <Far1^{M}>] correct
+#       and <Far1^{M}>
+#           [and Far1_[nRING-H2]--Ste4_[AssocFar1], and Ste4_[AssocSte18]--Ste18_[AssocSte4]] correct
+#   or [START]]correct
+# <FIL-signal>
+#       [and Cdc42_[AssocMsb2]--Msb2_[CyT], and Msb2_[CyT]--Sho1_[CyT]] correct
+# <Pbs2-Nbp2-Ptc1>
+#       [and Nbp2_[SH3]--Pbs2_[SIM2], and Nbp2_[n]--Ptc1_[AssocNbp2]] correct
+# <SKO/R>
+#       [and Sko1_[bZIP]--CRE_[AssocSko1], and Sko1_[n]--Tup1_[AssocSko1], and Cyc8_[TPR1-3]--Tup1_[n]] correct
+# <STE11-7>
+#       [or Ste7_[AssocSte11]--Ste11_[AssocSte7], or <Ste7-5-5-11>] correct
+#           or <Ste7-5-5-11>
+#                   [and Ste5_[MEKK]--Ste11_[AssocSte5], and Ste5_[MEK]--Ste7_[AssocSte5], and Ste5_[BDSte5]--Ste5_[BDSte5]] correct
+# <Ssk1Ssk2>
+#   [and Ssk1_[BDSsk1]--Ssk1_[BDSsk1], and Ssk1_[RR]--Ssk2_[BDSsk1]] correct
+# <Ste11^{M/50}>
+#       [and Opy2_[BDSte50]--Ste50_[RA], and Ste11_[SAM]--Ste50_[SAM]]
+# <Ste11^{M}>
+#       [or Sho1_[CyT]--Ste11_[BDSho1], or <Ste11^{M/5}>]
+#       or <Ste11^{M/5}>
+#           [and Ste5_[MEKK]--Ste11_[AssocSte5], and <Ste5^{M}>]
+#                   and <Ste5^{M}> [and Ste4_[BDSte5]--Ste5_[nRING-H2], and Ste4_[AssocSte18]--Ste18_[AssocSte4]]
+
+
+
+
+
+
+
 
 class ContingencyWrapperTests(TestCase):
     """
@@ -171,7 +207,8 @@ class ComplexTests(TestCase):
 
     def test_parsing(self):
         """Tests whether contingencies with defined geometry are parsed."""
-        self.assertEqual(len(self.pool.keys()), 1)
+        # reaction and boolean contingencies directly applied to a reaction are stored in the contingency pool
+        self.assertEqual(len(self.pool.keys()), 2)
         self.assertIn('A_ppi_X', self.pool.keys())
         self.assertEqual(len(self.pool['A_ppi_X'].children),3)
 
