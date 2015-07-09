@@ -20,6 +20,8 @@ from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 # X_P+_A
 from unittest import main, TestCase
 from rxnconcompiler.rxncon import Rxncon
+from rxnconcompiler.parser.rxncon_parser import parse_rxncon
+from rxnconcompiler.sbtab import test
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state
@@ -107,6 +109,9 @@ class x_exclamation_mark_Tests(TestCase):
                         A_ppi_B; ! <II>
                         <II>; AND A--D
                         """)
+        #a = parse_rxncon("A_ppi_B; ! A--C")
+        #test.hello()
+        #pass
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <AorC> 
         #                 <AorC>; OR <complA>
@@ -214,11 +219,11 @@ class x_exclamation_mark_Tests(TestCase):
 
 
         #rxncon = Rxncon(input_data)
-        rxncon.run_process()
-        #print rxncon.complex_pool
+        rxncon.run_process()  # uebersetzen von source zu product
+        #erstellen des rule based models
         self.bngl_src = Bngl(
             rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
-        # print bngl_src.get_src()
+        # print bngl_src.get_src() # rueckgabe rule based model
 
     def test_change(self):
         """
