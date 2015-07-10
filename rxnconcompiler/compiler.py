@@ -14,7 +14,7 @@ class Compiler:
     Compiler object translates given rxncon input (xls file or quick text)
     into BioNetGen source code (BNGL file).
 
-    TODO: rename to RxnconCompiler (Copiler not specific)
+    TODO: rename to RxnconCompiler (Compiler not specific)
     TODO: add functions for translation into other formats
     TODO: apply filters
     TODO: write any output write_bngl ---> write_output
@@ -25,7 +25,7 @@ class Compiler:
         """
         self.xls_tables = parse_rxncon(input_data)
 
-    def translate(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True): 
+    def translate(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True):
         """
         Translates Rxncon data into bngl string.
         Uses Rxncon and Bngl objects.

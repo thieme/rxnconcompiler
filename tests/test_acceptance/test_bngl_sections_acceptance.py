@@ -67,7 +67,7 @@ class MoleculesTests(TestCase):
         Test whether molecule section produced from simple example is correct.
         """ 
         quick_data = str(Rxncon(DATA_PATH + "Tiger_et_al_TableS1.xls"))
-        bngl = Compiler(quick_data).translate(False, True, True, True)
+        bngl = Compiler(quick_data).translate(add_translation=False, add_missing_reactions=True, add_complexes=True, add_contingencies=True)
 
         molecule_pattern = 'begin molecule types.*?end molecule types'
         mp = re.compile(molecule_pattern, re.DOTALL)

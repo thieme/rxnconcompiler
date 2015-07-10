@@ -69,7 +69,8 @@ class ContingencyFactoryTests(TestCase):
         self.pool = factory.parse_contingencies()
 
     def test_parsing(self):
-        self.assertEqual(len(self.pool.keys()), 1)
+        # the target reaction as well as the bool complex applied to the reaction are stored in the contingency pool
+        self.assertEqual(len(self.pool.keys()), 2)
         self.assertIn('A_ppi_B', self.pool.keys())
         self.assertEqual(len(self.pool['A_ppi_B'].children),3)
 
@@ -80,14 +81,20 @@ class ContingencyFactoryTests(TestCase):
 
     def test_two_reactions(self):
         """
-        Asseerts that the same boolean contingencie 
+        Asserts that the same boolean contingency
         can be used for two reactions.
         """
         table = parse_text(TWO_REACTIONS)
         factory = ContingencyFactory(table)
         self.pool = factory.parse_contingencies()
-        self.assertEqual(self.pool['A_ppi_C'].count_leafs(), 4)
-        self.assertEqual(self.pool['A_ppi_B'].count_leafs(), 4)
+
+        root = self.pool['A_ppi_C']
+        bool = self.pool[root.children[0].state.state_str]
+        self.assertEqual(bool.count_leafs(), 4)
+
+        root = self.pool['A_ppi_B']
+        bool = self.pool[root.children[0].state.state_str]
+        self.assertEqual(bool.count_leafs(), 4)
 
     def test_boolean(self):
         """
@@ -97,7 +104,9 @@ class ContingencyFactoryTests(TestCase):
         table = parse_text(OR_AND_OR)
         factory = ContingencyFactory(table)
         self.pool = factory.parse_contingencies()
-        self.assertEqual(self.pool['A_ppi_B'].count_leafs(), 4)
+        root = self.pool['A_ppi_B']
+        bool = self.pool[root.children[0].state.state_str]
+        self.assertEqual(bool.count_leafs(), 4)
 
 class ContingencyApoptosisTests(TestCase):
     """Checks whether proper contingencies pool is generated for apoptosis."""
@@ -216,7 +225,10 @@ class ComplexTests(TestCase):
         """Tests whether all contingencies go to the complex."""
         root = self.pool['A_ppi_X']
         self.assertEqual(len(root.children), 3)
-        self.assertEqual(len(root.children[2].children), 5)
+        # one change is that the structure of the boolean contingencies are not longer saved within the reactions they are applied on
+        # but on their own the advantage is that we have to define them only ones and can apply them contingency dependent
+        bool = self.pool[root.children[2].state.state_str]
+        self.assertEqual(len(bool.children), 5)
 
 
 if __name__ == '__main__':
