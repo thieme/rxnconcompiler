@@ -143,11 +143,15 @@ class Rxncon():
             result += reaction[1]
             if self.contingency_pool.has_key(reaction[1]):
                 cont_root = self.contingency_pool[reaction[1]]
-                all_cont = cont_root.get_children()
+                all_cont = cont_root.children
                 for cont in all_cont:
                     later = []
-                    if cont.ctype in ['or', 'and'] or '--' in cont.ctype:
-                        later.append(cont)
+                    if cont.state.type == 'Boolean':
+                        bool_root = self.contingency_pool[cont.state.state_str]
+                        bool_def = bool_root.get_children()
+                        for bool_cont in bool_def:
+                            if bool_cont.ctype in ['or', 'and', "not"] or '--' in bool_cont.ctype:
+                                later.append(bool_cont)
                     else:
                         result += '; %s' % str(cont)
                     for cont in later:
