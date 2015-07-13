@@ -150,12 +150,16 @@ class x_exclamation_mark_Tests(TestCase):
        #             <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
        #                  """)
         rxncon = Rxncon("""
-                    Ste11_[KD]_P+_Ste7_[AL(S359)]; x Ste11_[CBD]--Ste11_[KD]; ! <STE11-7>
-            <STE11-7>; or Ste7_[AssocSte11]--Ste11_[AssocSte7]
-            <STE11-7>; or <Ste7-5-5-11>
-            <Ste7-5-5-11>; and Ste5_[MEKK]--Ste11_[AssocSte5]
-            <Ste7-5-5-11>; and Ste5_[MEK]--Ste7_[AssocSte5]
-            <Ste7-5-5-11>; and Ste5_[BDSte5]--Ste5_[BDSte5]
+                    Cdc24_[GEF]_GEF_Cdc42_[GnP]; k+ <Cdc24^{M}>
+                        <Cdc24^{M}>; or <Cdc24^{M/4}>
+                        <Cdc24^{M}>; or <Cdc24^{M/F}>
+                        <Cdc24^{M}>; or [START]
+                        <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+                        <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+                        <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+                        <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+                        <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+                        <Cdc24^{M/F}>; and <Far1^{M}>
         """)
         #rxncon = Rxncon("""
         #                Ste11_[KD]_P+_Ste7_[(ALS359)]; ! Ste5_[MEKK]--Ste11; ! Ste5_[MEK]--Ste7; ! Ste5_[BDSte5]--Ste5_[BDSte5]
