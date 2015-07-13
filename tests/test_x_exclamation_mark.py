@@ -145,22 +145,15 @@ class x_exclamation_mark_Tests(TestCase):
 # <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
 # <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
 #                         """)
-       # rxncon = Rxncon("""
-       #              Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste7-5-5-11>
-       #             <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
-       #                  """)
-        rxncon = Rxncon("""
-                    Cdc24_[GEF]_GEF_Cdc42_[GnP]; k+ <Cdc24^{M}>
-                        <Cdc24^{M}>; or <Cdc24^{M/4}>
-                        <Cdc24^{M}>; or <Cdc24^{M/F}>
-                        <Cdc24^{M}>; or [START]
-                        <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
-                        <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-                        <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
-                        <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-                        <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
-                        <Cdc24^{M/F}>; and <Far1^{M}>
-        """)
+        #rxncon = Rxncon("""
+        #             Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste7-5-5-11>
+        #            <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
+        #                 """)
+        #rxncon = Rxncon("""
+        #            Ptc1_[PD]_P-_Hog1_[(T174)]; k+ <Pbs2-Nbp2-Ptc1>
+        #            <Pbs2-Nbp2-Ptc1>; and Nbp2_[SH3]--Pbs2_[SIM2]
+        #            <Pbs2-Nbp2-Ptc1>; and Nbp2_[n]--Ptc1_[AssocNbp2]
+        #""")
         #rxncon = Rxncon("""
         #                Ste11_[KD]_P+_Ste7_[(ALS359)]; ! Ste5_[MEKK]--Ste11; ! Ste5_[MEK]--Ste7; ! Ste5_[BDSte5]--Ste5_[BDSte5]
         #                """)
@@ -174,22 +167,22 @@ class x_exclamation_mark_Tests(TestCase):
         #                  <comp2C1>; AND B--E
         #
         #                 """)
-        # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <comp1>
-        #                 <comp1>; OR <comp1C1>
-        #                 <comp1>; OR <comp1C2>
-        #                 <comp1C1>; AND A--A1
-        #                 <comp1C1>; AND A--A2
-        #                 <comp1C2>; AND B--B1
-        #                 <comp1C2>; AND B--B2
-        #                 A_ppi_B; x <comp2>
-        #                 <comp2>; OR <comp2C1>
-        #                 <comp2>; OR <comp2C2>
-        #                 <comp2C1>; AND A--C1
-        #                 <comp2C1>; AND A--C2
-        #                 <comp2C2>; AND A--D1
-        #                 <comp2C2>; AND A--D2
-        #                 """)
+        rxncon = Rxncon("""
+                        A_ppi_B; ! <comp1>
+                        <comp1>; OR <comp1C1>
+                        <comp1>; OR <comp1C2>
+                        <comp1C1>; AND A--A1
+                        <comp1C1>; AND A--A2
+                        <comp1C2>; AND B--B1
+                        <comp1C2>; AND B--B2
+                        A_ppi_B; x <comp2>
+                        <comp2>; OR <comp2C1>
+                        <comp2>; OR <comp2C2>
+                        <comp2C1>; AND A--C1
+                        <comp2C1>; AND A--C2
+                        <comp2C2>; AND A--D1
+                        <comp2C2>; AND A--D2
+                        """)
 
 # expect:
 

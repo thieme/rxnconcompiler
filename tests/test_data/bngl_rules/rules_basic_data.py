@@ -154,6 +154,8 @@ CONTINGENCIES_DATA = {
     'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a,b) <-> ProtA(AssocProtC!1,a,b).ProtC(Gnp~P,AssocProtA!1)'],
     'Tags': [
     1, 'ipi', 'contingencies']}
+
+
 }
 
 

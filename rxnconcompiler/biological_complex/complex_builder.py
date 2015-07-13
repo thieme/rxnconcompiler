@@ -403,8 +403,6 @@ class ComplexBuilder:
                 raise Exception('Boolean not properly defined mix of {0} and {1}'.format(reference_child_ctype, child.ctype))
         return True
 
-
-
     def get_states(self, node_list):
         """
         Moves contingencies from a given list to
