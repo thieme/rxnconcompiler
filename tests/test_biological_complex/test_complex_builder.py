@@ -10,7 +10,13 @@ from rxnconcompiler.biological_complex.biological_complex import BiologicalCompl
 from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder
 from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.molecule.molecule import Molecule
+from rxnconcompiler.rxncon import Rxncon
 
+Ste11 = """Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
+<Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
+<Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]"""
+
+Ste11_flatten = "[[or Ste7_[AssocSte11]--Ste11_[AssocSte7]], [and Ste5_[MEKK]--Ste11_[AssocSte5], and Ste5_[MEK]--Ste7_[AssocSte5], and Ste5_[BDSte5]--Ste5_[BDSte5]]]"
 
 class BiologicalComplexBuilderTests(TestCase):
     """
@@ -38,16 +44,26 @@ class BiologicalComplexBuilderTests(TestCase):
         """"""
         mol = self.comp.get_molecules('A')[0]
         builder = ComplexBuilder()
+        # state = [[positive conntection binding partners and so on], [negative conntection binding site and so on]]
         states = builder.get_states_from_complex(self.comp, mol)
         level1 = ['A_[AssocB]--B_[AssocA]', 'A_[AssocC]--C_[AssocA]', 'A_[AssocD]--D_[AssocA]']
         level2 = ['B_[AssocE]--E_[AssocB]', 'B_[AssocF]--F_[AssocB]', 'D_[AssocG]--G_[AssocD]', 'D_[AssocH]--H_[AssocD]']
         level3 = ['E_[AssocK]--K_[AssocE]', 'E_[AssocJ]--J_[AssocE]']
-        for state in states[:3]:
+        for state in states[0][:3]:
             self.assertTrue(str(state) in level1)
-        for state in states[3:7]:
+        for state in states[0][3:7]:
             self.assertTrue(str(state) in level2)
-        for state in states[7:]:
+        for state in states[0][7:]:
             self.assertTrue(str(state) in level3)
+
+    def test_boolean_flatten(self):
+        rxncon = Rxncon(Ste11)
+        builder = ComplexBuilder()
+        builder.get_state_sets(rxncon.contingency_pool["<Ste11-7>"])
+        self.assertEqual(len(builder.final_states), 2)
+        self.assertEqual(len(builder.final_states[0]), 1)
+        self.assertEqual(len(builder.final_states[1]), 3)
+        self.assertEqual(str(builder.final_states), Ste11_flatten)
 
     def test_built_negative_complexes(self):
         """"""

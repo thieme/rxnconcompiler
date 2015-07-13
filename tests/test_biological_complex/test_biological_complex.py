@@ -10,13 +10,10 @@ from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex, AlternativeComplexes
 from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.molecule.molecule import Molecule
-from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder
 
 Ste11 = """Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
 <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
 <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]"""
-
-Ste11_flatten = "[[or Ste7_[AssocSte11]--Ste11_[AssocSte7]], [and Ste5_[MEKK]--Ste11_[AssocSte5], and Ste5_[MEK]--Ste7_[AssocSte5], and Ste5_[BDSte5]--Ste5_[BDSte5]]]"
 
 class BiologicalComplexTests(TestCase):
     """
@@ -26,7 +23,6 @@ class BiologicalComplexTests(TestCase):
         """Prepares data for tests."""
         rxncon = Rxncon(Ste11)
         rxncon.run_process()
-        self.contingency_pool = rxncon.contingency_pool
         reactions = rxncon.reaction_pool['Ste11_[KD]_P+_Ste7_[(ALS359)]']
         self.compl1 = reactions[0].product_complexes[0]
         self.compl2 = reactions[1].product_complexes[0]
@@ -38,15 +34,6 @@ class BiologicalComplexTests(TestCase):
         for state in state_objects:
             self.comp.add_state(state)
         self.comp.cid = '1'
-
-    def test_boolean_flatten(self):
-        builder = ComplexBuilder()
-        self.contingency_pool["<Ste11-7>"]
-        builder.get_state_sets(self.contingency_pool["<Ste11-7>"])
-        self.assertEqual(len(builder.final_states), 2)
-        self.assertEqual(len(builder.final_states[0]), 1)
-        self.assertEqual(len(builder.final_states[1]), 3)
-        self.assertEqual(str(builder.final_states), Ste11_flatten)
 
 
     def test_get_contingencies(self):
