@@ -346,9 +346,9 @@ class BiologicalComplex(object):
     def add_state(self, state):
         """
         """
-        if state.state.type == 'Input':  # artefact?
+        if state.type == 'Input':  # artefact?
             self.input_conditions = Contingency('','!',state)
-        elif state.state.type == 'Association':
+        elif state.type == 'Association':
             # if ctype ANDNOT/ORNOT
             # add_binding_site if we have several mols bound to one side and use a NOT we keep this empty
             # A(C,D), C(A), D(A), B(....) drop C and D later
@@ -356,24 +356,20 @@ class BiologicalComplex(object):
             # NOTs last always (if site is empty and later will be occupied then use the occupation)
 
             # state: A--B
-            mol1 = Molecule(state.state.components[0].name)
+            mol1 = Molecule(state.components[0].name)
             #mol1 A
-            mol1.mid = state.state.components[0].cid
+            mol1.mid = state.components[0].cid
 
-            mol2 = Molecule(state.state.components[1].name)
+            mol2 = Molecule(state.components[1].name)
             #mol B
-            mol2.mid = state.state.components[1].cid
+            mol2.mid = state.components[1].cid
 
             # todo: if not s1 to site x but s2 can bind to x occupy x by s2
             # todo: check if site is occupied by other then ignore
             # todo: split comp so that both criteria are fulfilled is an OR statement
 
-            if state.ctype in ["ornot","andnot"]:
-                mol1.set_site(state.state)
-                mol2.set_site(state.state)
-            else:
-                mol1.binding_partners.append(state.state)
-                mol2.binding_partners.append(state.state)
+            mol1.binding_partners.append(state)
+            mol2.binding_partners.append(state)
 
             partners = self.get_molecules(mol1.name, mol1.mid)
             if not partners:
@@ -382,16 +378,16 @@ class BiologicalComplex(object):
                 #KR: append to mol1.binding_partners here
                 #    or add method create_molecule(component)
             else:
-                if state.state not in partners[0].binding_partners:
+                if state not in partners[0].binding_partners:
                     #KR: this if could be delegated to Molecule
-                    partners[0].add_bond(state.state)
+                    partners[0].add_bond(state)
           
             partners = self.get_molecules(mol2.name, mol2.mid)
             if not partners or mol1 == mol2:
                 self.molecules.append(mol2)
             else:
-                if state.state not in partners[0].binding_partners:
-                    partners[0].add_bond(state.state)
+                if state not in partners[0].binding_partners:
+                    partners[0].add_bond(state)
 
     def add_state_mod(self, complexes, state):
         # AND and OR are defined by the bracket we don't have to consider this here again

@@ -41,9 +41,11 @@ class ContingencyApplicatorTests(TestCase):
 
     def test_applying_on_homo(self):
         """"""
-        reactions = Rxncon('Ste20_[KD]_ppi_Ste20_[CRIB]').reaction_pool['Ste20_[KD]_ppi_Ste20_[CRIB]']
-        ComplexApplicator(reactions, []).apply_complexes() 
-        reaction = reactions[0]
+        rxncon = Rxncon('Ste20_[KD]_ppi_Ste20_[CRIB]')#.reaction_pool['Ste20_[KD]_ppi_Ste20_[CRIB]']
+        rxncon.apply_contingencies(rxncon.reaction_pool['Ste20_[KD]_ppi_Ste20_[CRIB]'], [])
+        #ComplexApplicator(reactions, []).apply_complexes()
+        #reactions.apply_contingencies
+        reaction = rxncon.reaction_pool['Ste20_[KD]_ppi_Ste20_[CRIB]'][0]
         lmol = reaction.substrat_complexes[0].molecules[0]
         rmol = reaction.substrat_complexes[1].molecules[0]
         cont = Contingency('Ste20_[KD]_ppi_Ste20_[CRIB]', 'x', get_state('Cdc42_[ED]--Ste20_[CRIB]'))

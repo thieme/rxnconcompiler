@@ -359,7 +359,7 @@ class Rxncon():
                 complexes = self.apply_contingencies(react_container, complexes)
 
             if complexes:
-                ComplexApplicator(react_container, complexes).apply_complexes() #2
+                ComplexApplicator(react_container, copy.deepcopy(complexes)).apply_complexes() #2
             #self.apply_rules(react_container, rules)
             # after applying complexes we may have more reactions in a single container.
             #if add_contingencies:
