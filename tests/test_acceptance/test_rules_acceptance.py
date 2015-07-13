@@ -26,11 +26,11 @@ from test_data.bngl_rules.rules_pheromon_data import DATA as PHEROMON
 # To run more tests uncomment the data sets.
 DATA_SETS = {
     # name: [data_set1, data_set2, ...]
-    'Basic Data Set': BASIC,
+    #'Basic Data Set': BASIC,
     'MAPK Data Set': MAPK,
     #'Input (e.g. Start) Data Set': INPUT,
     #'Complex Geometry Data Set': GEOMETRY,
-    'Difficult Cases Data Set': DIFFICULT,
+    ##'Difficult Cases Data Set': DIFFICULT,
     #'Pheromon Pathway Data Set': PHEROMON
 
 }
@@ -100,7 +100,7 @@ class RuleAcceptanceTests(TestCase):
         n_reactions = 0
         n_rules = 0
         for reaction in data_dict:
-            #print reaction
+            print reaction
             bngl = Compiler(reaction).translate()
             reaction_passed = True
             for rule in data_dict[reaction]['Rules']:

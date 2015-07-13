@@ -397,7 +397,7 @@ MAPK_PPLUS_DATA = {
 <Ste7-5-5-11>; and Ste5_[BDSte5]--Ste5_[BDSte5]''': {
     'Rules':[
     'Ste11(AssocSte7!1,CBD).Ste7(ALS359~U,AssocSte11!1) -> Ste11(AssocSte7!1,CBD).Ste7(ALS359~P,AssocSte11!1)',
-    'Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~U,AssocSte5!1) -> Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte5!1)'],
+    'Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte11,AssocSte5!1)'],
     'Tags': [
     1, 'P+', 'Ste11', 'Ste7', 'contingencies', '!', 'x', 'bool']},
 
@@ -409,7 +409,7 @@ MAPK_PPLUS_DATA = {
 <Ste7-5-5-11>; and Ste5_[BDSte5]--Ste5_[BDSte5]''': {
     'Rules':[
     'Ste11(AssocSte7!1,CBD).Ste7(ALT363~U,AssocSte11!1) -> Ste11(AssocSte7!1,CBD).Ste7(ALT363~P,AssocSte11!1)',
-    'Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALT363~U,AssocSte5!1) -> Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALT363~P,AssocSte5!1)'],
+    'Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALT363~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALT363~P,AssocSte11,AssocSte5!1)'],
     'Tags': [
     1, 'P+', 'Ste11', 'Ste7', 'contingencies', '!', 'x', 'bool']},
 
@@ -419,14 +419,13 @@ MAPK_PPLUS_DATA = {
 <Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
 <Ste11^{M/5}>; and <Ste5^{M}>
 <Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
-<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]; k+ <FIL-signal>
-<FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
-<FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]''': {
+<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+''': {
     'Rules':[
     'Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDS302~U,BDSho1!1) -> Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDS302~P,BDSho1!1)',
-    'Ste20(SerThr~P,KD) + Ste11(CBDS302~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~P,KD) + Ste11(CBDS302~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)',
+    'Ste20(SerThr~P,KD) + Ste11(CBDS302~U,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1) -> Ste20(SerThr~P,KD) + Ste11(CBDS302~P,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1)',
     'Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDS302~U,BDSho1!1) -> Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDS302~P,BDSho1!1)',
-    'Ste20(SerThr~U,KD) + Ste11(CBDS302~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~U,KD) + Ste11(CBDS302~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)'],
+    'Ste20(SerThr~U,KD) + Ste11(CBDS302~U,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1) -> Ste20(SerThr~U,KD) + Ste11(CBDS302~P,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1)'],
     'Tags': [
     1, 'P+', 'Ste20', 'Ste11', 'contingencies', 'K+', 'x', 'bool']},
 
@@ -436,14 +435,12 @@ MAPK_PPLUS_DATA = {
 <Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
 <Ste11^{M/5}>; and <Ste5^{M}>
 <Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
-<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]; k+ <FIL-signal>
-<FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
-<FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]''': {
+<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]''': {
     'Rules':[
     'Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDS306~U,BDSho1!1) -> Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDS306~P,BDSho1!1)',
-    'Ste20(SerThr~P,KD) + Ste11(CBDS306~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~P,KD) + Ste11(CBDS306~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)',
+    'Ste20(SerThr~P,KD) + Ste11(CBDS306~U,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1) -> Ste20(SerThr~P,KD) + Ste11(CBDS306~P,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1)',
     'Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDS306~U,BDSho1!1) -> Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDS306~P,BDSho1!1)',
-    'Ste20(SerThr~U,KD) + Ste11(CBDS306~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~U,KD) + Ste11(CBDS306~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)'],
+    'Ste20(SerThr~U,KD) + Ste11(CBDS306~U,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1) -> Ste20(SerThr~U,KD) + Ste11(CBDS306~P,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1)'],
     'Tags': [
     1, 'P+', 'Ste20', 'Ste11', 'contingencies', 'K+', 'x', 'bool']},
 
@@ -453,14 +450,12 @@ MAPK_PPLUS_DATA = {
 <Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
 <Ste11^{M/5}>; and <Ste5^{M}>
 <Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
-<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]; k+ <FIL-signal>
-<FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
-<FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]''': {
+<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]''': {
     'Rules':[
     'Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDT307~U,BDSho1!1) -> Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDT307~P,BDSho1!1)',
-    'Ste20(SerThr~P,KD) + Ste11(CBDT307~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~P,KD) + Ste11(CBDT307~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)',
+    'Ste20(SerThr~P,KD) + Ste11(CBDT307~U,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1) -> Ste20(SerThr~P,KD) + Ste11(CBDT307~P,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1)',
     'Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDT307~U,BDSho1!1) -> Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDT307~P,BDSho1!1)',
-    'Ste20(SerThr~U,KD) + Ste11(CBDT307~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~U,KD) + Ste11(CBDT307~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)'],
+    'Ste20(SerThr~U,KD) + Ste11(CBDT307~U,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1) -> Ste20(SerThr~U,KD) + Ste11(CBDT307~P,AssocSte5!2,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!1).Ste5(MEKK!2,nRINGH2!1)'],
     'Tags': [
     1, 'P+', 'Ste20', 'Ste11', 'contingencies', 'K+', 'x', 'bool']},
 
