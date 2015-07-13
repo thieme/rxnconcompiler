@@ -108,7 +108,7 @@ BOOL_EXAMPLE = {
 '''Fus3_ppi_Ste5_[Unlock]; ! <bool2> 
 <bool2>; AND Ste5_[MEK]--Ste7_[Ste5]; AND Fus3_[CD]--Ste7_[BDMAPK]''': {
     'Rules':[
-    'Fus3(AssocSte5,CD!2).Ste5(MEK!1,Unlock).Ste7(BDMAPK!2,Ste5!1) <-> Fus3(AssocSte5!3,CD!2).Ste5(MEK!1,Unlock!3).Ste7(BDMAPK!2,Ste5!1)'],
+    'Fus3(AssocSte5,CD!1).Ste5(MEK!2,Unlock).Ste7(BDMAPK!1,Ste5!2) <-> Fus3(AssocSte5!3,CD!1).Ste5(MEK!2,Unlock!3).Ste7(BDMAPK!1,Ste5!2)'],
     'Tags': [
     1, 'ppi', 'Fus3', 'Ptp3', 'contingencies', '!', 'difficault']},
 

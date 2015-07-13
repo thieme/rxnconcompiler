@@ -185,46 +185,47 @@ class ContingencyApplicator():
                 or (left.has_molecule(component2.name) and right.has_molecule(component1.name)))\
                 and not cont.state == reaction.to_change: 
                 
-                if component1.name in [reaction.left_reactant.name, reaction.right_reactant.name] \
-                    and component2.name in [reaction.left_reactant.name, reaction.right_reactant.name]:
+                #if component1.name in [reaction.left_reactant.name, reaction.right_reactant.name] \
+                #    and component2.name in [reaction.left_reactant.name, reaction.right_reactant.name]:
                 # if A--B, A and B present in substrates but if reaction creates A and B
                 # we don't join. We want then A
                     reaction.join_substrate_complexes(cont.state)
-
+                    pass
                 # here one of mols from contingency is present in both complexes
                 # but it was added because of previously applayed contingency so we dont want to join.
-                else:
-                    if component1.name == reaction.left_reactant.name \
-                        or component2.name == reaction.left_reactant.name:
-                        self._add_components_to_complex(left, component1, component2, cont, reaction)
-                    elif component1.name == reaction.right_reactant.name \
-                        or component2.name == reaction.right_reactant.name:
-                        self._add_components_to_complex(right, component1, component2, cont, reaction)
-                    else:
+                #else:
 
-
-                        #self._add_components_to_complex(right, component1, component2, cont, reaction)
-                        joined_complex = left.complex_addition(right)
-                        joined_complex.side = 'LR'
-                        reaction.substrat_complexes = [joined_complex]
-                        mols1 = joined_complex.get_molecules(component1.name, component1.cid)
-                        mols2 = joined_complex.get_molecules(component2.name, component2.cid)
-                        if mols1 and mols2:
-                            # what to do when two molecules are already in?
-                            # e.g. A.B + C ! A--B
-                            #print "PROBLEM", mols1, mols2
-                            pass
-                        if mols1:
-                            self.add_molecule_to_complex(mols1, cont, component2, joined_complex, reaction)
-
-                        elif mols2:
-                            self.add_molecule_to_complex(mols2, cont, component1, joined_complex, reaction)
-
-#                        self._add_components_to_complex(joined_complex, component1, component2, cont, reaction)
-
-                        #reaction.substrat_complexes = [joined_complex]
-                        #reaction.add_substrate_complex(left)
-                        pass
+#                     if component1.name == reaction.left_reactant.name \
+#                         or component2.name == reaction.left_reactant.name:
+#                         self._add_components_to_complex(left, component1, component2, cont, reaction)
+#                     elif component1.name == reaction.right_reactant.name \
+#                         or component2.name == reaction.right_reactant.name:
+#                         self._add_components_to_complex(right, component1, component2, cont, reaction)
+#                     else:
+#
+#
+#                         #self._add_components_to_complex(right, component1, component2, cont, reaction)
+#                         joined_complex = left.complex_addition(right)
+#                         joined_complex.side = 'LR'
+#                         reaction.substrat_complexes = [joined_complex]
+#                         mols1 = joined_complex.get_molecules(component1.name, component1.cid)
+#                         mols2 = joined_complex.get_molecules(component2.name, component2.cid)
+#                         if mols1 and mols2:
+#                             # what to do when two molecules are already in?
+#                             # e.g. A.B + C ! A--B
+#                             #print "PROBLEM", mols1, mols2
+#                             pass
+#                         if mols1:
+#                             self.add_molecule_to_complex(mols1, cont, component2, joined_complex, reaction)
+#
+#                         elif mols2:
+#                             self.add_molecule_to_complex(mols2, cont, component1, joined_complex, reaction)
+#
+# #                        self._add_components_to_complex(joined_complex, component1, component2, cont, reaction)
+#
+#                         #reaction.substrat_complexes = [joined_complex]
+#                         #reaction.add_substrate_complex(left)
+#                         pass
 
 
         # a molecule needs to be added to complexes 
