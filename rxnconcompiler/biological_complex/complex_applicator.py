@@ -216,17 +216,19 @@ class ComplexApplicator:
     def building_rules(self, complex_combination_list):
         possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
         rules = []
-
+        known_complexes = []
         for root in possible_roots:
             new_root = True
             for complex in complex_combination_list:
                 complex_copy = copy.deepcopy(complex)
                 root_found = self.check_root(root, complex_copy)
-                if root_found and new_root:
+                if root_found and new_root and str(complex_copy) not in known_complexes:
+                    known_complexes.append(str(complex))
                     complex_copy = self.adapt_complex(rules, complex_copy)
                     rules.append(complex_copy)
                     new_root = False
-                elif root_found:
+                elif root_found and str(complex_copy) not in known_complexes:
+                    known_complexes.append(str(complex))
                     complex_copy = self.adapt_complex(rules, complex_copy)
                     rules.append(complex_copy)
         return rules
