@@ -180,6 +180,7 @@ class ComplexApplicator:
                         cap.apply_on_reaction(reaction, cont)
 
                 reaction_container.add_reaction(reaction)
+
     def check_root(self, root, complex):
         for cont in complex:
             if cont.state.has_component(root):
@@ -193,8 +194,8 @@ class ComplexApplicator:
         @param complex_state:
         @return: True if a conflict exists else False
         """
-        if ref_cont.state in complex_state:  # check if ref_cont is a member of complex
-            idx_cont = complex_state.index(ref_cont.state)
+        if ref_cont.state.state_str in complex_state:  # check if ref_cont is a member of complex
+            idx_cont = complex_state.index(ref_cont.state.state_str)
             if ref_cont.ctype != complex_sign[idx_cont]:  # if ref_cont is a member of the complex check if the sign is different
                 return True
         else:
@@ -206,22 +207,8 @@ class ComplexApplicator:
             state = []
             for cont in complex_copy:
                 sign.append(cont.ctype)
-                state.append(cont.state)
+                state.append(cont.state.state_str)
             for ref_cont in rule:
-                check = self.conflict_check(ref_cont, sign, state)
-                if not self.conflict_check(ref_cont, sign, state) and self.conflict_check(ref_cont, sign, state) != None:
-                    complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_cont)))
-        return complex_copy
-
-    def adapt_complex(self, rules, complex_copy):
-        for rule in rules:
-            sign = []
-            state = []
-            for cont in complex_copy:
-                sign.append(cont.ctype)
-                state.append(cont.state)
-            for ref_cont in rule:
-                check = self.conflict_check(ref_cont, sign, state)
                 if not self.conflict_check(ref_cont, sign, state) and self.conflict_check(ref_cont, sign, state) != None:
                     complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_cont)))
         return complex_copy

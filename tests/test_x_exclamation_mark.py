@@ -167,7 +167,8 @@ class x_exclamation_mark_Tests(TestCase):
 
 
         rxncon = Rxncon("""
-        A_ppi_B; ! <AorC> <AorC>; OR A_[x]-{P}; OR B_[y]-{P}; OR A--C; OR B--D
+        A_ppi_B; ! <AorC>
+        <AorC>; OR A_[x]-{P}; OR B_[y]-{P}; OR A--C; OR B--D; OR B_[z]-{P}
                         """)
 #; OR B_[z]-{P}
 # NEU
