@@ -167,10 +167,9 @@ class x_exclamation_mark_Tests(TestCase):
 
 
         rxncon = Rxncon("""
-        A_ppi_B; ! <AorC>
-<AorC>; OR A_[x]-{P}; OR B_[y]-{P}; OR A--C; OR B--D; OR B_[z]-{P}
+        A_ppi_B; ! <AorC> <AorC>; OR A_[x]-{P}; OR B_[y]-{P}; OR A--C; OR B--D
                         """)
-
+#; OR B_[z]-{P}
 # NEU
 # Optional requirements: A_[x]-{P} True
 #A(x~P,AssocB) + B(AssocA) <-> A(x~P,AssocB!1).B(AssocA!1)    kf1, kr1
@@ -183,9 +182,6 @@ class x_exclamation_mark_Tests(TestCase):
 #>>>>>>>>> Rule: 1_4
 # Optional requirements: B_[y]-{P} False, A_[x]-{P} False, B_[AssocD]--D_[AssocB] True
 #A(x~U,AssocB) + B(y~U,AssocA,AssocD!1).D(AssocB!1) <-> A(x~U,AssocB!2).B(y~U,AssocA!2,AssocD!1).D(AssocB!1)    kf1, kr1
-#>>>>>>>>> Rule: 1_5
-# Optional requirements: B_[z]-{P} True, A_[x]-{P} False
-#A(x~U,AssocB) + B(z~P,AssocA) <-> A(x~U,AssocB!1).B(z~P,AssocA!1)    kf1, kr1
 
 # ALT
 #       'A(x~P,AssocB) + B(AssocA) <-> A(x~P,AssocB!1).B(AssocA!1)',

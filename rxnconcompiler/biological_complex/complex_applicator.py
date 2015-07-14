@@ -180,63 +180,128 @@ class ComplexApplicator:
                         cap.apply_on_reaction(reaction, cont)
 
                 reaction_container.add_reaction(reaction)
+    def check_root(self, root, complex):
+        for cont in complex:
+            if cont.state.has_component(root):
+                return True
+        return False
 
-    def building_rules(self,complex_combination_list):
+    def conflict_check(self, ref_cont, complex_sign, complex_state):
+        """
+        @param ref_cont:
+        @param complex_sign:
+        @param complex_state:
+        @return: True if a conflict exists else False
+        """
+        if ref_cont.state in complex_state:  # check if ref_cont is a member of complex
+            idx_cont = complex_state.index(ref_cont.state)
+            if ref_cont.ctype != complex_sign[idx_cont]:  # if ref_cont is a member of the complex check if the sign is different
+                return True
+        else:
+            return False
+
+    def adapt_complex(self, rules, complex_copy):
+        for rule in rules:
+            sign = []
+            state = []
+            for cont in complex_copy:
+                sign.append(cont.ctype)
+                state.append(cont.state)
+            for ref_cont in rule:
+                check = self.conflict_check(ref_cont, sign, state)
+                if not self.conflict_check(ref_cont, sign, state) and self.conflict_check(ref_cont, sign, state) != None:
+                    complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_cont)))
+        return complex_copy
+
+    def adapt_complex(self, rules, complex_copy):
+        for rule in rules:
+            sign = []
+            state = []
+            for cont in complex_copy:
+                sign.append(cont.ctype)
+                state.append(cont.state)
+            for ref_cont in rule:
+                check = self.conflict_check(ref_cont, sign, state)
+                if not self.conflict_check(ref_cont, sign, state) and self.conflict_check(ref_cont, sign, state) != None:
+                    complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_cont)))
+        return complex_copy
+
+    def building_rules(self, complex_combination_list):
         possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
-        states_to_change = []
         rules = []
-        for i, root in enumerate(possible_roots):
-        #reference_state = [state.state for state in complex_combination_list[0]]
-            new_root= True
 
+        for root in possible_roots:
+            new_root = True
             for complex in complex_combination_list:
-                root_exists = False
-                for cont in complex:
-                    if cont.state.has_component(root): # and cont.ctype == "!":
-                        root_exists = True
-                        break
-                if root_exists and new_root:
-                    if i == 1:
-                        # we have only two roots of a reaction
-                        # if we change the roots we have to make sure that we eleminate all the overlaps between the
-                        # complexes of the current root and the complexes of the previous root
-                        # The difference between the previous reference and the new reference are the states containing the previous and the new root
-                        # we save the states of the previous reference containing the previous root
-                        complex_state = [state.state for state in complex]
-                        for ref_state in reference:
-                            if ref_state.state not in complex_state:
-                                states_to_change.append(copy.deepcopy(ref_state))
-                        if states_to_change != []:
-                            for i, state in enumerate(states_to_change):
-                                rules.append(copy.deepcopy(complex))
-                                if i == 0:
-                                    rules[-1].append(self.change_contingency_opposite(copy.deepcopy(state)))
-                                else:
-                                    rules[-1].extend(states_to_change[:i])
-                                    rules[-1].append(self.change_contingency_opposite(copy.deepcopy(state)))
-                    else:
-                        rules.append(complex)
-                    reference= complex
-
-
+                complex_copy = copy.deepcopy(complex)
+                root_found = self.check_root(root, complex_copy)
+                if root_found and new_root:
+                    complex_copy = self.adapt_complex(rules, complex_copy)
+                    rules.append(complex_copy)
                     new_root = False
-                elif root_exists:
-                    complex_state = [state.state for state in complex]
-                    for ref_state in reference:
-                        if ref_state.state not in complex_state:
-                            complex.append(self.change_contingency_opposite(copy.deepcopy(ref_state)))
-                    #rules.append(complex)
-                    if states_to_change != []:
-                        for i, state in enumerate(states_to_change):
-                            rules.append(copy.deepcopy(complex))
-                            if i == 0:
-                                rules[-1].append(self.change_contingency_opposite(copy.deepcopy(state)))
-                            else:
-                                rules[-1].extend(states_to_change[:i])
-                                rules[-1].append(self.change_contingency_opposite(copy.deepcopy(state)))
-                    elif complex not in rules:
-                        rules.append(complex)
+                elif root_found:
+                    complex_copy = self.adapt_complex(rules, complex_copy)
+                    rules.append(complex_copy)
         return rules
+
+
+
+    # def building_rules(self,complex_combination_list):
+    #     possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
+    #     states_to_change = []
+    #     rules = []
+    #     for i, root in enumerate(possible_roots):
+    #     #reference_state = [state.state for state in complex_combination_list[0]]
+    #         new_root= True
+    #
+    #         for complex in complex_combination_list:
+    #             root_exists = False
+    #             for cont in complex:
+    #                 if cont.state.has_component(root): # and cont.ctype == "!":
+    #                     root_exists = True
+    #                     break
+    #             if root_exists and new_root:
+    #                 if i == 1:
+    #                     # we have only two roots of a reaction
+    #                     # if we change the roots we have to make sure that we eleminate all the overlaps between the
+    #                     # complexes of the current root and the complexes of the previous root
+    #                     # The difference between the previous reference and the new reference are the states containing the previous and the new root
+    #                     # we save the states of the previous reference containing the previous root
+    #                     complex_state = [state.state for state in complex]
+    #                     for ref_state in reference:
+    #                         if ref_state.state not in complex_state:
+    #                             states_to_change.append(copy.deepcopy(ref_state))
+    #                     if states_to_change != []:
+    #                         for i, state in enumerate(states_to_change):
+    #                             rules.append(copy.deepcopy(complex))
+    #                             if i == 0:
+    #                                 rules[-1].append(self.change_contingency_opposite(copy.deepcopy(state)))
+    #                             else:
+    #                                 rules[-1].extend(states_to_change[:i])
+    #                                 rules[-1].append(self.change_contingency_opposite(copy.deepcopy(state)))
+    #                 else:
+    #                     rules.append(complex)
+    #                 reference= complex
+    #
+    #
+    #                 new_root = False
+    #             elif root_exists:
+    #                 complex_state = [state.state for state in complex]
+    #                 for ref_state in reference:
+    #                     if ref_state.state not in complex_state:
+    #                         complex.append(self.change_contingency_opposite(copy.deepcopy(ref_state)))
+    #                 #rules.append(complex)
+    #                 if states_to_change != []:
+    #                     for i, state in enumerate(states_to_change):
+    #                         rules.append(copy.deepcopy(complex))
+    #                         if i == 0:
+    #                             rules[-1].append(self.change_contingency_opposite(copy.deepcopy(state)))
+    #                         else:
+    #                             rules[-1].extend(states_to_change[:i])
+    #                             rules[-1].append(self.change_contingency_opposite(copy.deepcopy(state)))
+    #                 elif complex not in rules:
+    #                     rules.append(complex)
+    #     return rules
 
     def _prepare_alter_complex(self, alter_complex):
         """
