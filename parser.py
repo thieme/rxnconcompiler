@@ -1,24 +1,13 @@
 # File parser to convert from rxncon format to sbtab format and vice
 # versa
 # Mathias Wajnberg July 2015
-#
-# Mapping:
-#| sbtab       | -->  | rxncon              |
-#|_____________|______|_____________________|
-#| !Name       |      | Reaction            |
-#| !SumFormula |      | makes up components |
-#| !SBOTerm    |      | ReactionID          |
 
 
-input_format=''
-type_identifier = "TableType"
-import csv
-import sys
 import SBtab
+import os
+import tablib
+import tablibIO
 
-
-# Booleans to check whether all needed Tables
-found_reaction = False
 
 def isequal(a, b):
     '''
@@ -29,81 +18,67 @@ def isequal(a, b):
     except AttributeError:
         return a == b
 
-def check_format_csv(filename):
+def look_for_SBtab_files(inputdir):
     '''
-    Checks whether input File is in sbtab or rxncon Format (or none of it)
-    '''
-    with open(filename, 'rb') as csvfile:
-        csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
-        try:
-            first_line = csvfile.readline().strip()
-            if isequal(first_line[:6], '!!SBtab'):
-                input_format='SBtab'
-            #elif isequal(die stelle wo es in rxncon steht, der entsprechende string):
-            #    input_format = 'rxncon'
-            else:
-                sys.exit('Can not handel input file %s.\nInput files must be either in SBtab or rxncon format.' % (filename))
-
-
-
-        #error catching
-        except csv.Error as e:
-            sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
-
-
-def read_sbtab_csv(filename):
-    '''
-    https://docs.python.org/2/library/csv.html
+    Checks whether alle needed SBtab files are inside given Directory:
+    - ReactionList
+    - ContingencyID
+    - rxncon_Definition
+    - Gene
     '''
     
-    reaction_list=[]
-    type_identifier = "TableType"
+    for filename in os.listdir(inputdir):
 
-    # default column indexes (for if header row is missing)
-    name_index = 1  # !Name
-    id_index = 6    # !SBOTerm
-    formula_index =  2 # !SumFormula
+        table_file = open(inputdir+'/'+filename,'r')
+        table = table_file.read()
+        tablib_table = tablibIO.importSetNew(table,filename)
+        ob = SBtab.SBtabTable(tablib_table,filename)
+        
+        print ob.table_type
+    
 
-    with open(filename, 'rb') as csvfile:
-        csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
-        try:
-            # get Table Type
-            first_line = csvfile.readline().strip()
-            type_pos_begin = (first_line.find(type_identifier))+11
-            type_pos_end = first_line.find(' ', type_pos_begin)-1
-            tableType = first_line[type_pos_begin:type_pos_end] #e.g. Reaction, Compound etc.
 
-            if tableType == 'Reaction' or tableType=='reaction':
-                found_reaction=True
-            
-            for row in csvreader:
-                if row[0][0]=='!':
-                    colNrHeader= len(row)
-                    name_index=row.index('!Name')
-                    id_index = row.index('!SBOTerm')
-                    formula_index = row.index('!SumFormula')
-                    #componentA, componentB = getComponents(row[formula_index])
-                    print row #mw
 
-                else:
-                    reaction_list.append({
-                        'Reaction': row[name_index].lower(),
-                        'ReactionID': row[id_index]
-                    }) # usw
-                    if colNrHeader != len(row):
-                        sys.exit('Error! Header length and row length differ in length!')
-                    print row #mw
+def get_info(ob):
+    '''
+    Function that gives some Information about given Object and current working enviroment
+    '''
+    print 'Print: '
+    print ob
+    print '\nType: '
+    print type(ob)
+    print'\nDir: '
+    print dir(ob)
+    #print getattr(ob)
+    #print hasattr(ob)
+    print '\nGlobals: '
+    print globals()
+    print '\nLocals: '
+    print locals()
+    print '\nCallable: '
+    print callable(ob)
 
-        #error catching
-        except csv.Error as e:
-            sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
-                
-    print reaction_list
-    return reaction_list
+def get_SBtab_info(ob):
+    '''
+    Uses SBtab methods to print out some Information about input SBtabTable instance
+    '''
 
+    print 'Columns:\t', ob.columns
+    print 'Header_row: \t', ob.header_row
+    #print ob.sbtab_list
+    #print ob.table
+    print 'TableType:\t', ob.table_type
 
 
 if __name__=="__main__":
-    read_sbtab_csv('BIOMD0000000061_Reaction.csv')
+    #read_sbtab_csv('BIOMD0000000061_Reaction.csv')
     #print '--------------------------------------'
     #read_sbtab_csv('BIOMD0000000061_Compound.csv')
+    #ob = SBtabTools.openSBtab('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
+    #print os.listdir('tiger_files')
+    #look_for_SBtab_files('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
+    look_for_SBtab_files('example_files')
+    print '------------------------'
+    look_for_SBtab_files('tiger_files')
+    
+    #print ob
