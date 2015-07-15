@@ -75,9 +75,9 @@ class ComplexApplicator:
         for complex in self.complexes:
 
             if complex[0] == "!":
-                self.positive_application(complex)
+                self.positive_application(copy.deepcopy(complex))
             elif complex[0] == "x":
-                self.negative_application(complex)
+                self.negative_application(copy.deepcopy(complex))
             elif complex[0] in ["k+","k-"]:
                 self.positive_application(copy.deepcopy(complex))
                 self.negative_application(copy.deepcopy(complex))
@@ -94,9 +94,10 @@ class ComplexApplicator:
 
     def negative_application(self,complex):
         tmp = []
-        for inner_list in itertools.product(*complex[1]):
-            self.change_contingency_relation(inner_list, "x")
-            tmp.append(list(inner_list))
+        for inner_list in itertools.product(*copy.deepcopy(complex[1])):
+            tmp_list = copy.deepcopy(inner_list)
+            self.change_contingency_relation(tmp_list, "x")
+            tmp.append(list(tmp_list))
         self.association.append(tmp)
 
     def complex_combination(self):
