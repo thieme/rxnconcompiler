@@ -14,6 +14,8 @@ input_format=''
 type_identifier = "TableType"
 import csv
 import sys
+import SBtab
+
 
 # Booleans to check whether all needed Tables
 found_reaction = False
@@ -32,7 +34,7 @@ def check_format_csv(filename):
     Checks whether input File is in sbtab or rxncon Format (or none of it)
     '''
     with open(filename, 'rb') as csvfile:
-         csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
+        csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
         try:
             first_line = csvfile.readline().strip()
             if isequal(first_line[:6], '!!SBtab'):
@@ -99,20 +101,6 @@ def read_sbtab_csv(filename):
     print reaction_list
     return reaction_list
 
-def getComponents(formula):
-    """Read Component names from Sum Formula of a Reaction in sbtab
-    format"""
-    arrow_pos = formula.find('<=>')
-    left=formula[0:arrow_pos-1]
-    right=formula[arrow_pos+4:]
-
-    no_comps_l= left.count('+')+1
-    no_comps_r= right.count('+')+1
-
-    comps_l=[]
-    comps_r=[]
-
-    # hier lese ich metaboliten, was ich aber will sind doch proteine (oder?) --> sebastian fragen
 
 
 if __name__=="__main__":
