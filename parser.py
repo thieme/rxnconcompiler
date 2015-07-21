@@ -49,40 +49,12 @@ def check_directory_type(inputdir):
             continue
 
         if filename.endswith('.txt'):
-            # Read simple text file
-            with open(filedir, 'r') as f:
-                first_line= f.readline().strip()
-                if 'SBtab' in first_line:
-                    sbtab_detected=True
+            sbtab_detected, rxncon_detected, other_detected = check_txt_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
-                    #Den Fall abfangen ob text oder xls /  ods ist. Wenn txt dann nach dem header suchen, den es noch nicht
-                    #gibt. ich werde den festelgen (sowas wie # rxncon_version = dings oder so)
-                    #wenn es xls / ods ist gucken wie die Reiter in dem File heissen. Wenn 'Contingency list' vorkommt ist es
-                    #rxncon
-
-                elif 'rxncon' in first_line:
-                    # sollte im rxncon header fuer txt files vorkommen, gibt es bisher nicht
-                    rxncon_detected=True
-                else:
-                    other_detected=True
 
         elif filename.endswith('.xls'):
             # Read Excel Document
-            xlsreader = xlrd.open_workbook(filedir)
-            xls_sheet_names = xlsreader.sheet_names()
-            first_sheet = xlsreader.sheet_by_index(0)
-
-            first_line = first_sheet.row(0)
-            for cell in first_line:
-                if '!!SBtab' in str(cell):
-                    sbtab_detected=True
-
-            for sheet_name in xls_sheet_names:
-                if 'Contingency' in sheet_name or 'contingency' in sheet_name:
-                    rxncon_detected=True
-
-            if sbtab_detected==False and rxncon_detected==False:
-                other_detected=True
+            sbtab_detected, rxncon_detected, other_detected = check_xls_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
         elif filename.endswith('.ods'):
             # Read Open / Libre Office Document
@@ -90,19 +62,8 @@ def check_directory_type(inputdir):
 
         elif filename.endswith('.csv'):
             # Read csv Table
-            # cant be rxncon file then
-            with open(filedir, 'rb') as csvfile:
-                csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
-                try:
-                    first_line = csvfile.readline().strip()
-                    if 'SBtab' in first_line:
-                        sbtab_detected=True
-                    else:
-                        other_detected=True
+            sbtab_detected, rxncon_detected, other_detected = check_csv_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
-                #error catching
-                except csv.Error as e:
-                    sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
 
         else:
             print 'hier'
@@ -124,7 +85,68 @@ def check_directory_type(inputdir):
             print 'Directory of SBtab files detected. Starting parser.'
             look_for_SBtab_files(inputdir)
 
+def check_txt_File(filedir, sbtab_detected, rxncon_detected, other_detected):
+    '''
+    Checks whether txt file is rxncon, SBtab or other file type
+    '''
+    with open(filedir, 'r') as f:
+                first_line= f.readline().strip()
+                if 'SBtab' in first_line:
+                    sbtab_detected=True
+                elif 'rxncon' in first_line:
+                    # sollte im rxncon header fuer txt files vorkommen, gibt es bisher nicht
+                    rxncon_detected=True
+                else:
+                    other_detected=True
 
+    return sbtab_detected, rxncon_detected, other_detected
+
+def check_xls_File(filedir, sbtab_detected, rxncon_detected, other_detected):
+    '''
+    Checks whether xls file is rxncon, SBtab or other file type
+    '''
+    xlsreader = xlrd.open_workbook(filedir)
+    xls_sheet_names = xlsreader.sheet_names()
+    first_sheet = xlsreader.sheet_by_index(0)
+
+    first_line = first_sheet.row(0)
+    for cell in first_line:
+        if '!!SBtab' in str(cell):
+            sbtab_detected=True
+
+    for sheet_name in xls_sheet_names:
+        if 'Contingency' in sheet_name or 'contingency' in sheet_name:
+            rxncon_detected=True
+
+    if sbtab_detected==False and rxncon_detected==False:
+        other_detected=True
+
+    return sbtab_detected, rxncon_detected, other_detected
+
+def check_ods_File(filedir):
+    '''
+    Checks whether ods file is rxncon, SBtab or other file type
+    '''
+
+def check_csv_File(filedir, sbtab_detected, rxncon_detected, other_detected):
+    '''
+    Checks whether csv file is rxncon, SBtab or other file type
+    '''
+    # cant be rxncon file then
+    with open(filedir, 'rb') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
+        try:
+            first_line = csvfile.readline().strip()
+            if 'SBtab' in first_line:
+                sbtab_detected=True
+            else:
+                other_detected=True
+
+        #error catching
+        except csv.Error as e:
+            sys.exit('file %s, line %d: %s' % (filedir, csvreader.line_num, e))
+
+    return sbtab_detected, rxncon_detected, other_detected
 
 def look_for_SBtab_files(inputdir):
     '''
