@@ -8,7 +8,7 @@ import os
 import tablib
 import tablibIO
 import csv
-
+import xlrd
 
 def isequal(a, b):
     '''
@@ -33,16 +33,24 @@ def check_directory_type(inputdir):
     '''
     Checks whether input directory consists of SBtab, rxncon, both or other files
     '''
+    print inputdir
+
     rxncon_detected = False
     sbtab_detected = False
-    other_files = False
+    other_detected = False
 
     files=get_files(inputdir)
 
     for filename in files:
+        filedir= inputdir+'/'+filename
+
+        if filename.startswith('.'):
+            #skips temp files
+            continue
 
         if filename.endswith('.txt'):
-            with open(filename, 'r') as f:
+            # Read simple text file
+            with open(filedir, 'r') as f:
                 first_line= f.readline().strip()
                 if 'SBtab' in first_line:
                     sbtab_detected=True
@@ -56,42 +64,61 @@ def check_directory_type(inputdir):
                     # sollte im rxncon header fuer txt files vorkommen, gibt es bisher nicht
                     rxncon_detected=True
                 else:
-                    other_files=True
+                    other_detected=True
 
         elif filename.endswith('.xls'):
-            pass
+            # Read Excel Document
+            xlsreader = xlrd.open_workbook(filedir)
+            xls_sheet_names = xlsreader.sheet_names()
+            first_sheet = xlsreader.sheet_by_index(0)
+
+            first_line = first_sheet.row(0)
+            for cell in first_line:
+                if '!!SBtab' in str(cell):
+                    sbtab_detected=True
+
+            for sheet_name in xls_sheet_names:
+                if 'Contingency' in sheet_name or 'contingency' in sheet_name:
+                    rxncon_detected=True
+
+            if sbtab_detected==False and rxncon_detected==False:
+                other_detected=True
 
         elif filename.endswith('.ods'):
+            # Read Open / Libre Office Document
             pass
 
         elif filename.endswith('.csv'):
-            with open(inputdir+'/'+filename, 'rb') as csvfile:
+            # Read csv Table
+            # cant be rxncon file then
+            with open(filedir, 'rb') as csvfile:
                 csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
                 try:
                     first_line = csvfile.readline().strip()
                     if 'SBtab' in first_line:
                         sbtab_detected=True
                     else:
-                        sys.exit('Can not handel input file %s.\nInput files must be either in SBtab or rxncon format.' % (filename))
+                        other_detected=True
 
                 #error catching
                 except csv.Error as e:
                     sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
 
         else:
-            other_files=True
+            print 'hier'
+            other_detected=True
 
 
     if rxncon_detected==True:
         if sbtab_detected==True:
             print 'Error, both SBtab and rxncon files detected in input directory!'
-        elif other_files==True:
+        elif other_detected==True:
             print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
         else:
             print 'Directory of rxncon files detected. Starting parser.'
             #look_for_rxncon_files, starte rxcon to sbtab parsing
     elif sbtab_detected==True:
-        if other_files==True:
+        if other_detected==True:
             print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
         else:
             print 'Directory of SBtab files detected. Starting parser.'
@@ -166,7 +193,10 @@ if __name__=="__main__":
     #print os.listdir('tiger_files')
     #look_for_SBtab_files('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
     check_directory_type('example_files')
+    #print '------------------------'
+    #check_directory_type('example_files(sbtab)_xls')
     print '------------------------'
     check_directory_type('tiger_files')
+    print '------------------------'
+    check_directory_type('rxncon_files')
 
-    #print ob
