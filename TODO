@@ -1,5 +1,6 @@
 - lese ich rxncon oder sbtab directory?
 - gucken ob alle benötigten files da sind
+   - SBtab --> rxncon: ReactionList, Gene, ContingencyID, rxncon_Definition
 - gucken ob zu viele files da sind ( mehrere Projekte? Oder kann man auch mehrere reaction files haben? timo fragen. gibts es eine ID für ein Projekt?)
 
 - parser schreiben, der reaction_Definition Datei erstellt, die für SBtab --> rxncon benötigt wird
