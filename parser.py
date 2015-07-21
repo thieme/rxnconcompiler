@@ -10,6 +10,7 @@ import tablibIO
 import csv
 import xlrd
 
+
 def isequal(a, b):
     '''
     Compares two strings case insensitively
@@ -58,7 +59,7 @@ def check_directory_type(inputdir):
 
         elif filename.endswith('.ods'):
             # Read Open / Libre Office Document
-            pass
+            sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
         elif filename.endswith('.csv'):
             # Read csv Table
@@ -123,10 +124,13 @@ def check_xls_File(filedir, sbtab_detected, rxncon_detected, other_detected):
 
     return sbtab_detected, rxncon_detected, other_detected
 
-def check_ods_File(filedir):
+def check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected):
     '''
     Checks whether ods file is rxncon, SBtab or other file type
     '''
+    
+
+    return sbtab_detected, rxncon_detected, other_detected
 
 def check_csv_File(filedir, sbtab_detected, rxncon_detected, other_detected):
     '''
@@ -214,10 +218,12 @@ if __name__=="__main__":
     #ob = SBtabTools.openSBtab('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
     #print os.listdir('tiger_files')
     #look_for_SBtab_files('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
-    check_directory_type('example_files')
-    #print '------------------------'
-    #check_directory_type('example_files(sbtab)_xls')
+    check_directory_type('example_files(sbtab)_csv')
     print '------------------------'
+    check_directory_type('example_files(sbtab)_ods')
+    print '------------------------'
+    #check_directory_type('example_files(sbtab)_xls')
+    #print '------------------------'
     check_directory_type('tiger_files')
     print '------------------------'
     check_directory_type('rxncon_files')
