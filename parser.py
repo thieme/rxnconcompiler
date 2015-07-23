@@ -16,6 +16,8 @@ def get_files(inputdir):
     """
     Returns list of files (and only files) inside given input directory
     """
+
+
     files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) ]
 
     return files
@@ -25,7 +27,7 @@ def check_directory_type(inputdir):
     '''
     Checks whether input directory consists of SBtab, rxncon, both or other files
     '''
-    print inputdir
+    print inputdir, '      delete this print in the end, check_directory_type()'
 
     rxncon_detected = False
     sbtab_detected = False
@@ -120,8 +122,12 @@ def check_xls_File(filedir, sbtab_detected, rxncon_detected, other_detected):
 def check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected):
     '''
     Checks whether ods file is rxncon, SBtab or other file type
+    NOT SUPPORTED YET
     '''
-    return sbtab_detected, rxncon_detected, other_detected
+    #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
+    #return sbtab_detected, rxncon_detected, other_detected
+
+    pass
 
 def check_csv_File(filedir, sbtab_detected, rxncon_detected, other_detected):
     '''
@@ -147,6 +153,7 @@ def look_for_SBtab_files(inputdir):
     '''
     Checks whether all needed SBtab tables are inside given directory/document
     - ReactionList
+    - ReactionID
     - ContingencyID
     - rxncon_Definition
     - Gene
@@ -173,7 +180,7 @@ def look_for_SBtab_files(inputdir):
 
 
 
-    if 'ReactionList' in found_table_types and 'ContingencyID' in found_table_types and 'Gene' in found_table_types:
+    if 'ReactionList' in found_table_types and 'ReactionID' in found_table_types and'ContingencyID' in found_table_types and 'Gene' in found_table_types:
         if rxncon_def_found and 'Definition' in found_table_types:
             return True
         else:
@@ -184,6 +191,7 @@ def look_for_SBtab_files(inputdir):
     else:
         print 'Error: In order to translate the SBtab Format to rxncon you need tables with following TableTypes:' \
               ' - ReactionList' \
+              ' - ReactionID' \
               ' - ContingencyID' \
               ' - Gene' \
               ' - Definition (inside "rxncon_Definition" File)'
@@ -247,30 +255,76 @@ def parse_SBtab2rxncon(inputdir):
     Main function for parsin SBtab --> rxncon Format
     '''
     files = get_files(inputdir)
-    ob_list=[]
+    output_format= raw_input('Please enter the output format. Possible is .txt & .xls (default= .txt')
+    if output_format=='':
+        output_format='txt'
+    elif output_format!='.txt' or output_format!='.xls':
+        print 'Error, the format ',output_format,' is not supported.'
+
+    ob_list=[] # List of dictionaries
 
     for filename in files:
         #print 'Filename: ', filename
         ob= build_SBtab_object(inputdir, filename)
-        ob_list.append(ob)
+        ob_list.append({'object':ob, 'type':ob.table_type, 'filename':filename })
 
         #print '##########################'
-        #get_info(ob)
+    #get_info(ob)
+
+    if output_format=='.txt':
+
+    # !Target, !Contigencie und !Modifier spalten aus ContID nehmen und so in den file printen. Aber ein Semicolon nach
+    # dem target entry
+    # außerdem alle reactions aus reactionID, die noch nich in ContingencyID vorgekommen sind
+    # Besonder toll wäre es, wenn mehrere contigencies zu einer reaction alle in eine Zeile kommen:
+    #     A_ppi_B ;!A--C;!A--D
+    #Anstatt:
+    #     A_ppi_b ;! A--C
+    #     A_ppi_B ; A--D
+
+        for ob in ob_list:
+            if ob['type']=='ContingencyID':
+                #target=ob.columns['!Target'] irgendwie so
+                #print target
+
+
+def hello():
+    '''
+    Introduces parser to user and reads input directory from comment line
+    '''
+    print 'You are using rxncon SBtab parser.' \
+          'If you want to parse a rxncon file to a SBtab file, the following filetypes are supported:' \
+          ' - .csv' \
+          ' - .xls'
+    print 'If you want to parse a SBtab file to a rxncon file, these filetypes are suported:' \
+          ' - .xls' \
+          ' - .txt'
+    print ''
+    inputdir = raw_input('Please enter the path to the directory containing your network files: \n') # only works in python 2.x, for python3 would be input()
+
+    return inputdir
+
 
 if __name__=="__main__":
+
+    #'to be' usage:
+    #inputdir= hello()
+    #check_directory_type(inputdir)
+
+
     #read_sbtab_csv('BIOMD0000000061_Reaction.csv')
     #print '--------------------------------------'
     #read_sbtab_csv('BIOMD0000000061_Compound.csv')
     #ob = SBtabTools.openSBtab('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
     #print os.listdir('tiger_files')
     #look_for_SBtab_files('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
-    # check_directory_type('sbtab_files/example_files(sbtab)_csv')
+    #check_directory_type('sbtab_files/example_files(sbtab)_csv')
+    #print '------------------------'
+    #check_directory_type('sbtab_files/example_files(sbtab)_ods')
+    #print '------------------------'
+    check_directory_type('sbtab_files/example_files(sbtab)_xls')
     # print '------------------------'
-    # check_directory_type('sbtab_files/example_files(sbtab)_ods')
-    # print '------------------------'
-    # check_directory_type('sbtab_files/example_files(sbtab)_xls')
-    # print '------------------------'
-    check_directory_type('sbtab_files/tiger_files_csv')
+    #check_directory_type('sbtab_files/tiger_files_csv')
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_xls')
     # print '------------------------'

@@ -7,7 +7,7 @@
    welche dateiformate jeweils erlaubt sind?
 
    
-- txt format sbtab testen
+- txt format sbtab testen und hello() anpassen
 - csv format sbtab testen
 - xls format sbtab testen
 - txt format rxncon testen
