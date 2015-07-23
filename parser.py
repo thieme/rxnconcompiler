@@ -35,6 +35,7 @@ def check_directory_type(inputdir):
     Checks whether input directory consists of SBtab, rxncon, both or other files
     '''
     print inputdir
+    print get_files(inputdir)
 
     rxncon_detected = False
     sbtab_detected = False
@@ -223,9 +224,9 @@ if __name__=="__main__":
     print '------------------------'
     check_directory_type('sbtab_files/example_files(sbtab)_ods')
     print '------------------------'
-    #check_directory_type('sbtab_files/example_files(sbtab)_xls')
-    #print '------------------------'
-    check_directory_type('sbtab_files/tiger_files')
+    check_directory_type('sbtab_files/example_files(sbtab)_xls')
+    print '------------------------'
+    check_directory_type('sbtab_files/tiger_files_csv')
     print '------------------------'
     check_directory_type('rxncon_files/rxncon_xls')
     print '------------------------'
