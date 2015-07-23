@@ -5,11 +5,11 @@
 
 import SBtab
 import os
-import tablib
+#import tablib
 import tablibIO
 import csv
 import xlrd
-
+import sys
 
 def isequal(a, b):
     '''
@@ -52,22 +52,23 @@ def check_directory_type(inputdir):
         if filename.endswith('.txt'):
             sbtab_detected, rxncon_detected, other_detected = check_txt_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
-
         elif filename.endswith('.xls'):
             # Read Excel Document
             sbtab_detected, rxncon_detected, other_detected = check_xls_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
         elif filename.endswith('.ods'):
             # Read Open / Libre Office Document
-            sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
+            print 'Found File(s) in .ods format. This format ist not supported. Please use .xls or .txt format.\n' \
+                  'If you want to translate from SBtab to rxncon you can also use .csv format.'
+            #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
         elif filename.endswith('.csv'):
             # Read csv Table
             sbtab_detected, rxncon_detected, other_detected = check_csv_File(filedir, sbtab_detected, rxncon_detected, other_detected)
-
+            if rxncon_detected:
+                sys.exit('Found rxncon file in .csv Format. This is not supported, please export zu .xls or Quick Format in .txt')
 
         else:
-            print 'hier'
             other_detected=True
 
 
@@ -128,7 +129,7 @@ def check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected):
     '''
     Checks whether ods file is rxncon, SBtab or other file type
     '''
-    
+
 
     return sbtab_detected, rxncon_detected, other_detected
 
@@ -218,13 +219,15 @@ if __name__=="__main__":
     #ob = SBtabTools.openSBtab('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
     #print os.listdir('tiger_files')
     #look_for_SBtab_files('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
-    check_directory_type('example_files(sbtab)_csv')
+    check_directory_type('sbtab_files/example_files(sbtab)_csv')
     print '------------------------'
-    check_directory_type('example_files(sbtab)_ods')
+    check_directory_type('sbtab_files/example_files(sbtab)_ods')
     print '------------------------'
-    #check_directory_type('example_files(sbtab)_xls')
+    #check_directory_type('sbtab_files/example_files(sbtab)_xls')
     #print '------------------------'
-    check_directory_type('tiger_files')
+    check_directory_type('sbtab_files/tiger_files')
     print '------------------------'
-    check_directory_type('rxncon_files')
+    check_directory_type('rxncon_files/rxncon_xls')
+    print '------------------------'
+    check_directory_type('rxncon_files/rxncon_txt')
 
