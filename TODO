@@ -1,11 +1,12 @@
 - lese ich rxncon oder sbtab directory?
     - klappt soweit, außer für ods files!
 - gucken ob alle benötigten files da sind
-   - SBtab --> rxncon: ReactionList, Gene, ContingencyID, rxncon_Definition
+   - SBtab --> rxncon: ReactionList, ReactionID, Gene, ContingencyID,
+      rxncon_Definition
+   - rxncon --> SBtab: Reaction List, Contingency List, Reaction definition   
 - gucken ob zu viele files da sind ( mehrere Projekte? Oder kann man auch mehrere reaction files haben? timo fragen. gibts es eine ID für ein Projekt?)
-- Wäre es sinnvoll einen Begrüßungstext zu printen indem erklärt wird,
-   welche dateiformate jeweils erlaubt sind?
 
+- parse_SBtab2rxncon txt Format
    
 - txt format sbtab testen und hello() anpassen
 - csv format sbtab testen
