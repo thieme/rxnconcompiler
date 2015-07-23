@@ -10,21 +10,12 @@ import tablibIO
 import csv
 import xlrd
 import sys
-
-def isequal(a, b):
-    '''
-    Compares two strings case insensitively
-    '''
-    try:
-        return a.lower() == b.lower()
-    except AttributeError:
-        return a == b
+import re
 
 def get_files(inputdir):
-    '''
+    """
     Returns list of files (and only files) inside given input directory
-    '''
-
+    """
     files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) ]
 
     return files
@@ -35,7 +26,6 @@ def check_directory_type(inputdir):
     Checks whether input directory consists of SBtab, rxncon, both or other files
     '''
     print inputdir
-    print get_files(inputdir)
 
     rxncon_detected = False
     sbtab_detected = False
@@ -86,7 +76,8 @@ def check_directory_type(inputdir):
             print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
         else:
             print 'Directory of SBtab files detected. Starting parser.'
-            look_for_SBtab_files(inputdir)
+            if look_for_SBtab_files(inputdir):
+                parse_SBtab2rxncon(inputdir)
 
 def check_txt_File(filedir, sbtab_detected, rxncon_detected, other_detected):
     '''
@@ -130,8 +121,6 @@ def check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected):
     '''
     Checks whether ods file is rxncon, SBtab or other file type
     '''
-
-
     return sbtab_detected, rxncon_detected, other_detected
 
 def check_csv_File(filedir, sbtab_detected, rxncon_detected, other_detected):
@@ -156,7 +145,7 @@ def check_csv_File(filedir, sbtab_detected, rxncon_detected, other_detected):
 
 def look_for_SBtab_files(inputdir):
     '''
-    Checks whether alle needed SBtab files are inside given Directory:
+    Checks whether all needed SBtab tables are inside given directory/document
     - ReactionList
     - ContingencyID
     - rxncon_Definition
@@ -164,20 +153,61 @@ def look_for_SBtab_files(inputdir):
     '''
 
     files = get_files(inputdir)
+    found_table_types=[]
+    rxncon_def_found=False
 
     for filename in files:
-
         #print 'Filename: ', filename
-
-        table_file = open(inputdir+'/'+filename,'r')
-        table = table_file.read()
-        tablib_table = tablibIO.importSetNew(table,filename)
-        ob = SBtab.SBtabTable(tablib_table,filename)
-
-        print ob.table_type
+        ob= build_SBtab_object(inputdir, filename)
+        found_table_types.append(ob.table_type)
 
         #print '##########################'
         #get_info(ob)
+
+        #print files
+
+        p = re.compile('rxncon_Definition.*') # every file with that name, no matter what file format
+        m = p.match(filename)
+        if m:
+            rxncon_def_found=True
+
+
+
+    if 'ReactionList' in found_table_types and 'ContingencyID' in found_table_types and 'Gene' in found_table_types:
+        if rxncon_def_found and 'Definition' in found_table_types:
+            return True
+        else:
+            print 'Error: In order to translate the SBtab Format to rxncon you need the "rxncon_Definition" File inside this directory' \
+                  'you can download it here:'
+            print 'www.rxncon.org'
+            return False
+    else:
+        print 'Error: In order to translate the SBtab Format to rxncon you need tables with following TableTypes:' \
+              ' - ReactionList' \
+              ' - ContingencyID' \
+              ' - Gene' \
+              ' - Definition (inside "rxncon_Definition" File)'
+        return False
+
+def build_SBtab_object(inputdir, filename):
+    '''
+    Gets input directory and filename of SBtab formatted File and creates Object from this using SBtab Library
+    '''
+    table_file = open(inputdir+'/'+filename,'r')
+    table = table_file.read()
+    tablib_table = tablibIO.importSetNew(table,filename)
+    ob = SBtab.SBtabTable(tablib_table,filename)
+    return ob
+
+
+def look_for_rxncon_sheets(inputdir):
+    '''
+    Checks whether all needed sheets are inside given rxcon File in given directory:
+    - Reaction List
+    - Contingency List
+    - Reaction definition
+    '''
+    pass
 
 
 
@@ -212,6 +242,20 @@ def get_SBtab_info(ob):
     #print ob.table
     print 'TableType:\t', ob.table_type
 
+def parse_SBtab2rxncon(inputdir):
+    '''
+    Main function for parsin SBtab --> rxncon Format
+    '''
+    files = get_files(inputdir)
+    ob_list=[]
+
+    for filename in files:
+        #print 'Filename: ', filename
+        ob= build_SBtab_object(inputdir, filename)
+        ob_list.append(ob)
+
+        #print '##########################'
+        #get_info(ob)
 
 if __name__=="__main__":
     #read_sbtab_csv('BIOMD0000000061_Reaction.csv')
@@ -220,15 +264,15 @@ if __name__=="__main__":
     #ob = SBtabTools.openSBtab('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
     #print os.listdir('tiger_files')
     #look_for_SBtab_files('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
-    check_directory_type('sbtab_files/example_files(sbtab)_csv')
-    print '------------------------'
-    check_directory_type('sbtab_files/example_files(sbtab)_ods')
-    print '------------------------'
-    check_directory_type('sbtab_files/example_files(sbtab)_xls')
-    print '------------------------'
+    # check_directory_type('sbtab_files/example_files(sbtab)_csv')
+    # print '------------------------'
+    # check_directory_type('sbtab_files/example_files(sbtab)_ods')
+    # print '------------------------'
+    # check_directory_type('sbtab_files/example_files(sbtab)_xls')
+    # print '------------------------'
     check_directory_type('sbtab_files/tiger_files_csv')
-    print '------------------------'
-    check_directory_type('rxncon_files/rxncon_xls')
-    print '------------------------'
-    check_directory_type('rxncon_files/rxncon_txt')
+    # print '------------------------'
+    # check_directory_type('rxncon_files/rxncon_xls')
+    # print '------------------------'
+    # check_directory_type('rxncon_files/rxncon_txt')
 
