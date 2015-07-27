@@ -120,8 +120,20 @@ class ContingencyApplicator():
                 mols[1].binding_partners = []
                 mols[1].binding_partners.append(cont.state)
             else:
+
                 mol_ob = Molecule(component.name)
+                mol_ob.mid = component.cid
                 mol_ob.binding_partners.append(cont.state)
+                #partners = compl.get_molecules(mol_ob.name, mol_ob.mid)
+                #if not partners:
+                #    compl.molecules.append(mol_ob)
+                    #[A,B]
+                    #KR: append to mol1.binding_partners here
+                    #    or add method create_molecule(component)
+                #else:
+                    #if cont.state not in partners[0].binding_partners:
+                    #    partners[0].add_bond(cont.state)
+                #mol_ob.binding_partners.append(cont.state)
                 compl.molecules.append(mol_ob)
 
     def apply_positive_intraprotein(self, reaction, cont):
@@ -230,6 +242,15 @@ class ContingencyApplicator():
 
         # a molecule needs to be added to complexes 
         # or complexes are already joined:
+            elif ((left.has_molecule(component1.name, component1.cid) and right.has_molecule(component2.name, component2.cid))\
+                or (left.has_molecule(component2.name, component2.cid) and right.has_molecule(component1.name, component1.cid)))\
+                and not cont.state == reaction.to_change:
+
+                #if component1.name in [reaction.left_reactant.name, reaction.right_reactant.name] \
+                #    and component2.name in [reaction.left_reactant.name, reaction.right_reactant.name]:
+                # if A--B, A and B present in substrates but if reaction creates A and B
+                # we don't join. We want then A
+                    reaction.join_substrate_complexes(cont.state, keep_both=True)
             else:
                 for compl in reaction.substrat_complexes:
                     self._add_components_to_complex(compl, component1, component2, cont, reaction)

@@ -55,7 +55,7 @@ class ComplexApplicator:
         @return:
         """
         for cont in inner_list:
-            if cont.ctype in ["and", "or", "not"]:
+            if cont.ctype in ["and", "or", "not"] or "--" in cont.ctype:
                 cont.ctype = cont_sign
             elif cont_sign == "x": # we only have to change the cont sign in opposite if the very first cont is negative
                 self.change_contingency_opposite(cont)

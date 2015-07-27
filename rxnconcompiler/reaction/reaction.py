@@ -146,7 +146,7 @@ class Reaction:
             if compl.side == side:
                 return compl
 
-    def join_substrate_complexes(self, state):
+    def join_substrate_complexes(self, state, keep_both=False):
         """"""
         if state.type != 'Association': print 'WARNING', state.type
 
@@ -155,10 +155,10 @@ class Reaction:
 
         if not left and right: print 'WARNING'
 
-        # useing state_comp instead of state.components
+        # using state_comp instead of state.components
         # to avoid that A--A will be added as binding partner to A only once.
         state_comp = state.components
-        if len(state_comp):
+        if len(state_comp) and not keep_both:
             if state_comp[0].name == state_comp[1].name:
                 state_comp = [state.components[0]]
 
