@@ -292,11 +292,13 @@ class x_exclamation_mark_Tests(TestCase):
         #                <MM2>; OR A--D""")  # Prob
 
 #                      #<AorC>; AND A_[x]-{P}; AND A_[y]-{P} 
-        # rxncon = Rxncon("""
-        #                A_ppi_B; ! <MM>
-        #                <MM>; OR A--C
-        #                <MM>; OR A--D
-        #                """)
+        rxncon = Rxncon("""
+                       A_ppi_B; x <MM>
+                       <MM>; AND A--C
+                       <MM>; AND A--D
+                       """)
+
+
 #####################################################################################################################################
         #simple chain
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; x A--B \n C_ppi_D; ! B--C')

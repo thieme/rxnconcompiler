@@ -44,18 +44,16 @@ class ComplexApplicator:
         """"""
         self.reaction_container = reaction_container
         self.complexes = complexes
-        #self.builder = ComplexBuilder()
-
-        #if not complexes:
-        #    self.complexes = []
-        #else:
-            
-       #     self.complexes = []
-       #     self.final_separated_states = complexes[0]  # the last list contains all the separated boolean states
-            #for compl in complexes[1:]:
-       #     self.complexes.append(self.prepare_complexes_to_apply(complexes[1]))
 
     def change_contingency_relation(self, inner_list, cont_sign):
+        """
+        This function changes the contingency to a respective contingency sign like ! or x
+        if the contingency sign is x and the current contingency does not contain and AND, OR, NOT it will
+        change the contingency sign to the opposite
+        @param inner_list:
+        @param cont_sign:
+        @return:
+        """
         for cont in inner_list:
             if cont.ctype in ["and", "or", "not"]:
                 cont.ctype = cont_sign
@@ -64,6 +62,11 @@ class ComplexApplicator:
 
 
     def change_contingency_opposite(self, cont):
+        """
+        This function changes the contingency to the opposite sign
+        @param cont: contingency
+        @return: changed contingency
+        """
         if cont.ctype == "!":
             cont.ctype = "x"
         elif cont.ctype == "x":
@@ -71,6 +74,19 @@ class ComplexApplicator:
         return cont
 
     def apply_complexes(self):
+        """
+        This function prepares the defined complexes and builds all non-overlapping rules and applied them to the reaction_container
+
+        This function calls
+            positive_application if the complex is defined with !
+            negative_application if the complex is defined with x
+
+            builds the combination of those lists if we have different boolean complexes applied to the same reaction
+            builds all non-overlapping rules
+            applies the rules to the reaction_container
+
+        @return:
+        """
         self.association = []
         for complex in self.complexes:
 
@@ -88,11 +104,21 @@ class ComplexApplicator:
         self.apply_rules(self.reaction_container, rules)
 
     def positive_application(self, complex):
+        """
+        changed the contingencies within a complex to ! as long as there is no x
+        @param complex:
+        @return:
+        """
         for inner_list in complex[1]:
             self.change_contingency_relation(inner_list, "!")
         self.association.append(complex[1])
 
     def negative_application(self,complex):
+        """
+        changes the contingency from ! to x and vice versa and saves the changed complex in association list
+        @param complex:
+        @return:
+        """
         tmp = []
         for inner_list in itertools.product(*copy.deepcopy(complex[1])):
             tmp_list = copy.deepcopy(inner_list)
@@ -102,7 +128,9 @@ class ComplexApplicator:
 
     def complex_combination(self):
         """
-        this function applies complexes in case of !
+        This function builds the complex combinations if we have more than one boolean complex which
+        should be applied to a certain reaction
+        @return: combination of the input
         """
         new_list = [True, []]
         already_seen = []
@@ -122,17 +150,14 @@ class ComplexApplicator:
                             new_list[-1].append(copy.deepcopy(inner_list))
                             new_list[-1][-1].extend(inner_list2)
         return new_list
-#[
-# [xA1, xB1, xC1, xD1], [xA1, xB2, xC1, xD1], [xA2, xB1, xC1, xD1], [xA2, xB2, xC1, xD1]
-#[xA1, xB1, xC2, xD1], [xA1, xB2, xC2, xD1], [xA2, xB1, xC2, xD1], [xA2, xB2, xC2, xD1]
-#[xA1, xB1, xC1, xD2], [xA1, xB2, xC1, xD2], [xA2, xB1, xC1, xD2], [xA2, xB2, xC1, xD2]
-#[xA1, xB1, xC2, xD2], [xA1, xB2, xC2, xD2], [xA2, xB1, xC2, xD2], [xA2, xB2, xC2, xD2]]
-
-#[
-# [ A1, A2, xC1, xD1], [ A1, A2, xC1, xD2], [ A1, A2, xC2, xD1], [ A1, A2, xC2, xD2]
-#[ B1, B2, xC1, xD1], [ B1, B2, xC1, xD2], [ B1, B2, xC2, xD1], [ B1, B2, xC2, xD2] ]
 
     def apply_rules(self, reaction_container, complex_rules):
+        """
+        The non-overlapping rules prepared in building_rules() will be applied here to the respective reaction_container
+        @param reaction_container: rxncon object containing the reaction information and the substrate complex
+        @param complex_rules: non-overlapping rules
+        @return:
+        """
         cap = ContingencyApplicator()
         reaction_container_clone = reaction_container[0].clone()
         first_rule = True
@@ -185,6 +210,12 @@ class ComplexApplicator:
                 reaction_container.add_reaction(reaction)
 
     def check_root(self, root, complex):
+        """
+        checks if the root is part of the current complex (complex_copy)
+        @param root:
+        @param complex:
+        @return: bool True if the root is part of the complex else False
+        """
         for cont in complex:
             if cont.state.has_component(root):
                 return True
@@ -205,6 +236,15 @@ class ComplexApplicator:
             return False
 
     def adapt_complex(self, rules, complex_copy, root):
+        """
+        if rules is not empty the current complex (complex_copy) is checked versus all the rules if there is an overlap with one rule
+        this will be eleminated and the complex_copy will be modified. all further checks will be done with the modified complex_copy
+        @param rules: all non-overlapping rules until this step
+        @param complex_copy: current complex
+        @param root: current root
+        @return complex_copy: modified current complex
+        @return not_in_complex: list of contingencies not in the current complex and not containing the root
+        """
 
         not_in_complex = []
         for rule in rules:
@@ -213,19 +253,18 @@ class ComplexApplicator:
             for cont in complex_copy:
                 sign.append(cont.ctype)
                 state.append(cont.state.state_str)
-            #not_in_complex = []
             not_in = []
-            test = []
+            verify = []
             for ref_cont in rule:
                 check = self.conflict_check(ref_cont, sign, state)
                 if not check and check != None:
-                    test.append(ref_cont)
+                    verify.append(ref_cont)
                 elif check and check != None:
-                    test = []
+                    verify = []
                     break
 
-            if test:
-                for ref_ele in test:
+            if verify:
+                for ref_ele in verify:
                     if ref_ele.state.has_component(root):
                         complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_ele)))
                     elif not ref_ele.state.has_component(root) and ref_ele not in not_in:
@@ -238,6 +277,19 @@ class ComplexApplicator:
         return complex_copy, not_in_complex
 
     def verify_rules(self, rules, complex_copy, not_in_complex):
+        """
+        if there are contingencies in one of the rules which have not the root molecule and are not part of the current complex.
+        we add these contingencies to the current complex in different combinations to get all non overlapping rules.
+        e.g. not_in_complex = [[! B--B1, ! B--B2]] both contingencies are in one rule but not in the complex and don't have the root as molecule
+        two rules will be generated one with x B--B1 and one with ! B--B1 x B--B2
+        in the case of [[! B--B1], [! B--B2]]
+        both contingencies will be added to the same rule as negation x B--B1 x B--B2
+        
+        @param rules: all generated rules until this step
+        @param complex_copy: current complex
+        @param not_in_complex: contingencies not in the current complex and don't have the root as molecule
+        @return rules: modified rules
+        """
         next = False
         for not_in in not_in_complex:
             if len(not_in) > 1:
@@ -264,6 +316,11 @@ class ComplexApplicator:
 
 
     def building_rules(self, complex_combination_list):
+        """
+        This function builds all non-overlapping rules
+        @param complex_combination_list: list of contingency combinations generated in complex_combination()
+        @return rules: all non-overlapping rules
+        """
         possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
         rules = []
         known_complexes = []
