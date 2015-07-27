@@ -142,11 +142,11 @@ class x_exclamation_mark_Tests(TestCase):
         #                     <comp2C1>; AND B--E
         #
         #                  """)
-        rxncon = Rxncon("""
-                        Sho1_ppi_Ste11; x Ste5_[MEKK]--Ste11; k+ Hkr1--Sho1; k+ Msb2--Sho1; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
-<Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
-<Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
-                        """)
+#         rxncon = Rxncon("""
+#                         Sho1_ppi_Ste11; x Ste5_[MEKK]--Ste11; k+ Hkr1--Sho1; k+ Msb2--Sho1; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
+# <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+# <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
+#                         """)
 #         rxncon = Rxncon("""
 #                    Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste7-5-5-11>
 #                   <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
@@ -292,12 +292,21 @@ class x_exclamation_mark_Tests(TestCase):
         #                <MM2>; OR A--D""")  # Prob
 
 #                      #<AorC>; AND A_[x]-{P}; AND A_[y]-{P} 
-        rxncon = Rxncon("""
-                       A_ppi_B; x <MM>
-                       <MM>; AND A--C
-                       <MM>; AND A--D
-                       """)
+#         rxncon = Rxncon("""
+#                        A_ppi_B; x <MM>
+#                        <MM>; AND A--C
+#                        <MM>; AND A--D
+#                        """)
 
+#         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
+# <Comp>; OR <C1>; OR <C2>
+# <C1>; 1--2 Ste7--Ste11
+# <C2>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]
+#         """)
+
+        rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
+<Comp>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]
+        """)
 
 #####################################################################################################################################
         #simple chain

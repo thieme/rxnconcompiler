@@ -268,110 +268,6 @@ class ComplexBuilder:
                 return False
         return True
 
-    def check_state_connection(self):
-        # we do this later
-        """
-        This function checks the connectivity of the different state_groups (the connectivity of the state_group elements is not yet checked)
-        The state_groups are assigned to lists one list for each molecule in the reaction.
-        Example:
-
-                        A_ppi_B; ! <comp>
-                        <comp>; or A-{P}
-                        <comp>; or B-{P}
-                        <comp>; or <compA>
-                        <compA>; and A--C
-                        <compA>; and A--D
-                        <comp>; or <compB>
-                        <compB>; and B--E
-                        <compB>; and B--F
-
-        final_states:  [[or A_[bd]-{P}], [or B_[bd]-{P}], [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]], [and A_[AssocC]--C_[AssocA], and A_[AssocD]--D_[AssocA]]]
-
-        Step 1: iterate over final_states (containing all state_groups defined)
-        Step 2: if its the first state_groupe generate a list in stacks containing the state_group
-                Round1: stacks = [[[or A_[bd]-{P}]]]
-        Step 3: check next state_group
-                Round2: state_group = [or B_[bd]-{P}] _> [[[or A_[bd]-{P}]],[[or B_[bd]-{P}], ]]
-                Round3: state_group = [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]
-                Round4: state_group = [and A_[AssocC]--C_[AssocA], and A_[AssocD]--D_[AssocA]]
-            Step 3.1.: if one of the states in state_group overlaps with one already known in one of the lists of stacks than append
-                       the state_group to the respective list
-                Round3: stacks = [[[or A_[bd]-{P}]],[[or B_[bd]-{P}], [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]]]
-                Round4: stacks = [[[or A_[bd]-{P}],[and A_[AssocC]--C_[AssocA], and A_[AssocD]--D_[AssocA]]],[[or B_[bd]-{P}], [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]]]
-            Step 3.2.: if not create a new list stacks containing the state_group
-                Round2: stacks = [[[or A_[bd]-{P}]],[[or B_[bd]-{P}]]]
-            proceed with Step 3
-        The result is a list containing two lists.
-        One for A: [[or A_[bd]-{P}],[and A_[AssocC]--C_[AssocA], and A_[AssocD]--D_[AssocA]]]
-        One for B: [[or B_[bd]-{P}], [and B_[AssocE]--E_[AssocB], and B_[AssocF]--F_[AssocB]]]
-
-        Inputs connected with an OR are saved during the process and added to the respective lists afterwords.
-
-        A_ppi_B <comp>
-        <comp>; OR <A>
-        <comp>; OR <B>
-        <A>; AND A-{P}
-        <A>; AND <NOTB>
-        <NOTB>; NOT B-{P}
-        <B>; AND B-{P}
-        <B>; AND <NOTA>
-        <NOTA>; NOT A-{P}
-        #
-
-        final_states = [[AND A-{P}, ANDNOT B-{P}], [AND B-{P}, ANDNOT A-{P}]]
-
-        """
-        stacks = []
-        input_stacks = []
-        for state_group in self.final_states:  # Step 1
-            self.stack = state_group
-            new_stack = True
-            for state in  self.stack:  # Step 3
-                found_connection = False
-
-                if stacks:
-                    for i, stack in enumerate(stacks):  # part of Step 3: iterate over stacks to get the single lists
-                        for j, state_stack in enumerate(stack):  # part of Step 3: iterate over the elements of the single lists
-                            # Step 3.1 if we have a new state_group we have to check if a list with overlapping Molecules exists
-                            if new_stack and self.check_state_connected_to_stack(state, state_stack):  # if the is an overlap append the state_group to the respective list
-                                stacks[i].append(self.stack)
-                                found_connection = True
-                                new_stack = False
-                                break
-                            # if not the first element has an overlap than might be that one of the following has one
-                            elif not new_stack and self.check_state_connected_to_stack(state, state_stack):  
-                                stacks[i].append(self.stack)
-                                found_connection = True
-                                break
-     
-                        if found_connection:
-                            break
-                    # Step 3.2 if there was no overlap in the existing lists we have an other group and append a new list to stacks
-                    if not found_connection:  
-                        if not self.check_if_input(self.stack):  # we have to distinguish between normal states and inputs like [START]
-                            # if the state_group is not a single input or a collection of and connected inputs we open a new list
-                            # this is also done if one of the elements in state_group is not an input
-                            stacks.append([self.stack])  
-                        else:
-                            input_stacks.append(self.stack)  # otherwise we save this state_group separately and apply it later to all the lists
-                        new_stack = False
-                        break
-                    else:
-                        break
-                else:  # Step 2 
-                    if not self.check_if_input(self.stack):
-                        stacks.append([self.stack])
-                    else:
-                        input_stacks.append(self.stack)
-                    break
-        # here we apply the inputs to the respective lists
-        while input_stacks:
-            input_stack = input_stacks.pop()
-            for stack in stacks:
-                stack.append(input_stack)
-
-        return stacks
-
     def get_state_sets(self, bool_cont):
         """
         Traverses through a contingencies list.
@@ -399,7 +295,7 @@ class ComplexBuilder:
 
         reference_child_ctype = children[0].ctype
         for child in children[1:]:
-            if reference_child_ctype != child.ctype:
+            if not "--" in reference_child_ctype and reference_child_ctype != child.ctype:
                 raise Exception('Boolean not properly defined mix of {0} and {1}'.format(reference_child_ctype, child.ctype))
         return True
 
