@@ -104,10 +104,12 @@ class ComplexApplicator:
         """
         this function applies complexes in case of !
         """
-        new_list = []
+        new_list = [True, []]
         already_seen = []
+        combination = True
         if len(self.association) == 1:
-            new_list.extend(self.association[0])
+            new_list[-1].extend(self.association[0])
+            new_list[0] = False
             return new_list
         for outer_list in self.association:
             if outer_list not in already_seen:
@@ -117,8 +119,8 @@ class ComplexApplicator:
                     already_seen.append(outer_list2)
                     for inner_list in outer_list:
                         for inner_list2 in outer_list2:
-                            new_list.append(copy.deepcopy(inner_list))
-                            new_list[-1].extend(inner_list2)
+                            new_list[-1].append(copy.deepcopy(inner_list))
+                            new_list[-1][-1].extend(inner_list2)
         return new_list
 #[
 # [xA1, xB1, xC1, xD1], [xA1, xB2, xC1, xD1], [xA2, xB1, xC1, xD1], [xA2, xB2, xC1, xD1]
@@ -202,17 +204,64 @@ class ComplexApplicator:
         else:
             return False
 
-    def adapt_complex(self, rules, complex_copy):
+    def adapt_complex(self, rules, complex_copy, root):
+
+        not_in_complex = []
         for rule in rules:
             sign = []
             state = []
             for cont in complex_copy:
                 sign.append(cont.ctype)
                 state.append(cont.state.state_str)
+            #not_in_complex = []
+            not_in = []
+            test = []
             for ref_cont in rule:
-                if not self.conflict_check(ref_cont, sign, state) and self.conflict_check(ref_cont, sign, state) != None:
-                    complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_cont)))
-        return complex_copy
+                check = self.conflict_check(ref_cont, sign, state)
+                if not check and check != None:
+                    test.append(ref_cont)
+                elif check and check != None:
+                    test = []
+                    break
+
+            if test:
+                for ref_ele in test:
+                    if ref_ele.state.has_component(root):
+                        complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_ele)))
+                    elif not ref_ele.state.has_component(root) and ref_ele not in not_in:
+                        already_known_states = [known_ele.state.state_str for known in not_in_complex for known_ele in known]
+                        if ref_ele.state.state_str not in already_known_states:
+                            not_in.append(ref_ele)
+
+            if not_in != [] and not_in not in not_in_complex:
+                not_in_complex.append(not_in)
+        return complex_copy, not_in_complex
+
+    def verify_rules(self, rules, complex_copy, not_in_complex):
+        next = False
+        for not_in in not_in_complex:
+            if len(not_in) > 1:
+                next = False
+                new_complex_copy = copy.deepcopy(complex_copy)
+                for i, cont in enumerate(not_in):
+                    if i == 0:
+                        if self.change_contingency_opposite(copy.deepcopy(cont)) not in complex_copy or cont not in complex_copy:
+                            complex_copy.append(self.change_contingency_opposite(copy.deepcopy(cont)))
+                            rules.append(complex_copy)
+                    else:
+                        new_complex_copy.extend(not_in[:i])
+                        new_complex_copy.append(self.change_contingency_opposite(copy.deepcopy(cont)))
+                        rules.append(new_complex_copy)
+            else:
+                if not next:
+                    complex_copy.append(self.change_contingency_opposite(copy.deepcopy(not_in[0])))
+                    rules.append(complex_copy)
+                    next = True
+                elif next:
+                    rules[-1].append(self.change_contingency_opposite(copy.deepcopy(not_in[0])))
+
+        return rules
+
 
     def building_rules(self, complex_combination_list):
         possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
@@ -220,18 +269,25 @@ class ComplexApplicator:
         known_complexes = []
         for root in possible_roots:
             new_root = True
-            for complex in complex_combination_list:
+            for complex in complex_combination_list[-1]:
                 complex_copy = copy.deepcopy(complex)
                 root_found = self.check_root(root, complex_copy)
                 if root_found and new_root and str(complex_copy) not in known_complexes:
                     known_complexes.append(str(complex))
-                    complex_copy = self.adapt_complex(rules, complex_copy)
-                    rules.append(complex_copy)
+                    complex_copy, not_in_complex = self.adapt_complex(rules, complex_copy, root)
+                    if not_in_complex != []:
+                        rules = self.verify_rules(rules, complex_copy, not_in_complex)
+                    else:
+                        rules.append(complex_copy)
                     new_root = False
                 elif root_found and str(complex_copy) not in known_complexes:
                     known_complexes.append(str(complex))
-                    complex_copy = self.adapt_complex(rules, complex_copy)
-                    rules.append(complex_copy)
+                    complex_copy, not_in_complex = self.adapt_complex(rules, complex_copy, root)
+                    if not_in_complex != []:
+                        rules = self.verify_rules(rules, complex_copy, not_in_complex)
+                    else:
+                        rules.append(complex_copy)
+
         return rules
 
 

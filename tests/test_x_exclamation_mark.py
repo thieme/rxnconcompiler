@@ -84,13 +84,7 @@ class x_exclamation_mark_Tests(TestCase):
                          
         #                 """)
         #rxncon = Rxncon("""A_ppi_B""")
-        # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <AorC>
-        #                 <AorC>; OR A_[x]-{P}
-        #                 <AorC>; OR B--C
-        #                 <AorC>; OR A--D
-        #                 <AorC>; OR B_[y]-{P}
-        # #                 """)
+
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <III>
         #                 <III>; AND <II>
@@ -120,6 +114,13 @@ class x_exclamation_mark_Tests(TestCase):
         #                 """)
 
 #######################################   Presentation ########################################
+        # rxncon = Rxncon("""A_ppi_B; ! <comp1>
+        #                  <comp1>; OR <comp1C1>
+        #                  <comp1>; OR <comp2C1>
+        #                  <comp2C1>; AND A--C [A1]
+        #                  <comp2C1>; AND B--E [A2]
+        #                  <comp1C1>; AND A--C [B1]
+        #                  <comp1C1>; AND C--D [B2]""")
         # rxncon = Rxncon("""
         #                 <c2>; OR A--E
         #                 <c2>; OR A--F
@@ -140,12 +141,12 @@ class x_exclamation_mark_Tests(TestCase):
         #                     <comp2C1>; AND A--C
         #                     <comp2C1>; AND B--E
         #
-        #                 """)
-#         rxncon = Rxncon("""
-#                         Sho1_ppi_Ste11; x Ste5_[MEKK]--Ste11; k+ Hkr1--Sho1; k+ Msb2--Sho1; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
-# <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
-# <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
-#                         """)
+        #                  """)
+        rxncon = Rxncon("""
+                        Sho1_ppi_Ste11; x Ste5_[MEKK]--Ste11; k+ Hkr1--Sho1; k+ Msb2--Sho1; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
+<Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+<Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
+                        """)
 #         rxncon = Rxncon("""
 #                    Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste7-5-5-11>
 #                   <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
@@ -204,23 +205,29 @@ class x_exclamation_mark_Tests(TestCase):
         #                  <comp2C1>; AND B--E
         #
         #                 """)
-        rxncon = Rxncon("""
-                        A_ppi_B; ! <comp1>
-                        <comp1>; OR <comp1C1>
-                        <comp1>; OR <comp1C2>
-                        <comp1C1>; AND A--A1
-                        <comp1C1>; AND A--A2
-                        <comp1C2>; AND B--B1
-                        <comp1C2>; AND B--B2
-                        A_ppi_B; x <comp2>
-                        <comp2>; OR <comp2C1>
-                        <comp2>; OR <comp2C2>
-                        <comp2C1>; AND A--C1
-                        <comp2C1>; AND A--C2
-                        <comp2C2>; AND A--D1
-                        <comp2C2>; AND A--D2
-                        """)
-
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <comp1>
+        #                 <comp1>; OR <comp1C1>
+        #                 <comp1>; OR <comp1C2>
+        #                 <comp1C1>; AND A--A1
+        #                 <comp1C1>; AND A--A2
+        #                 <comp1C2>; AND B--B1
+        #                 <comp1C2>; AND B--B2
+        #                 A_ppi_B; x <comp2>
+        #                 <comp2>; OR <comp2C1>
+        #                 <comp2>; OR <comp2C2>
+        #                 <comp2C1>; AND A--C1
+        #                 <comp2C1>; AND A--C2
+        #                 <comp2C2>; AND A--D1
+        #                 <comp2C2>; AND A--D2
+        #                 """)
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <AorC>
+        #                 <AorC>; OR A_[x]-{P}
+        #                 <AorC>; OR B--C
+        #                 <AorC>; OR A--D
+        #                 <AorC>; OR B_[y]-{P}
+        #                 """)
 #######################################   Presentation ########################################
 
 
