@@ -132,13 +132,14 @@ class ComplexApplicator:
         should be applied to a certain reaction
         @return: combination of the input
         """
-        new_list = [True, []]
+        new_list = []
         already_seen = []
-        combination = True
+        #combination = True
         if len(self.association) == 1:
-            new_list[-1].extend(self.association[0])
-            new_list[0] = False
-            return new_list
+            new_list.extend(self.association[0])
+            #new_list[0] = False
+            complexes = sorted(new_list, key=lambda comp: len(comp))
+            return complexes
         for outer_list in self.association:
             if outer_list not in already_seen:
                 already_seen.append(outer_list)
@@ -147,9 +148,10 @@ class ComplexApplicator:
                     already_seen.append(outer_list2)
                     for inner_list in outer_list:
                         for inner_list2 in outer_list2:
-                            new_list[-1].append(copy.deepcopy(inner_list))
-                            new_list[-1][-1].extend(inner_list2)
-        return new_list
+                            new_list.append(copy.deepcopy(inner_list))
+                            new_list[-1].extend(inner_list2)
+        complexes = sorted(new_list, key=lambda comp: len(comp))
+        return complexes
 
     def apply_rules(self, reaction_container, complex_rules):
         """
@@ -321,12 +323,13 @@ class ComplexApplicator:
         @param complex_combination_list: list of contingency combinations generated in complex_combination()
         @return rules: all non-overlapping rules
         """
+
         possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
         rules = []
         known_complexes = []
         for root in possible_roots:
             new_root = True
-            for complex in complex_combination_list[-1]:
+            for complex in complex_combination_list:
                 complex_copy = copy.deepcopy(complex)
                 root_found = self.check_root(root, complex_copy)
                 if root_found and new_root and str(complex_copy) not in known_complexes:

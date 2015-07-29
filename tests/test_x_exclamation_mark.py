@@ -218,13 +218,10 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <comp2C2>; AND A--D1
         #                 <comp2C2>; AND A--D2
         #                 """)
-        # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <AorC>
-        #                 <AorC>; OR A_[x]-{P}
-        #                 <AorC>; OR B--C
-        #                 <AorC>; OR A--D
-        #                 <AorC>; OR B_[y]-{P}
-        #                 """)
+        rxncon = Rxncon("""
+                        A_ppi_B; ! <AorC>
+                        <AorC>; OR A_[x]-{P}; OR B_[y]-{P}; OR A--C; OR B--D; OR B_[z]-{P}
+                        """)
 #######################################   Presentation ########################################
 
 
@@ -301,13 +298,32 @@ class x_exclamation_mark_Tests(TestCase):
 # <C2>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]
 #         """)
 
-        rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
-<Comp>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]
-        """)
+#         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
+# <Comp>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]
+#         """)
 #         rxncon = Rxncon("""
 #                    Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste7-5-5-11>
 #                   <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
 #                        """)
+###### genauer beobachten #####
+#         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
+# <Comp>; OR <C1>; OR <C2>
+# <C1>; AND Ste7--Ste11
+# <C2>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]""")
+#         rxncon = Rxncon("""
+#                         A_p+_B;! <comp>
+#                         <comp>; OR <C1>
+#                         <comp>; OR <C2>
+#                         <C1>; AND A--B
+#                         <C2>; AND A--C
+#                         <C2>; AND C--B
+#                         <C2>; AND C--C
+#
+#                         """)
+
+###########################################
+        #rxncon = Rxncon("""Ste5_[BDSte5]_ppi_Ste5_[BDSte5]""")
+
 #####################################################################################################################################
         #simple chain
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; x A--B \n C_ppi_D; ! B--C')
