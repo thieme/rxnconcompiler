@@ -95,13 +95,50 @@ class ComplexApplicator:
             elif complex[0] == "x":
                 self.negative_application(copy.deepcopy(complex))
             elif complex[0] in ["k+","k-"]:
-                self.positive_application(copy.deepcopy(complex))
-                self.negative_application(copy.deepcopy(complex))
+                #self.positive_application(copy.deepcopy(complex))
+                #self.negative_application(copy.deepcopy(complex))
+                self.k_plus_application(complex)
 
         complex_combination_list = self.complex_combination()
         rules = self.building_rules(complex_combination_list)
 
         self.apply_rules(self.reaction_container, rules)
+
+    def k_plus_application(self, complex):
+        # positive association
+        self.positive_application(complex)
+        # negative association
+        for inner_list in complex[1]:
+            counter = len(inner_list) -1
+            k_plus_complexes = []
+            while counter:
+                k_plus_complexes.append([])
+                for cont in inner_list[:counter]:
+                    k_plus_complexes[-1].append(cont)
+                last_cont = inner_list[counter]
+                k_plus_complexes[-1].append(self.change_contingency_opposite(copy.deepcopy(last_cont)))
+                counter -=1
+            k_plus_complexes.append([])
+
+            k_plus_complexes[-1].append(self.change_contingency_opposite(copy.deepcopy(inner_list[0])))
+        self.association[-1].extend(k_plus_complexes)
+        pass
+
+
+    def check_for_combination_conflict(self, new_combination):
+        to_remove = []
+        state = []
+        sign = []
+        for cont in new_combination:
+            sign.append(cont.ctype)
+            state.append(cont.state.state_str)
+        for idx, ref_cont in enumerate(new_combination):
+            result = self.conflict_check(ref_cont, sign[idx+1:], state[idx+1:])
+            if (result == None or result):
+                to_remove.append(ref_cont)
+        for cont in to_remove:
+            new_combination.remove(cont)
+        return new_combination
 
     def positive_application(self, complex):
         """
