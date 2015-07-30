@@ -87,7 +87,9 @@ class ComplexApplicator:
 
         @return:
         """
-        self.association = []
+        self.association = []  # generelle list fuer ! und x
+        self.association_pos = []  # list fuer k+ ! case
+        self.association_neg = []   #list fuer k+ x case
         for complex in self.complexes:
 
             if complex[0] == "!":
@@ -95,9 +97,17 @@ class ComplexApplicator:
             elif complex[0] == "x":
                 self.negative_application(copy.deepcopy(complex))
             elif complex[0] in ["k+","k-"]:
+                # baue erst positive dann negative complexe
+                # combiniere die positiven complexe (comp1) mit den pos und neg von comp2
+                # combiniere die neg complexe (com1) mit den pos und neg von comp2
+                # association muss in pos und neg unterteilt werden, damit ich pos und neg des selben komplexes nicht kombiniere
+
                 #self.positive_application(copy.deepcopy(complex))
+                #rules = self.building_rules(complex_combination_list)
                 #self.negative_application(copy.deepcopy(complex))
-                self.k_plus_application(complex)
+                #rules = self.building_rules(complex_combination_list)
+                #self.k_application(complex)
+                pass
 
         complex_combination_list = self.complex_combination()
         rules = self.building_rules(complex_combination_list)
@@ -108,9 +118,10 @@ class ComplexApplicator:
         # positive association
         self.positive_application(complex)
         # negative association
+        k_plus_complexes = []
         for inner_list in complex[1]:
             counter = len(inner_list) -1
-            k_plus_complexes = []
+            #k_plus_complexes = []
             while counter:
                 k_plus_complexes.append([])
                 for cont in inner_list[:counter]:
@@ -123,6 +134,7 @@ class ComplexApplicator:
             k_plus_complexes[-1].append(self.change_contingency_opposite(copy.deepcopy(inner_list[0])))
         self.association[-1].extend(k_plus_complexes)
         pass
+
 
 
     def check_for_combination_conflict(self, new_combination):
@@ -150,18 +162,140 @@ class ComplexApplicator:
             self.change_contingency_relation(inner_list, "!")
         self.association.append(complex[1])
 
+    def build_tree_combinations_from_list(self, inner_list, root):
+        ordered_complex_tree = self.get_ordered_tree(inner_list, root)
+        complex_tree = []
+
+        counter = len(ordered_complex_tree) -1
+        #k_plus_complexes = []
+        while counter:
+            complex_tree.append([])
+            for state in ordered_complex_tree[:counter]:
+                complex_tree[-1].append(state)
+            last_state = ordered_complex_tree[counter]
+            complex_tree[-1].append(last_state)
+            counter -=1
+        complex_tree.append([])
+
+        complex_tree[-1].append(ordered_complex_tree[0])
+        return complex_tree
+
+    def get_ordered_tree(self, inner_list, root):
+        result = [[],[]]
+        stack = [root]
+        while stack:
+            states_mols = self._get_complex_layer(inner_list, stack, result)
+            result[0] += states_mols[0][0]
+            result[1] += states_mols[0][1]
+            stack = states_mols[1]   # new root
+        return result
+
+    def _get_complex_layer(self, inner_list, root_list, already=None):
+        """
+        Helper function for get_states_from_complex.
+        """
+        #if not already[1]:
+        #    already = [[],[]]
+        new_roots = []
+        root_cont = []
+        result = [[],[]]
+        for root in root_list:
+            for cont in inner_list:
+                if cont.state.has_component(root):
+                    root_cont.append(cont)
+            for bond in root_cont:
+                if bond not in already[1]:
+                    result[0].append(bond.state)
+                    result[1].append(bond)
+                    new_root = bond.state.get_partner(bond.state.get_component(root.name))
+                    new_roots.append(new_root)
+        return result, new_roots
+
     def negative_application(self,complex):
         """
         changes the contingency from ! to x and vice versa and saves the changed complex in association list
         @param complex:
         @return:
         """
+        possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
+        root_trees = {}
+
+        complex_tree = []
+        for root in possible_roots: # an inner_list can contain more than one root
+            for inner_list in complex[1]:
+                for cont in inner_list:
+                    if cont.state.has_component(root):
+                        complex_tree.append(self.get_ordered_tree(inner_list, root))
+                        break
+
         tmp = []
         for inner_list in itertools.product(*copy.deepcopy(complex[1])):
+            inner_list = self.check_connectivity(inner_list, complex_tree)
             tmp_list = copy.deepcopy(inner_list)
             self.change_contingency_relation(tmp_list, "x")
             tmp.append(list(tmp_list))
         self.association.append(tmp)
+
+    def check_connectivity(self, inner_list, complex_tree):
+        #complex[1][0][0].state.get_partner(complex[1][0][0].state.get_component("Cdc24"))
+        inner_list = list(inner_list)
+        inner_list_copy = copy.deepcopy(inner_list)
+        wrong_tree = False
+        for tree in complex_tree:
+            cont_tracking = []
+            for i, cont in enumerate(inner_list_copy):
+                if cont.state in tree[0]:
+                    correct_tree = True
+                    cont_idx = tree[0].index(cont.state)
+                    if cont_idx not in cont_tracking:
+                        cont_tracking.append(cont_idx)
+                        cont_tracking.sort()
+                        missing = self.check_for_missing_cont(cont_tracking)
+                        for missing_cont_idx in missing:
+                            if tree[1][missing_cont_idx] not in inner_list:
+                                inner_list.append(tree[1][missing_cont_idx])
+                                if missing_cont_idx != 0: # we already add 0 to cont_tracking in check_for_missing_cont
+                                    cont_tracking.append(missing_cont_idx)
+                else:
+                    correct_tree = False
+                    inner_list = inner_list_copy
+                    break
+            if correct_tree and i == len(inner_list_copy)-1:
+                return inner_list  # if we don't break all cont of the inner_list were found in this tree we can return
+        # TODO: wenn beide im falschen Baum sind und keine root mol dann muss die list geloescht werden
+        return inner_list  # if we don't break all cont of the inner_list were found in this tree we can return
+    def check_for_missing_cont(self, cont_tracking):
+        missing = []
+        rank = 0
+        #while rank + 1 <= len(cont_tracking)[-1]:
+        if cont_tracking[0] != 0:
+            # if we don't saw see root_cont until now we insert it
+            # if we are in the wrong tree we will see this later and replace inner_list with it's original
+            cont_tracking.insert(0,0)
+            missing.append(0)
+        for rank in xrange(0, len(cont_tracking)-1):
+            if cont_tracking[rank+1] - cont_tracking[rank] >= 2:
+                missing.extend(range(cont_tracking[rank]+1, cont_tracking[rank+1]))
+
+        return missing
+#     missing=[]
+# numbers.insert(0, 0) # add the minimum value on begining of the list
+# numbers.append(41)  # add the maximum value at the end of the list
+
+# for rank in xrange(0, len(numbers)-1):
+#    if numbers[rank+1] - numbers[rank] > 2:
+#       missing.append("%s-%s"%(numbers[rank] +1 , numbers[rank+1] - 1))
+#    elif numbers[rank+1] - numbers[rank] == 2:
+#       missing.append(str(numbers[rank]+1))
+#
+# print missing
+    def k_complex_combination(self):
+        #aufruf von complex_combination nachdem wir geordnet haben
+        new_list = []
+        already_seen = []
+        if self.association_pos and self.association_neg:
+            for inner_list in self.association_pos:
+                pass
 
     def complex_combination(self):
         """
@@ -169,6 +303,7 @@ class ComplexApplicator:
         should be applied to a certain reaction
         @return: combination of the input
         """
+
         new_list = []
         already_seen = []
         #combination = True
@@ -384,6 +519,8 @@ class ComplexApplicator:
                         rules = self.verify_rules(rules, complex_copy, not_in_complex)
                     else:
                         rules.append(complex_copy)
+                #elif not root_found and str(complex_copy) not in known_complexes:
+                #    self.check_connectivity(complex)
 
         return rules
 
