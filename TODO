@@ -15,3 +15,13 @@
 - xls format rxncon testen
    
 - parser schreiben, der reaction_Definition Datei erstellt, die für SBtab --> rxncon benötigt wird
+
+
+   Ferne Zukunft: rxncon xls File erstellen:
+   - einträge in contingencie list als link auf komponenten in
+      reaction list erzeugen
+      "Instead of typing the states manually, it is recommended that
+      you link your target and modier to the respective cells in the
+      reaction list.  By doing so, you will keep your network denition
+      internally consistent, which will save you a lot of time in case
+      you later change the name or reaction of a component"
