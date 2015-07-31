@@ -90,29 +90,42 @@ class ComplexApplicator:
         self.association = []  # generelle list fuer ! und x
         self.association_pos = []  # list fuer k+ ! case
         self.association_neg = []   #list fuer k+ x case
+        k_plus = False
         for complex in self.complexes:
 
             if complex[0] == "!":
-                self.positive_application(copy.deepcopy(complex))
+                self.association.append(self.positive_application(copy.deepcopy(complex)))
             elif complex[0] == "x":
-                self.negative_application(copy.deepcopy(complex))
+                self.association.append(self.negative_application(copy.deepcopy(complex)))
             elif complex[0] in ["k+","k-"]:
+                k_plus = True
                 # baue erst positive dann negative complexe
                 # combiniere die positiven complexe (comp1) mit den pos und neg von comp2
                 # combiniere die neg complexe (com1) mit den pos und neg von comp2
                 # association muss in pos und neg unterteilt werden, damit ich pos und neg des selben komplexes nicht kombiniere
 
-                #self.positive_application(copy.deepcopy(complex))
+                self.association_pos.append(self.positive_application(copy.deepcopy(complex)))
                 #rules = self.building_rules(complex_combination_list)
-                #self.negative_application(copy.deepcopy(complex))
+                self.association_neg.append(self.negative_application(copy.deepcopy(complex)))
                 #rules = self.building_rules(complex_combination_list)
                 #self.k_application(complex)
                 pass
+        if k_plus:
+            complex_combination_list = self.k_plus_combination()
+        else:
+            complex_combination_list = self.complex_combination()
 
-        complex_combination_list = self.complex_combination()
         rules = self.building_rules(complex_combination_list)
 
         self.apply_rules(self.reaction_container, rules)
+    def k_plus_combination(self):
+        complex = []
+        if len(self.association_neg) == 1 :
+            for outer_list in self.association_neg:
+                complex.extend(outer_list)
+            for outer_list in self.association_pos:
+                complex.extend(outer_list)
+        return complex
 
     def k_plus_application(self, complex):
         # positive association
@@ -134,8 +147,6 @@ class ComplexApplicator:
             k_plus_complexes[-1].append(self.change_contingency_opposite(copy.deepcopy(inner_list[0])))
         self.association[-1].extend(k_plus_complexes)
         pass
-
-
 
     def check_for_combination_conflict(self, new_combination):
         to_remove = []
@@ -160,7 +171,8 @@ class ComplexApplicator:
         """
         for inner_list in complex[1]:
             self.change_contingency_relation(inner_list, "!")
-        self.association.append(complex[1])
+        return complex[1]
+
 
     def build_tree_combinations_from_list(self, inner_list, root):
         ordered_complex_tree = self.get_ordered_tree(inner_list, root)
@@ -239,10 +251,9 @@ class ComplexApplicator:
             tmp_list = copy.deepcopy(inner_list)
             self.change_contingency_relation(tmp_list, "x")
             tmp_list = self.check_connectivity(tmp_list, complex_tree, possible_roots)
-            if tmp_list not in tmp:
+            if tmp_list != [] and tmp_list not in tmp:
                 tmp.append(list(tmp_list))
-
-        self.association.append(tmp)
+        return tmp
 
     def check_connectivity(self, inner_list, complex_tree, possible_roots):
         """
@@ -415,6 +426,31 @@ class ComplexApplicator:
         complexes = sorted(new_list, key=lambda comp: len(comp))
         return complexes
 
+    def apply_cont(self,reaction, cont, cap):
+        if cont.state.type == 'Association' and cont.ctype == '!':
+            cap.apply_positive_association(reaction, cont)
+        elif cont.state.type == "Intraprotein" and cont.ctype == '!':
+            cap.apply_positive_intraprotein(reaction, cont)
+        else:
+            cap.apply_on_reaction(reaction, cont)
+
+    def apply_rule(self, rule, reaction, cap):
+        apply_later = []
+        input_cont = []
+        for cont in rule:
+            if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
+                self.apply_cont(reaction, cont, cap)
+            else:
+                apply_later.append(cont)
+
+        for cont in apply_later:
+            if cont.state.type == "Input":
+                input_cont.append(cont)
+            else:
+                self.apply_cont(reaction, cont, cap)
+
+        return input_cont
+
     def apply_rules(self, reaction_container, complex_rules):
         """
         The non-overlapping rules prepared in building_rules() will be applied here to the respective reaction_container
@@ -425,53 +461,39 @@ class ComplexApplicator:
         cap = ContingencyApplicator()
         reaction_container_clone = reaction_container[0].clone()
         first_rule = True
+
         for rule in complex_rules:
-            apply_later = []
+            input_list = []
             if first_rule:
                 first_rule = False
                 reaction = copy.deepcopy(reaction_container_clone)
-                self.set_basic_substrate_complex(reaction)
-                for cont in rule:
-                    if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
-                        if cont.state.type == 'Association' and cont.ctype == '!':
-                            cap.apply_positive_association(reaction, cont)
-                        elif cont.state.type == "Intraprotein" and cont.ctype == '!':
-                            cap.apply_positive_intraprotein(reaction, cont)
-                        else:
-                            cap.apply_on_reaction(reaction, cont)
-                    else:
-                        apply_later.append(cont)
 
-                for cont in apply_later:
-                    if cont.state.type == 'Association' and cont.ctype == '!':
-                        cap.apply_positive_association(reaction, cont)
-                    elif cont.state.type == "Intraprotein" and cont.ctype == '!':
-                        cap.apply_positive_intraprotein(reaction, cont)
-                    else:
-                        cap.apply_on_reaction(reaction, cont)
+                self.set_basic_substrate_complex(reaction)
+                input_list = self.apply_rule(rule, reaction, cap)
+
+                subrate = reaction_container.highest_subrate
+                new_rate_ids = cap.get_rate_ids(reaction, reaction_container, subrate, False)
+                reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
+
                 reaction_container[0] = reaction
+
+                for input in input_list:
+                    cap.apply_input_on_reaction(reaction_container, reaction, input)
             else:
                 reaction = copy.deepcopy(reaction_container_clone)
+
                 self.set_basic_substrate_complex(reaction)
-                for cont in rule:
-                    if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
-                        if cont.state.type == 'Association' and cont.ctype == '!':
-                            cap.apply_positive_association(reaction, cont)
-                        elif cont.state.type == "Intraprotein" and cont.ctype == '!':
-                            cap.apply_positive_intraprotein(reaction, cont)
-                        else:
-                            cap.apply_on_reaction(reaction, cont)
-                    else:
-                        apply_later.append(cont)
-                for cont in apply_later:
-                    if cont.state.type == 'Association' and cont.ctype == '!':
-                        cap.apply_positive_association(reaction, cont)
-                    elif cont.state.type == "Intraprotein" and cont.ctype == '!':
-                        cap.apply_positive_intraprotein(reaction, cont)
-                    else:
-                        cap.apply_on_reaction(reaction, cont)
+                input_list = self.apply_rule(rule, reaction, cap)
+
+                subrate = reaction_container.highest_subrate
+                new_rate_ids = cap.get_rate_ids(reaction, reaction_container, subrate, True)
+                reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
 
                 reaction_container.add_reaction(reaction)
+                for input in input_list:
+                    cap.apply_input_on_reaction(reaction_container, reaction, input)
+
+
 
     def check_root(self, root, complex):
         """

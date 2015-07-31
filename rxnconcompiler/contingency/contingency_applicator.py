@@ -344,6 +344,26 @@ class ContingencyApplicator():
             for reaction in container:
                 reaction.rate.update_function(cont, True, num1, num2)
 
+    def apply_input_on_reaction(self, container, reaction, cont):
+
+        highest_subrate = container.highest_subrate  # int
+        if highest_subrate == 0:
+            num1 = '%s_1' % container.rid
+            num2 = '%s_2' % container.rid
+        else:
+            num1 = '%s_%s' % (container.rid, str(highest_subrate + 1))
+            num2 = '%s_%s' % (container.rid, str(highest_subrate + 2))
+        if cont.ctype in ['x', '!']:
+            if reaction.definition['Reversibility'] == 'reversible':
+                # we will have two rates here (because of reverse reaction).
+                reaction.rate.update_function(cont, False, num1, num2)
+            else:
+                # just multiply old rate by input rate.
+                # We don't need new rate numbers here.
+                # Because it is still one rate.
+                rate_id = reaction.rate.get_ids()[0]
+                reaction.rate.update_function(cont, False, rate_id, None)
+
     def get_rate_ids(self, reaction, container, subrate, keep_old=False):
         """
         When applying K+/K- contingency rates need to be updated.

@@ -27,6 +27,7 @@ from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicat
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
 from rxnconcompiler.molecule.molecule import Molecule
 from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder
+from rxnconcompiler.compiler import Compiler
 import copy
 
 
@@ -225,8 +226,9 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <AorC>; OR A--C
         #                 <AorC>; OR B--D
         #                 <AorC>; OR B_[z]-{P}""")
-#         rxncon = Rxncon(""" A_ppi_C; K+ <bool>
-# <bool>; AND A--D; AND A--E; AND [START]""")
+        rxncon = Rxncon(""" A_ppi_C; K+ <bool>
+<bool>; AND A--D; AND A--E; AND [START]""")
+       # rxncon = Rxncon("""A_ppi_C; ! [START]  """)
 
 #         rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; x <Cdc24^{M}>
 # <Cdc24^{M}>; or <Cdc24^{M/4}>
@@ -240,8 +242,8 @@ class x_exclamation_mark_Tests(TestCase):
 #''')
         #<Cdc24^{M}>; or [START]
 
+        #rxncon = Rxncon("""A_ppi_B; k+ A--C""")
 
-        rxncon = Rxncon("""A_ppi_B; k+ A--C""")
 #######################################   Presentation ########################################
 
 
