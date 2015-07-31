@@ -60,7 +60,6 @@ class ComplexApplicator:
             elif cont_sign == "x": # we only have to change the cont sign in opposite if the very first cont is negative
                 self.change_contingency_opposite(cont)
 
-
     def change_contingency_opposite(self, cont):
         """
         This function changes the contingency to the opposite sign
@@ -118,6 +117,7 @@ class ComplexApplicator:
         rules = self.building_rules(complex_combination_list)
 
         self.apply_rules(rules)
+
     def k_plus_combination(self):
         complex = []
         if len(self.association_neg) == 1 :
@@ -128,6 +128,11 @@ class ComplexApplicator:
         return complex
 
     def k_plus_application(self, complex):
+        """
+        Not used yet
+        @param complex:
+        @return:
+        """
         # positive association
         self.positive_application(complex)
         # negative association
@@ -149,6 +154,11 @@ class ComplexApplicator:
         pass
 
     def check_for_combination_conflict(self, new_combination):
+        """
+        Not used yet
+        @param new_combination:
+        @return:
+        """
         to_remove = []
         state = []
         sign = []
@@ -310,6 +320,7 @@ class ComplexApplicator:
 
     def check_connectivity_save(self, inner_list, complex_tree, possible_roots):
         """
+        NOT USED YET
         This function compares each inner_list with all possible trees and checks if the contingencies within a list
         are fully connected.
 
@@ -379,24 +390,6 @@ class ComplexApplicator:
                 missing.extend(range(cont_tracking[rank]+1, cont_tracking[rank+1]))
 
         return missing
-#     missing=[]
-# numbers.insert(0, 0) # add the minimum value on begining of the list
-# numbers.append(41)  # add the maximum value at the end of the list
-
-# for rank in xrange(0, len(numbers)-1):
-#    if numbers[rank+1] - numbers[rank] > 2:
-#       missing.append("%s-%s"%(numbers[rank] +1 , numbers[rank+1] - 1))
-#    elif numbers[rank+1] - numbers[rank] == 2:
-#       missing.append(str(numbers[rank]+1))
-#
-# print missing
-    def k_complex_combination(self):
-        #aufruf von complex_combination nachdem wir geordnet haben
-        new_list = []
-        already_seen = []
-        if self.association_pos and self.association_neg:
-            for inner_list in self.association_pos:
-                pass
 
     def complex_combination(self):
         """
@@ -437,11 +430,14 @@ class ComplexApplicator:
     def apply_rule(self, rule, reaction, cap):
         apply_later = []
         input_cont = []
-        for cont in rule:
+        for cont in rule: # split rules
             if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
                 self.apply_cont(reaction, cont, cap)
             else:
-                apply_later.append(cont)
+                if cont.state.type == "Input":
+                    input_cont.append(cont)
+                else:
+                    apply_later.append(cont)
 
         for cont in apply_later:
             if cont.state.type == "Input":
@@ -580,7 +576,16 @@ class ComplexApplicator:
                 return True
         return False
 
-    def conflict_check(self, ref_cont, complex_sign, complex_state):
+    def conflict_check(self, ref_cont, complex_copy):
+        for cont in complex_copy:
+            if ref_cont.state.state_str == cont.state.state_str and ref_cont.target_reaction == cont.target_reaction:
+                if ref_cont.ctype != cont.ctype:
+                    return True
+                else:
+                    return None
+        return False
+
+    def conflict_check_save(self, ref_cont, complex_sign, complex_state):
         """
         @param ref_cont:
         @param complex_sign:
@@ -605,6 +610,7 @@ class ComplexApplicator:
         @return not_in_complex: list of contingencies not in the current complex and not containing the root
         """
 
+
         not_in_complex = []
         for rule in rules:
             sign = []
@@ -615,7 +621,8 @@ class ComplexApplicator:
             not_in = []
             verify = []
             for ref_cont in rule:
-                check = self.conflict_check(ref_cont, sign, state)
+                #check = self.conflict_check(ref_cont, sign, state)
+                check = self.conflict_check(ref_cont, complex_copy)
                 if not check and check != None:
                     verify.append(ref_cont)
                 elif check and check != None:
@@ -629,13 +636,13 @@ class ComplexApplicator:
                     elif not ref_ele.state.has_component(root) and ref_ele not in not_in:
                         already_known_states = [known_ele.state.state_str for known in not_in_complex for known_ele in known]
                         if ref_ele.state.state_str not in already_known_states:
-                            not_in.append(ref_ele)
+                            not_in.append(copy.deepcopy(ref_ele))
 
             if not_in != [] and not_in not in not_in_complex:
                 not_in_complex.append(not_in)
         return complex_copy, not_in_complex
 
-    def verify_rules(self, rules, complex_copy, not_in_complex):
+    def verify_rules(self, rules, complex_copy, not_in_complex, complex_tree):
         """
         if there are contingencies in one of the rules which have not the root molecule and are not part of the current complex.
         we add these contingencies to the current complex in different combinations to get all non overlapping rules.
@@ -650,26 +657,48 @@ class ComplexApplicator:
         @return rules: modified rules
         """
         next = False
+
         for not_in in not_in_complex:
-            if len(not_in) > 1:
-                next = False
-                new_complex_copy = copy.deepcopy(complex_copy)
-                for i, cont in enumerate(not_in):
-                    if i == 0:
-                        if self.change_contingency_opposite(copy.deepcopy(cont)) not in complex_copy or cont not in complex_copy:
-                            complex_copy.append(self.change_contingency_opposite(copy.deepcopy(cont)))
-                            rules.append(complex_copy)
-                    else:
-                        new_complex_copy.extend(not_in[:i])
-                        new_complex_copy.append(self.change_contingency_opposite(copy.deepcopy(cont)))
-                        rules.append(new_complex_copy)
-            else:
-                if not next:
-                    complex_copy.append(self.change_contingency_opposite(copy.deepcopy(not_in[0])))
-                    rules.append(complex_copy)
-                    next = True
-                elif next:
-                    rules[-1].append(self.change_contingency_opposite(copy.deepcopy(not_in[0])))
+            for not_in_cont in not_in:
+                self.change_contingency_opposite(not_in_cont)
+                for tree in complex_tree:
+                    if not_in_cont == tree[-1]:
+                        if len(tree) == 1:
+                            if not next:
+                                complex_copy.append(copy.deepcopy(not_in[0]))
+                                rules.append(complex_copy)
+                                next = True
+                            elif next:
+                                rules[-1].append(copy.deepcopy(not_in[0]))
+                        else:
+                            if complex_copy not in rules:
+                                rules.append(complex_copy)
+                            new_complex_copy = copy.deepcopy(complex_copy)
+                            for complex_cont in copy.deepcopy(new_complex_copy):
+                                check = self.conflict_check(complex_cont, tree)
+                                if check:
+                                    new_complex_copy.remove(complex_cont)
+                            new_complex_copy.extend(tree)
+                            rules.append(new_complex_copy)
+            # if len(not_in) > 1:
+            #     next = False
+            #     new_complex_copy = copy.deepcopy(complex_copy)
+            #     for i, cont in enumerate(not_in):
+            #         if i == 0:
+            #             if self.change_contingency_opposite(copy.deepcopy(cont)) not in complex_copy or cont not in complex_copy:
+            #                 complex_copy.append(self.change_contingency_opposite(copy.deepcopy(cont)))
+            #                 rules.append(complex_copy)
+            #         else:
+            #             new_complex_copy.extend(not_in[:i])
+            #             new_complex_copy.append(self.change_contingency_opposite(copy.deepcopy(cont)))
+            #             rules.append(new_complex_copy)
+            # else:
+            #     if not next:
+            #         complex_copy.append(self.change_contingency_opposite(copy.deepcopy(not_in[0])))
+            #         rules.append(complex_copy)
+            #         next = True
+            #     elif next:
+            #         rules[-1].append(self.change_contingency_opposite(copy.deepcopy(not_in[0])))
 
         return rules
 
@@ -682,6 +711,15 @@ class ComplexApplicator:
         """
 
         possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
+
+        complex_tree = []
+        for root in possible_roots: # an inner_list can contain more than one root
+            for complex in self.complexes:
+                for inner_list in complex[1]:
+                    for cont in inner_list:
+                        if cont.state.has_component(root):
+                            complex_tree.extend(self.build_tree_combinations_from_list(inner_list, root))
+                            break
         rules = []
         known_complexes = []
         for root in possible_roots:
@@ -693,7 +731,7 @@ class ComplexApplicator:
                     known_complexes.append(str(complex))
                     complex_copy, not_in_complex = self.adapt_complex(rules, complex_copy, root)
                     if not_in_complex != []:
-                        rules = self.verify_rules(rules, complex_copy, not_in_complex)
+                        rules = self.verify_rules(rules, complex_copy, not_in_complex, complex_tree)
                     else:
                         rules.append(complex_copy)
                     new_root = False
@@ -701,7 +739,7 @@ class ComplexApplicator:
                     known_complexes.append(str(complex))
                     complex_copy, not_in_complex = self.adapt_complex(rules, complex_copy, root)
                     if not_in_complex != []:
-                        rules = self.verify_rules(rules, complex_copy, not_in_complex)
+                        rules = self.verify_rules(rules, complex_copy, not_in_complex, complex_tree)
                     else:
                         rules.append(complex_copy)
                 #elif not root_found and str(complex_copy) not in known_complexes:

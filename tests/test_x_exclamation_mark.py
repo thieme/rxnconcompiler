@@ -203,22 +203,22 @@ class x_exclamation_mark_Tests(TestCase):
         #                  <comp2C1>; AND B--E
         #
         #                 """)
-        # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <comp1>
-        #                 <comp1>; OR <comp1C1>
-        #                 <comp1>; OR <comp1C2>
-        #                 <comp1C1>; AND A--A1
-        #                 <comp1C1>; AND A--A2
-        #                 <comp1C2>; AND B--B1
-        #                 <comp1C2>; AND B--B2
-        #                 A_ppi_B; x <comp2>
-        #                 <comp2>; OR <comp2C1>
-        #                 <comp2>; OR <comp2C2>
-        #                 <comp2C1>; AND A--C1
-        #                 <comp2C1>; AND A--C2
-        #                 <comp2C2>; AND A--D1
-        #                 <comp2C2>; AND A--D2
-        #                 """)
+        rxncon = Rxncon("""
+                        A_ppi_B; ! <comp1>
+                        <comp1>; OR <comp1C1>
+                        <comp1>; OR <comp1C2>
+                        <comp1C1>; AND A--A1
+                        <comp1C1>; AND A--A2
+                        <comp1C2>; AND B--B1
+                        <comp1C2>; AND B--B2
+                        A_ppi_B; x <comp2>
+                        <comp2>; OR <comp2C1>
+                        <comp2>; OR <comp2C2>
+                        <comp2C1>; AND A--C1
+                        <comp2C1>; AND A--C2
+                        <comp2C2>; AND A--D1
+                        <comp2C2>; AND A--D2
+                        """)
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <AorC>
         #                 <AorC>; OR A_[x]-{P}
@@ -230,19 +230,28 @@ class x_exclamation_mark_Tests(TestCase):
 # <bool>; AND A--D; AND A--E; AND [START]""")
        # rxncon = Rxncon("""A_ppi_C; ! [START]  """)
 
-        rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
-<Cdc24^{M}>; or <Cdc24^{M/4}>
-<Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
-<Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-<Cdc24^{M}>; or <Cdc24^{M/F}>
-<Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
-<Cdc24^{M/F}>; and <Far1^{M}>
-<Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-<Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
-''')
+#         rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
+# <Cdc24^{M}>; or <Cdc24^{M/4}>
+# <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+# <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+# <Cdc24^{M}>; or <Cdc24^{M/F}>
+# <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+# <Cdc24^{M/F}>; and <Far1^{M}>
+# <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+# <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+# ''')
+
+        Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}> \n <Cdc24^{M}>; or <Cdc24^{M/4}> \n <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24] \n <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4] \n <Cdc24^{M}>; or <Cdc24^{M/F}> \n <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c] \n <Cdc24^{M/F}>; and <Far1^{M}> \n <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4] \n <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
         #<Cdc24^{M}>; or [START]
 
         #rxncon = Rxncon("""A_ppi_B; k+ A--C""")
+        # rxncon = Rxncon(""" A_ppi_B; ! <comp1>
+        #                 <comp1>; OR <comp1C1>
+        #                 <comp1>; OR <comp1C2>
+        #                 <comp1C1>; AND A--A1
+        #                 <comp1C1>; AND A--A2
+        #                 <comp1C2>; AND B--B1
+        #                 <comp1C2>; AND B--B2""")
 
 #######################################   Presentation ########################################
 
