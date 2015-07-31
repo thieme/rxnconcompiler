@@ -1,10 +1,12 @@
 - lese ich rxncon oder sbtab directory?
-    - klappt soweit, außer für ods files!
+    - er meckert, wenn auc nur eine txt datei oder sowas am start ist auch wenn die restlichen files git sind
+      - muss auf jeden abgefangen werden, dass dann einfach die 'other' formate ignoriert werden oder so
 - gucken ob alle benötigten files da sind
    - SBtab --> rxncon: ReactionList, ReactionID, Gene, ContingencyID,
       rxncon_Definition
    - rxncon --> SBtab: Reaction List, Contingency List, Reaction definition   
 - gucken ob zu viele files da sind ( mehrere Projekte? Oder kann man auch mehrere reaction files haben? timo fragen. gibts es eine ID für ein Projekt?)
+- libre office lock files werden abgefangen in get_files(). Gucken wie die lokc files von open office und excel aussehn und diese auch abfangen
 
 - parse_SBtab2rxncon txt Format
    

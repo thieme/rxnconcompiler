@@ -16,10 +16,8 @@ def get_files(inputdir):
     """
     Returns list of files (and only files) inside given input directory
     """
-
-
-    files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) ]
-
+    files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) and not f.startswith('.') ]
+    #                                            is no directory                          is no libre office temp file
     return files
 
 
@@ -51,7 +49,8 @@ def check_directory_type(inputdir):
 
         elif filename.endswith('.ods'):
             # Read Open / Libre Office Document
-            print 'Found File(s) in .ods format. This format ist not supported. Please use .xls or .txt format.\n' \
+            print 'Found File(s) in .ods format. This format ist not supported. ' \
+                  '\nPlease export to .xls or .txt format (Open/Libre Office can do this).\n' \
                   'If you want to translate from SBtab to rxncon you can also use .csv format.'
             #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
@@ -232,12 +231,13 @@ def get_info(ob):
     print dir(ob)
     #print getattr(ob)
     #print hasattr(ob)
-    print '\nGlobals: '
-    print globals()
+    #print '\nGlobals: '
+    #print globals()
     print '\nLocals: '
     print locals()
     print '\nCallable: '
     print callable(ob)
+    print ''
 
 def get_SBtab_info(ob):
     '''
@@ -255,7 +255,9 @@ def parse_SBtab2rxncon(inputdir):
     Main function for parsin SBtab --> rxncon Format
     '''
     files = get_files(inputdir)
-    output_format= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
+    output_format='' #delete
+    #reactivate :
+    # output_format= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
     if output_format=='':
         output_format='txt'
     else:
@@ -289,10 +291,81 @@ def parse_SBtab2rxncon(inputdir):
     #     A_ppi_B ; A--D
 
         for ob in ob_list:
+
             if ob['type']=='ContingencyID':
-                #target=ob.columns['!Target'] irgendwie so
-                #print target
+
+                get_info(ob['object']) #delete
+                #print ob['object'].columns #delete
+                #print len(ob['object'].sbtab_list)
+                print ob['object'].getRows()[0]
+
+                # Find column indexes for !Target, !Contingency and !Modifier columns
+                targ_col_index=-99
+                cont_col_index=-99
+                modi_col_index=-99
+                for colIndex in range(len(ob['object'].columns)):
+                    if ob['object'].columns[colIndex] == '!Target':
+                        targ_col_index= colIndex
+                    elif ob['object'].columns[colIndex] == '!Contingency':
+                        cont_col_index = colIndex
+                    elif ob['object'].columns[colIndex] == '!Modifier':
+                        modi_col_index= colIndex
+                # Save the dat of these three columns to lists
+                targ_cells=[]
+                cont_cells=[]
+                modi_cells=[]
+
+                for row in ob['object'].getRows():
+                    targ_cells.append(row[targ_col_index])
+                    cont_cells.append(row[cont_col_index])
+                    modi_cells.append(row[modi_col_index])
+
+                #print targ_cells[0], cont_cells[0], modi_cells[0]
+                print len(targ_cells),len(cont_cells),len(modi_cells)
+
+                #print targ_col_index, cont_col_index, modi_col_index
+                #print ob['object'].sbtab_list[0]
+                #print ''
+               # print ob['object'].sbtab_list[1]
+                #print ''
+                #print ob['object'].sbtab_list[2]
+
+            elif ob['type']=='ReactionID':
+                # tricky shit
                 pass
+
+        # write contents to txt File
+        write_rxncon_txt(inputdir, targ_cells, cont_cells, modi_cells)
+
+def write_rxncon_txt(inputdir, targ, cont, modi):
+    '''
+    Gets 3 Lists: target, contigency and modification
+    All have to be in the right order, according to one another
+    Those are written into txt file
+    '''
+    outputname= 'output'+'.txt'
+
+    # find length of longest entries for fancy ouputfile formatting
+    max_targ= len(max(targ, key=len))
+    max_cont= len(max(cont, key=len))
+    max_modi= len(max(modi, key=len))
+
+    #f = open(inputdir+'/'+outputname, "w") # spaeter das hier verwenden, wegen file detecting bug erst mal raus genommen
+    f = open(outputname, "w")
+    for r in range(len(targ)):
+        f.write(
+        "{0} {1} {2}".format(
+            targ[r].ljust(max_targ),
+            cont[r].ljust(max_cont),
+            modi[r].ljust(max_modi)
+            )
+        )
+
+        f.write('\n')
+    # Close opened file
+    f.close()
+
+
 
 def hello():
     '''
@@ -328,8 +401,8 @@ if __name__=="__main__":
     #print '------------------------'
     #check_directory_type('sbtab_files/example_files(sbtab)_ods')
     #print '------------------------'
-    check_directory_type('sbtab_files/example_files(sbtab)_xls')
-    print '------------------------'
+    #check_directory_type('sbtab_files/example_files(sbtab)_xls')
+    #print '------------------------'
     check_directory_type('sbtab_files/tiger_files_csv')
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_xls')
