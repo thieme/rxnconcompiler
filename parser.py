@@ -255,10 +255,12 @@ def parse_SBtab2rxncon(inputdir):
     Main function for parsin SBtab --> rxncon Format
     '''
     files = get_files(inputdir)
-    output_format= raw_input('Please enter the output format. Possible is .txt & .xls (default= .txt')
+    output_format= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
     if output_format=='':
         output_format='txt'
-    elif output_format!='.txt' or output_format!='.xls':
+    else:
+        output_format = output_format[-3:]
+    if output_format!='txt' and output_format!='xls':
         print 'Error, the format ',output_format,' is not supported.'
 
     ob_list=[] # List of dictionaries
@@ -271,12 +273,16 @@ def parse_SBtab2rxncon(inputdir):
         #print '##########################'
     #get_info(ob)
 
-    if output_format=='.txt':
+    if output_format=='xls':
+        print 'Sorry, this functionality is not yet implemented. Exporting to txt now.'
+        output_format='txt'
+
+    if output_format=='txt':
 
     # !Target, !Contigencie und !Modifier spalten aus ContID nehmen und so in den file printen. Aber ein Semicolon nach
     # dem target entry
-    # außerdem alle reactions aus reactionID, die noch nich in ContingencyID vorgekommen sind
-    # Besonder toll wäre es, wenn mehrere contigencies zu einer reaction alle in eine Zeile kommen:
+    # ausserdem alle reactions aus reactionID, die noch nich in ContingencyID vorgekommen sind
+    # Besonder toll waere es, wenn mehrere contigencies zu einer reaction alle in eine Zeile kommen:
     #     A_ppi_B ;!A--C;!A--D
     #Anstatt:
     #     A_ppi_b ;! A--C
@@ -286,7 +292,7 @@ def parse_SBtab2rxncon(inputdir):
             if ob['type']=='ContingencyID':
                 #target=ob.columns['!Target'] irgendwie so
                 #print target
-
+                pass
 
 def hello():
     '''
@@ -323,8 +329,8 @@ if __name__=="__main__":
     #check_directory_type('sbtab_files/example_files(sbtab)_ods')
     #print '------------------------'
     check_directory_type('sbtab_files/example_files(sbtab)_xls')
-    # print '------------------------'
-    #check_directory_type('sbtab_files/tiger_files_csv')
+    print '------------------------'
+    check_directory_type('sbtab_files/tiger_files_csv')
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_xls')
     # print '------------------------'
