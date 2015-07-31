@@ -137,7 +137,7 @@ class ReactionContainer(list):
     @property
     def highest_subrate(self):
         """
-        For ich reaction chaecks all rates. 
+        For each reaction checks all rates.
         From all rates checks which number after '_', is the highest.
         If reaction has only single rate returns 0.
         Returns int.

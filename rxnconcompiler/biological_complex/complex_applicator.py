@@ -109,7 +109,7 @@ class ComplexApplicator:
                 self.association_neg.append(self.negative_application(copy.deepcopy(complex)))
                 #rules = self.building_rules(complex_combination_list)
                 #self.k_application(complex)
-                pass
+
         if k_plus:
             complex_combination_list = self.k_plus_combination()
         else:
@@ -117,7 +117,7 @@ class ComplexApplicator:
 
         rules = self.building_rules(complex_combination_list)
 
-        self.apply_rules(self.reaction_container, rules)
+        self.apply_rules(rules)
     def k_plus_combination(self):
         complex = []
         if len(self.association_neg) == 1 :
@@ -451,7 +451,7 @@ class ComplexApplicator:
 
         return input_cont
 
-    def apply_rules(self, reaction_container, complex_rules):
+    def apply_rules(self, complex_rules):
         """
         The non-overlapping rules prepared in building_rules() will be applied here to the respective reaction_container
         @param reaction_container: rxncon object containing the reaction information and the substrate complex
@@ -459,9 +459,10 @@ class ComplexApplicator:
         @return:
         """
         cap = ContingencyApplicator()
-        reaction_container_clone = reaction_container[0].clone()
+        reaction_container_clone = self.reaction_container[0].clone()
         first_rule = True
-
+        self.counter = 1
+        complex_rules = complex_rules[::-1]
         for rule in complex_rules:
             input_list = []
             if first_rule:
@@ -471,29 +472,101 @@ class ComplexApplicator:
                 self.set_basic_substrate_complex(reaction)
                 input_list = self.apply_rule(rule, reaction, cap)
 
-                subrate = reaction_container.highest_subrate
-                new_rate_ids = cap.get_rate_ids(reaction, reaction_container, subrate, False)
-                reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
+                #if not input_list:
+                #    subrate = self.reaction_container.highest_subrate
+                #    new_rate_ids = cap.get_rate_ids(reaction, self.reaction_container, subrate, False)
+                #    reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
 
-                reaction_container[0] = reaction
+                self.reaction_container[0] = reaction
 
                 for input in input_list:
-                    cap.apply_input_on_reaction(reaction_container, reaction, input)
+                    cap.apply_input_on_reaction(self.reaction_container, reaction, input)
             else:
                 reaction = copy.deepcopy(reaction_container_clone)
 
                 self.set_basic_substrate_complex(reaction)
                 input_list = self.apply_rule(rule, reaction, cap)
 
-                subrate = reaction_container.highest_subrate
-                new_rate_ids = cap.get_rate_ids(reaction, reaction_container, subrate, True)
-                reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
+                #if not input_list:
+                #    subrate = self.reaction_container.highest_subrate
+                #    new_rate_ids = cap.get_rate_ids(reaction, self.reaction_container, subrate, False)
+                #    reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
 
-                reaction_container.add_reaction(reaction)
+                self.reaction_container.add_reaction(reaction)
+                #input_case_bool = self.both_complex_types_present(input_list, reaction)
+                #if reaction.definition['Reversibility'] == 'reversible' and input_list:
                 for input in input_list:
-                    cap.apply_input_on_reaction(reaction_container, reaction, input)
+                    cap.apply_input_on_reaction(self.reaction_container, reaction, input)
 
 
+    def both_complex_types_present(self, cont, reaction):
+        """
+        BiologicalComplex.is_positive can have three values:
+        - True
+        - False
+        - 'both' (when k+/k- input condition)
+
+        Returns False when either only
+        positive complexes are present or only negative.
+
+        Returns True when positive and negative complexes
+        are present or complexes that are both positive and negative at the time (K).
+
+        It also returns True when reaction is reversible
+        and complex contains input condition.
+        (then we need two rates anyway for reversible reaction).
+        """
+        pos = False
+        neg = False
+
+        #for reaction, compl in zip(self.reaction_container, self.complexes):
+
+        if reaction.definition['Reversibility'] == 'reversible' and cont.state.type == "Input":
+            return True
+            #elif compl.is_positive == 'both':
+            #    return True
+            #elif compl.is_positive:
+            #    pos = True
+            #elif not compl.is_positive:
+            #    neg = True
+
+        if pos and neg:
+            return True
+        return False
+
+    def update_reaction_rate(self, reaction, compl, both_types=False):
+        """
+        When there are alternative complexes to apply
+        new reactions will be created (copies of basic one)
+        and added to a ReactionContainer. In some cases they will
+        all have the same rate, in some cases it needs to be changed.
+        This function updates reaction rate.
+
+        Rate has single digit when only positive
+        or negative complexes are present.
+        When both:
+        - X_1 for positive
+        - X_2 for negative
+
+        Additionally it updates rates with functions
+        if input conditions are present in complex.
+
+        Arguments:
+        - reaction (has already basic rate)
+        - compl (may have input condition)
+        - both_types if True means that X will be exchanged with X_1 or X_2.
+        """
+        if both_types:
+            if compl.is_positive:
+                reaction.rate.update_name('%s_1' % reaction.main_id)
+            else:
+                reaction.rate.update_name('%s_2' % reaction.main_id)
+        if compl.input_conditions:
+            is_switch = False
+            if compl.is_positive == 'both':
+                is_switch = True
+            reaction.rate.update_function(compl.input_conditions[0], is_switch, \
+                '%s_1' % reaction.main_id, '%s_2' % reaction.main_id)
 
     def check_root(self, root, complex):
         """
