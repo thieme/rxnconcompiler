@@ -220,41 +220,28 @@ class x_exclamation_mark_Tests(TestCase):
         #                 """)
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <AorC>
-        #                 <AorC>; OR A_[x]-{P}; OR B_[y]-{P}; OR A--C; OR B--D; OR B_[z]-{P}
-        #                 """)
+        #                 <AorC>; OR A_[x]-{P}
+        #                 <AorC>; OR B_[y]-{P}
+        #                 <AorC>; OR A--C
+        #                 <AorC>; OR B--D
+        #                 <AorC>; OR B_[z]-{P}""")
 #         rxncon = Rxncon(""" A_ppi_C; K+ <bool>
 # <bool>; AND A--D; AND A--E; AND [START]""")
 
-        rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; x <Cdc24^{M}>
-<Cdc24^{M}>; or <Cdc24^{M/4}>
-<Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
-<Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-<Cdc24^{M}>; or <Cdc24^{M/F}>
-<Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
-<Cdc24^{M/F}>; and <Far1^{M}>
-<Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-<Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
-''')
+#         rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; x <Cdc24^{M}>
+# <Cdc24^{M}>; or <Cdc24^{M/4}>
+# <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+# <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+# <Cdc24^{M}>; or <Cdc24^{M/F}>
+# <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+# <Cdc24^{M/F}>; and <Far1^{M}>
+# <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+# <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+#''')
         #<Cdc24^{M}>; or [START]
 
 
-#     'Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~U) -> Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~P)',
-#     # Cdc24, Far1, Ste18, Ste4
-#     'Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U) -> Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P)',
-#     # Cdc24, Far1, Ste18, Ste4
-#     'Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U) -> Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P)',
-#     # Cdc24, Far1,        Ste4, Ste4
-#     'Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P)',
-#     # Cdc24, Far1,        Ste4
-##     'Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P)',
-#     # Cdc24,              Ste4
-#     'Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P)',
-#     # Cdc24, Far1,              Ste4
-#     'Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P)',
-#     # Cdc24, Far1
-#     'Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~U) -> Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~P)',
-#     # Cdc24,
-#     'Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~U) -> Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~P)'],
+        rxncon = Rxncon("""A_ppi_B; k+ A--C""")
 #######################################   Presentation ########################################
 
 
