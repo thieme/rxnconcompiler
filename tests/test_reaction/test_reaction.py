@@ -53,7 +53,7 @@ class ReactionTests(TestCase):
 <bool>; AND A--C; AND A--D; AND A--E"""
         rxn = Rxncon(inp)
         rxn.run_process()
-        reaction = rxn.reaction_pool['A_ppi_B'][0]
+        reaction = rxn.reaction_pool['A_ppi_B'][3]
         for mol in reaction.product_complexes[0].molecules:
             self.assertEqual(mol.binding_sites, [])
 

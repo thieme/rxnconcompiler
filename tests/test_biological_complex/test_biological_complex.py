@@ -41,6 +41,9 @@ class BiologicalComplexTests(TestCase):
         cont = self.compl1.get_contingencies()
         expected = '[! Ste7_[ALS359]-{P}, ! Ste7_[AssocSte11]--Ste11_[AssocSte7]]'
         self.assertEqual(expected, str(cont))
+        cont = self.compl2.get_contingencies()
+        expected = '[! Ste5_[MEK]--Ste7_[AssocSte5], ! Ste7_[ALS359]-{P}, x Ste7_[AssocSte11]--Ste11_[AssocSte7], ! Ste5_[BDSte5]--Ste5_[BDSte5], ! Ste5_[MEKK]--Ste11_[AssocSte5]]'
+        self.assertEqual(expected, str(cont))
 
     def test_remove_molecule(self):
         """"""

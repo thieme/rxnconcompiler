@@ -35,6 +35,59 @@ from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
 from rxnconcompiler.molecule.molecule import Molecule
 
+class Association(list):
+    def __init__(self):
+        list.__init__(self)
+        self.pos = False
+        self.neg = False
+        self.both = False
+
+    @property
+    def pos(self):
+        return self.__pos
+
+    @pos.setter
+    def pos(self, value):
+        self.__pos = value
+
+    @property
+    def neg(self):
+        return self.__neg
+
+    @neg.setter
+    def neg(self, value):
+        self.__neg = value
+    @property
+    def both(self):
+        return self.__both
+
+    @both.setter
+    def both(self, value):
+        self.__both = value
+
+    def set_relation(self, sign):
+        if sign == "!" and not self.pos:
+            self.pos = True
+        elif sign == "x" and not self.neg:
+            self.neg = True
+        elif sign == "x" and self.pos and not self.both:
+            self.both = True
+        elif sign == "!" and self.neg and not self.both:
+            self.both = True
+
+    def get_relation(self):
+        if self.pos:
+            return self.pos
+        elif self.neg:
+            return self.neg
+        elif self.both:
+            return self.both
+        else:
+            return None
+
+    def add_list(self, value, relation):
+        self.append(value)
+        self.set_relation(relation)
 
 class ComplexApplicator:
     """
@@ -86,6 +139,7 @@ class ComplexApplicator:
 
         @return:
         """
+        #self.association = Association()
         self.association = []  # generelle list fuer ! und x
         self.association_pos = []  # list fuer k+ ! case
         self.association_neg = []   #list fuer k+ x case
@@ -103,10 +157,12 @@ class ComplexApplicator:
                 # combiniere die neg complexe (com1) mit den pos und neg von comp2
                 # association muss in pos und neg unterteilt werden, damit ich pos und neg des selben komplexes nicht kombiniere
 
+                #self.association.append(self.positive_application(copy.deepcopy(complex)))
+                #self.association.append(self.negative_application(copy.deepcopy(complex)))
                 self.association_pos.append(self.positive_application(copy.deepcopy(complex)))
-                #rules = self.building_rules(complex_combination_list)
+
                 self.association_neg.append(self.negative_application(copy.deepcopy(complex)))
-                #rules = self.building_rules(complex_combination_list)
+
                 #self.k_application(complex)
 
         if k_plus:
@@ -221,9 +277,9 @@ class ComplexApplicator:
         #if not already[1]:
         #    already = [[],[]]
         new_roots = []
-        root_cont = []
         result = [[],[]]
         for root in root_list:
+            root_cont = []
             for cont in inner_list:
                 if cont.state.has_component(root):
                     root_cont.append(cont)
@@ -458,7 +514,8 @@ class ComplexApplicator:
         reaction_container_clone = self.reaction_container[0].clone()
         first_rule = True
         self.counter = 1
-        complex_rules = complex_rules[::-1]
+        #complex_rules = complex_rules[::-1]
+
         for rule in complex_rules:
             input_list = []
             if first_rule:
@@ -493,7 +550,6 @@ class ComplexApplicator:
                 #if reaction.definition['Reversibility'] == 'reversible' and input_list:
                 for input in input_list:
                     cap.apply_input_on_reaction(self.reaction_container, reaction, input)
-
 
     def both_complex_types_present(self, cont, reaction):
         """
@@ -613,11 +669,11 @@ class ComplexApplicator:
 
         not_in_complex = []
         for rule in rules:
-            sign = []
-            state = []
-            for cont in complex_copy:
-                sign.append(cont.ctype)
-                state.append(cont.state.state_str)
+            #sign = []
+            #state = []
+            #for cont in complex_copy:
+            #    sign.append(cont.ctype)
+            #    state.append(cont.state.state_str)
             not_in = []
             verify = []
             for ref_cont in rule:

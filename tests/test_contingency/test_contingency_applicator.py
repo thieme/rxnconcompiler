@@ -16,14 +16,16 @@ from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicat
 class ContingencyApplicatorTests(TestCase):
     """Checks whether proper contingencies pool is generated for simple example."""
     def setUp(self):
-        rxn = Rxncon('A_ppi_B')
-        self.rcont = rxn.reaction_pool['A_ppi_B']  # reaction container
+        self.rxn = Rxncon('A_ppi_B')
+        self.rcont = self.rxn.reaction_pool['A_ppi_B']  # reaction container
 
     def test_kminus(self):
         """Tests whether k- is properly applied."""
         cont = Contingency('A_ppi_B', 'K+', get_state('A_[T666]-{P}'))
         cont2 = Contingency('A_ppi_B', 'K+', get_state('A_[T777]-{P}'))
-        ComplexApplicator(self.rcont, []).apply_complexes() 
+        #ComplexApplicator(self.rcont, []).apply_complexes()
+        reaction_container = self.rxn.reaction_pool["A_ppi_B"]
+        self.rxn.apply_contingencies(reaction_container, [])
         cap = ContingencyApplicator()
         cap.apply_on_container(self.rcont, cont)
         # Applying first contingency:
