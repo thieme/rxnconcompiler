@@ -144,9 +144,10 @@ class Rxncon():
             if self.contingency_pool.has_key(reaction[1]):
                 cont_root = self.contingency_pool[reaction[1]]
                 all_cont = cont_root.children
+                later = []
                 for cont in all_cont:
-                    later = []
                     if cont.state.type == 'Boolean':
+                        result += '; %s' % str(cont)
                         bool_root = self.contingency_pool[cont.state.state_str]
                         bool_def = bool_root.get_children()
                         for bool_cont in bool_def:
@@ -154,8 +155,8 @@ class Rxncon():
                                 later.append(bool_cont)
                     else:
                         result += '; %s' % str(cont)
-                    for cont in later:
-                        result += '\n%s; %s %s' % (cont.target_reaction, cont.ctype, str(cont.state))
+                for cont in later:
+                    result += '\n%s; %s %s' % (cont.target_reaction, cont.ctype, str(cont.state))
             result = result.strip() + '\n'       
         return result
 

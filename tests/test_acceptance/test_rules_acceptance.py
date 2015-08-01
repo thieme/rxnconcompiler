@@ -100,7 +100,6 @@ class RuleAcceptanceTests(TestCase):
         n_reactions = 0
         n_rules = 0
         for reaction in data_dict:
-            print reaction
             bngl = Compiler(reaction).translate()
             reaction_passed = True
             for rule in data_dict[reaction]['Rules']:

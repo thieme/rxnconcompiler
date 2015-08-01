@@ -263,10 +263,20 @@ class x_exclamation_mark_Tests(TestCase):
 #                            Cdc24_[GEF]_GEF_Cdc42_[GnP]; x Ste4_[AssocSte18]--Ste18_[AssocSte4]
 #                            """)
 
-
-        rxncon = Rxncon("""A_ppi_C; K+ <bool>
-<bool>; AND A--D; AND A--E; AND [Start]""")
-#         pass
+        rxncon = Rxncon(""" Fus3_[dockingSite]_ppi_Sst2_[MAPKSite]; ! <Fus3phos>; x <Sst2mod>
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+    <Fus3phos>; or Fus3_[T180]-{P}
+    <Fus3phos>; or Fus3_[Y182]-{P}
+    <Sst2mod>; and Ste2_[Sst2Site]--Sst2_[Ste2Site]
+    <Sst2mod>; and Sst2_[S539]-{P}""")
+        # rxncon = Rxncon("""A_ppi_C; K+ <bool>
+        #                 <bool>; AND A--D; AND A--E
+        #                 A_ppi_C; K+ <bool2>
+        #                 <bool2>; AND B--F; AND B--G""")
+        #
+        # print rxncon
+        # pass
 
         # Ste20_[KD]_P+_Ste11_[CBD(S302)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>; k+ <FIL-signal>
         # Ste20_[KD]_P+_Ste11_[CBD(S302)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
@@ -420,8 +430,33 @@ class x_exclamation_mark_Tests(TestCase):
 
         #rxncon = Rxncon('Cdc42_ppi_Ste20_[CRIB2]; ! Cdc42_[GnP]-{P}; x Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]')
 
+        ##### print test #########
 
+#         rxncon = Rxncon("""
+#         Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11
+# Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; ! <Ste11^{M/50}>
+# Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; K+ Hkr1_[TMD]--Sho1_[TMD]
+# Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; K+ Msb2_[TMD]--Sho1_[TMD]
+# Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; K+ Msb2_[CyT]--Sho1_[CyT]
+# <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+# <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
+# A_ppi_C; K+ <bool>
+#         <bool>; AND A--D; AND A--E
+#         A_ppi_C; K+ <bool2>
+#         <bool2>; AND B--F; AND B--G
+#         Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
+#  <Cdc24^{M}>; or <Cdc24^{M/4}>
+#  <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+#  <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+#  <Cdc24^{M}>; or <Cdc24^{M/F}>
+#  <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+#  <Cdc24^{M/F}>; and <Far1^{M}>
+#  <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+#  <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]""")
+#
         #rxncon = Rxncon(input_data)
+        #print rxncon
+        ###################################################################################
         rxncon.run_process()
         #print rxncon.complex_pool
         self.bngl_src = Bngl(
