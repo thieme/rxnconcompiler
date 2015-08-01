@@ -36,11 +36,13 @@ from rxnconcompiler.contingency.contingency_applicator import ContingencyApplica
 from rxnconcompiler.molecule.molecule import Molecule
 
 class Association(list):
-    def __init__(self):
+    def __init__(self, complex, relation):
         list.__init__(self)
-        self.pos = False
-        self.neg = False
-        self.both = False
+        self.__pos = False
+        self.__neg = False
+        self.__both = False
+        if relation != None:
+            self.__set_complex(complex, relation)
 
     @property
     def pos(self):
@@ -57,6 +59,7 @@ class Association(list):
     @neg.setter
     def neg(self, value):
         self.__neg = value
+
     @property
     def both(self):
         return self.__both
@@ -65,29 +68,39 @@ class Association(list):
     def both(self, value):
         self.__both = value
 
-    def set_relation(self, sign):
-        if sign == "!" and not self.pos:
+    def set_complex_type(self, sign):
+        if sign == "!":
             self.pos = True
-        elif sign == "x" and not self.neg:
+        elif sign == "x":
             self.neg = True
-        elif sign == "x" and self.pos and not self.both:
-            self.both = True
-        elif sign == "!" and self.neg and not self.both:
+        elif sign == "!x":
             self.both = True
 
-    def get_relation(self):
+    def get_complex_type(self):
         if self.pos:
-            return self.pos
+            return "!"
         elif self.neg:
-            return self.neg
+            return "x"
         elif self.both:
-            return self.both
-        else:
-            return None
+            return "!x"
 
-    def add_list(self, value, relation):
-        self.append(value)
-        self.set_relation(relation)
+    def get_relation(self, other):
+        if (other.pos and self.neg) or (other.neg and self.pos):
+            return "!x"
+        elif other.pos and self.pos:
+            return "!"
+        elif other.neg and self.neg:
+            return "x"
+
+    def __set_complex(self, complex, relation):
+        self.extend(complex)
+        self.set_complex_type(relation)
+
+    def add_complex(self, complex):
+        self.append(complex)
+
+    def merge_complex(self, complex):
+        self.extend(complex)
 
 class ComplexApplicator:
     """
@@ -139,33 +152,39 @@ class ComplexApplicator:
 
         @return:
         """
-        #self.association = Association()
-        self.association = []  # generelle list fuer ! und x
+        self.association = Association([], None)
+        #self.association = []  # generelle list fuer ! und x
         self.association_pos = []  # list fuer k+ ! case
         self.association_neg = []   #list fuer k+ x case
-        k_plus = False
+        self.k_plus = False
         for complex in self.complexes:
 
             if complex[0] == "!":
-                self.association.append(self.positive_application(copy.deepcopy(complex)))
+                #self.association.append(self.positive_application(copy.deepcopy(complex)))
+                pos_comp = Association(self.positive_application(copy.deepcopy(complex)), "!")
+                self.association.add_complex(pos_comp)
             elif complex[0] == "x":
-                self.association.append(self.negative_application(copy.deepcopy(complex)))
+                #self.association.append(self.negative_application(copy.deepcopy(complex)))
+                neg_comp = Association(self.negative_application(copy.deepcopy(complex)), "x")
+                self.association.add_complex(neg_comp)
             elif complex[0] in ["k+","k-"]:
-                k_plus = True
+                self.k_plus = True
                 # baue erst positive dann negative complexe
                 # combiniere die positiven complexe (comp1) mit den pos und neg von comp2
                 # combiniere die neg complexe (com1) mit den pos und neg von comp2
                 # association muss in pos und neg unterteilt werden, damit ich pos und neg des selben komplexes nicht kombiniere
 
-                #self.association.append(self.positive_application(copy.deepcopy(complex)))
-                #self.association.append(self.negative_application(copy.deepcopy(complex)))
-                self.association_pos.append(self.positive_application(copy.deepcopy(complex)))
+                #self.association_pos.append(self.positive_application(copy.deepcopy(complex)))
 
-                self.association_neg.append(self.negative_application(copy.deepcopy(complex)))
+                #self.association_neg.append(self.negative_application(copy.deepcopy(complex)))
 
                 #self.k_application(complex)
+                pos_comp = Association(self.positive_application(copy.deepcopy(complex)), "!")
+                self.association.add_complex(pos_comp)
+                neg_comp = Association(self.negative_application(copy.deepcopy(complex)), "x")
+                self.association.add_complex(neg_comp)
 
-        if k_plus:
+        if self.k_plus:
             complex_combination_list = self.k_plus_combination()
         else:
             complex_combination_list = self.complex_combination()
@@ -175,12 +194,11 @@ class ComplexApplicator:
         self.apply_rules(rules)
 
     def k_plus_combination(self):
-        complex = []
-        if len(self.association_neg) == 1 :
-            for outer_list in self.association_neg:
-                complex.extend(outer_list)
-            for outer_list in self.association_pos:
-                complex.extend(outer_list)
+        complex = Association([], None)
+        if len(self.association) == 2 :
+            for outer_list in self.association:
+                complex.merge_complex(outer_list)
+
         return complex
 
     def k_plus_application(self, complex):
@@ -235,27 +253,30 @@ class ComplexApplicator:
         @param complex:
         @return:
         """
+        pos_complex = []
         for inner_list in complex[1]:
             self.change_contingency_relation(inner_list, "!")
-        return complex[1]
+            inner_list = Association(inner_list, "!")
+            pos_complex.append(inner_list)
+        return pos_complex
 
 
     def build_tree_combinations_from_list(self, inner_list, root):
         ordered_complex_tree = self.get_ordered_tree(inner_list, root)
-        complex_tree = []
+        complex_tree = Association([], None)
         state_tree = ordered_complex_tree[0]
         cont_tree = ordered_complex_tree[1]
 
         counter = len(cont_tree) -1
         #k_plus_complexes = []
         while counter:
-            complex_tree.append([])
+            complex_tree.add_complex(Association([], "x"))
             for cont in cont_tree[:counter]:
                 complex_tree[-1].append(cont)
             last_cont = cont_tree[counter]
             complex_tree[-1].append(self.change_contingency_opposite(copy.deepcopy(last_cont)))
             counter -=1
-        complex_tree.append([])
+        complex_tree.add_complex(Association([], "x"))
 
         complex_tree[-1].append(self.change_contingency_opposite(copy.deepcopy(cont_tree[0])))
         return complex_tree
@@ -303,12 +324,12 @@ class ComplexApplicator:
         """
         possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
 
-        complex_tree = []
+        complex_tree = Association([], None)
         for root in possible_roots: # an inner_list can contain more than one root
             for inner_list in complex[1]:
                 for cont in inner_list:
                     if cont.state.has_component(root):
-                        complex_tree.extend(self.build_tree_combinations_from_list(inner_list, root))
+                        complex_tree.merge_complex(self.build_tree_combinations_from_list(inner_list, root))
                         break
 
         tmp = []
@@ -318,7 +339,7 @@ class ComplexApplicator:
             self.change_contingency_relation(tmp_list, "x")
             tmp_list = self.check_connectivity(tmp_list, complex_tree, possible_roots)
             if tmp_list != [] and tmp_list not in tmp:
-                tmp.append(list(tmp_list))
+                tmp.append(Association(tmp_list, "x"))
         return tmp
 
     def check_connectivity(self, inner_list, complex_tree, possible_roots):
@@ -454,7 +475,7 @@ class ComplexApplicator:
         @return: combination of the input
         """
 
-        new_list = []
+        new_list = Association([], None)
         already_seen = []
         #combination = True
         if len(self.association) == 1:
@@ -470,8 +491,12 @@ class ComplexApplicator:
                     already_seen.append(outer_list2)
                     for inner_list in outer_list:
                         for inner_list2 in outer_list2:
-                            new_list.append(copy.deepcopy(inner_list))
-                            new_list[-1].extend(inner_list2)
+                            #new_list.append(copy.deepcopy(inner_list))
+                            #new_list[-1].extend(inner_list2)
+                            sign = outer_list.get_relation(outer_list2)
+                            new_list.add_complex(Association(copy.deepcopy(inner_list), sign))
+                            new_list[-1].merge_complex(inner_list2)
+
         complexes = sorted(new_list, key=lambda comp: len(comp))
         return complexes
 
@@ -529,64 +554,20 @@ class ComplexApplicator:
                 #    subrate = self.reaction_container.highest_subrate
                 #    new_rate_ids = cap.get_rate_ids(reaction, self.reaction_container, subrate, False)
                 #    reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
-
+                self.update_reaction_rate(reaction, rule, input_list)
                 self.reaction_container[0] = reaction
 
-                for input in input_list:
-                    cap.apply_input_on_reaction(self.reaction_container, reaction, input)
             else:
                 reaction = copy.deepcopy(reaction_container_clone)
 
                 self.set_basic_substrate_complex(reaction)
                 input_list = self.apply_rule(rule, reaction, cap)
 
-                #if not input_list:
-                #    subrate = self.reaction_container.highest_subrate
-                #    new_rate_ids = cap.get_rate_ids(reaction, self.reaction_container, subrate, False)
-                #    reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
-
+                self.update_reaction_rate(reaction, rule, input_list)
                 self.reaction_container.add_reaction(reaction)
-                #input_case_bool = self.both_complex_types_present(input_list, reaction)
-                #if reaction.definition['Reversibility'] == 'reversible' and input_list:
-                for input in input_list:
-                    cap.apply_input_on_reaction(self.reaction_container, reaction, input)
 
-    def both_complex_types_present(self, cont, reaction):
-        """
-        BiologicalComplex.is_positive can have three values:
-        - True
-        - False
-        - 'both' (when k+/k- input condition)
 
-        Returns False when either only
-        positive complexes are present or only negative.
-
-        Returns True when positive and negative complexes
-        are present or complexes that are both positive and negative at the time (K).
-
-        It also returns True when reaction is reversible
-        and complex contains input condition.
-        (then we need two rates anyway for reversible reaction).
-        """
-        pos = False
-        neg = False
-
-        #for reaction, compl in zip(self.reaction_container, self.complexes):
-
-        if reaction.definition['Reversibility'] == 'reversible' and cont.state.type == "Input":
-            return True
-            #elif compl.is_positive == 'both':
-            #    return True
-            #elif compl.is_positive:
-            #    pos = True
-            #elif not compl.is_positive:
-            #    neg = True
-
-        if pos and neg:
-            return True
-        return False
-
-    def update_reaction_rate(self, reaction, compl, both_types=False):
+    def update_reaction_rate(self, reaction, rule, input_list):
         """
         When there are alternative complexes to apply
         new reactions will be created (copies of basic one)
@@ -608,16 +589,16 @@ class ComplexApplicator:
         - compl (may have input condition)
         - both_types if True means that X will be exchanged with X_1 or X_2.
         """
-        if both_types:
-            if compl.is_positive:
+        if self.k_plus:
+            if rule.pos:
                 reaction.rate.update_name('%s_1' % reaction.main_id)
             else:
                 reaction.rate.update_name('%s_2' % reaction.main_id)
-        if compl.input_conditions:
+        if input_list:
             is_switch = False
-            if compl.is_positive == 'both':
+            if self.k_plus:
                 is_switch = True
-            reaction.rate.update_function(compl.input_conditions[0], is_switch, \
+            reaction.rate.update_function(input_list[0], is_switch, \
                 '%s_1' % reaction.main_id, '%s_2' % reaction.main_id)
 
     def check_root(self, root, complex):
@@ -904,7 +885,7 @@ class ComplexApplicator:
             return True 
         return False
 
-    def update_reaction_rate(self, reaction, compl, both_types=False):
+    def update_reaction_rate_old(self, reaction, compl, both_types=False):
         """
         When there are alternative complexes to apply 
         new reactions will be created (copies of basic one) 

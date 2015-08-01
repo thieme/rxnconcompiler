@@ -266,7 +266,13 @@ class x_exclamation_mark_Tests(TestCase):
 
         rxncon = Rxncon("""A_ppi_C; K+ <bool>
 <bool>; AND A--D; AND A--E; AND [Start]""")
-        pass
+#         pass
+
+        # Ste20_[KD]_P+_Ste11_[CBD(S302)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>; k+ <FIL-signal>
+        # Ste20_[KD]_P+_Ste11_[CBD(S302)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
+        #
+        # <FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
+        # <FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]
 #######################################   Presentation ########################################
 
 
