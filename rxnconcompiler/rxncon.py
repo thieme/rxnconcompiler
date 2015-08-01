@@ -168,7 +168,7 @@ class Rxncon():
         bools = self.contingency_pool.get_top_complex_booleans()
         for bool_cont in bools:
             builder = ComplexBuilder()
-            alter_comp = builder.build_positive_complexes_from_boolean(bool_cont)
+            alter_comp = builder.flatten_bool(bool_cont)
             self.complex_pool[str(bool_cont.state)] = alter_comp
 
     def get_requirements_dict(self):

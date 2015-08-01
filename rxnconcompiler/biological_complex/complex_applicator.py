@@ -110,6 +110,7 @@ class ComplexApplicator:
         """"""
         self.reaction_container = reaction_container
         self.complexes = complexes
+        self.possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
 
     def change_contingency_relation(self, inner_list, cont_sign):
         """
@@ -152,10 +153,9 @@ class ComplexApplicator:
 
         @return:
         """
+
         self.association = Association([], None)
-        #self.association = []  # generelle list fuer ! und x
-        self.association_pos = []  # list fuer k+ ! case
-        self.association_neg = []   #list fuer k+ x case
+
         self.k_plus = False
         for complex in self.complexes:
 
@@ -169,16 +169,7 @@ class ComplexApplicator:
                 self.association.add_complex(neg_comp)
             elif complex[0] in ["k+","k-"]:
                 self.k_plus = True
-                # baue erst positive dann negative complexe
-                # combiniere die positiven complexe (comp1) mit den pos und neg von comp2
-                # combiniere die neg complexe (com1) mit den pos und neg von comp2
-                # association muss in pos und neg unterteilt werden, damit ich pos und neg des selben komplexes nicht kombiniere
 
-                #self.association_pos.append(self.positive_application(copy.deepcopy(complex)))
-
-                #self.association_neg.append(self.negative_application(copy.deepcopy(complex)))
-
-                #self.k_application(complex)
                 pos_comp = Association(self.positive_application(copy.deepcopy(complex)), "!")
                 self.association.add_complex(pos_comp)
                 neg_comp = Association(self.negative_application(copy.deepcopy(complex)), "x")
@@ -260,43 +251,85 @@ class ComplexApplicator:
             pos_complex.append(inner_list)
         return pos_complex
 
+    def build_negative_ordered_trees(self, complex):
+
+        negative_complex_tree = Association([], None)
+        for root in self.possible_roots: # an inner_list can contain more than one root
+            for inner_list in complex:
+                for cont in inner_list:
+                    if cont.state.has_component(root):
+                        negative_complex_tree.merge_complex(self.build_tree_combinations_from_list(inner_list, root))
+                        break
+        return negative_complex_tree
 
     def build_tree_combinations_from_list(self, inner_list, root):
-        ordered_complex_tree = self.get_ordered_tree(inner_list, root)
-        complex_tree = Association([], None)
-        state_tree = ordered_complex_tree[0]
-        cont_tree = ordered_complex_tree[1]
+        """
+        This function builds all negative trees based on a collection of ordered contingencies (see also get_ordered_tree())
 
-        counter = len(cont_tree) -1
-        #k_plus_complexes = []
+        @param inner_list:
+        @param root:
+        @return:
+        """
+        self.get_ordered_tree(inner_list, root)
+        negative_complex_tree = Association([], None)
+
+
+        counter = len(self.cont_tree) -1
         while counter:
-            complex_tree.add_complex(Association([], "x"))
-            for cont in cont_tree[:counter]:
-                complex_tree[-1].append(cont)
-            last_cont = cont_tree[counter]
-            complex_tree[-1].append(self.change_contingency_opposite(copy.deepcopy(last_cont)))
+            negative_complex_tree.add_complex(Association([], "x"))
+            for cont in self.cont_tree[:counter]:
+                negative_complex_tree[-1].append(cont)
+            last_cont = self.cont_tree[counter]
+            negative_complex_tree[-1].append(self.change_contingency_opposite(copy.deepcopy(last_cont)))
             counter -=1
-        complex_tree.add_complex(Association([], "x"))
+        negative_complex_tree.add_complex(Association([], "x"))
 
-        complex_tree[-1].append(self.change_contingency_opposite(copy.deepcopy(cont_tree[0])))
-        return complex_tree
+        negative_complex_tree[-1].append(self.change_contingency_opposite(copy.deepcopy(self.cont_tree[0])))
+        return negative_complex_tree
 
     def get_ordered_tree(self, inner_list, root):
+        """
+        This function generates an ordered tree based on a contingency collection and a root
+
+        generates a list of interaction states and the respective contingencies that 'create' the complex.
+        List is ordered according to the layers starting from contingencies that include given root_molecule.
+
+                 A
+               / | \
+              /  |  \
+             /   |   \
+            B    C    D
+           / \       / \
+          /   \     /   \
+         F     E    G    H
+              / \
+             /   \
+            K     J
+
+        Returns:
+        [ A--B, A--C, A--D,
+          B--F, B--E, D--G, D--H,
+          E--K, E--J ]
+        Order within the layers is not important.
+
+        @param inner_list: contingency collection
+        @param root: root of the tree (at the beginning its a reactant
+        @return:
+        """
         result = [[],[]]
         stack = [root]
         while stack:
             states_mols = self._get_complex_layer(inner_list, stack, result)
             result[0] += states_mols[0][0]
             result[1] += states_mols[0][1]
-            stack = states_mols[1]   # new root
-        return result
+            stack = states_mols[1]   # new roots
+        self.state_tree = result[0]
+        self.cont_tree = result[1]
 
     def _get_complex_layer(self, inner_list, root_list, already=None):
         """
-        Helper function for get_states_from_complex.
+        Helper function for get_ordered_tree.
         """
-        #if not already[1]:
-        #    already = [[],[]]
         new_roots = []
         result = [[],[]]
         for root in root_list:
@@ -322,27 +355,19 @@ class ComplexApplicator:
         @param complex:
         @return:
         """
-        possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
 
-        complex_tree = Association([], None)
-        for root in possible_roots: # an inner_list can contain more than one root
-            for inner_list in complex[1]:
-                for cont in inner_list:
-                    if cont.state.has_component(root):
-                        complex_tree.merge_complex(self.build_tree_combinations_from_list(inner_list, root))
-                        break
-
+        negative_complex_tree = self.build_negative_ordered_trees(complex[1])
         tmp = []
         for inner_list in itertools.product(*copy.deepcopy(complex[1])):
 
             tmp_list = copy.deepcopy(inner_list)
             self.change_contingency_relation(tmp_list, "x")
-            tmp_list = self.check_connectivity(tmp_list, complex_tree, possible_roots)
+            tmp_list = self.check_connectivity(tmp_list, negative_complex_tree)
             if tmp_list != [] and tmp_list not in tmp:
                 tmp.append(Association(tmp_list, "x"))
         return tmp
 
-    def check_connectivity(self, inner_list, complex_tree, possible_roots):
+    def check_connectivity(self, inner_list, complex_tree):
         """
         This function compares each inner_list with all possible trees and checks if the contingencies within a list
         are fully connected.
@@ -376,70 +401,14 @@ class ComplexApplicator:
                                 if missing_cont_idx != 0: # we already add 0 to cont_tracking in check_for_missing_cont
                                     cont_tracking.append(missing_cont_idx)
                     break
-                #else:
-                #    correct_tree = False
-                #    inner_list = inner_list_copy
-                    #break
+
         if len(correct_tree) == len(inner_list_copy): # if we found for all contingencies a tree
                 return inner_list  # if we don't break all cont of the inner_list were found in this tree we can return
 
         # at this point we don't found a tree containing all contingencies therefor we have to check if all
         # contingencies are conntected to the root directly
         validation_list = []
-        for root in possible_roots:
-            for cont in inner_list:
-                if cont.state.has_component(root):
-                    validation_list.append(cont)
-        if len(validation_list) == len(inner_list):
-            return inner_list  # if all cont are containing a root molecule the list is valid
-        else:
-            return [] # if at least one cont don't contain a root molceule the list is invalid
-
-    def check_connectivity_save(self, inner_list, complex_tree, possible_roots):
-        """
-        NOT USED YET
-        This function compares each inner_list with all possible trees and checks if the contingencies within a list
-        are fully connected.
-
-        @param inner_list: list of contingencies connected by AND
-        @param complex_tree: trees generated by get_ordered_tree() contains all possible full trees of the boolean description
-        @return: adapted inner_list with all missing connections to the root or an empty list if at least one contingency
-                is not part of the same tree as the others
-        """
-        """
-        @param inner_list:
-        @param complex_tree:
-        @return:
-        """
-        inner_list = list(inner_list)
-        inner_list_copy = copy.deepcopy(inner_list)
-
-        for tree in complex_tree:
-            cont_tracking = []
-            for i, cont in enumerate(inner_list_copy):
-                if cont.state in tree[0]:
-                    correct_tree = True
-                    cont_idx = tree[0].index(cont.state)
-                    if cont_idx not in cont_tracking:
-                        cont_tracking.append(cont_idx)
-                        cont_tracking.sort()
-                        missing = self.check_for_missing_cont(cont_tracking)
-                        for missing_cont_idx in missing:
-                            if tree[1][missing_cont_idx] not in inner_list:
-                                inner_list.insert(missing_cont_idx,tree[1][missing_cont_idx])
-                                if missing_cont_idx != 0: # we already add 0 to cont_tracking in check_for_missing_cont
-                                    cont_tracking.append(missing_cont_idx)
-                else:
-                    correct_tree = False
-                    inner_list = inner_list_copy
-                    break
-            if correct_tree and i == len(inner_list_copy)-1:
-                return inner_list  # if we don't break all cont of the inner_list were found in this tree we can return
-
-        # at this point we don't found a tree containing all contingencies therefor we have to check if all
-        # contingencies are conntected to the root directly
-        validation_list = []
-        for root in possible_roots:
+        for root in self.possible_roots:
             for cont in inner_list:
                 if cont.state.has_component(root):
                     validation_list.append(cont)
@@ -477,10 +446,8 @@ class ComplexApplicator:
 
         new_list = Association([], None)
         already_seen = []
-        #combination = True
         if len(self.association) == 1:
             new_list.extend(self.association[0])
-            #new_list[0] = False
             complexes = sorted(new_list, key=lambda comp: len(comp))
             return complexes
         for outer_list in self.association:
@@ -491,8 +458,6 @@ class ComplexApplicator:
                     already_seen.append(outer_list2)
                     for inner_list in outer_list:
                         for inner_list2 in outer_list2:
-                            #new_list.append(copy.deepcopy(inner_list))
-                            #new_list[-1].extend(inner_list2)
                             sign = outer_list.get_relation(outer_list2)
                             new_list.add_complex(Association(copy.deepcopy(inner_list), sign))
                             new_list[-1].merge_complex(inner_list2)
@@ -500,20 +465,20 @@ class ComplexApplicator:
         complexes = sorted(new_list, key=lambda comp: len(comp))
         return complexes
 
-    def apply_cont(self,reaction, cont, cap):
-        if cont.state.type == 'Association' and cont.ctype == '!':
-            cap.apply_positive_association(reaction, cont)
-        elif cont.state.type == "Intraprotein" and cont.ctype == '!':
-            cap.apply_positive_intraprotein(reaction, cont)
-        else:
-            cap.apply_on_reaction(reaction, cont)
-
     def apply_rule(self, rule, reaction, cap):
+        """
+        This function applies a single rule at the reaction_container
+        @param rule: collection of contingencies
+        @param reaction: reaction of reaction_conainer
+        @param cap: ContingencyApplicator() object
+        @return: if inputs like [START] are found they will be returned as list
+        """
         apply_later = []
         input_cont = []
         for cont in rule: # split rules
             if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
-                self.apply_cont(reaction, cont, cap)
+                #self.apply_cont(reaction, cont, cap)
+                cap.apply_simple_cont_on_reaction(reaction, cont)
             else:
                 if cont.state.type == "Input":
                     input_cont.append(cont)
@@ -524,7 +489,7 @@ class ComplexApplicator:
             if cont.state.type == "Input":
                 input_cont.append(cont)
             else:
-                self.apply_cont(reaction, cont, cap)
+                cap.apply_simple_cont_on_reaction(reaction, cont)
 
         return input_cont
 
@@ -539,10 +504,8 @@ class ComplexApplicator:
         reaction_container_clone = self.reaction_container[0].clone()
         first_rule = True
         self.counter = 1
-        #complex_rules = complex_rules[::-1]
 
         for rule in complex_rules:
-            input_list = []
             if first_rule:
                 first_rule = False
                 reaction = copy.deepcopy(reaction_container_clone)
@@ -550,10 +513,6 @@ class ComplexApplicator:
                 self.set_basic_substrate_complex(reaction)
                 input_list = self.apply_rule(rule, reaction, cap)
 
-                #if not input_list:
-                #    subrate = self.reaction_container.highest_subrate
-                #    new_rate_ids = cap.get_rate_ids(reaction, self.reaction_container, subrate, False)
-                #    reaction.rate.update_name(new_rate_ids[0], new_rate_ids[1])
                 self.update_reaction_rate(reaction, rule, input_list)
                 self.reaction_container[0] = reaction
 
@@ -588,6 +547,11 @@ class ComplexApplicator:
         - reaction (has already basic rate)
         - compl (may have input condition)
         - both_types if True means that X will be exchanged with X_1 or X_2.
+
+        @param reaction: reaction of the current reaction_container
+        @param rule: collection of contingencies
+        @param input_list: collection of inputs like [START]
+        @return:
         """
         if self.k_plus:
             if rule.pos:
@@ -614,6 +578,14 @@ class ComplexApplicator:
         return False
 
     def conflict_check(self, ref_cont, complex_copy):
+        """
+        This function checks if there are conflicts between a collection of contingencies and a reference contingency
+        @param ref_cont: reference contingency
+        @param complex_copy: collection of contingencies
+        @return: False if the ref_cont is not member of complex_copy
+        @return: True if the ref_cont is member of complex_copy and there is a conflict
+        @return: None if the ref_cont is member of complex_copy and there is no conflict
+        """
         for cont in complex_copy:
             if ref_cont.state.state_str == cont.state.state_str and ref_cont.target_reaction == cont.target_reaction:
                 if ref_cont.ctype != cont.ctype:
@@ -622,19 +594,6 @@ class ComplexApplicator:
                     return None
         return False
 
-    def conflict_check_save(self, ref_cont, complex_sign, complex_state):
-        """
-        @param ref_cont:
-        @param complex_sign:
-        @param complex_state:
-        @return: True if a conflict exists else False
-        """
-        if ref_cont.state.state_str in complex_state:  # check if ref_cont is a member of complex
-            idx_cont = complex_state.index(ref_cont.state.state_str)
-            if ref_cont.ctype != complex_sign[idx_cont]:  # if ref_cont is a member of the complex check if the sign is different
-                return True
-        else:
-            return False
 
     def adapt_complex(self, rules, complex_copy, root):
         """
@@ -646,19 +605,12 @@ class ComplexApplicator:
         @return complex_copy: modified current complex
         @return not_in_complex: list of contingencies not in the current complex and not containing the root
         """
-
-
         not_in_complex = []
         for rule in rules:
-            #sign = []
-            #state = []
-            #for cont in complex_copy:
-            #    sign.append(cont.ctype)
-            #    state.append(cont.state.state_str)
+
             not_in = []
             verify = []
             for ref_cont in rule:
-                #check = self.conflict_check(ref_cont, sign, state)
                 check = self.conflict_check(ref_cont, complex_copy)
                 if not check and check != None:
                     verify.append(ref_cont)
@@ -717,28 +669,8 @@ class ComplexApplicator:
                                     new_complex_copy.remove(complex_cont)
                             new_complex_copy.extend(tree)
                             rules.append(new_complex_copy)
-            # if len(not_in) > 1:
-            #     next = False
-            #     new_complex_copy = copy.deepcopy(complex_copy)
-            #     for i, cont in enumerate(not_in):
-            #         if i == 0:
-            #             if self.change_contingency_opposite(copy.deepcopy(cont)) not in complex_copy or cont not in complex_copy:
-            #                 complex_copy.append(self.change_contingency_opposite(copy.deepcopy(cont)))
-            #                 rules.append(complex_copy)
-            #         else:
-            #             new_complex_copy.extend(not_in[:i])
-            #             new_complex_copy.append(self.change_contingency_opposite(copy.deepcopy(cont)))
-            #             rules.append(new_complex_copy)
-            # else:
-            #     if not next:
-            #         complex_copy.append(self.change_contingency_opposite(copy.deepcopy(not_in[0])))
-            #         rules.append(complex_copy)
-            #         next = True
-            #     elif next:
-            #         rules[-1].append(self.change_contingency_opposite(copy.deepcopy(not_in[0])))
 
         return rules
-
 
     def building_rules(self, complex_combination_list):
         """
@@ -747,19 +679,14 @@ class ComplexApplicator:
         @return rules: all non-overlapping rules
         """
 
-        possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
-
         complex_tree = []
-        for root in possible_roots: # an inner_list can contain more than one root
-            for complex in self.complexes:
-                for inner_list in complex[1]:
-                    for cont in inner_list:
-                        if cont.state.has_component(root):
-                            complex_tree.extend(self.build_tree_combinations_from_list(inner_list, root))
-                            break
+        for complex in self.complexes:
+            negative_complex_tree = self.build_negative_ordered_trees(complex[1])
+            complex_tree.extend(negative_complex_tree)
+
         rules = []
         known_complexes = []
-        for root in possible_roots:
+        for root in self.possible_roots:
             new_root = True
             for complex in complex_combination_list:
                 complex_copy = copy.deepcopy(complex)
@@ -779,147 +706,15 @@ class ComplexApplicator:
                         rules = self.verify_rules(rules, complex_copy, not_in_complex, complex_tree)
                     else:
                         rules.append(complex_copy)
-                #elif not root_found and str(complex_copy) not in known_complexes:
-                #    self.check_connectivity(complex)
 
         return rules
 
-    def _prepare_alter_complex(self, alter_complex):
-        """
-        Gets single AlternativeComplexes object and 
-        Input: all positive complexes.
-        Output: all required complexes (combinations of positive and negative complexes).
-
-        Complexes can contain a complex with no molecules and just an input state.
-        """
-        # TODO: EMPTY COMPLEXES??? WHY???
-        # remove not connected complexes to one of the reaction molecules
-        # special cases are TRSL or other reactions with cofactors
-        to_remove = [comp for comp in alter_complex if (comp.molecules == [] and not comp.input_conditions)]
-        for comp in to_remove:
-            alter_complex.remove(comp)
-
-        # TODO: we are in context of reactions -> know all roots and special things like mRNA need and so on
-        #  For each root:
-        #    find all connected states
-        #       add states to root
-        #       remove state from list
-        #   apply com = self.builder.build_required_complexes(alter_complex, root)
-        #############################################
-        # AB
-        # [A,B] [C, D]
-        # A       C
-        possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
-
-
-        for root in possible_roots:
-            alter_complex_of_root = AlternativeComplexes(alter_complex.name)
-            alter_complex_of_root.ctype = alter_complex.ctype
-            alter_complex_of_root.input_condition = alter_complex.input_condition
-            for comp in alter_complex: # [Complex: A,C, Complex: A,D, Complex: B,E Complex G,F]
-                if comp.has_molecule(root.name):  # we only consider those complexes which are directly connected to one of the roots
-                    alter_complex_of_root.append(comp)
-            if alter_complex_of_root:
-                com = self.builder.build_required_complexes(alter_complex_of_root, root)
-
-        #root = self.get_root_molecules(alter_complex.get_first_non_empty())[0]
-        #print 'Root', root
-        #com = self.builder.build_required_complexes(alter_complex, root)
-        return com
-       
-    def prepare_complexes_to_apply(self, input_complexes):
-        """
-        @type input_complexes:  list of AlternativeComplexes
-        @param input_complexes: one or two AlternativeComplexes objects as a list.
-                                Alternative Complexes object keeps all complexes 
-                                from one boolean contingency. Maximal two boolean
-                                contingency can be applied on a reaction. why???? one can define arbitrary number of boolean contingencies to a reaction
-        """
-        if 'AlternativeComplexes' in str(input_complexes.__class__):
-            # one boolean contingency
-            input_complexes = input_complexes.clone()
-            return self._prepare_alter_complex(input_complexes)
-        else:
-            # two boolean contingencies
-            alter = []
-            for alter_complex in input_complexes:
-                if 'AlternativeComplexes' in str(alter_complex.__class__):
-                    alter_complex = alter_complex.clone()
-                elif type(alter_complex) == list:
-                    alter_complex = [x.clone() for x in alter_complex]
-                alter.append(self._prepare_alter_complex(alter_complex))
-                return list(product(alter))
-
-    def both_complex_types_present(self, com):
-        """
-        BiologicalComplex.is_positive can have three values:
-        - True
-        - False
-        - 'both' (when k+/k- input condition)
-
-        Returns False when either only 
-        positive complexes are present or only negative.
-
-        Returns True when positive and negative complexes 
-        are present or complexes that are both positive and negative at the time (K).
-
-        It also returns True when reaction is reversible 
-        and complex contains input condition.
-        (then we need two rates anyway for reversible reaction).
-        """
-        pos = False
-        neg = False
-
-        #for reaction, compl in zip(self.reaction_container, self.complexes):
-        for reaction, compl in zip(self.reaction_container, com):
-            if reaction.definition['Reversibility'] == 'reversible' and compl.input_conditions:
-                return True
-            elif compl.is_positive == 'both':
-                return True
-            elif compl.is_positive:
-                pos = True
-            elif not compl.is_positive:
-                neg = True
-        
-        if pos and neg: 
-            return True 
-        return False
-
-    def update_reaction_rate_old(self, reaction, compl, both_types=False):
-        """
-        When there are alternative complexes to apply 
-        new reactions will be created (copies of basic one) 
-        and added to a ReactionContainer. In some cases they will 
-        all have the same rate, in some cases it needs to be changed.
-        This function updates reaction rate.
-
-        Rate has single digit when only positive 
-        or negative complexes are present.
-        When both:
-        - X_1 for positive 
-        - X_2 for negative
-
-        Additionally it updates rates with functions 
-        if input conditions are present in complex.
-
-        Arguments:
-        - reaction (has already basic rate)
-        - compl (may have input condition)
-        - both_types if True means that X will be exchanged with X_1 or X_2.
-        """
-        if both_types:
-            if compl.is_positive:
-                reaction.rate.update_name('%s_1' % reaction.main_id) 
-            else:
-                reaction.rate.update_name('%s_2' % reaction.main_id)
-        if compl.input_conditions:
-            is_switch = False
-            if compl.is_positive == 'both':
-                is_switch = True
-            reaction.rate.update_function(compl.input_conditions[0], is_switch, \
-                '%s_1' % reaction.main_id, '%s_2' % reaction.main_id)
-
     def set_basic_substrate_complex(self, reaction):
+        """
+        This function initialises the substrate complex of the reaction
+         @param reaction: reaction of the current reaction_compiler
+        """
+
         if reaction.left_reactant._id == reaction.right_reactant._id:
             self.molecule2complex(reaction.left_reactant, reaction, 'LR')
         else:
@@ -933,70 +728,6 @@ class ComplexApplicator:
             reaction.rid = "%i_%i" %(self.reaction_container.rid, self.counter)  
             self.counter += 1
         return reaction
-
-    def change_non_complex_molecule(self, reactant):
-        for stackes in self.final_separated_states:
-            for stack in stackes:
-                for ele in stack:
-                    #if ele.ctype == "or":
-                    mol1 = Molecule(ele.state.components[0].name)
-                    if mol1 == reactant:
-                        reactant.set_site(ele.state)
-                    elif len(ele.state.components) > 1:
-                        mol2 = Molecule(ele.state.components[1].name)
-                        if mol2 == reactant:
-                            reactant.set_site(ele.state)
-
-    def get_or_conditions_of_other_reactant(self, reaction, comp):
-
-        reaction_left_reactant = reaction.left_reactant
-        reaction_right_reactant = reaction.right_reactant
-        if not comp.has_molecule(reaction_left_reactant.name):
-            self.change_non_complex_molecule(reaction_left_reactant)
-        elif not comp.has_molecule(reaction_right_reactant.name):
-            self.change_non_complex_molecule(reaction_right_reactant)
-
-    # def apply_complexes(self):
-    #     """
-    #     applies the complexes as well as the alternative complexes
-    #     """
-    #
-    #     com_number = 0
-    #     reaction_container_clone = self.reaction_container[0].clone()
-    #     self.counter = 1
-    #     second_reactant = False
-    #     print "self.complexes: ", self.complexes
-    #     #self.complexes = [[self.complexes[0][0],self.complexes[0][2]]]
-    #     #print "self.complexes: ", self.complexes
-    #     for com in self.complexes:
-    #         reaction_container_tmp = []
-    #
-    #         while com and len(self.reaction_container[com_number:]) != len(com) and len(com) > 0:
-    #             new_reaction = copy.deepcopy(reaction_container_clone)
-    #             self.reaction_container.add_reaction(new_reaction)
-    #
-    #         pos_and_neg_compl = self.both_complex_types_present(com)
-    #         for reaction, compl in zip(self.reaction_container[com_number:], com):
-    #             reaction = self.set_reaction_id(reaction)
-    #             self.add_substrate_complexes(reaction, compl)
-    #             if second_reactant:
-    #                 self.get_or_conditions_of_other_reactant(reaction, compl)
-    #             self.update_reaction_rate(reaction, compl, pos_and_neg_compl)
-    #         com_number = len(com)
-    #         second_reactant = True
-    #
-    #     if self.complexes == []:
-    #             reaction = self.reaction_container[0]
-    #             self.set_basic_substrate_complex(reaction)
-
-    def get_root_molecules(self, compl):
-        """"""
-        root = []
-        lmol = self.reaction_container[0].left_reactant # [A]
-        rmol = self.reaction_container[0].right_reactant # 
-        root += compl.get_molecules(lmol.name, lmol.mid)
-        root += compl.get_molecules(rmol.name, rmol.mid)
-        return root # [A,B]
 
     def add_substrate_complexes(self, reaction, complexes):
         """
@@ -1022,8 +753,8 @@ class ComplexApplicator:
             if clmol and crmol:
                 if lmol_is_complex or rmol_is_complex:
                     raise TypeError('Reactant is already a complex cannot add another complex.')
-                crmol[0] = crmol[0] + rmol 
-                clmol[0] = clmol[0] + lmol 
+                crmol[0] = crmol[0] + rmol
+                clmol[0] = clmol[0] + lmol
                 compl.side = 'LR'
                 reaction.substrat_complexes.append(compl)
                 lmol_is_complex = True
@@ -1032,7 +763,7 @@ class ComplexApplicator:
             elif clmol:
                 if lmol_is_complex:
                     raise TypeError('Reactant is already a complex cannot add another complex.')
-                clmol[0] = clmol[0] + lmol 
+                clmol[0] = clmol[0] + lmol
                 compl.side = 'L'
                 reaction.substrat_complexes.append(compl)
                 lmol_is_complex = True
@@ -1040,7 +771,7 @@ class ComplexApplicator:
             elif crmol:
                 if rmol_is_complex:
                     raise TypeError('Reactant is already a complex cannot add another complex.')
-                crmol[0] = crmol[0] + rmol 
+                crmol[0] = crmol[0] + rmol
                 compl.side = 'R'
                 reaction.substrat_complexes.append(compl)
                 rmol_is_complex = True

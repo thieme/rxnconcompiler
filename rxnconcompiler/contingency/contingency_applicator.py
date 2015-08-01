@@ -397,6 +397,14 @@ class ContingencyApplicator():
                 else:
                     return [single_id(container, old_ids[0], subrate), single_id(container, old_ids[1], subrate)]
 
+    def apply_simple_cont_on_reaction(self, reaction, cont):
+        if cont.state.type == 'Association' and cont.ctype == '!':
+            self.apply_positive_association(reaction, cont)
+        elif cont.state.type == "Intraprotein" and cont.ctype == '!':
+            self.apply_positive_intraprotein(reaction,cont)
+        else:
+            self.apply_on_reaction(reaction, cont)
+
     def apply_on_container(self, container, cont):
         """
         Applys a contingency on a container.
@@ -428,12 +436,7 @@ class ContingencyApplicator():
 
         elif cont.ctype in ['x', '!']:
             for reaction in container:
-                if cont.state.type == 'Association' and cont.ctype == '!':
-                    self.apply_positive_association(reaction, cont)
-                elif cont.state.type == "Intraprotein" and cont.ctype == '!':
-                    self.apply_positive_intraprotein(reaction,cont)
-                else:
-                    self.apply_on_reaction(reaction, cont)
+                self.apply_simple_cont_on_reaction(reaction, cont)
           
         elif 'k' in cont.ctype:
             #rate_dict = self.prepare_rates_dict()

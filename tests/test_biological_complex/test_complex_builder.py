@@ -39,22 +39,6 @@ class BiologicalComplexBuilderTests(TestCase):
         self.assertEqual(len(mol.binding_partners), 3)
         mol = self.comp.get_molecules('C')[0]
         self.assertEqual(len(mol.binding_partners), 1)
-        
-    def test_get_states_from_complex(self):
-        """"""
-        mol = self.comp.get_molecules('A')[0]
-        builder = ComplexBuilder()
-        # state = [[positive conntection binding partners and so on], [negative conntection binding site and so on]]
-        states = builder.get_states_from_complex(self.comp, mol)
-        level1 = ['A_[AssocB]--B_[AssocA]', 'A_[AssocC]--C_[AssocA]', 'A_[AssocD]--D_[AssocA]']
-        level2 = ['B_[AssocE]--E_[AssocB]', 'B_[AssocF]--F_[AssocB]', 'D_[AssocG]--G_[AssocD]', 'D_[AssocH]--H_[AssocD]']
-        level3 = ['E_[AssocK]--K_[AssocE]', 'E_[AssocJ]--J_[AssocE]']
-        for state in states[0][:3]:
-            self.assertTrue(str(state) in level1)
-        for state in states[0][3:7]:
-            self.assertTrue(str(state) in level2)
-        for state in states[0][7:]:
-            self.assertTrue(str(state) in level3)
 
     def test_boolean_flatten(self):
         rxncon = Rxncon(Ste11)
@@ -64,14 +48,6 @@ class BiologicalComplexBuilderTests(TestCase):
         self.assertEqual(len(builder.final_states[0]), 1)
         self.assertEqual(len(builder.final_states[1]), 3)
         self.assertEqual(str(builder.final_states), Ste11_flatten)
-
-    def test_built_negative_complexes(self):
-        """"""
-        mol = self.comp.get_molecules('A')[0]
-        builder = ComplexBuilder()
-        negative = builder.build_negative_complexes(self.comp, mol)
-        self.assertTrue(negative[-2].get_molecules('A')[0].binding_sites)
-        self.assertTrue(len(negative), 9)
 
     def test_get_branches(self):
         """"""
