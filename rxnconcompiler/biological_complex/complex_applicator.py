@@ -352,26 +352,25 @@ class ComplexApplicator:
         @return:
         """
         complexes = Association([], None)
-        #if len(self.association) == 2 :
-        #    for outer_list in self.association:
-        #        complex.merge_complex(outer_list)
-        #else:
 
         k_complexes = association.get_all_k()
         normal_complexes = association.get_all_non_k()
         if len(k_complexes) == 2:
-            for outer_list in association:
+            for outer_list in k_complexes:
                 complexes.merge_complex(outer_list)
-        # else:
-        #     complexes.merge_complex(self.combine(0, k_complexes))
-        #
-        # if normal_complexes:
-        #     combined_complexes = self.combine(0, normal_complexes)
-        #     for normal_complexes in combined_complexes:
-        #         for k_complexe in complexes:
-        #             k_complexe.merge_complex(normal_complexes)
+        else:
+            complexes.merge_complex(self.combine(0, k_complexes))
 
-        #    complexes = sorted(new_complex, key=lambda comp: len(comp))
+        if normal_complexes:
+            new_complexes = Association([], None)
+            combined_complexes = self.combine(0, normal_complexes)
+            for k_complexe in complexes:
+                for i, normal_complexes in enumerate(combined_complexes):
+                    k_complexe_copy = copy.deepcopy(k_complexe)
+                    new_complexes.add_complex(k_complexe_copy)
+                    new_complexes[-1].merge_complex(normal_complexes)
+
+            complexes = sorted(new_complexes, key=lambda comp: len(comp))
 
         return complexes
 
