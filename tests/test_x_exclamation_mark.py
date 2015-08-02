@@ -193,6 +193,8 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon("""
         #                Ste11_[KD]_P+_Ste7_[(ALS359)]; ! Ste5_[MEKK]--Ste11; ! Ste5_[MEK]--Ste7; ! Ste5_[BDSte5]--Ste5_[BDSte5]
         #                """)
+
+
         # rxncon = Rxncon("""
         #                   A_ppi_B; ! <comp1>
         #                   <comp1>; OR <comp1C1>
@@ -203,22 +205,40 @@ class x_exclamation_mark_Tests(TestCase):
         #                  <comp2C1>; AND B--E
         #
         #                 """)
-        rxncon = Rxncon("""
-                        A_ppi_B; ! <comp1>
+
+
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <comp1>
+        #                 <comp1>; OR <comp1C1>
+        #                 <comp1>; OR <comp1C2>
+        #                 <comp1C1>; AND A--A1
+        #                 <comp1C1>; AND A--A2
+        #                 <comp1C2>; AND B--B2
+        #                 <comp1C2>; AND B2--B1
+        #                 A_ppi_B; x <comp2>
+        #                 <comp2>; OR <comp2C1>
+        #                 <comp2>; OR <comp2C2>
+        #                 <comp2C1>; AND A--C1
+        #                 <comp2C1>; AND A--C2
+        #                 <comp2C2>; AND A--D1
+        #                 <comp2C2>; AND A--D2
+        #                 """)
+
+        rxncon = Rxncon(""" A_ppi_B; ! <comp1>
                         <comp1>; OR <comp1C1>
                         <comp1>; OR <comp1C2>
                         <comp1C1>; AND A--A1
                         <comp1C1>; AND A--A2
+                        <comp1C2>; AND B--B1
                         <comp1C2>; AND B--B2
-                        <comp1C2>; AND B2--B1
+
                         A_ppi_B; x <comp2>
                         <comp2>; OR <comp2C1>
                         <comp2>; OR <comp2C2>
                         <comp2C1>; AND A--C1
                         <comp2C1>; AND A--C2
                         <comp2C2>; AND A--D1
-                        <comp2C2>; AND A--D2
-                        """)
+                        <comp2C2>; AND A--D2""")
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <AorC>
         #                 <AorC>; OR A_[x]-{P}
@@ -226,10 +246,20 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <AorC>; OR A--C
         #                 <AorC>; OR B--D
         #                 <AorC>; OR B_[z]-{P}""")
+
 #         rxncon = Rxncon(""" A_ppi_C; K+ <bool>
 # <bool>; AND A--D; AND A--E; AND [START]""")
 
-      # rxncon = Rxncon("""A_ppi_C; ! [START]  """)
+
+#         rxncon = Rxncon(""" A_ppi_B; ! <comp>
+#                             <comp>; OR <comp1>
+#                             <comp>; OR <comp2>
+#                             <comp1>; AND A--C
+#                             <comp1>; AND <NOT1>
+#                             <NOT1>; NOT A--D
+#                             <comp2>; AND A--D
+#                             <comp2>; AND <NOT2>
+#                             <NOT2>; NOT A--C""")
 
 #         rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
 # <Cdc24^{M}>; or <Cdc24^{M/4}>
@@ -269,11 +299,15 @@ class x_exclamation_mark_Tests(TestCase):
 # <Fus3phos>; or Fus3_[Y182]-{P}
 #     <Sst2mod>; and Ste2_[Sst2Site]--Sst2_[Ste2Site]
 #     <Sst2mod>; and Sst2_[S539]-{P}""")
-        # rxncon = Rxncon("""A_ppi_C; K+ <bool>
-        #                 <bool>; AND A--D; AND A--E
-        #                 A_ppi_C; K+ <bool2>
-        #                 <bool2>; AND B--F; AND B--G""")
-        #
+
+        # rxncon = Rxncon("""A_ppi_B; ! <bool>
+        #                 <bool>; AND A--Db; AND A--Eb
+        #                 A_ppi_B; x <bool2>
+        #                 <bool2>; AND B--Fb2; AND B--Gb2
+        #                 A_ppi_B; x <bool3>
+        #                     <bool3>; AND B--Hb3; AND B--Ib3""")
+
+
         #print rxncon
         # pass
 
