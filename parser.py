@@ -290,38 +290,33 @@ def parse_SBtab2rxncon(inputdir):
     #     A_ppi_b ;! A--C
     #     A_ppi_B ; A--D
 
+    # soll der output irgendwie sortiert sein? nach reactions und alphabetisch? oder erst mal alle mit conts und dann alle ohne? wenn ja: sortieren wuerde mit dictionaries gehen
+
         for ob in ob_list:
 
             if ob['type']=='ContingencyID':
 
-                get_info(ob['object']) #delete
+                #get_info(ob['object']) #delete
                 #print ob['object'].columns #delete
                 #print len(ob['object'].sbtab_list)
-                print ob['object'].getRows()[0]
+                #print ob['object'].getRows()[0]
 
                 # Find column indexes for !Target, !Contingency and !Modifier columns
-                targ_col_index=-99
-                cont_col_index=-99
-                modi_col_index=-99
-                for colIndex in range(len(ob['object'].columns)):
-                    if ob['object'].columns[colIndex] == '!Target':
-                        targ_col_index= colIndex
-                    elif ob['object'].columns[colIndex] == '!Contingency':
-                        cont_col_index = colIndex
-                    elif ob['object'].columns[colIndex] == '!Modifier':
-                        modi_col_index= colIndex
-                # Save the dat of these three columns to lists
-                targ_cells=[]
-                cont_cells=[]
-                modi_cells=[]
-
+                targ_col_index= ob['object'].columns.index('!Target')
+                cont_col_index= ob['object'].columns.index('!Contingency')
+                modi_col_index= ob['object'].columns.index('!Modifier')
+                
+                # Save the data of these three columns to lists
+                reaction_dicts=[{}]
                 for row in ob['object'].getRows():
-                    targ_cells.append(row[targ_col_index])
-                    cont_cells.append(row[cont_col_index])
-                    modi_cells.append(row[modi_col_index])
-
+                    reaction_dicts.append({
+                        'Target': row[targ_col_index]),
+                        'Contingency': row[cont_col_index]),
+                        'Modifier': row[modi_col_index])
+                    })                    
+                    
                 #print targ_cells[0], cont_cells[0], modi_cells[0]
-                print len(targ_cells),len(cont_cells),len(modi_cells)
+                #print len(targ_cells),len(cont_cells),len(modi_cells)
 
                 #print targ_col_index, cont_col_index, modi_col_index
                 #print ob['object'].sbtab_list[0]
@@ -331,8 +326,35 @@ def parse_SBtab2rxncon(inputdir):
                 #print ob['object'].sbtab_list[2]
 
             elif ob['type']=='ReactionID':
-                # tricky shit
-                pass
+                # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
+
+                can= ob['object'].columns.index('!ComponentA:Name')
+                cad= ob['object'].columns.index('!ComponentA:Domain')
+                cas= ob['object'].columns.index('!ComponentA:Subdomain')
+                car= ob['object'].columns.index('!ComponentA:Residue')
+
+                rea= ob['object'].columns.index('!Reaction')
+                
+                cbn= ob['object'].columns.index('!ComponentB:Name')
+                cbd= ob['object'].columns.index('!ComponentB:Domain')
+                cbs= ob['object'].columns.index('!ComponentB:Subdomain')
+                cbr= ob['object'].columns.index('!ComponentB:Residue')
+
+                # Save the data of these three columns to list of dictionaries
+                rxncon_dicts=[{}]
+
+                for row in ob['object'].getRows():
+                    rxncon_dicts.append({
+                        'Reaction': row[rea],
+                        'ComponentA[Name]': row[can],
+                        'ComponentA[Domain]': row[cad],
+                        'ComponentA[Subdomain]': row[cas],
+                        'ComponentA[Resdidue]': row[car],
+                        'ComponentB[Name]': row[cbn],
+                        'ComponentB[Domain]': row[cbd],
+                        'ComponentB[Subdomain]': row[cbs],
+                        'ComponentB[Resdidue]':row[cbr]
+                    })
 
         # write contents to txt File
         write_rxncon_txt(inputdir, targ_cells, cont_cells, modi_cells)
@@ -344,18 +366,22 @@ def write_rxncon_txt(inputdir, targ, cont, modi):
     Those are written into txt file
     '''
     outputname= 'output'+'.txt'
+    output_directory='output_parser'
 
+    if not os.path.exists(inputdir+'/'+output_directory):
+        os.mkdir(inputdir+'/'+output_directory)
+    
     # find length of longest entries for fancy ouputfile formatting
     max_targ= len(max(targ, key=len))
     max_cont= len(max(cont, key=len))
     max_modi= len(max(modi, key=len))
 
-    #f = open(inputdir+'/'+outputname, "w") # spaeter das hier verwenden, wegen file detecting bug erst mal raus genommen
-    f = open(outputname, "w")
+    f = open(inputdir+'/'+output_directory+'/'+outputname, "w")
+    f.write('# rxncon_version=12345\trxncon_format=quick\n')
     for r in range(len(targ)):
         f.write(
         "{0} {1} {2}".format(
-            targ[r].ljust(max_targ),
+            targ[r].ljust(max_targ)+';',
             cont[r].ljust(max_cont),
             modi[r].ljust(max_modi)
             )
