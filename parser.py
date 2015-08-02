@@ -310,11 +310,32 @@ def parse_SBtab2rxncon(inputdir):
                 reaction_dicts=[{}]
                 for row in ob['object'].getRows():
                     reaction_dicts.append({
-                        'Target': row[targ_col_index]),
-                        'Contingency': row[cont_col_index]),
-                        'Modifier': row[modi_col_index])
-                    })                    
+                        'Target': row[targ_col_index],
+                        'Contingency': row[cont_col_index],
+                        'Modifier': row[modi_col_index]
+                    })  
+                reaction_dicts.pop(0)
+                
+                reaction_dicts_2=[{}]
+
+                # versuch aus diesem kleinen dict eins in der rxncon form zu machen
+                for d in reaction_dicts:
+                    li=d['Target'].split('_')
+                    print li
+                    # klappt nicht, li hat immer ne andere länge. muss also doch mit regexp gemavcht werden
+                    # li looks like: ['Pbs2', '[KD]', 'P+', 'Hog1', '[(T174)]']
+                    compAn=li[0]
+                    compBn=li[3]
+                    rxn=li[2]
+                    if li[1].find('('): # subdomain information for component A given
+                        compAd= li[1][1:(li[1].find('('))]
+                    else:
+                        compAd= li[1][1:-1]
+                    print compAd
                     
+                    
+                    #print d
+                    #print d['Target']
                 #print targ_cells[0], cont_cells[0], modi_cells[0]
                 #print len(targ_cells),len(cont_cells),len(modi_cells)
 
@@ -357,7 +378,7 @@ def parse_SBtab2rxncon(inputdir):
                     })
 
         # write contents to txt File
-        write_rxncon_txt(inputdir, targ_cells, cont_cells, modi_cells)
+        #write_rxncon_txt(inputdir, targ_cells, cont_cells, modi_cells)
 
 def write_rxncon_txt(inputdir, targ, cont, modi):
     '''
