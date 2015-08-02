@@ -224,21 +224,21 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <comp2C2>; AND A--D2
         #                 """)
 
-        rxncon = Rxncon(""" A_ppi_B; ! <comp1>
-                        <comp1>; OR <comp1C1>
-                        <comp1>; OR <comp1C2>
-                        <comp1C1>; AND A--A1
-                        <comp1C1>; AND A--A2
-                        <comp1C2>; AND B--B1
-                        <comp1C2>; AND B--B2
-
-                        A_ppi_B; x <comp2>
-                        <comp2>; OR <comp2C1>
-                        <comp2>; OR <comp2C2>
-                        <comp2C1>; AND A--C1
-                        <comp2C1>; AND A--C2
-                        <comp2C2>; AND A--D1
-                        <comp2C2>; AND A--D2""")
+        # rxncon = Rxncon(""" A_ppi_B; ! <comp1>
+        #                 <comp1>; OR <comp1C1>
+        #                 <comp1>; OR <comp1C2>
+        #                 <comp1C1>; AND A--A1
+        #                 <comp1C1>; AND A--A2
+        #                 <comp1C2>; AND B--B1
+        #                 <comp1C2>; AND B--B2
+        #
+        #                 A_ppi_B; x <comp2>
+        #                 <comp2>; OR <comp2C1>
+        #                 <comp2>; OR <comp2C2>
+        #                 <comp2C1>; AND A--C1
+        #                 <comp2C1>; AND A--C2
+        #                 <comp2C2>; AND A--D1
+        #                 <comp2C2>; AND A--D2""")
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <AorC>
         #                 <AorC>; OR A_[x]-{P}
@@ -247,8 +247,8 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <AorC>; OR B--D
         #                 <AorC>; OR B_[z]-{P}""")
 
-#         rxncon = Rxncon(""" A_ppi_C; K+ <bool>
-# <bool>; AND A--D; AND A--E; AND [START]""")
+        rxncon = Rxncon(""" A_ppi_C; K+ <bool>
+<bool>; AND A--D; AND A--E; AND [START]""")
 
 
 #         rxncon = Rxncon(""" A_ppi_B; ! <comp>
@@ -300,12 +300,15 @@ class x_exclamation_mark_Tests(TestCase):
 #     <Sst2mod>; and Ste2_[Sst2Site]--Sst2_[Ste2Site]
 #     <Sst2mod>; and Sst2_[S539]-{P}""")
 
-        # rxncon = Rxncon("""A_ppi_B; ! <bool>
+        # rxncon = Rxncon("""A_ppi_B; k+ <bool>
         #                 <bool>; AND A--Db; AND A--Eb
-        #                 A_ppi_B; x <bool2>
+        #                 A_ppi_B; k+ <bool2>
         #                 <bool2>; AND B--Fb2; AND B--Gb2
-        #                 A_ppi_B; x <bool3>
-        #                     <bool3>; AND B--Hb3; AND B--Ib3""")
+        #                 A_ppi_B; k+ <bool3>
+        #                 <bool3>; AND B--Hb3; AND B--Ib3
+        #                 """)
+        # A_ppi_B; x <bool3>
+        #                     <bool3>; AND B--Hb3; AND B--Ib3
 
 
         #print rxncon

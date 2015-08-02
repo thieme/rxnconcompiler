@@ -45,7 +45,13 @@ class Association(list):
 
         if relation != None:
             self.__set_complex(complex, relation)
+    @property
+    def k(self):
+        return self._k
 
+    @k.setter
+    def k(self, value):
+        self._k = value
     @property
     def pos(self):
         return self.__pos
@@ -113,6 +119,14 @@ class Association(list):
     def merge_complex(self, complex):
         self.extend(complex)
 
+    def get_all_k(self):
+        k_complexes = [complex for complex in self if complex.k]
+        return k_complexes
+
+    def get_all_non_k(self):
+        complexes = [complex for complex in self if not complex.k]
+        return complexes
+
 class ComplexApplicator:
     """
     Interface between AlternativeComplex objects and ReactionContainer object.
@@ -165,7 +179,7 @@ class ComplexApplicator:
         @return:
         """
 
-        self.association = Association([], None)
+        association = Association([], None)
 
         self.k_plus = False
         for complex in self.complexes:
@@ -173,76 +187,138 @@ class ComplexApplicator:
             if complex[0] == "!":
                 #self.association.append(self.positive_application(copy.deepcopy(complex)))
                 pos_comp = Association(self.positive_application(copy.deepcopy(complex)), "!")
-                self.association.add_complex(pos_comp)
+                association.add_complex(pos_comp)
             elif complex[0] == "x":
                 #self.association.append(self.negative_application(copy.deepcopy(complex)))
                 neg_comp = Association(self.negative_application(copy.deepcopy(complex)), "x")
-                self.association.add_complex(neg_comp)
+                association.add_complex(neg_comp)
             elif complex[0] in ["k+","k-"]:
                 self.k_plus = True
 
                 pos_comp = Association(self.positive_application(copy.deepcopy(complex)), "!", k = True)
-                self.association.add_complex(pos_comp)
+                association.add_complex(pos_comp)
                 neg_comp = Association(self.negative_application(copy.deepcopy(complex)), "x", k = True)
-                self.association.add_complex(neg_comp)
+                association.add_complex(neg_comp)
 
         if self.k_plus:
-            complex_combination_list = self.k_plus_combination()
+            complex_combination_list = self.k_plus_combination(association)
         else:
             #complex_combination_list = self.complex_combination()
-            complex_combination_list = self.combine(0)
+            complex_combination_list = self.combine(0, association)
 
         rules = self.building_rules(complex_combination_list)
 
         self.apply_rules(rules)
 
+    def combine(self, complex_idx_start, association_complexes):
+        """
+        This function builds all combinations of the applied boolean contingencies.
 
- #                                    [! A--D; ! A--E]                                                                            [[! A--D; x A--E],[x A--D]]
- #                        2                                           3                                                   2                                       3
- #                [! B--F; ! B--G]                        [[! B--F; x B--G],[x B--F]                              [! B--F; ! B--G]                        [[! B--F; x B--G],[x B--F]
- #
- #        4                       5                           4                   5                           4                   5                               4                   5
- # [! C--H; ! C--I]  [[! C--H; x C--I],[x C--H]]      [! C--H; ! C--I]  [[! C--H; x C--I],[x C--H]]   [! C--H; ! C--I]  [[! C--H; x C--I],[x C--H]]      [! C--H; ! C--I]  [[! C--H; x C--I],[x C--H]]
+        For example for a definition like
+                        A_ppi_B; ! <bool>
+                           <bool>; AND A--D; AND A--E
+                        A_ppi_B; x <bool2>
+                           <bool2>; AND B--F; AND B--G
+                        A_ppi_B; x <bool3>
+                           <bool3>; AND B--H; AND B--I
+        we need to concider a tree like:
 
-    def combine(self, complex_idx_start):
+
+                          0          [! A--D; ! A--E]
+                                            |
+                                            |
+                          1      [[! B--F; x B--G],[x B--F]]
+                                            |
+                                            |
+                          2      [[! B--H; x B--I],[x B--H]]]
+
+        for each list (e.g. [! B--H; x B--I]) within a list (e.g. [[! B--H; x B--I],[x B--H]])
+
+        this resulting in 4 combination possibilities.
+
+        [! A--D; ! A--E; ! B--F; x B--G; ! B--H; x B--I]
+        [! A--D; ! A--E; ! B--F; x B--G; x B--H]
+        [! A--D; ! A--E; x B--F; ! B--H; x B--I]
+        [! A--D; ! A--E; x B--F; x B--H]
+
+        @param complex_idx_start:
+        @return:
+        """
+        self.association_complexes = association_complexes
         self.new_list = Association([], None)
-        if len(self.association) == 1:
-            self.new_list.extend(self.association[0])
+        if len(self.association_complexes) == 1:
+            self.new_list.extend(self.association_complexes[0])
             complexes = sorted(self.new_list, key=lambda comp: len(comp))
             return complexes
 
         complex_idx_end = complex_idx_start+1
-        stack = self.association[complex_idx_start:complex_idx_end]
+        if self.association_complexes[0].k:
+            complex_idx_end = complex_idx_start + 2  # element at index is not returned
+        stack = self.association_complexes[complex_idx_start:complex_idx_end]
         for complex_collection in stack:
-            #if complex_collection.pos:
-            #    shift = 2
-            #else:
-            #    shift = 1
+            if complex_collection.k:
+                complex_idx_start = 2
+                complex_idx_end = 4
+            else:
+                complex_idx_start = complex_idx_end
+                complex_idx_end = complex_idx_start + 1
+
             for inner_list in complex_collection:
                 new_complex = Association([], complex_collection.get_complex_type())
                 new_complex.add_complex(inner_list)
-                combined_complexes, further_processing = self.__combine_helper(complex_idx_end, new_complex, complex_collection.get_complex_type(), init=True)
+                if complex_collection.k:
+                    new_complex.k = True
+                    new_complex[-1].k = True
+                combined_complexes, further_processing = self.__combine_helper(complex_idx_start, complex_idx_end, new_complex, complex_collection.get_complex_type(), init=True)
                 if not further_processing:
                     self.new_list.merge_complex(combined_complexes)
-            #self.__combine_helper(stack, complex_idx)
         complexes = sorted(self.new_list, key=lambda comp: len(comp))
         return complexes
 
-    def __combine_helper(self, complex_idx_start, current_list, relation, init=False):
-        complex_idx_end = complex_idx_start+1
-        if not init:
-            new_complex = Association([], relation)
-            new_complex.add_complex(current_list)
+    def __combine_helper(self, complex_idx_start,complex_idx_end, current_list, relation, init=False):
+        """
+        helper function for combine()
+        This is a recusive function creating all possible combinations.
+
+        @param complex_idx_start: is the start index within the collected lists of contingencies defined
+                                  within the boolean and proceeded according the boolean contingency
+
+        @param current_list: is the actual list
+        @param relation: defines if the current list is possitive ("!") negative ("x") or both ("!" as well as "x")
+        @param init: defines if we add a new possible complex or not
+        @return: returns a list of combinations and the information if we went deeper than the 1 level in the tree
+        """
+
+        not_set = True
+        complex_idx_start = complex_idx_start
+        complex_idx_end = complex_idx_end
+        new_complex = copy.deepcopy(current_list)
+        if current_list.k and len(self.association_complexes[complex_idx_start:]) - complex_idx_end + 2 > 0:
+            further_processing = True  # true if we can go one level deeper
+            complex = self.association_complexes[complex_idx_start:complex_idx_end]
+        elif current_list.k:
+            further_processing = False # false if we reached the end
+            complex = self.association_complexes[complex_idx_start:]
+        elif len(self.association_complexes[complex_idx_start:]) > 1:
+            further_processing = True  # true if we can go one level deeper
+            complex = self.association_complexes[complex_idx_start:complex_idx_end]
         else:
-            new_complex = copy.deepcopy(current_list)
-        if len(self.association[complex_idx_start:]) > 1:
-            further_processing = True
-            complex = self.association[complex_idx_start:complex_idx_end]
-        else:
-            further_processing = False
-            complex = self.association[complex_idx_start:]
+            further_processing = False # false if we reached the end
+            complex = self.association_complexes[complex_idx_start:]
 
         for i, outer_list in enumerate(complex):
+
+            if outer_list.k and not_set:
+                shift = 2
+                complex_idx_start = complex_idx_start + shift
+                complex_idx_end = complex_idx_start + shift
+                not_set = False
+            elif not outer_list.k and not_set:
+                shift = 1
+                complex_idx_start = complex_idx_start + shift
+                complex_idx_end = complex_idx_start + shift
+                not_set = False
+
             for inner_list in outer_list:
                 sign = outer_list.get_relation_by_sign(relation)
                 if not init:
@@ -250,42 +326,54 @@ class ComplexApplicator:
                 new_complex[-1].merge_complex(copy.deepcopy(inner_list))
                 init = False
                 if further_processing: # if it's not the last element
-                    combined_complexes, further = self.__combine_helper(complex_idx_end, new_complex, sign, init=True)
+                    combined_complexes, further = self.__combine_helper(complex_idx_start, complex_idx_end, new_complex, sign, init=True)
                     self.new_list.merge_complex(combined_complexes)
                     init = True
                     new_complex = Association([], relation)
+                    if current_list.k:
+                        new_complex.k = True
                     new_complex.merge_complex(copy.deepcopy(current_list))
         return new_complex, further_processing
-    def k_plus_combination(self):
-        complex = Association([], None)
-        if len(self.association) == 2 :
-            for outer_list in self.association:
-                complex.merge_complex(outer_list)
-        else:
-            self.new_list = Association([], None)
-            self.combine(0)
-            # already_seen = []
-            # remember_for_later = []
-            # for i, outer_list in enumerate(self.association):
-            #     if outer_list not in already_seen:
-            #         already_seen.append(outer_list)
-            #     if outer_list.pos:
-            #         shift = 2
-            #     else: shift = 1
-            #     for inner_list in outer_list:
-            #
-            #         new_list.add_complex(Association(copy.deepcopy(inner_list), sign))
-            #         for j, outer_list2 in enumerate(self.association[i+shift:]):
-            #             sign = outer_list.get_relation(outer_list2)
-            #             if shift == 1 and outer_list2 not in remember_for_later:
-            #                 remember_for_later.append(outer_list2)
-            #                 for inner_list2 in outer_list2:
-            #                     new_list[-1].merge_complex(inner_list2)
-            #     already_seen.extend(remember_for_later)
 
-            pass
 
-        return complex
+    def k_plus_combination(self, association):
+        """
+                                       b
+                                    /     \
+                                   !       x
+                                   |       |
+                                   b1      b1
+                                  /  \    /  \
+                                 !    x   !   x
+                                 |    |   |   |
+                                b2    b2  b2  b2
+                                /\    /\  /\   /\
+                               !  x  !  x ! x  ! x
+        @return:
+        """
+        complexes = Association([], None)
+        #if len(self.association) == 2 :
+        #    for outer_list in self.association:
+        #        complex.merge_complex(outer_list)
+        #else:
+
+        k_complexes = association.get_all_k()
+        normal_complexes = association.get_all_non_k()
+        if len(k_complexes) == 2:
+            for outer_list in association:
+                complexes.merge_complex(outer_list)
+        # else:
+        #     complexes.merge_complex(self.combine(0, k_complexes))
+        #
+        # if normal_complexes:
+        #     combined_complexes = self.combine(0, normal_complexes)
+        #     for normal_complexes in combined_complexes:
+        #         for k_complexe in complexes:
+        #             k_complexe.merge_complex(normal_complexes)
+
+        #    complexes = sorted(new_complex, key=lambda comp: len(comp))
+
+        return complexes
 
     def k_plus_application(self, complex):
         """
@@ -531,34 +619,6 @@ class ComplexApplicator:
                 missing.extend(range(cont_tracking[rank]+1, cont_tracking[rank+1]))
 
         return missing
-
-    def complex_combination(self):
-        """
-        This function builds the complex combinations if we have more than one boolean complex which
-        should be applied to a certain reaction
-        @return: combination of the input
-        """
-
-        new_list = Association([], None)
-        already_seen = []
-        if len(self.association) == 1:
-            new_list.extend(self.association[0])
-            complexes = sorted(new_list, key=lambda comp: len(comp))
-            return complexes
-        for outer_list in self.association:
-            if outer_list not in already_seen:
-                already_seen.append(outer_list)
-            for outer_list2 in self.association:
-                if outer_list2 not in already_seen:
-                    already_seen.append(outer_list2)
-                    for inner_list in outer_list:
-                        for inner_list2 in outer_list2:
-                            sign = outer_list.get_relation(outer_list2)
-                            new_list.add_complex(Association(copy.deepcopy(inner_list), sign))
-                            new_list[-1].merge_complex(inner_list2)
-
-        complexes = sorted(new_list, key=lambda comp: len(comp))
-        return complexes
 
     def apply_rule(self, rule, reaction, cap):
         """
