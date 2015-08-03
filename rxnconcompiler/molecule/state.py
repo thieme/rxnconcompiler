@@ -123,16 +123,16 @@ class State:
         Compares states only in respect to component names.
         To include domains in comparison use hash function.
         """
-        if self.components:
-            if sorted(self.components, key=lambda comp: comp.name) == sorted(other.components, key=lambda comp: comp.name):
-                return True
-            else:
-                return False
+        #if self.components:
+        #    if sorted(self.components, key=lambda comp: comp.name) == sorted(other.components, key=lambda comp: comp.name):
+        #        return True
+        #    else:
+        #        return False
+        #else:
+        if self.state_str == other.state_str:
+            return True
         else:
-            if self.state_str == other.state_str:
-                return True
-            else:
-                return False
+            return False
 
     def __hash__(self):
         """

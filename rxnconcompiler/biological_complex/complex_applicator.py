@@ -34,6 +34,7 @@ from rxnconcompiler.util.util import product
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
 from rxnconcompiler.molecule.molecule import Molecule
+from rxnconcompiler.molecule.state import get_state
 
 class Association(list):
     def __init__(self, complex, relation, k = False):
@@ -400,26 +401,6 @@ class ComplexApplicator:
         self.association[-1].extend(k_plus_complexes)
         pass
 
-    def check_for_combination_conflict(self, new_combination):
-        """
-        Not used yet
-        @param new_combination:
-        @return:
-        """
-        to_remove = []
-        state = []
-        sign = []
-        for cont in new_combination:
-            sign.append(cont.ctype)
-            state.append(cont.state.state_str)
-        for idx, ref_cont in enumerate(new_combination):
-            result = self.conflict_check(ref_cont, sign[idx+1:], state[idx+1:])
-            if (result == None or result):
-                to_remove.append(ref_cont)
-        for cont in to_remove:
-            new_combination.remove(cont)
-        return new_combination
-
     def positive_application(self, complex):
         """
         changed the contingencies within a complex to ! as long as there is no x
@@ -452,21 +433,21 @@ class ComplexApplicator:
         @param root:
         @return:
         """
-        self.get_ordered_tree(inner_list, root)
+        cont_tree, state_tree = self.get_ordered_tree(inner_list, root)
         negative_complex_tree = Association([], None)
 
 
-        counter = len(self.cont_tree) -1
+        counter = len(cont_tree) -1
         while counter:
             negative_complex_tree.add_complex(Association([], "x"))
-            for cont in self.cont_tree[:counter]:
+            for cont in cont_tree[:counter]:
                 negative_complex_tree[-1].append(cont)
-            last_cont = self.cont_tree[counter]
+            last_cont = cont_tree[counter]
             negative_complex_tree[-1].append(self.change_contingency_opposite(copy.deepcopy(last_cont)))
             counter -=1
         negative_complex_tree.add_complex(Association([], "x"))
 
-        negative_complex_tree[-1].append(self.change_contingency_opposite(copy.deepcopy(self.cont_tree[0])))
+        negative_complex_tree[-1].append(self.change_contingency_opposite(copy.deepcopy(cont_tree[0])))
         return negative_complex_tree
 
     def get_ordered_tree(self, inner_list, root):
@@ -505,8 +486,9 @@ class ComplexApplicator:
             result[0] += states_mols[0][0]
             result[1] += states_mols[0][1]
             stack = states_mols[1]   # new roots
-        self.state_tree = result[0]
-        self.cont_tree = result[1]
+        state_tree = result[0]
+        cont_tree = result[1]
+        return cont_tree, state_tree
 
     def _get_complex_layer(self, inner_list, root_list, already=None):
         """
@@ -774,12 +756,12 @@ class ComplexApplicator:
 
             if verify:
                 for ref_ele in verify:
-                    if ref_ele.state.has_component(root):
-                        complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_ele)))
-                    elif not ref_ele.state.has_component(root) and ref_ele not in not_in:
-                        already_known_states = [known_ele.state.state_str for known in not_in_complex for known_ele in known]
-                        if ref_ele.state.state_str not in already_known_states:
-                            not_in.append(copy.deepcopy(ref_ele))
+                    #if ref_ele.state.has_component(root):
+                    #    complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_ele)))
+                    #elif not ref_ele.state.has_component(root) and ref_ele not in not_in:
+                    already_known_states = [known_ele.state.state_str for known in not_in_complex for known_ele in known]
+                    if ref_ele.state.state_str not in already_known_states:
+                        not_in.append(copy.deepcopy(ref_ele))
 
             if not_in != [] and not_in not in not_in_complex:
                 not_in_complex.append(not_in)
@@ -800,6 +782,7 @@ class ComplexApplicator:
         @return rules: modified rules
         """
         next = False
+        #self.check_combinatorial_conflict(complex_copy, not_in_complex, complex_tree)
 
         for not_in in not_in_complex:
             for not_in_cont in not_in:
@@ -808,14 +791,18 @@ class ComplexApplicator:
                     if not_in_cont == tree[-1]:
                         if len(tree) == 1:
                             if not next:
-                                complex_copy.append(copy.deepcopy(not_in[0]))
-                                rules.append(complex_copy)
+                                complex_copy = copy.deepcopy(complex_copy)
+                                complex_copy, tree = self.check_combinatorial_conflict(complex_copy, not_in_cont, tree)
+                                complex_copy.extend(tree)
+                                rules.append(copy.deepcopy(complex_copy))
                                 next = True
                             elif next:
                                 rules[-1].append(copy.deepcopy(not_in[0]))
                         else:
+
                             if complex_copy not in rules:
                                 rules.append(complex_copy)
+                            complex_copy, tree = self.check_combinatorial_conflict(complex_copy, not_in_cont, tree)
                             new_complex_copy = copy.deepcopy(complex_copy)
                             for complex_cont in copy.deepcopy(new_complex_copy):
                                 check = self.conflict_check(complex_cont, tree)
@@ -825,6 +812,70 @@ class ComplexApplicator:
                             rules.append(new_complex_copy)
 
         return rules
+
+    def check_combinatorial_conflict(self, current_complex, not_in_cont, not_in_tree):
+        # first revert the change in not_in_cont
+        self.change_contingency_opposite(not_in_cont)
+        complex_tree = []
+
+        # build full ordered trees
+        for root in self.possible_roots:
+            for complex in self.complexes:
+                for inner_list in complex[1]:
+                    for cont in inner_list:
+                        if cont.state.has_component(root):
+                            cont_tree, state_tree = self.get_ordered_tree(inner_list,root)
+                            complex_tree.append(cont_tree)
+
+        complex_states = []
+        for comp in current_complex:
+            complex_states.append(comp.state)
+
+        not_in_full_tree = []
+        complex_cont_full_tree = []
+        new_current_complex = current_complex
+        if not_in_cont.state in complex_states:
+            complex_cont_idx = complex_states.index(not_in_cont.state)
+            complex_cont = current_complex[complex_cont_idx]
+            for tree in complex_tree:
+                if not_in_cont in tree:
+                    not_in_full_tree = tree
+                if complex_cont in tree:
+                    complex_cont_full_tree = tree
+                if not_in_full_tree and complex_cont_full_tree:
+                    if not_in_full_tree != complex_cont_full_tree:
+                        sid_right = 0
+                        for i, tree_cont in enumerate(not_in_tree):
+                            if tree_cont.state.sid == None:
+                                #### pay attention on the combonent order?
+                                # Cdc24--Far1, Ste4--Far1, Ste4--Ste18
+
+                                sid_left = i + 1
+                                sid_right = i + 2
+                                sid = "{0}--{1}".format(sid_left, sid_right)
+                                state = get_state(tree_cont.state.state_str, sid)
+                                tree_cont.state = state
+                        counter = sid_right + 1
+                        new_current_complex = Association([], current_complex.get_complex_type())
+                        for tree_cont in complex_cont_full_tree:
+                            for cont in current_complex:
+                                if tree_cont == cont:
+                                    if cont.state.sid == None:
+                                        #### pay attention on the combonent order
+                                        sid_left = counter + 1
+                                        sid_right = counter + 2
+                                        sid = "{0}--{1}".format(sid_left, sid_right)
+                                        state = get_state(cont.state.state_str, sid)
+                                        cont.state = state
+                                        new_current_complex.append(cont)
+                                        counter += 1
+                        break
+                    else:
+                        return current_complex, []
+
+            pass
+        return new_current_complex, not_in_tree
+
 
     def building_rules(self, complex_combination_list):
         """

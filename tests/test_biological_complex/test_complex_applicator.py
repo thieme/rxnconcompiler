@@ -45,16 +45,16 @@ class ComplexApplicatorTests(TestCase):
         complex = self.rxncon_bool.get_complexes("A_p+_B")
         applicator = ComplexApplicator(self.bool_container, [])
         pos_bool = applicator.positive_application(complex[0])
-        applicator.get_ordered_tree(pos_bool[0], self.bool_container[0].left_reactant)
+        cont_tree, state_tree = applicator.get_ordered_tree(pos_bool[0], self.bool_container[0].left_reactant)
 
         level1 = ['A_[AssocB]--B_[AssocA]', 'A_[AssocC]--C_[AssocA]', 'A_[AssocD]--D_[AssocA]']
         level2 = ['B_[AssocE]--E_[AssocB]', 'B_[AssocF]--F_[AssocB]', 'D_[AssocG]--G_[AssocD]', 'D_[AssocH]--H_[AssocD]']
         level3 = ['E_[AssocK]--K_[AssocE]', 'E_[AssocJ]--J_[AssocE]']
-        for state in applicator.state_tree[:3]:
+        for state in state_tree[:3]:
             self.assertTrue(str(state) in level1)
-        for state in applicator.state_tree[3:7]:
+        for state in state_tree[3:7]:
             self.assertTrue(str(state) in level2)
-        for state in applicator.state_tree[7:]:
+        for state in state_tree[7:]:
             self.assertTrue(str(state) in level3)
 
     def test_build_tree_combinations_from_list(self):

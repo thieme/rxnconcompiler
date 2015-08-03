@@ -52,7 +52,8 @@ class Contingency:
         """
         if self.target_reaction == other.target_reaction:
             if self.ctype == other.ctype:
-                if self.state == other.state: 
+                if self.state == other.state:
+                    #if self.state.state_str == other.state.state_str:
                     return True
         return False
 
