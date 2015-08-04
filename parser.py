@@ -11,6 +11,8 @@ import csv
 import xlrd
 import sys
 import re
+from  rxnconcompiler.parser.rxncon_parser import parse_xls
+from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
 
 def get_files(inputdir):
     """
@@ -307,78 +309,114 @@ def parse_SBtab2rxncon(inputdir):
                 modi_col_index= ob['object'].columns.index('!Modifier')
                 
                 # Save the data of these three columns to lists
-                reaction_dicts=[{}]
+                contingency_id=0
+                contingency_list=[{}]
                 for row in ob['object'].getRows():
-                    reaction_dicts.append({
+                    contingency_list.append({
+                        'ContingencyID': contingency_id,
                         'Target': row[targ_col_index],
                         'Contingency': row[cont_col_index],
                         'Modifier': row[modi_col_index]
-                    })  
-                reaction_dicts.pop(0)
-                
-                reaction_dicts_2=[{}]
+                    })
+                    contingency_id += 1
+                contingency_list.pop(0)
 
-                # versuch aus diesem kleinen dict eins in der rxncon form zu machen
-                for d in reaction_dicts:
-                    li=d['Target'].split('_')
-                    print li
-                    # klappt nicht, li hat immer ne andere länge. muss also doch mit regexp gemavcht werden
-                    # li looks like: ['Pbs2', '[KD]', 'P+', 'Hog1', '[(T174)]']
-                    compAn=li[0]
-                    compBn=li[3]
-                    rxn=li[2]
-                    if li[1].find('('): # subdomain information for component A given
-                        compAd= li[1][1:(li[1].find('('))]
-                    else:
-                        compAd= li[1][1:-1]
-                    print compAd
-                    
-                    
-                    #print d
-                    #print d['Target']
-                #print targ_cells[0], cont_cells[0], modi_cells[0]
-                #print len(targ_cells),len(cont_cells),len(modi_cells)
 
-                #print targ_col_index, cont_col_index, modi_col_index
-                #print ob['object'].sbtab_list[0]
-                #print ''
-               # print ob['object'].sbtab_list[1]
-                #print ''
-                #print ob['object'].sbtab_list[2]
 
             elif ob['type']=='ReactionID':
                 # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
+                indexes_dict={
+                    'can': ob['object'].columns.index('!ComponentA:Name'),
+                    'cad': ob['object'].columns.index('!ComponentA:Domain'),
+                    'cas': ob['object'].columns.index('!ComponentA:Subdomain'),
+                    'car': ob['object'].columns.index('!ComponentA:Residue'),
 
-                can= ob['object'].columns.index('!ComponentA:Name')
-                cad= ob['object'].columns.index('!ComponentA:Domain')
-                cas= ob['object'].columns.index('!ComponentA:Subdomain')
-                car= ob['object'].columns.index('!ComponentA:Residue')
+                    'rea': ob['object'].columns.index('!Reaction'),
 
-                rea= ob['object'].columns.index('!Reaction')
-                
-                cbn= ob['object'].columns.index('!ComponentB:Name')
-                cbd= ob['object'].columns.index('!ComponentB:Domain')
-                cbs= ob['object'].columns.index('!ComponentB:Subdomain')
-                cbr= ob['object'].columns.index('!ComponentB:Residue')
+                    'cbn': ob['object'].columns.index('!ComponentB:Name'),
+                    'cbd': ob['object'].columns.index('!ComponentB:Domain'),
+                    'cbs': ob['object'].columns.index('!ComponentB:Subdomain'),
+                    'cbr': ob['object'].columns.index('!ComponentB:Residue')
+                }
 
                 # Save the data of these three columns to list of dictionaries
-                rxncon_dicts=[{}]
+                reaction_list=[{}]
 
                 for row in ob['object'].getRows():
-                    rxncon_dicts.append({
-                        'Reaction': row[rea],
-                        'ComponentA[Name]': row[can],
-                        'ComponentA[Domain]': row[cad],
-                        'ComponentA[Subdomain]': row[cas],
-                        'ComponentA[Resdidue]': row[car],
-                        'ComponentB[Name]': row[cbn],
-                        'ComponentB[Domain]': row[cbd],
-                        'ComponentB[Subdomain]': row[cbs],
-                        'ComponentB[Resdidue]':row[cbr]
+                    reaction_list.append({
+                        'ReactionType': row[indexes_dict['rea']],
+                        'ComponentA[Name]': row[indexes_dict['can']],
+                        'ComponentA[Domain]': row[indexes_dict['cad']],
+                        'ComponentA[Subdomain]': row[indexes_dict['cas']],
+                        'ComponentA[Resdidue]': row[indexes_dict['car']],
+                        'ComponentB[Name]': row[indexes_dict['cbn']],
+                        'ComponentB[Domain]': row[indexes_dict['cbd']],
+                        'ComponentB[Subdomain]': row[indexes_dict['cbs']],
+                        'ComponentB[Resdidue]': row[indexes_dict['cbr']],
+                        'Reaction[FULL]': build_full(row,indexes_dict)
                     })
+                    print build_full(row,indexes_dict)
+                    # does not work correctly, go on from here
+            reaction_definition = DEFAULT_DEFINITION
+
+        #rxncon = Rxncon(dict(reaction_list, contingency_list, reaction_definition), parsed_xls=True) #build rxncon object
+        #print rxncon
 
         # write contents to txt File
         #write_rxncon_txt(inputdir, targ_cells, cont_cells, modi_cells)
+    #return dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition)
+#rxncon = Rxncon(dict(reaction_list, contingency_list, reaction_definition), parsed_xls=True)
+# print rxncon
+
+def build_full(row,d):
+    '''
+    Creates Full Reaction String from given SBtab reaction row and a dictionary, that tells in which column is what
+    '''
+    out=''
+    out+=row[d['can']]
+
+    if row[d['cad']]:
+        out+='_['+row[d['cad']]
+        if row[d['cas']]:
+            out+='/'+row[d['cas']]
+            if row[d['car']]:
+                out+='('+row[d['car']]+')'
+        out+=']'
+    elif row[d['cas']]:
+        out+='_['+row[d['cas']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
+        if row[d['car']]:
+            out+='('+row[d['car']]+')'
+        out+=']'
+    elif row[d['car']]:
+        out+='[(' + row[d['car']] + ')]'
+
+    out+='_'+row[d['rea']]+'_'
+
+    if row[d['cbd']]:
+        out+='_['+row[d['cbd']]
+        if row[d['cbs']]:
+            out+='/'+row[d['cbs']]
+            if row[d['cbr']]:
+                out+='('+row[d['cbr']]+')'
+        out+=']'
+    elif row[d['cbs']]:
+        out+='_['+row[d['cbs']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
+        if row[d['cbr']]:
+            out+='('+row[d['cbr']]+')'
+        out+=']'
+    elif row[d['cbr']]:
+        out+='[(' + row[d['cbr']] + ')]'
+
+    return out
+
+# def magic(liste von targets, liste von full rxns):
+#     '''
+#     Checks whether all targets match a full reaction. Validation of Full Reaction creation function
+#     '''
+
+def parse_rxncon2SBtab(inputdir):
+    xls_tables= parse_xls(inputdir)
+    pass
 
 def write_rxncon_txt(inputdir, targ, cont, modi):
     '''
@@ -456,3 +494,5 @@ if __name__=="__main__":
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_txt')
 
+    #read rxncon input:
+    #parse_rxncon2SBtab('rxncon_files/rxncon_xls/rxncon_simple_example-1.xls')
