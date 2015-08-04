@@ -344,14 +344,18 @@ def write_rxncon_txt(inputdir, targ, cont, modi):
     Those are written into txt file
     '''
     outputname= 'output'+'.txt'
+    output_directory='output_parser'
+
+    if not os.path.exists(inputdir+'/'+output_directory):
+        os.mkdir(inputdir+'/'+output_directory)
 
     # find length of longest entries for fancy ouputfile formatting
     max_targ= len(max(targ, key=len))
     max_cont= len(max(cont, key=len))
     max_modi= len(max(modi, key=len))
 
-    #f = open(inputdir+'/'+outputname, "w") # spaeter das hier verwenden, wegen file detecting bug erst mal raus genommen
-    f = open(outputname, "w")
+
+    f = open(inputdir+'/'+output_directory+'/'+outputname, "w")
     for r in range(len(targ)):
         f.write(
         "{0} {1} {2}".format(
