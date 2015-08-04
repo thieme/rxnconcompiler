@@ -25,7 +25,7 @@ def check_directory_type(inputdir):
     '''
     Checks whether input directory consists of SBtab, rxncon, both or other files
     '''
-    print inputdir, '      delete this print in the end, check_directory_type()'
+    #print inputdir, '      delete this print in the end, check_directory_type()'
 
     rxncon_detected = False
     sbtab_detected = False
@@ -255,9 +255,9 @@ def parse_SBtab2rxncon(inputdir):
     Main function for parsin SBtab --> rxncon Format
     '''
     files = get_files(inputdir)
-    output_format='' #delete
+    #output_format='' #delete
     #reactivate :
-    # output_format= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
+    output_format= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
     if output_format=='':
         output_format='txt'
     else:
@@ -294,10 +294,10 @@ def parse_SBtab2rxncon(inputdir):
 
             if ob['type']=='ContingencyID':
 
-                get_info(ob['object']) #delete
+                #get_info(ob['object']) #delete
                 #print ob['object'].columns #delete
                 #print len(ob['object'].sbtab_list)
-                print ob['object'].getRows()[0]
+                #print ob['object'].getRows()[0]
 
                 # Find column indexes for !Target, !Contingency and !Modifier columns
                 targ_col_index=-99
@@ -321,7 +321,7 @@ def parse_SBtab2rxncon(inputdir):
                     modi_cells.append(row[modi_col_index])
 
                 #print targ_cells[0], cont_cells[0], modi_cells[0]
-                print len(targ_cells),len(cont_cells),len(modi_cells)
+                #print len(targ_cells),len(cont_cells),len(modi_cells)
 
                 #print targ_col_index, cont_col_index, modi_col_index
                 #print ob['object'].sbtab_list[0]
@@ -369,7 +369,7 @@ def write_rxncon_txt(inputdir, targ, cont, modi):
     # Close opened file
     f.close()
 
-
+    print 'Succes! Saved File in:', inputdir+'/'+output_directory+'/'+outputname
 
 def hello():
     '''
@@ -391,8 +391,8 @@ def hello():
 if __name__=="__main__":
 
     #'to be' usage:
-    #inputdir= hello()
-    #check_directory_type(inputdir)
+    inputdir= hello()
+    check_directory_type(inputdir)
 
 
     #read_sbtab_csv('BIOMD0000000061_Reaction.csv')
@@ -407,7 +407,7 @@ if __name__=="__main__":
     #print '------------------------'
     #check_directory_type('sbtab_files/example_files(sbtab)_xls')
     #print '------------------------'
-    check_directory_type('sbtab_files/tiger_files_csv')
+    #check_directory_type('sbtab_files/tiger_files_csv')
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_xls')
     # print '------------------------'
