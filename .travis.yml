@@ -1,0 +1,18 @@
+language: python
+python:
+  - "2.7"
+# 2.6 droped ---> no self.assertIn 
+
+# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+install: 
+  - "pip install -r requirements.txt"
+#  - export PYTHONPATH=$PYTHONPATH:$HOME/builds/lenarother/rxnconcompiler/:$HOME/builds/lenarother/rxnconcompiler/tests/:$HOME/builds/lenarother/rxnconcompiler/tests/test_data::$HOME/builds/lenarother/rxnconcompiler/rxnconcompiler
+
+# command to run tests, e.g. python setup.py test
+script: "bash run-tests.sh"
+
+notifications:
+  email:
+    - rother.magdalena@gmail.com
+    - thieme.sebastian@gmail.com
+    - marcus.krantz@biologie.hu-berlin.de

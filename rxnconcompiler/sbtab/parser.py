@@ -5,12 +5,14 @@
 
 import SBtab
 import os
-#import tablib
 import tablibIO
 import csv
 import xlrd
 import sys
 import re
+from rxnconcompiler.parser.rxncon_parser import parse_xls
+from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
+from rxnconcompiler.rxncon import Rxncon
 
 def get_files(inputdir):
     """
@@ -78,6 +80,10 @@ def check_directory_type(inputdir):
         else:
             print 'Directory of SBtab files detected. Starting parser.'
             if look_for_SBtab_files(inputdir):
+                if look_for_SBtab_files(inputdir)=='txt':
+                    print "Warning: You can export the files in current directory only to rxncon quick format (.txt)." \
+                          "         Not all needed Files for xls export are found." \
+                          "         If you still choose xls export, the program will crash."
                 parse_SBtab2rxncon(inputdir)
 
 def check_txt_File(filedir, sbtab_detected, rxncon_detected, other_detected):
@@ -172,29 +178,36 @@ def look_for_SBtab_files(inputdir):
 
         #print files
 
-        p = re.compile('rxncon_Definition.*') # every file with that name, no matter what file format
+
+        p = re.compile('rxncon_definition.*') # every file with that name, no matter what file format
+        # achtung: es gibt ein mal eine sbatb seitige rxncon_definition datei und eine rxcon seitige.
+        # wenn die rxncon seitige fehlt, wird die default erstellt und verwendet
+        # keine ahnung wozu die sbtab seitige sein soll...
         m = p.match(filename)
         if m:
             rxncon_def_found=True
+            print "rxncon_Definition file detected."
 
 
 
     if 'ReactionList' in found_table_types and 'ReactionID' in found_table_types and'ContingencyID' in found_table_types and 'Gene' in found_table_types:
-        if rxncon_def_found and 'Definition' in found_table_types:
-            return True
-        else:
-            print 'Error: In order to translate the SBtab Format to rxncon you need the "rxncon_Definition" File inside this directory' \
-                  'you can download it here:'
-            print 'www.rxncon.org'
-            return False
+        #not needed anymore, rxncon_definition gets createdget created
+        #if rxncon_def_found and 'Definition' in found_table_types:
+        return 'xls'
+        #else:
+            #print 'Error: In order to translate the SBtab Format to rxncon you need the "rxncon_Definition" File inside this directory' \
+                  #'you can download it here:'
+            #print 'www.rxncon.org'
+            #return False
+    elif 'ReactionID' in found_table_types and'ContingencyID' in found_table_types:
+        return 'txt'
     else:
         print 'Error: In order to translate the SBtab Format to rxncon you need tables with following TableTypes:' \
-              ' - ReactionList' \
+              ' - ReactionList(only for export to xls)' \
               ' - ReactionID' \
               ' - ContingencyID' \
-              ' - Gene' \
-              ' - Definition (inside "rxncon_Definition" File)'
-        return False
+              ' - Gene(only for export to xls)' \
+
 
 def build_SBtab_object(inputdir, filename):
     '''
@@ -265,8 +278,11 @@ def parse_SBtab2rxncon(inputdir):
     if output_format!='txt' and output_format!='xls':
         print 'Error, the format ',output_format,' is not supported.'
 
-    ob_list=[] # List of dictionaries
+    reaction_def_found=False
+    if 'reaction_definition' in files:
+        reaction_def_found=True
 
+    ob_list=[] # List of dictionaries
     for filename in files:
         #print 'Filename: ', filename
         ob= build_SBtab_object(inputdir, filename)
@@ -280,92 +296,139 @@ def parse_SBtab2rxncon(inputdir):
         output_format='txt'
 
     if output_format=='txt':
-
-    # !Target, !Contigencie und !Modifier spalten aus ContID nehmen und so in den file printen. Aber ein Semicolon nach
-    # dem target entry
-    # ausserdem alle reactions aus reactionID, die noch nich in ContingencyID vorgekommen sind
-    # Besonder toll waere es, wenn mehrere contigencies zu einer reaction alle in eine Zeile kommen:
-    #     A_ppi_B ;!A--C;!A--D
-    #Anstatt:
-    #     A_ppi_b ;! A--C
-    #     A_ppi_B ; A--D
-
         for ob in ob_list:
-
             if ob['type']=='ContingencyID':
-
-                #get_info(ob['object']) #delete
-                #print ob['object'].columns #delete
-                #print len(ob['object'].sbtab_list)
-                #print ob['object'].getRows()[0]
-
                 # Find column indexes for !Target, !Contingency and !Modifier columns
-                targ_col_index=-99
-                cont_col_index=-99
-                modi_col_index=-99
-                for colIndex in range(len(ob['object'].columns)):
-                    if ob['object'].columns[colIndex] == '!Target':
-                        targ_col_index= colIndex
-                    elif ob['object'].columns[colIndex] == '!Contingency':
-                        cont_col_index = colIndex
-                    elif ob['object'].columns[colIndex] == '!Modifier':
-                        modi_col_index= colIndex
-                # Save the dat of these three columns to lists
-                targ_cells=[]
-                cont_cells=[]
-                modi_cells=[]
-
+                targ_col_index= ob['object'].columns.index('!Target')
+                cont_col_index= ob['object'].columns.index('!Contingency')
+                modi_col_index= ob['object'].columns.index('!Modifier')
+                
+                # Save the data of these three columns to lists
+                contingency_id=0
+                contingency_list=[{}]
                 for row in ob['object'].getRows():
-                    targ_cells.append(row[targ_col_index])
-                    cont_cells.append(row[cont_col_index])
-                    modi_cells.append(row[modi_col_index])
-
-                #print targ_cells[0], cont_cells[0], modi_cells[0]
-                #print len(targ_cells),len(cont_cells),len(modi_cells)
-
-                #print targ_col_index, cont_col_index, modi_col_index
-                #print ob['object'].sbtab_list[0]
-                #print ''
-               # print ob['object'].sbtab_list[1]
-                #print ''
-                #print ob['object'].sbtab_list[2]
+                    contingency_list.append({
+                        'ContingencyID': contingency_id,
+                        'Target': row[targ_col_index],
+                        'Contingency': row[cont_col_index],
+                        'Modifier': row[modi_col_index]
+                    })
+                    contingency_id += 1
+                contingency_list.pop(0)
 
             elif ob['type']=='ReactionID':
-                # tricky shit
+                # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
+                indexes_dict={
+                    'can': ob['object'].columns.index('!ComponentA:Name'),
+                    'cad': ob['object'].columns.index('!ComponentA:Domain'),
+                    'cas': ob['object'].columns.index('!ComponentA:Subdomain'),
+                    'car': ob['object'].columns.index('!ComponentA:Residue'),
+
+                    'rea': ob['object'].columns.index('!Reaction'),
+
+                    'cbn': ob['object'].columns.index('!ComponentB:Name'),
+                    'cbd': ob['object'].columns.index('!ComponentB:Domain'),
+                    'cbs': ob['object'].columns.index('!ComponentB:Subdomain'),
+                    'cbr': ob['object'].columns.index('!ComponentB:Residue')
+                }
+
+                # Save the data of these three columns to list of dictionaries
+                reaction_list=[{}]
+
+                for row in ob['object'].getRows():
+                    reaction_list.append({
+                        'ReactionType': row[indexes_dict['rea']],
+                        'ComponentA[Name]': row[indexes_dict['can']],
+                        'ComponentA[Domain]': row[indexes_dict['cad']],
+                        'ComponentA[Subdomain]': row[indexes_dict['cas']],
+                        'ComponentA[Residue]': row[indexes_dict['car']],
+                        'ComponentB[Name]': row[indexes_dict['cbn']],
+                        'ComponentB[Domain]': row[indexes_dict['cbd']],
+                        'ComponentB[Subdomain]': row[indexes_dict['cbs']],
+                        'ComponentB[Residue]': row[indexes_dict['cbr']],
+                        'Reaction[Full]': build_full(row,indexes_dict)
+                    })
+                reaction_list.pop(0)
+            if not reaction_def_found:
+                reaction_definition = DEFAULT_DEFINITION
+            else:
+                # build reaction definition
                 pass
 
-        # write contents to txt File
-        write_rxncon_txt(inputdir, targ_cells, cont_cells, modi_cells)
+        #rxncon = Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
+        rxncon = Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition))
 
-def write_rxncon_txt(inputdir, targ, cont, modi):
+
+        # write contents to txt File
+        write_rxncon_txt(inputdir,rxncon)
+
+
+def build_full(row,d):
     '''
-    Gets 3 Lists: target, contigency and modification
-    All have to be in the right order, according to one another
-    Those are written into txt file
+    Creates Full Reaction String from given SBtab reaction row and a dictionary, that tells in which column is what.
+    Template: ComponentA_[Domain/Subdomain(Residue)]_reaction_ComponentB_[Domain/Subdomain(Residue)]
+    '''
+    out=''
+    out+=row[d['can']]
+
+    if row[d['cad']]:
+        out+='_['+row[d['cad']]
+        if row[d['cas']]:
+            out+='/'+row[d['cas']]
+        if row[d['car']]:
+            out+='('+row[d['car']]+')'
+        out+=']'
+    elif row[d['cas']]:
+        out+='_['+row[d['cas']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
+        if row[d['car']]:
+            out+='('+row[d['car']]+')'
+        out+=']'
+    elif row[d['car']]:
+        out+='_[(' + row[d['car']] + ')]'
+
+    out+='_'+row[d['rea']]+'_'
+
+    # Reaction B
+    out+=row[d['cbn']]
+    if row[d['cbd']]:
+        out+='_['+row[d['cbd']]
+        if row[d['cbs']]:
+            out+='/'+row[d['cbs']]
+        if row[d['cbr']]:
+            out+='('+row[d['cbr']]+')'
+        out+=']'
+    elif row[d['cbs']]:
+        out+='_['+row[d['cbs']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
+        if row[d['cbr']]:
+            out+='('+row[d['cbr']]+')'
+        out+=']'
+    elif row[d['cbr']]:
+        out+='_[(' + row[d['cbr']] + ')]'
+
+    return out
+
+# def magic(liste von targets, liste von full rxns):
+#     '''
+#     Checks whether all targets match a full reaction. Validation of Full Reaction creation function
+#     '''
+
+def parse_rxncon2SBtab(inputdir):
+    xls_tables= parse_xls(inputdir)
+    pass
+
+def write_rxncon_txt(inputdir, rxncon):
+    '''
+    Gets rxncon Object and saves it as a txt file
     '''
     outputname= 'output'+'.txt'
     output_directory='output_parser'
 
     if not os.path.exists(inputdir+'/'+output_directory):
         os.mkdir(inputdir+'/'+output_directory)
-
-    # find length of longest entries for fancy ouputfile formatting
-    max_targ= len(max(targ, key=len))
-    max_cont= len(max(cont, key=len))
-    max_modi= len(max(modi, key=len))
-
-
     f = open(inputdir+'/'+output_directory+'/'+outputname, "w")
-    for r in range(len(targ)):
-        f.write(
-        "{0} {1} {2}".format(
-            targ[r].ljust(max_targ),
-            cont[r].ljust(max_cont),
-            modi[r].ljust(max_modi)
-            )
-        )
+    f.write('# rxncon_version=12345\trxncon_format=quick\n')
+    f.write(str(rxncon))
 
-        f.write('\n')
     # Close opened file
     f.close()
 
@@ -395,12 +458,6 @@ if __name__=="__main__":
     check_directory_type(inputdir)
 
 
-    #read_sbtab_csv('BIOMD0000000061_Reaction.csv')
-    #print '--------------------------------------'
-    #read_sbtab_csv('BIOMD0000000061_Compound.csv')
-    #ob = SBtabTools.openSBtab('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
-    #print os.listdir('tiger_files')
-    #look_for_SBtab_files('tiger_files/Tiger_et_al_TableS1_SBtab_Reaction.csv')
     #check_directory_type('sbtab_files/example_files(sbtab)_csv')
     #print '------------------------'
     #check_directory_type('sbtab_files/example_files(sbtab)_ods')
@@ -413,3 +470,5 @@ if __name__=="__main__":
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_txt')
 
+    #read rxncon input:
+    #parse_rxncon2SBtab('rxncon_files/rxncon_xls/rxncon_simple_example-1.xls')

@@ -1,0 +1,7 @@
+include versioneer.py
+include *.txt
+include *.rst
+include *.md
+recursive-include rxnconcompiler *.py *.c *.h *.pxd *.pyx *.xls *.bngl
+recursive-include docs *.rst *.py *.md
+recursive-include tests *.xls *.bngl

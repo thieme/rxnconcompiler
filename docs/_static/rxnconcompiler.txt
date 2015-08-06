@@ -1,0 +1,417 @@
+rxnconcompiler
+    biological_complex/
+
+        biological_complex.py
+
+            CLASS: BiologicalComplex
+                RESPONSIBLE FOR:
+                - stores connected molecules
+                - enable to get information about molecule connections
+                - has functions to modify itself e.g. add new molecules
+                - can clon (copy) itself
+                - stores info connected to reaction (e.g is modifier)
+                COLLABORATES WITH:
+                - Contingency
+                - Molecule
+
+            CLASS: AlternativeComplexes
+                RESPONSIBLE FOR:
+                - collection of BiologicalComplexes
+                - can clone itself
+                - can empty itself
+                COLLABORATES WITH:
+                [ - contains BiologicalComplexes]
+
+            CLASS: ComplexPool 
+                RESPONSIBLE FOR:
+                - dictionary of {Bool_cont_name : AlternativeComplexes}
+                COLLABORATES WITH:
+                - inherits from dict
+
+        complex_applicator.py
+        
+            CLASS: ComplexApplicator
+                RESPONSIBLE FOR:
+                - prepares complexes that should appear in a reaction
+                - increase number of reactions in ReactionContainer if neccesary                
+                - adds complexes to a reaction
+                - creates and adss single-molecule-complexes (when no bool cont)
+                - updates reaction rate
+                COLLABORATES WITH:
+                - ComplexBuilder    
+                - BiologicalComplex
+                - utils: product
+
+        complex_builder.py
+    
+            CLASS: ComplexBuilder
+                RESPONSIBLE FOR:
+                - collection of functions for building complexes.
+                - creates different sets of molecu conections based on contingency and given complexes.
+                COLLABORATES WITH:
+                - AlternatveComplexes
+                - BiologicalComplex
+                - Molecule
+                - Contingency
+                - util: product
+                
+    bngl/
+        bngl.py
+
+            CLASS: Bngl
+                RESPONSIBLE FOR:
+                - produces BNGL string
+                - takes rxncon objects and uses bngl objects to make BNGL string
+                COLLABORATES WITH:
+                - BnglOutput
+                - RuleFactory            
+
+        bngl_output.py
+
+            CLASS: BnglTranslator
+                RESPONSIBLE FOR:
+                - collections of functions that take rxncon objects and make BNGL string
+                COLLABORATES WITH:
+                - Component
+
+            CLASS: BnglOutput
+                RESPONSIBLE FOR:
+                - creates and formats sections of BNGL file (string).
+                COLLABORATES WITH:
+                - BnglTranslator
+
+        requirements.py ---> old, used only in one place in RuleFactory. Shoud be removed. 
+                             Used for generating header for rules with boolean contingency. 
+        
+        rule.py
+
+            CLASS: RulePool
+                RESPONSIBLE FOR:
+                - stores RuleContainers
+                COLLABORATES WITH:
+                - inherits after dict
+
+            CLASS: RuleContainer
+                RESPONSIBLE FOR:
+                - containes alternative rules (e.g. when boolean or K+/- contingency)
+                - gets ReactionContainer
+                COLLABORATES WITH:
+                - inherits after list
+
+            CLASS: Rule
+                RESPONSIBLE FOR:
+                - stores rxncon reaction
+                COLLABORATES WITH:
+                - None
+
+        rule_factory.py
+
+            CLASS: ReactionFactory
+                RESPONSIBLE FOR:
+                - creates RulePool from ReactionPool and ContingencyPool
+                COLLABORATES WITH:
+                - RulePool
+                - RuleContainer
+                - Rule
+                - RequirementsGenerator --> get rid of this dependancy.
+                - Component      
+
+    contingency/
+
+        contingency.py
+
+            CLASS: Contingency
+                RESPONSIBLE FOR:
+                - keeps information about contingency
+                - may have children when boolean, functions for getting children
+                - can clone (copy) itself
+                - is hashable
+                COLLABORATES WITH:
+                - copy
+
+        contingency_applicator.py
+
+            CLASS: ContingencyApplicator
+                RESPONSIBLE FOR:
+                - applys non-boolean-contingency on ReactionContainer (goes down to Molecule)
+                - applys input contingencies
+                - may increase number of reactions whrn necceassary (K+/-)
+                - updates reaction rate
+                COLLABORATES WITH:
+                - Molecule
+                - BiologicalComplex
+                - ContingencyWrapper
+
+        contingency_factory.py
+
+            CLASS: ContingencyWrapper
+                RESPONSIBLE FOR:
+                - enable adding additional info to contingency (positive/negative)
+                  e.g. K+ is once positive and once negative.
+                - produces flat contingency (only ! or x)
+                COLLABORATES WITH:
+                - None
+
+            CLASS: ContingencyPool
+                RESPONSIBLE FOR:
+                - stores all contingencies for the system
+                - returns different kinds of contingencies
+                - returns all required states
+                - keys are reactions (only these that have contingency)
+                COLLABORATES WITH:
+                - ingerits after dict
+
+            CLASS: ContingencyFactory
+                RESPONSIBLE FOR:
+                - produces Contingency objects from xls_tables (dict)
+                - parses boolean contingencies
+                - put contingencies into ContingenciesPool
+                COLLABORATES WITH:
+                - ContingencyPool
+                - Contingency
+                - Component
+                - get_state
+
+    definitions/
+        
+        default_definitions.py
+            - contains DEFAULT_DEFINITION 
+              (reaction definitions taken when reading quick input)
+
+        definitions.py
+            CLASS:  ReactionsDefinitions
+                RESPONSIBLE FOR:
+                - parses all reaction definitions from xls_tables(dict)
+                - facilitates usage of reaction definition
+                COLLABORATES WITH:
+                - inharits after dict
+
+    molecule/
+
+        component.py
+
+            CLASS: Component
+                RESPONSIBLE FOR:
+                - keeps information about component (part of state)
+                COLLABORATES WITH:
+                - DoaminFactory
+
+        domain_factory.py (not sure about localisation)
+
+            CLASS: DomainFactory
+                RESPONSIBLE FOR:
+                - giving domai name when not defined by user
+                - the only way for component to get domain!
+                COLLABORATES WITH:
+                - re
+
+        molecule.py
+
+            FUNCTION: id_gen - generator of unique ids
+                      (each molecule has an unique id (self._id))
+
+            CLASS: MoleculePool
+                RESPONSIBLE FOR:
+                - collection of all molecules (reactants) from the system
+                - returns dict of {molecule name : Molecule object with all domains}
+                COLLABORATES WITH:
+                - inherits after list
+
+            CLASS: Molecule
+                RESPONSIBLE FOR:
+                - keeps information about molecule
+                - adding state to molecule ---> this part should menage more domains
+                - removing state from molecule ---> this part should menage more domains
+                - can clone (copy) itself
+                COLLABORATES WITH:
+                - Component
+                - Contingency
+                - get_state
+                - copy
+
+        state.py
+
+            CLASS: State
+                RESPONSIBLE FOR:
+                - keeps information about state (eg single modifivation, interaction etc.)
+                - knows its type
+                - can clone (copy) itself
+                - returns info about components
+                - is hashable 
+                COLLABORATES WITH:
+                - copy
+
+            CLASS: StateFactory
+                RESPONSIBLE FOR:
+                - parses string or row from xls_tables + Reaction object into State 
+                COLLABORATES WITH:
+                - DomainFactory
+
+            FUNCTION: get_state
+                - uses StateFactory to return State base on any input
+
+    parser/
+        
+        rxncon_parser.py (BY FALKO, MODIFIED BY MR)
+
+            CLASS: readexcel
+                RESPONSIBLE FOR:
+                - reads xls files
+                COLLABORATES WITH:
+                - xlrd
+
+            FUNCTION: parse_text   
+                - parse str to xls_tables (dict)
+
+            FUNCTION: parse_xls
+                - parse xls file to xls_tables (dict)
+
+            FUNCTION: parse_json
+                - parse json str to xls_tables (dict)
+
+            FUNCTION: parse_rxncon
+                - recoginisez input
+                - parses json, string, xls, dict to xls_tables (dict)
+                 
+
+    reaction/
+
+        rate.py
+
+            CLASS: Rate
+                RESPONSIBLE FOR:
+                - keeps information about reaction rate (also rate functions)
+                - can update itself with new number
+                - cen update itself with function (when input contingncy given)
+                COLLABORATES WITH:
+                - re
+
+        raction.py
+
+            CLASS: Reaction
+                RESPONSIBLE FOR:
+                - superclass for all reaction-specific type classes
+                - keeps all information about raction
+                - runs reaction - creates product complexes from substrate complexes and state that will change
+                - can clone (copy) itself
+                COLLABORATES WITH:
+                - copy
+                - get_state
+                - Molecule
+                - BiologicalComplex
+                - Contingency
+
+            CLASS: Interaction (Reaction child class)
+            CLASS: Modification (Reaction child class)
+            CLASS: SyntDeg (Reaction child class)
+            CLASS: Relocalisation (Reaction child class)
+
+        reaction_container.py
+
+            CLASS: ReactionContainer
+                RESPONSIBLE FOR:
+                - collection of alternative reactions (K+/-, boolean contingencies)
+                - can empty itself
+                - gets source and product contingency
+                - gets modifier (reactant that does not change)
+                COLLABORATES WITH:
+                - inherits after list
+
+            CLASS: ReactionPool
+                RESPONSIBLE FOR:
+                - collection of all ReactionCobtainers from the system
+                - returns set of all product states (also specific e.g. only modifications)
+                - returns set of all destroyed states
+                - knows highest id (id of last added reaction_container)
+                COLLABORATES WITH:
+                - inherits after dict                
+
+        reaction_factory.py
+
+            CLASS: ReactionFactoryFromDict
+                RESPONSIBLE FOR:
+                - builds ReactionPool and MoleculePool from xls_tables (dict)
+
+            CLASS: ReactionFactoryFromList
+                RESPONSIBLE FOR:
+                - builds ReactionPool and MoleculePool from a list of states 
+
+            CLASS: ReactionFactory
+                RESPONSIBLE FOR:
+                - builds ReactionPool from proper factory
+                - chooses factory based on input
+                - sets reaction rate
+                COLLABORATES WITH:
+                - Reaction (Modification, Interaction, SyntDeg, Relocalisation)
+                - ReactionContainer
+                - ReactionPool
+                - Rate 
+                - ReactionDefinitions
+                - DEFAULT_DEFINITION
+                - Molecule
+                - MoleculePool
+                - get_state
+
+    util/
+
+        rxncon_errors.py
+            - contain rxncon-specific classes of errors
+            - inherits after Exeption
+
+        util.py
+
+            FUNCTION: get_dsr
+            FUNCTION: create_all_combinations
+            FUNCTION: product
+            FUNCTION: flatten
+            FUNCTION: get_permutations
+
+        warnings.py
+
+            CLASS: RxnconWarnings
+            RESPONSOBLE FOR:
+            - collect all problems as list or dict of states
+
+    compiler.py
+
+            CLASS: Compiler
+            RESPONSOBLE FOR:
+            - translates input into BNGL source code
+            - takes any rxncon language input (txt, json, xls, dict, string)
+            COLLABORATES:
+            - parse_rxncon
+            - Rxncon
+            - Bngl
+
+    interface.py
+        RESPONSIBLE FOR:
+        - defines top level functions that can be used right away by the user
+        - fasade patern
+        - containes CLI (Command Line Interface)
+        COLLABORATES WITH:
+        - json
+        - Rxncon
+        - Compiler
+        - BnglOutput
+        - Bngl
+
+        FUNCTION: main
+        - contains Command Line Interface for rxnconcompiler
+        
+    rxncon.py
+
+        CLASS: Rxncon
+            RESPONSIBLE FOR:
+            - keeps information about whole system
+            - propgates information included in rxncon language
+            - builds all pools (ReactionPool, ContigencyPool, ComplexPool, MoleculePool)
+            COLLABORATES WITH:
+            - RxnconWarnings 
+            - DomainFactory
+            - ComplexPool
+            - ComplexApplicator
+            - ComplexBuilder 
+            - ContingencyApplicator
+            - ContingencyFactory
+            - ReactionFactory
+            - parse_rxncon
