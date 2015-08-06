@@ -5,13 +5,12 @@
 
 import SBtab
 import os
-#import tablib
 import tablibIO
 import csv
 import xlrd
 import sys
 import re
-from  rxnconcompiler.parser.rxncon_parser import parse_xls
+from rxnconcompiler.parser.rxncon_parser import parse_xls
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
 
 def get_files(inputdir):
@@ -370,7 +369,8 @@ def parse_SBtab2rxncon(inputdir):
 
 def build_full(row,d):
     '''
-    Creates Full Reaction String from given SBtab reaction row and a dictionary, that tells in which column is what
+    Creates Full Reaction String from given SBtab reaction row and a dictionary, that tells in which column is what.
+    Template: ComponentA_[Domain/Subdomain(Residue)]_reaction_ComponentB_[Domain/Subdomain(Residue)]
     '''
     out=''
     out+=row[d['can']]
@@ -379,8 +379,8 @@ def build_full(row,d):
         out+='_['+row[d['cad']]
         if row[d['cas']]:
             out+='/'+row[d['cas']]
-            if row[d['car']]:
-                out+='('+row[d['car']]+')'
+        if row[d['car']]:
+            out+='('+row[d['car']]+')'
         out+=']'
     elif row[d['cas']]:
         out+='_['+row[d['cas']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
@@ -388,16 +388,18 @@ def build_full(row,d):
             out+='('+row[d['car']]+')'
         out+=']'
     elif row[d['car']]:
-        out+='[(' + row[d['car']] + ')]'
+        out+='_[(' + row[d['car']] + ')]'
 
     out+='_'+row[d['rea']]+'_'
 
+    # Reaction B
+    out+=row[d['cbn']]
     if row[d['cbd']]:
         out+='_['+row[d['cbd']]
         if row[d['cbs']]:
             out+='/'+row[d['cbs']]
-            if row[d['cbr']]:
-                out+='('+row[d['cbr']]+')'
+        if row[d['cbr']]:
+            out+='('+row[d['cbr']]+')'
         out+=']'
     elif row[d['cbs']]:
         out+='_['+row[d['cbs']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
@@ -405,7 +407,7 @@ def build_full(row,d):
             out+='('+row[d['cbr']]+')'
         out+=']'
     elif row[d['cbr']]:
-        out+='[(' + row[d['cbr']] + ')]'
+        out+='_[(' + row[d['cbr']] + ')]'
 
     return out
 
