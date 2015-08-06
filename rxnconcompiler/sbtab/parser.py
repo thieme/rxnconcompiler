@@ -106,6 +106,7 @@ def check_xls_File(filedir, sbtab_detected, rxncon_detected, other_detected):
     '''
     Checks whether xls file is rxncon, SBtab or other file type
     '''
+
     xlsreader = xlrd.open_workbook(filedir)
     xls_sheet_names = xlsreader.sheet_names()
     first_sheet = xlsreader.sheet_by_index(0)
@@ -116,7 +117,7 @@ def check_xls_File(filedir, sbtab_detected, rxncon_detected, other_detected):
             sbtab_detected=True
 
     for sheet_name in xls_sheet_names:
-        if 'Contingency' in sheet_name or 'contingency' in sheet_name:
+        if ('Contingency' in sheet_name or 'contingency' in sheet_name) and not 'ContingencyID' in sheet_name:
             rxncon_detected=True
 
     if sbtab_detected==False and rxncon_detected==False:
@@ -265,7 +266,7 @@ def get_SBtab_info(ob):
 
 def parse_SBtab2rxncon(inputdir):
     '''
-    Main function for parsin SBtab --> rxncon Format
+    Main function for parsing SBtab --> rxncon Format
     '''
     files = get_files(inputdir)
     output_format='' #delete
@@ -433,6 +434,7 @@ def write_rxncon_txt(inputdir, rxncon):
 
     # Close opened file
     f.close()
+    print 'Successfully wrote rxncon quick format to '+inputdir+'/'+output_directory+'/'+outputname
 
 
 
@@ -467,6 +469,8 @@ if __name__=="__main__":
     #check_directory_type('sbtab_files/example_files(sbtab)_xls')
     #print '------------------------'
     check_directory_type('sbtab_files/tiger_files_csv')
+    print '------------------------'
+    check_directory_type('sbtab_files/tiger_files_xls')
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_xls')
     # print '------------------------'
