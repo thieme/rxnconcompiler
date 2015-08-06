@@ -1,14 +1,9 @@
-- lese ich rxncon oder sbtab directory?
-    - er meckert, wenn auc nur eine txt datei oder sowas am start ist auch wenn die restlichen files git sind
-      - muss auf jeden abgefangen werden, dass dann einfach die 'other' formate ignoriert werden oder so
 - gucken ob alle benötigten files da sind
    - SBtab --> rxncon: ReactionList, ReactionID, Gene, ContingencyID,
-      rxncon_Definition
+      rxncon_Definition wobei achtung: da gibts 2, eine rxncon seitige und eine sbtab seitige
    - rxncon --> SBtab: Reaction List, Contingency List, Reaction definition   
 - gucken ob zu viele files da sind ( mehrere Projekte? Oder kann man auch mehrere reaction files haben? timo fragen. gibts es eine ID für ein Projekt?)
-- libre office lock files werden abgefangen in get_files(). Gucken wie die lokc files von open office und excel aussehn und diese auch abfangen
 
-- parse_SBtab2rxncon txt Format
    
 - txt format sbtab testen und hello() anpassen
 - csv format sbtab testen
@@ -16,7 +11,7 @@
 - txt format rxncon testen
 - xls format rxncon testen
    
-- parser schreiben, der reaction_Definition Datei erstellt, die für SBtab --> rxncon benötigt wird
+
 
 
    Ferne Zukunft: rxncon xls File erstellen:
@@ -27,3 +22,4 @@
       reaction list.  By doing so, you will keep your network denition
       internally consistent, which will save you a lot of time in case
       you later change the name or reaction of a component"
+      ACHTUNG: wird wahrschinlich durch reaction & state sets Neuerung nicht mehr nötig sein
