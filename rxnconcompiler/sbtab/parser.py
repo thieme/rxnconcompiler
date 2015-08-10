@@ -439,12 +439,12 @@ def hello():
     Introduces parser to user and reads input directory from comment line
     '''
     print 'You are using rxncon SBtab parser.' \
-          'If you want to parse a rxncon file to a SBtab file, the following filetypes are supported:' \
-          ' - .csv' \
+          'If you want to parse a rxncon file to a SBtab file, the following input filetypes are supported:' \
+          ' - .txt' \
           ' - .xls'
-    print 'If you want to parse a SBtab file to a rxncon file, these filetypes are suported:' \
+    print 'If you want to parse a SBtab file to a rxncon file, these input filetypes are supported:' \
           ' - .xls' \
-          ' - .txt'
+          ' - .csv'
     print ''
     inputdir = raw_input('Please enter the path to the directory containing your network files: \n') # only works in python 2.x, for python3 would be input()
 
