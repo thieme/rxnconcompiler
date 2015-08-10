@@ -18,9 +18,15 @@ def get_files(inputdir):
     """
     Returns list of files (and only files) inside given input directory
     """
-    files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) and not f.startswith('.') ]
-    #                                            is no directory                          is no libre office temp file
-    return files
+    if os.path.isdir(inputdir):
+        files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) and not f.startswith('.') ]
+        #                                               is no directory                          is no libre office temp file
+        return files
+    else:
+        print 'Error, can not open input directory(',inputdir,').'
+        exit()
+
+
 
 
 def check_directory_type(inputdir):
@@ -434,11 +440,13 @@ def write_rxncon_txt(inputdir, rxncon):
 
     print 'Succes! Saved File in:', inputdir+'/'+output_directory+'/'+outputname
 
+
+
 def hello():
     '''
     Introduces parser to user and reads input directory from comment line
     '''
-    print 'You are using rxncon SBtab parser.' \
+    print 'You are using rxncon SBtab parser.\n' \
           'If you want to parse a rxncon file to a SBtab file, the following input filetypes are supported:' \
           ' - .txt' \
           ' - .xls'
@@ -446,6 +454,7 @@ def hello():
           ' - .xls' \
           ' - .csv'
     print ''
+
     inputdir = raw_input('Please enter the path to the directory containing your network files: \n') # only works in python 2.x, for python3 would be input()
 
     return inputdir
