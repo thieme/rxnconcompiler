@@ -18,9 +18,15 @@ def get_files(inputdir):
     """
     Returns list of files (and only files) inside given input directory
     """
-    files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) and not f.startswith('.') ]
-    #                                            is no directory                          is no libre office temp file
-    return files
+    if os.path.isdir(inputdir):
+        files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) and not f.startswith('.') ]
+    #                                               is no directory                          is no libre office temp file
+        return files
+    else:
+        print 'Error, can not open input directory(',inputdir,').'
+        exit()
+
+
 
 
 def check_directory_type(inputdir):
@@ -337,18 +343,38 @@ def parse_SBtab2rxncon(inputdir):
                 reaction_list=[{}]
 
                 for row in ob['object'].getRows():
-                    reaction_list.append({
-                        'ReactionType': row[indexes_dict['rea']],
-                        'ComponentA[Name]': row[indexes_dict['can']],
-                        'ComponentA[Domain]': row[indexes_dict['cad']],
-                        'ComponentA[Subdomain]': row[indexes_dict['cas']],
-                        'ComponentA[Residue]': row[indexes_dict['car']],
-                        'ComponentB[Name]': row[indexes_dict['cbn']],
-                        'ComponentB[Domain]': row[indexes_dict['cbd']],
-                        'ComponentB[Subdomain]': row[indexes_dict['cbs']],
-                        'ComponentB[Residue]': row[indexes_dict['cbr']],
-                        'Reaction[Full]': build_full(row,indexes_dict)
-                    })
+                #     if check_full_rxns(build_full(row,indexes_dict),contingency_list):
+                #     ich glaube dieser Check, den Sebastian sich gewuenscht hat macht gar keinen sinn. Es kann auch sein
+                #     , dass eine reaction in reactionID existiert, die in ContigencyID gar nicht vorkommt
+                #         reaction_list.append({
+                #             'ReactionType': row[indexes_dict['rea']],
+                #             'ComponentA[Name]': row[indexes_dict['can']],
+                #             'ComponentA[Domain]': row[indexes_dict['cad']],
+                #             'ComponentA[Subdomain]': row[indexes_dict['cas']],
+                #             'ComponentA[Residue]': row[indexes_dict['car']],
+                #             'ComponentB[Name]': row[indexes_dict['cbn']],
+                #             'ComponentB[Domain]': row[indexes_dict['cbd']],
+                #             'ComponentB[Subdomain]': row[indexes_dict['cbs']],
+                #             'ComponentB[Residue]': row[indexes_dict['cbr']],
+                #             'Reaction[Full]': build_full(row,indexes_dict)
+                #         })
+                #     else:
+                #         print 'Was not able to parse the following input row correctly:'
+                #         print row
+                #         exit()
+                # reaction_list.pop(0)
+                reaction_list.append({
+                            'ReactionType': row[indexes_dict['rea']],
+                            'ComponentA[Name]': row[indexes_dict['can']],
+                            'ComponentA[Domain]': row[indexes_dict['cad']],
+                            'ComponentA[Subdomain]': row[indexes_dict['cas']],
+                            'ComponentA[Residue]': row[indexes_dict['car']],
+                            'ComponentB[Name]': row[indexes_dict['cbn']],
+                            'ComponentB[Domain]': row[indexes_dict['cbd']],
+                            'ComponentB[Subdomain]': row[indexes_dict['cbs']],
+                            'ComponentB[Residue]': row[indexes_dict['cbr']],
+                            'Reaction[Full]': build_full(row,indexes_dict)
+                        })
                 reaction_list.pop(0)
             if not reaction_def_found:
                 reaction_definition = DEFAULT_DEFINITION
@@ -408,11 +434,16 @@ def build_full(row,d):
 
     return out
 
-# def magic(liste von targets, liste von full rxns):
-#     '''
-#     Checks whether all targets match a full reaction. Validation of Full Reaction creation function
-#     '''
-
+def check_full_rxns(full_reaction, dictionary_list):
+    '''
+    Checks whether all targets match a full reaction. Validation of Full Reaction creation function
+    '''
+    for d in dictionary_list:
+        if full_reaction.lower().strip() == d['Target'].lower().strip():
+            return True
+        #else:
+         #   print 'missmatch'
+          #  print full_reaction, d['Target']
 def parse_rxncon2SBtab(inputdir):
     xls_tables= parse_xls(inputdir)
     pass
@@ -443,12 +474,12 @@ def hello():
     Introduces parser to user and reads input directory from comment line
     '''
     print 'You are using rxncon SBtab parser.' \
-          'If you want to parse a rxncon file to a SBtab file, the following filetypes are supported:' \
-          ' - .csv' \
+          'If you want to parse a rxncon file to a SBtab file, the following input filetypes are supported:' \
+          ' - .txt' \
           ' - .xls'
-    print 'If you want to parse a SBtab file to a rxncon file, these filetypes are suported:' \
+    print 'If you want to parse a SBtab file to a rxncon file, these input filetypes are supported:' \
           ' - .xls' \
-          ' - .txt'
+          ' - .csv'
     print ''
     inputdir = raw_input('Please enter the path to the directory containing your network files: \n') # only works in python 2.x, for python3 would be input()
 
@@ -469,8 +500,8 @@ if __name__=="__main__":
     #check_directory_type('sbtab_files/example_files(sbtab)_xls')
     #print '------------------------'
     check_directory_type('sbtab_files/tiger_files_csv')
-    print '------------------------'
-    check_directory_type('sbtab_files/tiger_files_xls')
+   # print '------------------------'
+    #check_directory_type('sbtab_files/tiger_files_xls')
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_xls')
     # print '------------------------'
