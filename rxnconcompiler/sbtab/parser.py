@@ -6,8 +6,10 @@
 import SBtab
 import os
 import tablibIO
+import tablib
 import csv
 import xlrd
+import xlsxwriter
 import sys
 import re
 from rxnconcompiler.parser.rxncon_parser import parse_xls
@@ -275,7 +277,7 @@ def parse_SBtab2rxncon(inputdir):
     Main function for parsing SBtab --> rxncon Format
     '''
     files = get_files(inputdir)
-    output_format='' #delete
+    output_format='xls' #delete
     #reactivate :
     # output_format= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
     if output_format=='':
@@ -289,6 +291,12 @@ def parse_SBtab2rxncon(inputdir):
     if 'reaction_definition' in files:
         reaction_def_found=True
 
+    if not reaction_def_found:
+            reaction_definition = DEFAULT_DEFINITION
+    else:
+        # build reaction definition
+         pass
+
     ob_list=[] # List of dictionaries
     for filename in files:
         #print 'Filename: ', filename
@@ -298,97 +306,92 @@ def parse_SBtab2rxncon(inputdir):
         #print '##########################'
     #get_info(ob)
 
-    if output_format=='xls':
-        print 'Sorry, this functionality is not yet implemented. Exporting to txt now.'
-        output_format='txt'
+    rxncon = build_rxncon(ob_list, reaction_definition)
 
     if output_format=='txt':
-        for ob in ob_list:
-            if ob['type']=='ContingencyID':
-                # Find column indexes for !Target, !Contingency and !Modifier columns
-                targ_col_index= ob['object'].columns.index('!Target')
-                cont_col_index= ob['object'].columns.index('!Contingency')
-                modi_col_index= ob['object'].columns.index('!Modifier')
-                
-                # Save the data of these three columns to lists
-                contingency_id=0
-                contingency_list=[{}]
-                for row in ob['object'].getRows():
-                    contingency_list.append({
-                        'ContingencyID': contingency_id,
-                        'Target': row[targ_col_index],
-                        'Contingency': row[cont_col_index],
-                        'Modifier': row[modi_col_index]
-                    })
-                    contingency_id += 1
-                contingency_list.pop(0)
-
-            elif ob['type']=='ReactionID':
-                # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
-                indexes_dict={
-                    'can': ob['object'].columns.index('!ComponentA:Name'),
-                    'cad': ob['object'].columns.index('!ComponentA:Domain'),
-                    'cas': ob['object'].columns.index('!ComponentA:Subdomain'),
-                    'car': ob['object'].columns.index('!ComponentA:Residue'),
-
-                    'rea': ob['object'].columns.index('!Reaction'),
-
-                    'cbn': ob['object'].columns.index('!ComponentB:Name'),
-                    'cbd': ob['object'].columns.index('!ComponentB:Domain'),
-                    'cbs': ob['object'].columns.index('!ComponentB:Subdomain'),
-                    'cbr': ob['object'].columns.index('!ComponentB:Residue')
-                }
-
-                # Save the data of these three columns to list of dictionaries
-                reaction_list=[{}]
-
-                for row in ob['object'].getRows():
-                #     if check_full_rxns(build_full(row,indexes_dict),contingency_list):
-                #     ich glaube dieser Check, den Sebastian sich gewuenscht hat macht gar keinen sinn. Es kann auch sein
-                #     , dass eine reaction in reactionID existiert, die in ContigencyID gar nicht vorkommt
-                #         reaction_list.append({
-                #             'ReactionType': row[indexes_dict['rea']],
-                #             'ComponentA[Name]': row[indexes_dict['can']],
-                #             'ComponentA[Domain]': row[indexes_dict['cad']],
-                #             'ComponentA[Subdomain]': row[indexes_dict['cas']],
-                #             'ComponentA[Residue]': row[indexes_dict['car']],
-                #             'ComponentB[Name]': row[indexes_dict['cbn']],
-                #             'ComponentB[Domain]': row[indexes_dict['cbd']],
-                #             'ComponentB[Subdomain]': row[indexes_dict['cbs']],
-                #             'ComponentB[Residue]': row[indexes_dict['cbr']],
-                #             'Reaction[Full]': build_full(row,indexes_dict)
-                #         })
-                #     else:
-                #         print 'Was not able to parse the following input row correctly:'
-                #         print row
-                #         exit()
-                # reaction_list.pop(0)
-                reaction_list.append({
-                            'ReactionType': row[indexes_dict['rea']],
-                            'ComponentA[Name]': row[indexes_dict['can']],
-                            'ComponentA[Domain]': row[indexes_dict['cad']],
-                            'ComponentA[Subdomain]': row[indexes_dict['cas']],
-                            'ComponentA[Residue]': row[indexes_dict['car']],
-                            'ComponentB[Name]': row[indexes_dict['cbn']],
-                            'ComponentB[Domain]': row[indexes_dict['cbd']],
-                            'ComponentB[Subdomain]': row[indexes_dict['cbs']],
-                            'ComponentB[Residue]': row[indexes_dict['cbr']],
-                            'Reaction[Full]': build_full(row,indexes_dict)
-                        })
-                reaction_list.pop(0)
-            if not reaction_def_found:
-                reaction_definition = DEFAULT_DEFINITION
-            else:
-                # build reaction definition
-                pass
-
-        #rxncon = Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
-        rxncon = Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition))
-
-
-        # write contents to txt File
         write_rxncon_txt(inputdir,rxncon)
 
+    elif output_format=='xls':
+        write_rxncon_xls(inputdir, rxncon)
+
+def build_rxncon(ob_list, reaction_definition):
+    '''
+    Creates rxncon object from given SBtab files
+    '''
+    for ob in ob_list:
+        if ob['type']=='ContingencyID':
+        # Find column indexes for !Target, !Contingency and !Modifier columns
+            targ_col_index= ob['object'].columns.index('!Target')
+            cont_col_index= ob['object'].columns.index('!Contingency')
+            modi_col_index= ob['object'].columns.index('!Modifier')
+
+            # Save the data of these three columns to lists
+            contingency_id=0
+            contingency_list=[{}]
+            for row in ob['object'].getRows():
+                contingency_list.append({
+                    'ContingencyID': contingency_id,
+                    'Target': row[targ_col_index],
+                    'Contingency': row[cont_col_index],
+                    'Modifier': row[modi_col_index]
+                })
+                contingency_id += 1
+            contingency_list.pop(0)
+
+        elif ob['type']=='ReactionID':
+            # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
+            indexes_dict={
+                'can': ob['object'].columns.index('!ComponentA:Name'),
+                'cad': ob['object'].columns.index('!ComponentA:Domain'),
+                'cas': ob['object'].columns.index('!ComponentA:Subdomain'),
+                'car': ob['object'].columns.index('!ComponentA:Residue'),
+
+                'rea': ob['object'].columns.index('!Reaction'),
+                'cbn': ob['object'].columns.index('!ComponentB:Name'),
+                'cbd': ob['object'].columns.index('!ComponentB:Domain'),
+                'cbs': ob['object'].columns.index('!ComponentB:Subdomain'),
+                'cbr': ob['object'].columns.index('!ComponentB:Residue')
+            }
+
+                # Save the data of these three columns to list of dictionaries
+            reaction_list=[{}]
+
+            for row in ob['object'].getRows():
+            #     if check_full_rxns(build_full(row,indexes_dict),contingency_list):
+            #     ich glaube dieser Check, den Sebastian sich gewuenscht hat macht gar keinen sinn. Es kann auch sein
+            #     , dass eine reaction in reactionID existiert, die in ContigencyID gar nicht vorkommt
+            #         reaction_list.append({
+            #             'ReactionType': row[indexes_dict['rea']],
+            #             'ComponentA[Name]': row[indexes_dict['can']],
+            #             'ComponentA[Domain]': row[indexes_dict['cad']],
+            #             'ComponentA[Subdomain]': row[indexes_dict['cas']],
+            #             'ComponentA[Residue]': row[indexes_dict['car']],
+            #             'ComponentB[Name]': row[indexes_dict['cbn']],
+            #             'ComponentB[Domain]': row[indexes_dict['cbd']],
+            #             'ComponentB[Subdomain]': row[indexes_dict['cbs']],
+            #             'ComponentB[Residue]': row[indexes_dict['cbr']],
+            #             'Reaction[Full]': build_full(row,indexes_dict)
+            #         })
+            #     else:
+            #         print 'Was not able to parse the following input row correctly:'
+            #         print row
+            #         exit()
+            # reaction_list.pop(0)
+                reaction_list.append({
+                        'ReactionType': row[indexes_dict['rea']],
+                        'ComponentA[Name]': row[indexes_dict['can']],
+                        'ComponentA[Domain]': row[indexes_dict['cad']],
+                        'ComponentA[Subdomain]': row[indexes_dict['cas']],
+                        'ComponentA[Residue]': row[indexes_dict['car']],
+                        'ComponentB[Name]': row[indexes_dict['cbn']],
+                        'ComponentB[Domain]': row[indexes_dict['cbd']],
+                        'ComponentB[Subdomain]': row[indexes_dict['cbs']],
+                        'ComponentB[Residue]': row[indexes_dict['cbr']],
+                        'Reaction[Full]': build_full(row,indexes_dict)
+                    })
+            reaction_list.pop(0)
+
+    return Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
 
 def build_full(row,d):
     '''
@@ -444,6 +447,8 @@ def check_full_rxns(full_reaction, dictionary_list):
         #else:
          #   print 'missmatch'
           #  print full_reaction, d['Target']
+
+
 def parse_rxncon2SBtab(inputdir):
     xls_tables= parse_xls(inputdir)
     pass
@@ -467,6 +472,107 @@ def write_rxncon_txt(inputdir, rxncon):
     f.close()
     print 'Successfully wrote rxncon quick format to '+inputdir+'/'+output_directory+'/'+outputname
 
+def write_rxncon_xls_tablib(inputdir, rxncon):
+    '''
+    Writes rxncon Object to xls File using Tablib library
+    Work was paused because tablib can't set column width
+    '''
+    outputname= 'output'+'.xls'
+    output_directory='output_parser'
+
+    data_R= tablib.Dataset() # (I) Reaction list
+    data_R.title= '(I) Reaction list'
+    #data_R.headers=['ReactionID'] #''', 'Reaction[Full]', 'SourceState', 'ProductState', 'coSubstrate(s)', 'coProduct(s)',
+                    # 'ComponentA[ID]', 'ComponentA[Species]', 'ReactionType', 'ComponentB[ID]', 'ComponentB[Species]',
+                    # 'ComponentA[Name]', 'ComponentA[Domain]', 'ComponentA[Subdomain]', 'ComponentA[Residue]','Reaction',
+                    # 'ComponentB[Name]', 'ComponentB[Domain]', 'ComponentB[Subdomain]', 'ComponentB[Residue]', 'Quality',
+                    # 'PubMedIdentifier(s)', 'Comments']
+    data_R.append(['ReactionID', 'Reaction[Full]', 'SourceState', 'ProductState', 'coSubstrate(s)', 'coProduct(s)',
+                    'ComponentA[ID]', 'ComponentA[Species]', 'ReactionType', 'ComponentB[ID]', 'ComponentB[Species]',
+                    'ComponentA[Name]', 'ComponentA[Domain]', 'ComponentA[Subdomain]', 'ComponentA[Residue]','Reaction',
+                    'ComponentB[Name]', 'ComponentB[Domain]', 'ComponentB[Subdomain]', 'ComponentB[Residue]', 'Quality',
+                    'PubMedIdentifier(s)', 'Comments'])
+
+    #data_R.append(['teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeest'])
+
+    data_M = tablib.Dataset() # (II) Metabolic Reaction list
+    data_M.title= '(II) Metabolic Reaction list'
+    data_M.append(['To be implemented'])
+
+    data_C= tablib.Dataset() # (III) Contingency list
+    data_C.title='(III) Contingency list'
+    data_Rd= tablib.Dataset() # (IV) Reaction definition
+    data_Rd.title= '(IV) Reaction definition'
+    data_Cd= tablib.Dataset() # (V) Contingency Definitions
+    data_Cd.title= '(V) Contingency Definitions'
+    data_Cd.headers=['','Contingency','']
+    data_Cd.append(['Contingencies', '!', 'Absolutely required'])
+
+
+    book=tablib.Databook((data_R, data_M, data_C, data_Rd, data_Cd))
+
+
+    if not os.path.exists(inputdir+'/'+output_directory):
+        os.mkdir(inputdir+'/'+output_directory)
+
+    with open(inputdir+'/'+output_directory+'/'+outputname,'wb') as f:
+        f.write(book.xls)
+
+def write_rxncon_xls(inputdir, rxncon):
+    '''
+    Writes rxncon Object to xls File using XlsxWriter library
+    '''
+    outputname= 'output'+'.xls'
+    output_directory='output_parser'
+
+    if not os.path.exists(inputdir+'/'+output_directory):
+        os.mkdir(inputdir+'/'+output_directory)
+
+    # define an alphabet for later lookup (indexing of columns)
+    alfa = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+
+    workbook = xlsxwriter.Workbook(inputdir+'/'+output_directory+'/'+outputname)
+    # reaction List sheet
+    r_sheet= workbook.add_worksheet('(I) Reaction list')
+    # set colums widths
+    small_cols_r =['A','C','E','F','I','J','P','U']
+    medium_cols_r=['D','G','L','M','N','O','Q','R','S','T','V']
+    big_cols_r=['B','H','K','W']
+    for c in small_cols_r:
+        r_sheet.set_column(c+':'+c,15)
+    for c in medium_cols_r:
+        r_sheet.set_column(c+':'+c,23)
+    for c in big_cols_r:
+        r_sheet.set_column(c+':'+c,33)
+    #write headers
+    headers_r= ['ReactionID', 'Reaction[Full]', 'SourceState', 'ProductState', 'coSubstrate(s)', 'coProduct(s)',
+                    'ComponentA[ID]', 'ComponentA[Species]', 'ReactionType', 'ComponentB[ID]', 'ComponentB[Species]',
+                    'ComponentA[Name]', 'ComponentA[Domain]', 'ComponentA[Subdomain]', 'ComponentA[Residue]','Reaction',
+                    'ComponentB[Name]', 'ComponentB[Domain]', 'ComponentB[Subdomain]', 'ComponentB[Residue]', 'Quality',
+                    'PubMedIdentifier(s)', 'Comments']
+    for c in alfa[0:len(headers_r)]:
+        r_sheet.write(c+'1', headers_r[alfa.index(c)])
+
+    #write content
+    reaction_list= rxncon.xls_tables['reaction_list']
+    number_reactions = len(reaction_list)
+
+    for i in range(1,number_reactions+1):
+        r_sheet.write('A'+str(i+1), str(i))
+        r_sheet.write('B'+str(i+1),reaction_list[i-1]['Reaction[Full]'])
+        und so weiter
+
+    # die einzelnen elemente folgender listen wie oben hinzufuegen:
+    #             reaction_list = list(xl.getiter('(I) Reaction list')),
+    #             contingency_list = list(xl.getiter('(III) Contingency list')),
+    #             reaction_definition = list(xl.getiter('(IV) Reaction definition'))
+    # nicht vergessen alle sheets aus der example auch zu uebernehmen
+
+    # metabolic reaction list sheet
+
+
+    workbook.close()
 
 
 def hello():
@@ -500,7 +606,7 @@ if __name__=="__main__":
     #check_directory_type('sbtab_files/example_files(sbtab)_xls')
     #print '------------------------'
     check_directory_type('sbtab_files/tiger_files_csv')
-   # print '------------------------'
+    #print '------------------------'
     #check_directory_type('sbtab_files/tiger_files_xls')
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_xls')

@@ -4,6 +4,7 @@
    - rxncon --> SBtab: Reaction List, Contingency List, Reaction definition   
 - gucken ob zu viele files da sind ( mehrere Projekte? Oder kann man auch mehrere reaction files haben? timo fragen. gibts es eine ID für ein Projekt?)
 
+- outputs von csv to rxncon und xls to rxncon sind unterschiedlich trotz gleicher quelldateien. Es gibt bei einem von beiden einen Block reaktionen mehr (mit meld gut zu sehen). Warum?
    
 - txt format sbtab testen und hello() anpassen
 - csv format sbtab testen
