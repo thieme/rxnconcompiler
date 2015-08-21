@@ -287,24 +287,21 @@ def parse_SBtab2rxncon(inputdir):
     if output_format!='txt' and output_format!='xls':
         print 'Error, the format ',output_format,' is not supported.'
 
-    reaction_def_found=False
-    if 'reaction_definition' in files:
-        reaction_def_found=True
-
-    if not reaction_def_found:
-            reaction_definition = DEFAULT_DEFINITION
-    else:
-        # build reaction definition
-         pass
-
     ob_list=[] # List of dictionaries
+    reaction_def_found=False
     for filename in files:
         #print 'Filename: ', filename
         ob= build_SBtab_object(inputdir, filename)
         ob_list.append({'object':ob, 'type':ob.table_type, 'filename':filename })
+        if ob.table_type=='ReactionList' and ob.table_name=='Reaction definitions':
+            reaction_def_found=True
+            print 'Custom reaction definition file detected in: ' + filename
 
-        #print '##########################'
-    #get_info(ob)
+    if not reaction_def_found:
+        print 'No reaction definition file found. Using default.'
+        reaction_definition = DEFAULT_DEFINITION
+    else:
+        reaction_definition=build_reaction_definition(ob_list)
 
     rxncon = build_rxncon(ob_list, reaction_definition)
 
@@ -314,6 +311,7 @@ def parse_SBtab2rxncon(inputdir):
     elif output_format=='xls':
         gene_list=build_gene_list(ob_list)
         write_rxncon_xls(inputdir, rxncon, gene_list)
+
 
 def build_rxncon(ob_list, reaction_definition):
     '''
@@ -354,9 +352,8 @@ def build_rxncon(ob_list, reaction_definition):
                 'cbr': ob['object'].columns.index('!ComponentB:Residue')
             }
 
-                # Save the data of these three columns to list of dictionaries
+            # Save the data of these three columns to list of dictionaries
             reaction_list=[{}]
-
             for row in ob['object'].getRows():
             #     if check_full_rxns(build_full(row,indexes_dict),contingency_list):
             #     ich glaube dieser Check, den Sebastian sich gewuenscht hat macht gar keinen sinn. Es kann auch sein
@@ -470,6 +467,58 @@ def build_gene_list(ob_list):
                 })
             gene_list.pop(0)
     return gene_list
+
+def build_reaction_definition(ob_list):
+    '''
+    Creates Reaction definition dictionary, from given table
+    '''
+    for ob in ob_list:
+        if ob['type']=='ReactionList':
+            indexes_dict={
+                'r': ob['object'].columns.index('!Reaction'),
+                'ct': ob['object'].columns.index('!Category:Type'),
+                'c': ob['object'].columns.index('!Category'),
+                'si': ob['object'].columns.index('!SubclassID'),
+                's': ob['object'].columns.index('!Subclass'),
+                'm': ob['object'].columns.index('!ModifierOrBoundary'),
+                'rti': ob['object'].columns.index('!ReactionType:ID'),
+                'rt': ob['object'].columns.index('!ReactionType'),
+                'rn': ob['object'].columns.index('!Reaction:Name'),
+                'rev': ob['object'].columns.index('!Reversibility'),
+                'd': ob['object'].columns.index('!Directionality'),
+                'ssc': ob['object'].columns.index('!SourceState:Component'),
+                'ssm': ob['object'].columns.index('!SourceState:Modification'),
+                'psc': ob['object'].columns.index('!ProductState:Component'),
+                'psm': ob['object'].columns.index('!ProductState:Modification'),
+                'cs': ob['object'].columns.index('!coSubstrates'),
+                'cp': ob['object'].columns.index('!coProducts'),
+                'co': ob['object'].columns.index('!Comment')
+                }
+            reaction_definition_list=[{}]
+            for row in ob['object'].getRows():
+            # reaction_list.pop(0)
+                reaction_definition_list.append({
+                    'Reaction' : unicode(row[indexes_dict['r']]),
+                    'CategoryType' : unicode(row[indexes_dict['ct']]),
+                    'Category' : unicode(row[indexes_dict['c']]),
+                    'SubclassID' : unicode(row[indexes_dict['si']]),
+                    'Subclass' : unicode(row[indexes_dict['s']]),
+                    'Modifier or Boundary' : unicode(row[indexes_dict['m']]),
+                    'ReactionTypeID' : unicode(row[indexes_dict['rti']]),
+                    'ReactionType' : unicode(row[indexes_dict['rt']]),
+                    'ReactionName' : unicode(row[indexes_dict['rn']]),
+                    'Reversibility' : unicode(row[indexes_dict['rev']]),
+                    'Directionality' : unicode(row[indexes_dict['d']]),
+                    'SourceState[Component]' : unicode(row[indexes_dict['ssc']]),
+                    'SourceState[Modification]' : unicode(row[indexes_dict['ssm']]),
+                    'ProductState[Component]' : unicode(row[indexes_dict['psc']]),
+                    'ProductState[Modification]' : unicode(row[indexes_dict['psm']]),
+                    'coSubstrate(s)' : unicode(row[indexes_dict['cs']]),
+                    'coProduct(s)' : unicode(row[indexes_dict['cp']]),
+                    'Comments' : unicode(row[indexes_dict['co']])
+                    })
+            reaction_definition_list.pop(0)
+        return reaction_definition_list
 
 def parse_rxncon2SBtab(inputdir):
     xls_tables= parse_xls(inputdir)
