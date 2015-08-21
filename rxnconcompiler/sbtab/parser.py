@@ -81,7 +81,7 @@ def check_directory_type(inputdir):
             print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
         else:
             print 'Directory of rxncon files detected. Starting parser.'
-            #look_for_rxncon_files, starte rxcon to sbtab parsing
+            #look_for_rxncon_files, starte rxncon to sbtab parsing
     elif sbtab_detected==True:
         if other_detected==True:
             print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
@@ -312,7 +312,8 @@ def parse_SBtab2rxncon(inputdir):
         write_rxncon_txt(inputdir,rxncon)
 
     elif output_format=='xls':
-        write_rxncon_xls(inputdir, rxncon)
+        gene_list=build_gene_list(ob_list)
+        write_rxncon_xls(inputdir, rxncon, gene_list)
 
 def build_rxncon(ob_list, reaction_definition):
     '''
@@ -448,6 +449,27 @@ def check_full_rxns(full_reaction, dictionary_list):
          #   print 'missmatch'
           #  print full_reaction, d['Target']
 
+def build_gene_list(ob_list):
+    '''
+    Creates gene list from given SBtab file
+    '''
+    for ob in ob_list:
+        if ob['type']=='Gene':
+        # Find column indexes for !Target, !Contingency and !Modifier columns
+            gene_col_index= ob['object'].columns.index('!Gene')
+            name_col_index= ob['object'].columns.index('!Name')
+            locus_col_index= ob['object'].columns.index('!LocusName')
+
+            # Save the data of these three columns to lists
+            gene_list=[{}]
+            for row in ob['object'].getRows():
+                gene_list.append({
+                    'Gene': row[gene_col_index],
+                    'Name': row[name_col_index],
+                    'LocusName': row[locus_col_index]
+                })
+            gene_list.pop(0)
+    return gene_list
 
 def parse_rxncon2SBtab(inputdir):
     xls_tables= parse_xls(inputdir)
@@ -518,7 +540,7 @@ def write_rxncon_xls_tablib(inputdir, rxncon):
     with open(inputdir+'/'+output_directory+'/'+outputname,'wb') as f:
         f.write(book.xls)
 
-def write_rxncon_xls(inputdir, rxncon):
+def write_rxncon_xls(inputdir, rxncon, gene_list):
     '''
     Writes rxncon Object to xls File using XlsxWriter library
     '''
@@ -533,7 +555,7 @@ def write_rxncon_xls(inputdir, rxncon):
 
 
     workbook = xlsxwriter.Workbook(inputdir+'/'+output_directory+'/'+outputname)
-    # reaction List sheet
+# reaction List sheet
     r_sheet= workbook.add_worksheet('(I) Reaction list')
     # set colums widths
     small_cols_r =['A','C','E','F','I','J','P','U']
@@ -556,21 +578,148 @@ def write_rxncon_xls(inputdir, rxncon):
 
     #write content
     reaction_list= rxncon.xls_tables['reaction_list']
-    number_reactions = len(reaction_list)
+    number_reactions_r = len(reaction_list)
 
-    for i in range(1,number_reactions+1):
+    for i in range(1,number_reactions_r+1):
         r_sheet.write('A'+str(i+1), str(i))
         r_sheet.write('B'+str(i+1),reaction_list[i-1]['Reaction[Full]'])
-        und so weiter
+        # no source state information given
+        # no product state information given
+        # no co substrates given (in example file done with references)
+        # no coproducts given (in example file done with references)
+        r_sheet.write('G'+str(i+1),reaction_list[i-1]['ComponentA[Name]']) #is that correct? because header says ID not name
+        # no species information given
+        r_sheet.write('I'+str(i+1),reaction_list[i-1]['ReactionType'])
+        r_sheet.write('J'+str(i+1),reaction_list[i-1]['ComponentB[Name]'])#is that correct? because header says ID not name
+        # no species information given
+        r_sheet.write('L'+str(i+1),reaction_list[i-1]['ComponentA[Name]'])
+        r_sheet.write('M'+str(i+1),reaction_list[i-1]['ComponentA[Domain]'])
+        r_sheet.write('N'+str(i+1),reaction_list[i-1]['ComponentA[Subdomain]'])
+        r_sheet.write('O'+str(i+1),reaction_list[i-1]['ComponentA[Residue]'])
+        r_sheet.write('P'+str(i+1),reaction_list[i-1]['ReactionType'])
+        r_sheet.write('Q'+str(i+1),reaction_list[i-1]['ComponentB[Name]'])
+        r_sheet.write('R'+str(i+1),reaction_list[i-1]['ComponentB[Domain]'])
+        r_sheet.write('S'+str(i+1),reaction_list[i-1]['ComponentB[Subdomain]'])
+        r_sheet.write('T'+str(i+1),reaction_list[i-1]['ComponentB[Residue]'])
+        # no quality given
+        # no PubMedIdentigfiers given
+        # no comments given
 
-    # die einzelnen elemente folgender listen wie oben hinzufuegen:
-    #             reaction_list = list(xl.getiter('(I) Reaction list')),
-    #             contingency_list = list(xl.getiter('(III) Contingency list')),
-    #             reaction_definition = list(xl.getiter('(IV) Reaction definition'))
-    # nicht vergessen alle sheets aus der example auch zu uebernehmen
+# metabolic reaction list sheet
+    m_sheet= workbook.add_worksheet('(II) Metabolic reaction list')
+    m_sheet.set_column('A:A',25)
+    m_sheet.write('A1', 'to be implemented')
 
-    # metabolic reaction list sheet
+# contigency list sheet
+    c_sheet= workbook.add_worksheet('(III) Contingency list')
+    # set colums widths
+    medium_cols_c =['A','C','H']
+    big_cols_c=['B','D','E','F','G']
 
+    for c in medium_cols_c:
+        c_sheet.set_column(c+':'+c,23)
+    for c in big_cols_c:
+        c_sheet.set_column(c+':'+c,33)
+    #write headers
+    headers_c= ['ContingencyID', 'Target', 'Contingency', 'Modifier', 'PubMedIdentifier(s)', 'Quality', 'Comment', '']
+    for c in alfa[0:len(headers_c)]:
+        c_sheet.write(c+'1', headers_c[alfa.index(c)])
+
+    #write content
+    contingency_list= rxncon.xls_tables['contingency_list']
+    number_reactions_c = len(contingency_list)
+
+    for i in range(1,number_reactions_c+1):
+        c_sheet.write('A'+str(i+1),contingency_list[i-1]['ContingencyID'])
+        c_sheet.write('B'+str(i+1),contingency_list[i-1]['Target'])
+        c_sheet.write('C'+str(i+1),contingency_list[i-1]['Contingency'])
+        c_sheet.write('D'+str(i+1),contingency_list[i-1]['Modifier'])
+        # no pubmed IDs given
+        # no quality given
+        # no comments given
+
+# reaction defintion sheet
+    rd_sheet= workbook.add_worksheet('(IV) Reaction Definitions')
+
+    # set colums widths
+    small_cols_rd =['A','D','H','P','Q']
+    medium_cols_rd =['B','F','G','J','K','R']
+    big_cols_rd=['C','E','I','L','M','N','O']
+
+    for c in small_cols_rd:
+        rd_sheet.set_column(c+':'+c,15)
+    for c in medium_cols_rd:
+        rd_sheet.set_column(c+':'+c,23)
+    for c in big_cols_rd:
+        rd_sheet.set_column(c+':'+c,33)
+    #write headers
+    headers_rd= ['Reaction', 'CategoryType', 'Category', 'SubclassID', 'Subclass', 'Modifier or Boundary', 'ReactionTypeID', 'ReactionType', 'ReactionName', 'Reversibility', 'Directionality', 'SourceState[Component]', 'SourceState[Modification]', 'ProductState[Component]', 'ProductState[Modification]', 'coSubstrate(s)', 'coProduct(s)', 'Comments']
+    for c in alfa[0:len(headers_rd)]:
+        rd_sheet.write(c+'1', headers_rd[alfa.index(c)])
+
+    #write content
+    reaction_definition_list= rxncon.xls_tables['reaction_definition']
+    number_reactions_rd = len(reaction_definition_list)
+
+    for i in range(1,number_reactions_rd+1):
+        rd_sheet.write('A'+str(i+1),reaction_definition_list[i-1]['Reaction'])
+        rd_sheet.write('B'+str(i+1),reaction_definition_list[i-1]['CategoryType'])
+        rd_sheet.write('C'+str(i+1),reaction_definition_list[i-1]['Category'])
+        rd_sheet.write('D'+str(i+1),reaction_definition_list[i-1]['SubclassID'])
+        rd_sheet.write('E'+str(i+1),reaction_definition_list[i-1]['Subclass'])
+        rd_sheet.write('F'+str(i+1),reaction_definition_list[i-1]['Modifier or Boundary'])
+        rd_sheet.write('G'+str(i+1),reaction_definition_list[i-1]['ReactionTypeID'])
+        rd_sheet.write('H'+str(i+1),reaction_definition_list[i-1]['ReactionType'])
+        rd_sheet.write('I'+str(i+1),reaction_definition_list[i-1]['ReactionName'])
+        rd_sheet.write('J'+str(i+1),reaction_definition_list[i-1]['Reversibility'])
+        rd_sheet.write('K'+str(i+1),reaction_definition_list[i-1]['Directionality'])
+        rd_sheet.write('L'+str(i+1),reaction_definition_list[i-1]['SourceState[Component]'])
+        rd_sheet.write('M'+str(i+1),reaction_definition_list[i-1]['SourceState[Modification]'])
+        rd_sheet.write('N'+str(i+1),reaction_definition_list[i-1]['ProductState[Component]'])
+        rd_sheet.write('O'+str(i+1),reaction_definition_list[i-1]['ProductState[Modification]'])
+        rd_sheet.write('P'+str(i+1),reaction_definition_list[i-1]['coSubstrate(s)'])
+        rd_sheet.write('Q'+str(i+1),reaction_definition_list[i-1]['coProduct(s)'])
+        rd_sheet.write('R'+str(i+1),reaction_definition_list[i-1]['Comments'])
+
+# contingency definitions sheet
+    # just going to print the default
+    cd_sheet= workbook.add_worksheet('(V) Contingency Definitions')
+    cd_sheet.set_column('A:A',23)
+    cd_sheet.set_column('B:B',15)
+    cd_sheet.set_column('C:C',70)
+
+    cd_sheet.write('B1', 'Contingency')
+    cd_sheet.write('A2', 'Contingencies:')
+    conts=['!','K+','0', 'K-','x', '?']
+    conts_meanings=['Absolutely required','Positive effector','No effect', 'Negative effector', 'Absolutely inhibitory', 'Unknown']
+    for cont in conts:
+        cd_sheet.write('B'+str(conts.index(cont)+2),cont)
+        cd_sheet.write('C'+str(conts.index(cont)+2),conts_meanings[conts.index(cont)])
+    cd_sheet.write('A8','Boolean operators')
+    cd_sheet.write('B8','AND')
+    cd_sheet.write('B9','OR')
+    cd_sheet.write('C8','Used when several states are required for a certain effect (Intersection of states)')
+    cd_sheet.write('C9','Used when severak states can give an effect individually (Union of states)')
+
+# ORF sheet
+    #ich baller hier alle gene rein, keine ahung welche orf und welche non orf sind
+    o_sheet= workbook.add_worksheet('(VI) ORF IDs')
+    o_sheet.set_column('A:A',15)
+    o_sheet.set_column('B:B',15)
+    o_sheet.set_column('C:C',15)
+    o_sheet.set_column('D:D',15)
+
+     #write content
+    number_reactions_o = len(gene_list)
+
+    for i in range(0,number_reactions_o-1):
+        o_sheet.write('A'+str(i+1),gene_list[i]['LocusName'])
+        o_sheet.write('B'+str(i+1),gene_list[i]['Name'])
+        o_sheet.write('C'+str(i+1),gene_list[i]['LocusName']) #again?
+        o_sheet.write('D'+str(i+1),gene_list[i]['Gene'])
+
+# non orf ids sheet
+    n_sheet= workbook.add_worksheet('(VII) Non ORF IDs') #wird das benoetigt?
 
     workbook.close()
 

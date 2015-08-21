@@ -5,7 +5,12 @@
 - gucken ob zu viele files da sind ( mehrere Projekte? Oder kann man auch mehrere reaction files haben? timo fragen. gibts es eine ID für ein Projekt?)
 
 - outputs von csv to rxncon und xls to rxncon sind unterschiedlich trotz gleicher quelldateien. Es gibt bei einem von beiden einen Block reaktionen mehr (mit meld gut zu sehen). Warum?
-   
+- in write_rxncon_xls(inputdir, rxncon) sage ich ganz oft, dass eine information nicht given ist. Stimmt das wirklich? oder kann man die doch irgendwo finden?
+- in write_rxncon_xls(inputdir, rxncon) bin ich auch nicht sicher ob ich die infos richtig einsprtiere (gibt auch comments dazu, geht um name und ID)
+- in write rxncon_xls werden inn die reaction definitions noch reactionen geprintet, die in der beispiel datei nicht dabei sind mit der überschrift Genetic evidence only (g_) or mapped from review paper (r_):
+- in write rxncon_xls allet schön bunt machen
+- in write rxncon_xls klatsche ich einfach alle Gene in (VI) ORF IDs, ist das richtig? kp welche non ORF (VII) sind
+
 - txt format sbtab testen und hello() anpassen
 - csv format sbtab testen
 - xls format sbtab testen
