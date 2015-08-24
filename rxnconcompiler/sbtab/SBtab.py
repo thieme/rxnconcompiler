@@ -59,8 +59,9 @@ class SBtabTable():
         """
         # Needed to be able to adress it from outside of the class for writing and reading
         self.filename = filename
-        # Tablib object as loaded
-        self.table = table
+
+        #check if ascii stuff is violated
+        self.table = self.checkAscii(table)
 
         # Delete tablib header to avoid complications
         if self.table.headers: self.table.headers = None
@@ -89,6 +90,23 @@ class SBtabTable():
         # Update the list and tablib object
         self.update()
 
+    def checkAscii(self,table):
+
+        new_table = []
+        #first: check for ascii character violations
+        for row in table:
+            new_row = []
+            for i,entry in enumerate(row):
+                try:
+                    new_row.append(str(entry).strip())
+                except:
+                    new_row.append('Ascii violation error! Please check input file!')
+            new_table.append('\t'.join(new_row))
+
+        tablibtable = tablibIO.importSetNew('\n'.join(new_table),self.filename+'.csv')
+
+        return tablibtable
+
     def getHeaderRow(self):
         """
         Extract the !!-header row from the SBtab file.
@@ -108,6 +126,11 @@ class SBtabTable():
             for entry in row:
                 if str(entry).startswith('!!'):
                     header_row = row
+                    break
+                elif str(entry).startswith('"!!'):
+                    rm1 = row.replace('""','#')
+                    rm2 = row.remove('"')
+                    header_row = rm2.replace('#','"')
                     break
         
         # Save string or raise error
@@ -161,7 +184,6 @@ class SBtabTable():
         global tables_without_name
         no_name_counter = 0
         #header_row = self.getHeaderRow()
-
         # Save table type, otherwise raise error
         if re.search("TableType='([^']*)'", self.header_row) != None:
             table_type = re.search("TableType='([^']*)'", self.header_row).group(1)
@@ -268,10 +290,12 @@ class SBtabTable():
         self.comments = []
 
         for row in self.table:
+            if str(row[0]).startswith('!'):            
+                continue
             for i, entry in enumerate(row):
-                if str(entry).startswith('!'):
-                    break
-                elif str(entry).startswith('%'):
+                #if str(entry).startswith('!'):
+                #    break
+                if str(entry).startswith('%'):
                     self.comments.append(list(row))
                     break
                 else:
@@ -395,15 +419,19 @@ class SBtabTable():
             sbtab_temp.append(row)
 
         # Delete all empty entries at the end of the rows
+        sb1 = []
         for row in sbtab_temp:
-            if len(row) > 1:
-                while not row[-1]:
-                    del row[-1]
+            if row[0] != '':
+                sb1.append(row)
+            #print '1. ',row
+            #if len(row) > 1:
+            #    while not row[-1]:
+            #        del row[-1]
 
         # Make all rows the same length
-        longest = max([len(x) for x in sbtab_temp])
+        longest = max([len(x) for x in sb1])
 
-        for row in sbtab_temp:
+        for row in sb1:
             if len(row) < longest:
                 for i in range(longest - len(row)):
                     row.append('')
@@ -550,10 +578,6 @@ class SBtabTable():
         Default value for filename is the filename as given with the SBtab object.
         Raise error if file format is invalid.
         """
-
-        #for row in self.sbtab_dataset:
-        #    print row
-        
         if not filename:
             filename = self.filename
         if format_type == 'tsv':
