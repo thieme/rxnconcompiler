@@ -1,0 +1,149 @@
+# rxncon_version=12345	rxncon_format=quick
+Fus3_[CD]_ppi_Msg5_[n]
+Fus3_[KD]_P+_Sst2_[(S539)]; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Fus3_[KD]_P+_Ste5; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+MFalpha_ppi_Ste2_[Receptor]; ! MFalpha
+Msg5_[PD]_P-_Fus3_[(T180)]; k+ Fus3_[CD]--Msg5_[n]
+Msg5_[PD]_P-_Fus3_[(Y182)]; k+ Fus3_[CD]--Msg5_[n]
+Bem2_GAP_Rho1_[GnP]
+Lrg1_[GAP]_GAP_Rho1_[GnP]
+Mid2_[CyT]_ppi_Rom2
+Mid2_[CyT]_ppi_Zeo1
+Mkk1_ppi_Pkc1
+Mkk2_[n]_ppi_Slt2_[n]
+Mlp1_ppi_Rlm1_[c]
+Msg5_[PD]_P-_Slt2_[(T190)]; ! Msg5_[n]--Slt2_[n]
+Msg5_[PD]_P-_Slt2_[(Y192)]; ! Msg5_[n]--Slt2_[n]
+Msg5_[n]_ppi_Slt2_[n]
+Pkc1_i_PS
+Pkc1_[HR1]_ppi_Rho1
+Pkh2_[KD]_P+_Pkc1_[AL(T983)]; k+ Pkh2_[AssocPHS]--PHS_[AssocPkh2]
+Pkc1_[C1]_ppi_Rho1_[ED]; ! Rho1_[GnP]-{P}
+Rho1_ppi_Ste4
+Rlm1_[c]_ppi_Slt2
+Rlm1_ppi_Smp1
+Rom2_[DH]_GEF_Rho1_[GnP]; k+ Rom2_[n]--Slg1_[CyT]; k+ Rom2_[AssocWsc2]--Wsc2_[AssocRom2]; k+ Mtl1_[AssocRom2]--Rom2_[AssocMtl1]; k+ Mid2_[CyT]--Rom2_[AssocMid2]
+Rom2_[n]_ppi_Slg1_[CyT]
+Rom2_ppi_Wsc2
+Sac7_[GAP]_GAP_Rho1_[GnP]
+Sdp1_[PD]_P-_Slt2_[(T190)]; ! Sdp1_[AssocSlt2]--Slt2_[AssocSdp1]
+Sdp1_[PD]_P-_Slt2_[(Y192)]; ! Sdp1_[AssocSlt2]--Slt2_[AssocSdp1]
+Sdp1_ppi_Slt2
+Slt2_[KD]_P+_Msg5; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Rlm1_[c(S427)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Rlm1_[c(T439)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Sir3_[(S275)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Swi4; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[DB]_ppi_Swi4_[c]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}; 0 Swi4_[c]--Swi6_[c]
+Slt2_[KD]_P+_Swi6_[(S238)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Swi4_[c]_ppi_Swi6_[c]
+Tus1_[DH]_GEF_Rho1_[GnP]
+Bem3_GAP_Cdc42_[GnP]
+Cdc24_[GEF]_GEF_Cdc42_[GnP]; k+ <Cdc24^{M}>
+<Cdc24^{M}>; or <Cdc24^{M/4}>
+<Cdc24^{M/4}>; or Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+<Cdc24^{M/4}>; or Ste4_[AssocSte18]--Ste18_[AssocSte4]
+<Cdc24^{M}>; or <Cdc24^{M/F}>
+<Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+<Cdc24^{M/F}>; and <Far1^{M}>
+<Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+<Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+<Cdc24^{M}>; or [START]
+Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]
+Cdc42_ppi_Ste50_[RA]; 0 Cdc42_[GnP]-{P}
+Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[CD]_ppi_Pbs2_[HBD-1]
+Hog1_[PBD-2]_ppi_Pbs2_[HBD-1]; k+ Hog1_[CD]--Pbs2_[HBD-1]
+Hog1_[CD]_ppi_Ptp2; k+ Hog1_[Y176]-{P}
+Hog1_[CD]_ppi_Ptp3
+Hog1_[KD]_P+_Rck2_[c(S519)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[CD]_ppi_Rck2_[c]
+Hog1_[KD]_P+_Sic1_[(T173)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_ppi_Sic1
+Hog1_[KD]_P+_Sko1_[n(S108)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Sko1_[n(S113)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Sko1_[n(S126)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_ppi_Sko1_[n]
+Hog1_ppi_Smp1
+Nbp2_[SH3]_ppi_Pbs2_[SIM2]
+Nbp2_[n]_ppi_Ptc1
+Nbp2_[SH3]_ppi_Ste20_[PR]
+Opy2_[BD:Ste50]_ppi_Ste50_[RA]
+Pbs2_[KD]_P+_Hog1_[(T174)]; k+ Hog1_[CD]--Pbs2_[HBD-1]; k+ Hog1_[PBD-2]--Pbs2_[HBD-1]; ! Pbs2_[ALS514]-{P}; ! Pbs2_[ALT518]-{P}
+Pbs2_[KD]_P+_Hog1_[(Y176)]; k+ Hog1_[CD]--Pbs2_[HBD-1]; k+ Hog1_[PBD-2]--Pbs2_[HBD-1]; ! Pbs2_[ALS514]-{P}; ! Pbs2_[ALT518]-{P}
+Pbs2_[RSD2/PR]_ppi_Sho1_[CyT/SH3]; k+ Hkr1_[TMD]--Sho1_[TMD]; k+ Msb2_[TMD]--Sho1_[TMD]; k+ Msb2_[CyT]--Sho1_[CyT]
+Pbs2_[RSD1]_ppi_Ssk2_[KD]
+Pbs2_[KD]_ppi_Ssk2_[KD]
+Pbs2_[RSD1]_ppi_Ssk22_[KD]
+Pbs2_[RSD2]_ppi_Ste11_[n]
+Ptc1_[PD]_P-_Hog1_[(T174)]; k+ <Pbs2-Nbp2-Ptc1>
+<Pbs2-Nbp2-Ptc1>; and Nbp2_[SH3]--Pbs2_[SIM2]
+<Pbs2-Nbp2-Ptc1>; and Nbp2_[n]--Ptc1_[AssocNbp2]
+Ptc2_[PD]_P-_Hog1_[(T174)]
+Rck2_AP_Rck2_[Ser]; k+ Rck2_[cS519]-{P}
+Rga1_GAP_Cdc42_[GnP]
+Rga2_GAP_Cdc42_[GnP]
+Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5]; ! <Ste11^{M/50}>
+<Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+<Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]; k+ Hkr1_[TMD]--Sho1_[TMD]; k+ Msb2_[TMD]--Sho1_[TMD]; k+ Msb2_[CyT]--Sho1_[CyT]
+Sho1_[CyT]_ppi_Ste50_[m]
+Sln1_[HK]_P+_Sln1_[HK(H576)]; ! Sln1_[BDSln1]--Sln1_[BDSln1]; k+ [Turgor]
+Sln1_[BD:Sln1]_ppi_Sln1_[BD:Sln1]
+Sln1_[HK(H576)]_PT_Sln1_[RR(D1144)]
+Sln1_[RR]_ppi_Ypd1
+Sln1_[RR(D1144)]_PT_Ypd1_[(H64)]
+Ssk1_[RR]_ppi_Ssk2_[BD:Ssk1]; x Ssk1_[RRD544]-{P}
+Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P}
+Ssk1_[RR]_ppi_Ypd1
+Ssk2_[KD]_P+_Pbs2_[AL(S514)]; ! Ssk2_[T1460]-{P}; ! Pbs2_[RSD1]--Ssk2_[KD]
+Ssk2_[KD]_P+_Pbs2_[AL(T518)]; ! Ssk2_[T1460]-{P}; ! Pbs2_[RSD1]--Ssk2_[KD]
+Ssk2_[KD]_AP_Ssk2_[(T1460)]; k+ <Ssk1Ssk2>
+<Ssk1Ssk2>; and Ssk1_[BDSsk1]--Ssk1_[BDSsk1]
+<Ssk1Ssk2>; and Ssk1_[RR]--Ssk2_[BDSsk1]
+Ssk22_[KD]_P+_Pbs2_[AL(S514)]; ! Pbs2_[RSD1]--Ssk22_[KD]; ! Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1]
+Ssk22_[KD]_P+_Pbs2_[AL(T518)]; ! Pbs2_[RSD1]--Ssk22_[KD]; ! Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1]
+Ste11_[KD]_P+_Pbs2_[AL(S514)]; x Ste11_[CBD]--Ste11_[KD]; ! Pbs2_[RSD2]--Ste11_[n]; ! Sho1_[CyT]--Ste11_[BDSho1]; ! Pbs2_[RSD2PR]--Sho1_[CyTSH3]
+Ste11_[KD]_P+_Pbs2_[AL(T518)]; x Ste11_[CBD]--Ste11_[KD]; ! Pbs2_[RSD2]--Ste11_[n]; ! Sho1_[CyT]--Ste11_[BDSho1]; ! Pbs2_[RSD2PR]--Sho1_[CyTSH3]
+Ste11_[CBD]_ppi_Ste11_[KD]; k- Ste11_[CBDS302]-{P}; k- Ste11_[CBDS306]-{P}; k- Ste11_[CBDT307]-{P}
+Ste11_[SAM]_ppi_Ste50_[SAM]
+Ste20_[KD]_P+_Ste11_[CBD(S302)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
+<Ste11^{M}>; or Sho1_[CyT]--Ste11_[BDSho1]
+<Ste11^{M}>; or <Ste11^{M/5}>
+<Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
+<Ste11^{M/5}>; and <Ste5^{M}>
+<Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
+<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]; k+ <FIL-signal>
+<FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
+<FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]
+Ste20_[KD]_P+_Ste11_[CBD(S306)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
+<Ste11^{M}>; or Sho1_[CyT]--Ste11_[BDSho1]
+<Ste11^{M}>; or <Ste11^{M/5}>
+<Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
+<Ste11^{M/5}>; and <Ste5^{M}>
+<Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
+<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]; k+ <FIL-signal>
+<FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
+<FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]
+Ste20_[KD]_P+_Ste11_[CBD(T307)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
+<Ste11^{M}>; or Sho1_[CyT]--Ste11_[BDSho1]
+<Ste11^{M}>; or <Ste11^{M/5}>
+<Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
+<Ste11^{M/5}>; and <Ste5^{M}>
+<Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
+<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]; k+ <FIL-signal>
+<FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
+<FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]
+Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]; ! Ssk1_[RR]--Ypd1_[AssocSsk1]
+Hkr1_[TMD]_ppi_Sho1_[TMD]; k- [Turgor]
+Sko1_[bZIP]_BIND_CRE
+Sko1_[n]_ppi_Tup1; k- Sko1_[nS108]-{P}; k- Sko1_[nS113]-{P}; k- Sko1_[nS126]-{P}
+Cyc8_[TPR1-3]_ppi_Tup1_[n]
+Hot1_BIND_Hot1Site
+Ste12_[n/HTH]_BIND_PRE
+Rlm1_BIND_Rlm1Site
+Smp1_BIND_Smp1Site
+Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--Swi4_[c]
+Swi4_BIND_SCBFKS2; ! Slt2_[DB]--Swi4_[c]; x Swi4_[n]--Swi4_[c]
+Cdc4_[WD40]_ppi_Tec1_[CPD]; ! Tec1_[T276]-{P}; ! Tec1_[T273]-{P}
+Fus3_[KD]_P+_Tec1_[(T276)]; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Cdc4_ppi_SCF

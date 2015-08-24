@@ -268,12 +268,10 @@ class SBtabTable():
         self.comments = []
 
         for row in self.table:
-            if str(row[0]).startswith('!'):            
-                continue
             for i, entry in enumerate(row):
-                #if str(entry).startswith('!'):
-                #    break
-                if str(entry).startswith('%'):
+                if str(entry).startswith('!'):
+                    break
+                elif str(entry).startswith('%'):
                     self.comments.append(list(row))
                     break
                 else:
