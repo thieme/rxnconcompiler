@@ -16,6 +16,7 @@ from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 from rxnconcompiler.parser.rxncon_parser import parse_xls
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
 from rxnconcompiler.rxncon import Rxncon
+from SBtabTools import createDataset
 
 def get_files(inputdir):
     """
@@ -543,12 +544,62 @@ def parse_rxncon2SBtab(inputdir):
         #xls_tables= parse_xls(filedir)
         #print xls_tables
         #################################################
+        d= build_rxncon_dict(inputdir,file)
+        for key in d.keys():
+            #print key
+            #print d[key][1]
 
-        f= open(filedir, 'r')
-        ff= f.read()
-        fff = tablibIO.importSetNew(ff,filedir)
-        ffff = SBtab.SBtabTable(fff,filedir)
-        ffff.writeSBtab(output_format,filedir)
+            tableType=''
+            tableName=''
+            if 'reaction_list' in key:
+                tableType='ReactionID'
+                tableName='Reaction list'
+                filename='filename1'
+
+                header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName+'"'
+                big=header_row+'\n'
+                #columns=d[key][1].keys()
+                columns= ['!ReactionID','!ComponentA:Name','!ComponentA:Domain','!ComponentA:Subdomain','!ComponentA:Residue','!Reaction','!ComponentB:Name','!ComponentB:Domain','!ComponentB:Subdomain','!ComponentB:Residue','!Quality','!PubMedIdentifiers','!Comment']
+                value_rows=[]
+                #print d[key][1].values()
+                for row in d[key]:
+                    value_rows.append(row.values())
+
+                for col in columns:
+                    big= big + col+ ' '
+
+            elif 'contingency_list' in key:
+                tableType='ContingencyID'
+                tableName='Contingency list'
+                filename='filename2'
+
+                header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName+'"'
+                big=header_row+'\n'
+            elif 'reaction_definition' in key:
+                tableType='ReactionList'
+                tableName='Reactions definitions'
+                filename='filename3'
+
+                header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName+'"'
+                big=header_row+'\n'
+
+            print '####################################'
+            print 'ist:'
+            print big
+            print ''
+            #print len(columns), columns
+            #print len(value_rows[1]), value_rows[1]
+            #sbtab= createDataset(header_row, columns, value_rows, filename)
+            #print sbtab
+
+            print '\nsoll:'
+            f= open('sbtab_files/tiger_files_csv/Tiger_et_al_TableS1_SBtab_ReactionID.csv', 'r')
+            ff= f.read()
+            print ff[0:400]
+
+            fff = tablibIO.importSetNew(ff,filedir)
+            ffff = SBtab.SBtabTable(fff,filedir)
+            ffff.writeSBtab('csv',filedir, 'test_output')
 
 
 
@@ -843,8 +894,8 @@ if __name__=="__main__":
     #read rxncon input:
     #parse_rxncon2SBtab('rxncon_files/rxncon_xls/rxncon_simple_example-1.xls')
     check_directory_type('rxncon_files/rxncon_xls/simple_xls')
-    print '------------------------'
-    check_directory_type('rxncon_files/rxncon_txt/test_txt')
-    print '------------------------'
-    check_directory_type('rxncon_files/rxncon_txt/tiger_own_output_txt')
-    print '------------------------'
+    #print '------------------------'
+    #check_directory_type('rxncon_files/rxncon_txt/test_txt')
+    #print '------------------------'
+    #check_directory_type('rxncon_files/rxncon_txt/tiger_own_output_txt')
+    #print '------------------------'

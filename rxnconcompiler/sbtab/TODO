@@ -10,6 +10,7 @@
    - sbtab --> rxncon liegt der unterscheid bei csv undd xls (sie unten) wirklich an der hässligen zelle?
    - wie ist das mit den references? bzw den neuen state reaction sets?
    - import probleme wenn man die geschichte von der konsole aus startet und nicht in pycharm
+   - rxncon --> sbtab wenn ich mir dieses 3er dict baue habe ich ja gar keine infos für gene datei. einfach weg lassen?
 
 - outputs von csv to rxncon und xls to rxncon sind unterschiedlich trotz gleicher quelldateien. Es gibt bei einem von beiden einen Block reaktionen mehr (mit meld gut zu sehen). Warum?
    - glaube das liegt daran, dass die dateien verkackt formatiert sind. da sind teilweise mehrere reaktionen in einer zelle und so in den tiger files
