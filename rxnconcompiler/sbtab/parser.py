@@ -12,6 +12,7 @@ import xlrd
 import xlsxwriter
 import sys
 import re
+from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 from rxnconcompiler.parser.rxncon_parser import parse_xls
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
 from rxnconcompiler.rxncon import Rxncon
@@ -25,7 +26,7 @@ def get_files(inputdir):
     #                                               is no directory                          is no libre office temp file
         return files
     else:
-        print 'Error, can not open input directory(',inputdir,').'
+        print 'Error, can not open input directory(\''+inputdir+'\').'
         exit()
 
 
@@ -126,7 +127,7 @@ def check_xls_File(filedir, sbtab_detected, rxncon_detected, other_detected):
             sbtab_detected=True
 
     for sheet_name in xls_sheet_names:
-        if ('Contingency' in sheet_name or 'contingency' in sheet_name) and not 'ContingencyID' in sheet_name:
+        if ('(III) Contingency list' in sheet_name or 'Contingency List' in sheet_name or 'contingency list' in sheet_name) and not 'ContingencyID' in sheet_name:
             rxncon_detected=True
 
     if sbtab_detected==False and rxncon_detected==False:
@@ -175,7 +176,6 @@ def look_for_SBtab_files(inputdir):
     '''
     files = get_files(inputdir)
     found_table_types=[]
-    rxncon_def_found=False
 
     for filename in files:
         #print 'Filename: ', filename
@@ -188,11 +188,42 @@ def look_for_SBtab_files(inputdir):
     elif 'ReactionID' in found_table_types and'ContingencyID' in found_table_types:
         return 'txt'
     else:
-        print 'Error: In order to translate the SBtab Format to rxncon you need tables with following TableTypes:' \
-              ' - ReactionList(only for export to xls)' \
+        print 'Error: In order to translate the SBtab format to rxncon, you need tables with following TableTypes:' \
               ' - ReactionID' \
               ' - ContingencyID' \
-              ' - Gene(only for export to xls)' \
+              'Only needed for export to xls format: ' \
+              '     - Gene (only for export to xls)' \
+              '     - ReactionList(only for export to xls)'
+        print 'Only the follwing TableTypes were found:'
+        print found_table_types
+
+def look_for_rxncon_files(inputdir):
+    '''
+    Checks weather all needed rxncon files/sheets are given inside input directory:
+    - (I) Reaction List
+    - (III) Contingency List
+    - (IV) Reaction definition
+    '''
+
+    files = get_files(inputdir)
+    found_tables=[]
+
+    for filename in files:
+        d= build_rxncon_dict(inputdir, filename)
+        for table in d.keys():
+            found_tables.append(table)
+
+    if 'reaction_definition' in found_tables and 'contingency_list' in found_tables and 'reaction_list' in found_tables:
+        return True
+
+    else:
+        print 'Error: In order to translate the rxncon format to SBtab, you need the following tables:' \
+              ' - reaction_definition' \
+              ' - contingency_list' \
+              ' - reaction_list' \
+              'Only the following tables were found: '
+        print found_tables
+        return False
 
 
 def build_SBtab_object(inputdir, filename):
@@ -205,17 +236,9 @@ def build_SBtab_object(inputdir, filename):
     ob = SBtab.SBtabTable(tablib_table,filename)
     return ob
 
-
-def look_for_rxncon_sheets(inputdir):
-    '''
-    Checks whether all needed sheets are inside given rxcon File in given directory:
-    - Reaction List
-    - Contingency List
-    - Reaction definition
-    '''
-    pass
-
-
+def build_rxncon_dict(inputdir, filename):
+    d = parse_rxncon(inputdir+'/'+filename)
+    return d
 
 
 def get_info(ob):
@@ -267,7 +290,6 @@ def parse_SBtab2rxncon(inputdir):
     ob_list=[] # List of dictionaries
     reaction_def_found=False
     for filename in files:
-        #print 'Filename: ', filename
         ob= build_SBtab_object(inputdir, filename)
         ob_list.append({'object':ob, 'type':ob.table_type, 'filename':filename })
         if ob.table_type=='ReactionList' and ob.table_name=='Reaction definitions':
@@ -498,8 +520,38 @@ def build_reaction_definition(ob_list):
         return reaction_definition_list
 
 def parse_rxncon2SBtab(inputdir):
-    xls_tables= parse_xls(inputdir)
-    pass
+    '''
+    Main function for parsing rxncon--> SBtab Format
+    '''
+    files = get_files(inputdir)
+    output_format='xls' #delete
+    #reactivate :
+    # output_format= raw_input('Please enter the output format. Possible are .csv, .xls, .tsv, .ods (default= .csv):\n')
+    if output_format=='':
+        output_format='csv'
+    else:
+        output_format = output_format[-3:]
+    if output_format!='csv' and output_format!='xls' and output_format!='txv' and output_format!='ods':
+        print 'Error, the format ',output_format,' is not supported.'
+
+
+
+
+    for file in files:
+        filedir=inputdir+'/'+file
+        #################################################
+        #xls_tables= parse_xls(filedir)
+        #print xls_tables
+        #################################################
+
+        f= open(filedir, 'r')
+        ff= f.read()
+        fff = tablibIO.importSetNew(ff,filedir)
+        ffff = SBtab.SBtabTable(fff,filedir)
+        ffff.writeSBtab(output_format,filedir)
+
+
+
 
 def write_rxncon_txt(inputdir, rxncon):
     '''
@@ -780,7 +832,7 @@ if __name__=="__main__":
     #print '------------------------'
     #check_directory_type('sbtab_files/example_files(sbtab)_xls')
     #print '------------------------'
-    check_directory_type('sbtab_files/tiger_files_csv')
+    #check_directory_type('sbtab_files/tiger_files_csv')
     #print '------------------------'
     #check_directory_type('sbtab_files/tiger_files_xls')
     # print '------------------------'
@@ -790,3 +842,9 @@ if __name__=="__main__":
 
     #read rxncon input:
     #parse_rxncon2SBtab('rxncon_files/rxncon_xls/rxncon_simple_example-1.xls')
+    check_directory_type('rxncon_files/rxncon_xls/simple_xls')
+    print '------------------------'
+    check_directory_type('rxncon_files/rxncon_txt/test_txt')
+    print '------------------------'
+    check_directory_type('rxncon_files/rxncon_txt/tiger_own_output_txt')
+    print '------------------------'
