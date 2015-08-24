@@ -76,12 +76,13 @@ def check_directory_type(inputdir):
 
     if rxncon_detected==True:
         if sbtab_detected==True:
-            print 'Error, both SBtab and rxncon files detected in input directory!'
+            print 'Error, both SBtab and rxncon files detected in input directory! Please clean up the directory!'
         elif other_detected==True:
             print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
         else:
             print 'Directory of rxncon files detected. Starting parser.'
-            #look_for_rxncon_files, starte rxncon to sbtab parsing
+            if look_for_rxncon_files(inputdir):
+                parse_rxncon2SBtab(inputdir)
     elif sbtab_detected==True:
         if other_detected==True:
             print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
@@ -172,7 +173,6 @@ def look_for_SBtab_files(inputdir):
     - rxncon_Definition
     - Gene
     '''
-
     files = get_files(inputdir)
     found_table_types=[]
     rxncon_def_found=False
@@ -182,32 +182,9 @@ def look_for_SBtab_files(inputdir):
         ob= build_SBtab_object(inputdir, filename)
         found_table_types.append(ob.table_type)
 
-        #print '##########################'
-        #get_info(ob)
-
-        #print files
-
-
-        p = re.compile('rxncon_definition.*') # every file with that name, no matter what file format
-        # achtung: es gibt ein mal eine sbatb seitige rxncon_definition datei und eine rxcon seitige.
-        # wenn die rxncon seitige fehlt, wird die default erstellt und verwendet
-        # keine ahnung wozu die sbtab seitige sein soll...
-        m = p.match(filename)
-        if m:
-            rxncon_def_found=True
-            print "rxncon_Definition file detected."
-
-
-
     if 'ReactionList' in found_table_types and 'ReactionID' in found_table_types and'ContingencyID' in found_table_types and 'Gene' in found_table_types:
-        #not needed anymore, rxncon_definition gets createdget created
-        #if rxncon_def_found and 'Definition' in found_table_types:
         return 'xls'
-        #else:
-            #print 'Error: In order to translate the SBtab Format to rxncon you need the "rxncon_Definition" File inside this directory' \
-                  #'you can download it here:'
-            #print 'www.rxncon.org'
-            #return False
+
     elif 'ReactionID' in found_table_types and'ContingencyID' in found_table_types:
         return 'txt'
     else:
@@ -357,7 +334,7 @@ def build_rxncon(ob_list, reaction_definition):
             for row in ob['object'].getRows():
             #     if check_full_rxns(build_full(row,indexes_dict),contingency_list):
             #     ich glaube dieser Check, den Sebastian sich gewuenscht hat macht gar keinen sinn. Es kann auch sein
-            #     , dass eine reaction in reactionID existiert, die in ContigencyID gar nicht vorkommt
+            #     , dass eine reaction in reactionID existiert, die in ContigencyID gar nicht vorkommt.  oder?
             #         reaction_list.append({
             #             'ReactionType': row[indexes_dict['rea']],
             #             'ComponentA[Name]': row[indexes_dict['can']],
