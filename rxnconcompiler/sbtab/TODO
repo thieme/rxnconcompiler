@@ -1,3 +1,10 @@
+*Markus*:
+   - sourcde state und product state werden nicht ausgefüllt, soll ich aber erst mal ignorieren, vllt ändert sich das eh noch
+   - eigentlich sollten contingencies und reactions automatisch geupdatert werden, wenn man zb die domains ändert. dies geht über links in excel
+     wenn aber kein excel verwendet wird sondern ods klappt das nicht so gut. Deswegen wird vllt ein skript benötigt, das das updatet
+   - TODO: aus einem rxncon input und sbtab unout jeweils ein rxncon object machen und daraus zum beispiel einen bngl txt file exporten. Diese beiden Files dann vergleichen um guete des parsers zu bewerten (testen)
+   - außerdem: draft lesen zu syntax and semantics
+
 - gucken ob alle benötigten files da sind
    - SBtab --> rxncon: ReactionList, ReactionID, Gene, ContingencyID,
       rxncon_Definition wobei achtung: da gibts 2, eine rxncon seitige und eine sbtab seitige
