@@ -1,0 +1,8 @@
++ACEAIQ-SBtab  TableType+AD0-'ReactionID' TableName+AD0-'Reaction list',,,,,,,,,,,,,,
++ACE-ReactionID,+ACE-ComponentA:Name,+ACE-ComponentA:Domain,+ACE-ComponentA:Subdomain,+ACE-ComponentA:Residue,+ACE-Reaction,+ACE-ComponentB:Name,+ACE-ComponentB:Domain,+ACE-ComponentB:Subdomain,+ACE-ComponentB:Residue,+ACE-Quality,+ACE-PubMedIdentifiers,+ACE-Comment,,
+1,Fus3,CD,,,ppi,Msg5,n,,,CoIP, Co+AC0-Crystallization structure determination, competition fluorescence polarization binding assay,16364919,Fus3+AF8AWw-CD+AF0APQ-CD+ABD//Q-pockets.  SEQ:Msg5+AF8AWw-n+AF0-:28+AC0-36
+2,Fus3,KD,,,P,Sst2,,,S539,In vitro phosphorylation, mass spec detection of S539+AC0-p,15924435,,
+3,Fus3,KD,,,P,Ste5,,,,In vitro phosphorylation,8314085,15322134,,
+4,Hog1,KD,,,P,Rck2,c,,S519,in vitro kinase assay, in vivo phosphorylation,10805732,,
+5,Pbs2,KD,,,P,Hog1,,,T174,in vitro phosphorylation recombinant hyperactive Pbs2EE,11113180,,,
+6,Pbs2,KD,,,P,Hog1,,,Y176,in vitro phosphorylation recombinant hyperactive Pbs2EE,11113180,,,

@@ -1,0 +1,12 @@
++ACEAIQ-SBtab TableType+AD0-'ContingencyID' TableName+AD0-'Contingency list',,,,,,,,
++ACE-ContingencyID,+ACE-Target,+ACE-Contingency,+ACE-Modifier,+ACE-PubMedIdentifiers,+ACE-Quality,+ACE-Comment,,
+ID1,Hog1+AF8AWw-KD+AF0AXw-P+AF8-Rck2+AF8AWw-c(S519)+AF0-,+ACE-,Hog1+AF8AWw-(T174)+AF0ALQB7-P+AH0-,10805732,in vitro kinase assay,Hog1 activation by constitutive active Pbs2 needed.,,
+ID2,Hog1+AF8AWw-KD+AF0AXw-P+AF8-Rck2+AF8AWw-c(S519)+AF0-,+ACE-,Hog1+AF8AWw-(Y176)+AF0ALQB7-P+AH0-,10805732,in vitro kinase assay,Hog1 activation by constitutive active Pbs2 needed.,,
+ID3,Pbs2+AF8AWw-KD+AF0AXw-P+AF8-Hog1+AF8AWw-(T174)+AF0-,K,Hog1+AF8AWw-CD+AF0ALQAt-Pbs2+AF8AWw-HBD+AC0-1+AF0-,18212044,Hog1 Phosphorylation in vivo using binding mutants,,,
+ID4,Pbs2+AF8AWw-KD+AF0AXw-P+AF8-Hog1+AF8AWw-(T174)+AF0-,K,Hog1+AF8AWw-PBD+AC0-2+AF0ALQAt-Pbs2+AF8AWw-HBD+AC0-1+AF0-,18212044,Hog1 Phosphorylation in vivo using binding mutants,,,
+ID5,Pbs2+AF8AWw-KD+AF0AXw-P+AF8-Hog1+AF8AWw-(T174)+AF0-,+ACE-,Pbs2+AF8AWw-AL(S514)+AF0ALQB7-P+AH0-,7624781,9032256,Genetic. Pbs2+AF8AWw-S514A,T518A+AF0- is inactive. Pbs2+AF8AWw-S514D,T518D+AF0- is hyperactive
+ID6,Pbs2+AF8AWw-KD+AF0AXw-P+AF8-Hog1+AF8AWw-(T174)+AF0-,+ACE-,Pbs2+AF8AWw-AL(T518)+AF0ALQB7-P+AH0-,7624781,9032256,Genetic. Pbs2+AF8AWw-S514A,T518A+AF0- is inactive. Pbs2+AF8AWw-S514D,T518D+AF0- is hyperactive
+ID7,Pbs2+AF8AWw-KD+AF0AXw-P+AF8-Hog1+AF8AWw-(Y176)+AF0-,K,Hog1+AF8AWw-CD+AF0ALQAt-Pbs2+AF8AWw-HBD+AC0-1+AF0-,18212044,Hog1 Phosphorylation in vivo using binding mutants,,,
+ID8,Pbs2+AF8AWw-KD+AF0AXw-P+AF8-Hog1+AF8AWw-(Y176)+AF0-,K,Hog1+AF8AWw-PBD+AC0-2+AF0ALQAt-Pbs2+AF8AWw-HBD+AC0-1+AF0-,18212044,Hog1 Phosphorylation in vivo using binding mutants,,,
+ID9,Pbs2+AF8AWw-KD+AF0AXw-P+AF8-Hog1+AF8AWw-(Y176)+AF0-,+ACE-,Pbs2+AF8AWw-AL(S514)+AF0ALQB7-P+AH0-,7624781,9032256,Genetic. Pbs2+AF8AWw-S514A,T518A+AF0- is inactive. Pbs2+AF8AWw-S514D,T518D+AF0- is hyperactive
+ID10,Pbs2+AF8AWw-KD+AF0AXw-P+AF8-Hog1+AF8AWw-(Y176)+AF0-,+ACE-,Pbs2+AF8AWw-AL(T518)+AF0ALQB7-P+AH0-,7624781,9032256,Genetic. Pbs2+AF8AWw-S514A,T518A+AF0- is inactive. Pbs2+AF8AWw-S514D,T518D+AF0- is hyperactive

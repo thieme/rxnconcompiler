@@ -593,14 +593,15 @@ def parse_rxncon2SBtab(inputdir):
             #print sbtab
             print filedir
             print '\nsoll:'
-            f= open('sbtab_files/tiger_files_csv/Tiger_et_al_TableS1_SBtab_ReactionID.csv', 'r')
+            f= open('sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv', 'r')
             ff= f.read()
             print ff[0:400]
 
             fff = tablibIO.importSetNew(ff,filedir)
             ffff = SBtab.SBtabTable(fff,filedir)
             ffff.update()
-            ffff.writeSBtab('csv',filedir, 'test_output')
+            #ffff.writeSBtab('csv',filedir, 'test_output')
+            ffff.writeSBtab('csv')
 
 
 
