@@ -655,6 +655,52 @@ def write_rxncon_xls(inputdir, rxncon, gene_list):
 
 
     workbook = xlsxwriter.Workbook(inputdir+'/'+output_directory+'/'+outputname)
+
+# reaction defintion sheet
+    rd_sheet= workbook.add_worksheet('(IV) Reaction Definitions')
+
+    # set colums widths
+    small_cols_rd =['A','D','H','P','Q']
+    medium_cols_rd =['B','F','G','J','K','R']
+    big_cols_rd=['C','E','I','L','M','N','O']
+
+    for c in small_cols_rd:
+        rd_sheet.set_column(c+':'+c,15)
+    for c in medium_cols_rd:
+        rd_sheet.set_column(c+':'+c,23)
+    for c in big_cols_rd:
+        rd_sheet.set_column(c+':'+c,33)
+    #write headers
+    headers_rd= ['Reaction', 'CategoryType', 'Category', 'SubclassID', 'Subclass', 'Modifier or Boundary', 'ReactionTypeID', 'ReactionType', 'ReactionName', 'Reversibility', 'Directionality', 'SourceState[Component]', 'SourceState[Modification]', 'ProductState[Component]', 'ProductState[Modification]', 'coSubstrate(s)', 'coProduct(s)', 'Comments']
+    for c in alfa[0:len(headers_rd)]:
+        rd_sheet.write(c+'1', headers_rd[alfa.index(c)])
+
+    #write content
+    reaction_definition_list= rxncon.xls_tables['reaction_definition']
+    number_reactions_rd = len(reaction_definition_list)
+
+    for i in range(1,number_reactions_rd+1):
+        rd_sheet.write('A'+str(i+1),reaction_definition_list[i-1]['Reaction'])
+        rd_sheet.write('B'+str(i+1),reaction_definition_list[i-1]['CategoryType'])
+        rd_sheet.write('C'+str(i+1),reaction_definition_list[i-1]['Category'])
+        rd_sheet.write('D'+str(i+1),reaction_definition_list[i-1]['SubclassID'])
+        rd_sheet.write('E'+str(i+1),reaction_definition_list[i-1]['Subclass'])
+        rd_sheet.write('F'+str(i+1),reaction_definition_list[i-1]['Modifier or Boundary'])
+        rd_sheet.write('G'+str(i+1),reaction_definition_list[i-1]['ReactionTypeID'])
+        rd_sheet.write('H'+str(i+1),reaction_definition_list[i-1]['ReactionType'])
+        rd_sheet.write('I'+str(i+1),reaction_definition_list[i-1]['ReactionName'])
+        rd_sheet.write('J'+str(i+1),reaction_definition_list[i-1]['Reversibility'])
+        rd_sheet.write('K'+str(i+1),reaction_definition_list[i-1]['Directionality'])
+        rd_sheet.write('L'+str(i+1),reaction_definition_list[i-1]['SourceState[Component]'])
+        rd_sheet.write('M'+str(i+1),reaction_definition_list[i-1]['SourceState[Modification]'])
+        rd_sheet.write('N'+str(i+1),reaction_definition_list[i-1]['ProductState[Component]'])
+        rd_sheet.write('O'+str(i+1),reaction_definition_list[i-1]['ProductState[Modification]'])
+        rd_sheet.write('P'+str(i+1),reaction_definition_list[i-1]['coSubstrate(s)'])
+        rd_sheet.write('Q'+str(i+1),reaction_definition_list[i-1]['coProduct(s)'])
+        rd_sheet.write('R'+str(i+1),reaction_definition_list[i-1]['Comments'])
+
+
+
 # reaction List sheet
     r_sheet= workbook.add_worksheet('(I) Reaction list')
     # set colums widths
@@ -681,9 +727,14 @@ def write_rxncon_xls(inputdir, rxncon, gene_list):
     number_reactions_r = len(reaction_list)
 
     for i in range(1,number_reactions_r+1):
+        # over each row
         r_sheet.write('A'+str(i+1), str(i))
-        r_sheet.write('B'+str(i+1),reaction_list[i-1]['Reaction[Full]'])
-        # no source state information given
+        #r_sheet.write('B'+str(i+1),reaction_list[i-1]['Reaction[Full]'])
+        #rxn_form='{=L2&if(and(M2="",N2="",O2=""),"","_["&M2&if(N2="","","/"&N2)&if(O2="","]","("&O2&")]"))&"_"&I2&"_"&Q2&if(and(R2="",S2="",T2=""),"","_["&R2&if(S2="","","/"&S2)&if(T2="","]","("&T2&")]"))}'
+        rxn_form='{=L'+str(i+1)+'&if(and(M'+str(i+1)+'="",N'+str(i+1)+'="",O'+str(i+1)+'=""),"","_["&M'+str(i+1)+'&if(N'+str(i+1)+'="","","/"&N'+str(i+1)+')&if(O'+str(i+1)+'="","]","("&O'+str(i+1)+'&")]"))&"_"&I'+str(i+1)+'&"_"&Q'+str(i+1)+'&if(and(R'+str(i+1)+'="",S'+str(i+1)+'="",T'+str(i+1)+'=""),"","_["&R'+str(i+1)+'&if(S'+str(i+1)+'="","","/"&S'+str(i+1)+')&if(T'+str(i+1)+'="","]","("&T'+str(i+1)+'&")]"))}'
+        r_sheet.write_formula('B'+str(i+1),rxn_form)
+        ss_form='{=if(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,5,FALSCH)="N/A","N/A",if(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,5,FALSCH)="ComponentB, ComponentB","ComponentB"&left(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,6,FALSCH),find(",",vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,6,FALSCH))-1)&", ComponentB"&right(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,6,FALSCH),len(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,6,FALSCH))-find(",",vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,6,FALSCH))-1),if(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,6,FALSCH)="N/A",if(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,5,FALSCH)="ComponentB",Q'+str(i+1)+',"Error"),if(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,5,FALSCH)="ComponentA",L'+str(i+1)+'&if(and(M'+str(i+1)+'="",N'+str(i+1)+'="",O'+str(i+1)+'=""),"","_["&M'+str(i+1)+'&if(N'+str(i+1)+'="","","/"&N'+str(i+1)+')&if(O'+str(i+1)+'="","]","("&O'+str(i+1)+'&")]")),if(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,5,FALSCH)="ComponentB",Q'+str(i+1)+'&if(and(R'+str(i+1)+'="",S'+str(i+1)+'="",T'+str(i+1)+'=""),"","_["&R'+str(i+1)+'&if(S'+str(i+1)+'="","","/"&S'+str(i+1)+')&if(T'+str(i+1)+'="","]","("&T'+str(i+1)+'&")]")),if(vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,5,FALSCH)="ComponentA, ComponentB","","Error")))&vlookup(I'+str(i+1)+',"(IV) Reaction definition"!$H:$Q,6,FALSCH))))}'
+        r_sheet.write_formula('C'+str(i+1),ss_form)
         # no product state information given
         # no co substrates given (in example file done with references)
         # no coproducts given (in example file done with references)
@@ -738,48 +789,6 @@ def write_rxncon_xls(inputdir, rxncon, gene_list):
         # no quality given
         # no comments given
 
-# reaction defintion sheet
-    rd_sheet= workbook.add_worksheet('(IV) Reaction Definitions')
-
-    # set colums widths
-    small_cols_rd =['A','D','H','P','Q']
-    medium_cols_rd =['B','F','G','J','K','R']
-    big_cols_rd=['C','E','I','L','M','N','O']
-
-    for c in small_cols_rd:
-        rd_sheet.set_column(c+':'+c,15)
-    for c in medium_cols_rd:
-        rd_sheet.set_column(c+':'+c,23)
-    for c in big_cols_rd:
-        rd_sheet.set_column(c+':'+c,33)
-    #write headers
-    headers_rd= ['Reaction', 'CategoryType', 'Category', 'SubclassID', 'Subclass', 'Modifier or Boundary', 'ReactionTypeID', 'ReactionType', 'ReactionName', 'Reversibility', 'Directionality', 'SourceState[Component]', 'SourceState[Modification]', 'ProductState[Component]', 'ProductState[Modification]', 'coSubstrate(s)', 'coProduct(s)', 'Comments']
-    for c in alfa[0:len(headers_rd)]:
-        rd_sheet.write(c+'1', headers_rd[alfa.index(c)])
-
-    #write content
-    reaction_definition_list= rxncon.xls_tables['reaction_definition']
-    number_reactions_rd = len(reaction_definition_list)
-
-    for i in range(1,number_reactions_rd+1):
-        rd_sheet.write('A'+str(i+1),reaction_definition_list[i-1]['Reaction'])
-        rd_sheet.write('B'+str(i+1),reaction_definition_list[i-1]['CategoryType'])
-        rd_sheet.write('C'+str(i+1),reaction_definition_list[i-1]['Category'])
-        rd_sheet.write('D'+str(i+1),reaction_definition_list[i-1]['SubclassID'])
-        rd_sheet.write('E'+str(i+1),reaction_definition_list[i-1]['Subclass'])
-        rd_sheet.write('F'+str(i+1),reaction_definition_list[i-1]['Modifier or Boundary'])
-        rd_sheet.write('G'+str(i+1),reaction_definition_list[i-1]['ReactionTypeID'])
-        rd_sheet.write('H'+str(i+1),reaction_definition_list[i-1]['ReactionType'])
-        rd_sheet.write('I'+str(i+1),reaction_definition_list[i-1]['ReactionName'])
-        rd_sheet.write('J'+str(i+1),reaction_definition_list[i-1]['Reversibility'])
-        rd_sheet.write('K'+str(i+1),reaction_definition_list[i-1]['Directionality'])
-        rd_sheet.write('L'+str(i+1),reaction_definition_list[i-1]['SourceState[Component]'])
-        rd_sheet.write('M'+str(i+1),reaction_definition_list[i-1]['SourceState[Modification]'])
-        rd_sheet.write('N'+str(i+1),reaction_definition_list[i-1]['ProductState[Component]'])
-        rd_sheet.write('O'+str(i+1),reaction_definition_list[i-1]['ProductState[Modification]'])
-        rd_sheet.write('P'+str(i+1),reaction_definition_list[i-1]['coSubstrate(s)'])
-        rd_sheet.write('Q'+str(i+1),reaction_definition_list[i-1]['coProduct(s)'])
-        rd_sheet.write('R'+str(i+1),reaction_definition_list[i-1]['Comments'])
 
 # contingency definitions sheet
     # just going to print the default
