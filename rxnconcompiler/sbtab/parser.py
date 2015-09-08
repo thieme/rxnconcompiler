@@ -591,18 +591,22 @@ def parse_rxncon2SBtab(inputdir):
             #print len(value_rows[1]), value_rows[1]
             #sbtab= createDataset(header_row, columns, value_rows, filename)
             #print sbtab
-            print filedir
+            #print 'inputdir: ', inputdir
+            #print 'filedir: ',filedir
             print '\nsoll:'
-            f= open('sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv', 'r')
+            f= open('sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID_2.csv', 'r')
+            #f=open(filedir, 'r')
             ff= f.read()
-            print ff[0:400]
+            print ff#[0:400]
 
-            fff = tablibIO.importSetNew(ff,filedir)
-            ffff = SBtab.SBtabTable(fff,filedir)
+            #fff = tablibIO.importSetNew(ff,filedir)
+            #ffff = SBtab.SBtabTable(fff,filedir)
+            fff = tablibIO.importSetNew(ff,'sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID_2.csv')
+            ffff = SBtab.SBtabTable(fff,'sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID_2.csv')
             ffff.update()
 
             #ffff.writeSBtab('csv',filedir, 'test_output')
-            ffff.writeSBtab('csvr   ')
+            ffff.writeSBtab('csv')
 
 
 

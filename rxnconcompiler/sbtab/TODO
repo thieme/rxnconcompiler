@@ -28,6 +28,7 @@
 - txt format sbtab testen und hello() anpassen
 - csv format sbtab testen
 - xls format sbtab testen
+   - für diese drei tests mit bngl output arbeiten (siehe oben, marcus)
 - txt format rxncon testen
 - xls format rxncon testen
    
