@@ -16,7 +16,7 @@ from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 from rxnconcompiler.parser.rxncon_parser import parse_xls
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
 from rxnconcompiler.rxncon import Rxncon
-from SBtabTools import createDataset
+#from SBtabTools import createDataset
 
 def get_files(inputdir):
     """
@@ -600,9 +600,9 @@ def parse_rxncon2SBtab(inputdir):
             fff = tablibIO.importSetNew(ff,filedir)
             ffff = SBtab.SBtabTable(fff,filedir)
             ffff.update()
+
             #ffff.writeSBtab('csv',filedir, 'test_output')
             ffff.writeSBtab('csv')
-
 
 
 
