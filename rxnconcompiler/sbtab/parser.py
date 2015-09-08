@@ -629,51 +629,6 @@ def write_rxncon_txt(inputdir, rxncon):
     f.close()
     print 'Successfully wrote rxncon quick format to '+inputdir+'/'+output_directory+'/'+outputname
 
-def write_rxncon_xls_tablib(inputdir, rxncon):
-    '''
-    Writes rxncon Object to xls File using Tablib library
-    Work was paused because tablib can't set column width
-    '''
-    outputname= 'output'+'.xls'
-    output_directory='output_parser'
-
-    data_R= tablib.Dataset() # (I) Reaction list
-    data_R.title= '(I) Reaction list'
-    #data_R.headers=['ReactionID'] #''', 'Reaction[Full]', 'SourceState', 'ProductState', 'coSubstrate(s)', 'coProduct(s)',
-                    # 'ComponentA[ID]', 'ComponentA[Species]', 'ReactionType', 'ComponentB[ID]', 'ComponentB[Species]',
-                    # 'ComponentA[Name]', 'ComponentA[Domain]', 'ComponentA[Subdomain]', 'ComponentA[Residue]','Reaction',
-                    # 'ComponentB[Name]', 'ComponentB[Domain]', 'ComponentB[Subdomain]', 'ComponentB[Residue]', 'Quality',
-                    # 'PubMedIdentifier(s)', 'Comments']
-    data_R.append(['ReactionID', 'Reaction[Full]', 'SourceState', 'ProductState', 'coSubstrate(s)', 'coProduct(s)',
-                    'ComponentA[ID]', 'ComponentA[Species]', 'ReactionType', 'ComponentB[ID]', 'ComponentB[Species]',
-                    'ComponentA[Name]', 'ComponentA[Domain]', 'ComponentA[Subdomain]', 'ComponentA[Residue]','Reaction',
-                    'ComponentB[Name]', 'ComponentB[Domain]', 'ComponentB[Subdomain]', 'ComponentB[Residue]', 'Quality',
-                    'PubMedIdentifier(s)', 'Comments'])
-
-    #data_R.append(['teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeest'])
-
-    data_M = tablib.Dataset() # (II) Metabolic Reaction list
-    data_M.title= '(II) Metabolic Reaction list'
-    data_M.append(['To be implemented'])
-
-    data_C= tablib.Dataset() # (III) Contingency list
-    data_C.title='(III) Contingency list'
-    data_Rd= tablib.Dataset() # (IV) Reaction definition
-    data_Rd.title= '(IV) Reaction definition'
-    data_Cd= tablib.Dataset() # (V) Contingency Definitions
-    data_Cd.title= '(V) Contingency Definitions'
-    data_Cd.headers=['','Contingency','']
-    data_Cd.append(['Contingencies', '!', 'Absolutely required'])
-
-
-    book=tablib.Databook((data_R, data_M, data_C, data_Rd, data_Cd))
-
-
-    if not os.path.exists(inputdir+'/'+output_directory):
-        os.mkdir(inputdir+'/'+output_directory)
-
-    with open(inputdir+'/'+output_directory+'/'+outputname,'wb') as f:
-        f.write(book.xls)
 
 def write_rxncon_xls(inputdir, rxncon, gene_list):
     '''
