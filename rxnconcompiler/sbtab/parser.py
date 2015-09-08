@@ -593,11 +593,11 @@ def parse_rxncon2SBtab(inputdir):
             #print sbtab
             #print 'inputdir: ', inputdir
             #print 'filedir: ',filedir
-            print '\nsoll:'
+            #print '\nsoll:'
             f= open('sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv', 'r')
             #f=open(filedir, 'r')
             ff= f.read()
-            print ff[0:400]
+            #print ff[0:400]
 
             #fff = tablibIO.importSetNew(ff,filedir)
             #ffff = SBtab.SBtabTable(fff,filedir)
@@ -605,10 +605,20 @@ def parse_rxncon2SBtab(inputdir):
             ffff = SBtab.SBtabTable(fff,'sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv')
             ffff.update()
 
-            #ffff.writeSBtab('csv',filedir, 'test_output')
-            ffff.writeSBtab('csv')
+            #ffff.writeSBtab('csv',filedir+'/output/test')   das schreiben sollte in eine eigene funktion so wie write_sbtab_xls oder so
+            #ffff.writeSBtab('csv')
 
 
+def write_sbtab_xls(inputdir, sbtab, filename):
+    '''
+    Gets sbtab object and saves it as a xls file
+    '''
+    outputname= '_output'
+    output_directory='output_parser'
+    if not os.path.exists(inputdir+'/'+output_directory):
+        os.mkdir(inputdir+'/'+output_directory)
+
+    sbtab.writeSBtab('csv',inputdir+output_directory+'/'+filename+outputname)
 
 def write_rxncon_txt(inputdir, rxncon):
     '''
@@ -844,8 +854,8 @@ if __name__=="__main__":
     #print '------------------------'
     #check_directory_type('sbtab_files/example_files(sbtab)_xls')
     #print '------------------------'
-    #check_directory_type('sbtab_files/tiger_files_csv')
-    #print '------------------------'
+    check_directory_type('sbtab_files/tiger_files_csv_cut')
+    print '------------------------'
     #check_directory_type('sbtab_files/tiger_files_xls')
     # print '------------------------'
     # check_directory_type('rxncon_files/rxncon_xls')
@@ -854,7 +864,7 @@ if __name__=="__main__":
 
     #read rxncon input:
     #parse_rxncon2SBtab('rxncon_files/rxncon_xls/rxncon_simple_example-1.xls')
-    check_directory_type('rxncon_files/rxncon_xls/simple_xls')
+    #check_directory_type('rxncon_files/rxncon_xls/simple_xls')
     #print '------------------------'
     #check_directory_type('rxncon_files/rxncon_txt/test_txt')
     #print '------------------------'
