@@ -1,0 +1,8 @@
+!!SBtab TableType='ReactionID' TableName='Reaction list',,,,,,,,,,,,,,
+!ReactionID,!ComponentA:Name,!ComponentA:Domain,!ComponentA:Subdomain,!ComponentA:Residue,!Reaction,!ComponentB:Name,!ComponentB:Domain,!ComponentB:Subdomain,!ComponentB:Residue,!Quality,!PubMedIdentifiers,!Comment,,
+1,Fus3,CD,,,ppi,Msg5,n,,,CoIP,Co-Crystallization structure determination,competition fluorescence polarization binding assay,16364919,Fus3_[CD]=CDpockets.  SEQ:Msg5_[n]:28-36
+2,Fus3,KD,,,P,Sst2,,,S539,In vitro phosphorylation,mass spec detection of S539-p,15924435,,
+3,Fus3,KD,,,P,Ste5,,,,In vitro phosphorylation,8314085,15322134,,
+4,Hog1,KD,,,P,Rck2,c,,S519,in vitro kinase assay,in vivo phosphorylation,10805732,,
+5,Pbs2,KD,,,P,Hog1,,,T174,in vitro phosphorylation recombinant hyperactive Pbs2EE,11113180,,,
+6,Pbs2,KD,,,P,Hog1,,,Y176,in vitro phosphorylation recombinant hyperactive Pbs2EE,11113180,,,

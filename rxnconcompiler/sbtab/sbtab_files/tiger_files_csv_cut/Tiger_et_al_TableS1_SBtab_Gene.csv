@@ -1,5 +1,5 @@
-+ACEAIQ-SBtab TableType+AD0-'Gene' TableName+AD0-'Yeast genes',,
-+ACE-Gene,+ACE-Name,+ACE-LocusName
+!!SBtab TableType='Gene' TableName='Yeast genes',,
+!Gene,!Name,!LocusName
 Fus3,FUS3,YBL016W
 Hog1,HOG1,YLR113W
 Pbs2,PBS2,YJL128C

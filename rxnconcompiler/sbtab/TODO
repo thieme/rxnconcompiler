@@ -17,6 +17,13 @@
    - Markus mail:
       - ORF und non ORF ID's
    - formeln rein in rxncon xls für: state links, links für target in contID aus rection list mit reaction ID als cont ID (pattern matching, dann href)
+   - zeile 150, delimiter abfragen, tab als default
+   - z 733 folgende: diese info gibt es doch! aufen auf
+   - z 766-768 hier das selbe
+
+*rxncon --> sbtab*
+- zuerst auch 2 beispiel directories erstellen mit händisch geparstem zeug. Dann kann ich diese einlesen und vergelichen
+   (also andere ist und soll quelldateien). die soll wuelldatei könnte das tiger cut sein
 
 - in write_rxncon_xls(inputdir, rxncon) sage ich ganz oft, dass eine information nicht given ist. Stimmt das wirklich? oder kann man die doch irgendwo finden?
 - in write_rxncon_xls(inputdir, rxncon) bin ich auch nicht sicher ob ich die infos richtig einsprtiere (gibt auch comments dazu, geht um name und ID)
