@@ -618,7 +618,7 @@ def write_rxncon_txt(inputdir, rxncon):
 
 
     f = open(inputdir+'/'+output_directory+'/'+outputname, "w")
-    f.write('# rxncon_version=12345\trxncon_format=quick\n')
+    f.write('# rxncon_version=dynamische get methode\trxncon_format=quick\n')
     f.write(str(rxncon))
 
     # Close opened file
