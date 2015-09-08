@@ -602,7 +602,7 @@ def parse_rxncon2SBtab(inputdir):
             ffff.update()
 
             #ffff.writeSBtab('csv',filedir, 'test_output')
-            ffff.writeSBtab('csv')
+            ffff.writeSBtab('csvr   ')
 
 
 
