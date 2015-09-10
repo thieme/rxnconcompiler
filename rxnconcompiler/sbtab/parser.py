@@ -62,7 +62,7 @@ def check_directory_type(inputdir):
         elif filename.endswith('.ods'):
             # Read Open / Libre Office Document
             print 'Found File(s) in .ods format. This format ist not supported. ' \
-                  '\nPlease export to .xls or .txt format (Open/Libre Office can do this).\n' \
+                  '\nPlease export to .xls or .txt format (Open/Libre Office and Excel can do this).\n' \
                   'If you want to translate from SBtab to rxncon you can also use .csv format.'
             #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
