@@ -204,15 +204,16 @@ class x_exclamation_mark_Tests(TestCase):
 
 
 #error example
- #        rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
- #                <Cdc24^{M}>; or <Cdc24^{M/4}>
- #                <Cdc24^{M/4}>; 1--2 Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
- #                <Cdc24^{M/4}>; 2--3 Ste4_[AssocSte18]--Ste18_[AssocSte4]
- #                <Cdc24^{M}>; or <Cdc24^{M/F}>
- #                <Cdc24^{M/F}>; 4--5 Cdc24_[AssocFar1]--Far1_[c]
- #                <Cdc24^{M/F}>; 6--7 Ste4_[AssocSte18]--Ste18_[AssocSte4]
- #                <Cdc24^{M/F}>; 5--6 Far1_[nRING-H2]--Ste4_[AssocFar1]
- # ''')
+        rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
+                <Cdc24^{M}>; or <Cdc24^{M/4}>
+                <Cdc24^{M/4}>; 1--2 Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+                <Cdc24^{M/4}>; 2--3 Ste4_[AssocSte18]--Ste18_[AssocSte4]
+                <Cdc24^{M}>; or <Cdc24^{M/F}>
+                <Cdc24^{M/F}>; 1--4 Cdc24_[AssocFar1]--Far1_[c]
+                <Cdc24^{M/F}>; 4--5 Far1_[nRING-H2]--Ste4_[AssocFar1]
+                <Cdc24^{M/F}>; 5--6 Ste4_[AssocSte18]--Ste18_[AssocSte4]
+
+ ''')
 
 #0 = {instance} Contingency: ! Cdc24_[AssocFar1]--Far1_[c]
 #1 = {instance} Contingency: ! Ste4_[AssocSte18]--Ste18_[AssocSte4]
@@ -226,15 +227,15 @@ class x_exclamation_mark_Tests(TestCase):
 #                            """)
 
 ####### xOR ###########################
-        rxncon = Rxncon(""" A_ppi_B; ! <comp>
-                            <comp>; OR <comp1>
-                            <comp>; OR <comp2>
-                            <comp1>; AND A--C
-                            <comp1>; AND <NOT1>
-                            <NOT1>; NOT A--D
-                            <comp2>; AND A--D
-                            <comp2>; AND <NOT2>
-                            <NOT2>; NOT A--C""")
+        # rxncon = Rxncon(""" A_ppi_B; ! <comp>
+        #                     <comp>; OR <comp1>
+        #                     <comp>; OR <comp2>
+        #                     <comp1>; AND A--C
+        #                     <comp1>; AND <NOT1>
+        #                     <NOT1>; NOT A--D
+        #                     <comp2>; AND A--D
+        #                     <comp2>; AND <NOT2>
+        #                     <NOT2>; NOT A--C""")
 
 #    [! A--C, x A--D][! A--D, x A--C]
 
