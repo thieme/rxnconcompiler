@@ -6,7 +6,7 @@
 import SBtab
 import os
 import tablibIO
-import tablib
+#import tablib
 import csv
 import xlrd
 import xlsxwriter
