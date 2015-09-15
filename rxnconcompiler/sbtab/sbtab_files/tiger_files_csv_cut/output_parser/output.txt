@@ -1,0 +1,7 @@
+# rxncon_version=dynamische get methode	rxncon_format=quick
+Fus3_[CD]_ppi_Msg5_[n]
+Fus3_[KD]_P_Sst2_[(S539)]
+Fus3_[KD]_P_Ste5
+Hog1_[KD]_P_Rck2_[c(S519)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Pbs2_[KD]_P_Hog1_[(T174)]; k Hog1_[CD]--Pbs2_[HBD-1]; k Hog1_[PBD-2]--Pbs2_[HBD-1]; ! Pbs2_[ALS514]-{P}; ! Pbs2_[ALT518]-{P}
+Pbs2_[KD]_P_Hog1_[(Y176)]; k Hog1_[CD]--Pbs2_[HBD-1]; k Hog1_[PBD-2]--Pbs2_[HBD-1]; ! Pbs2_[ALS514]-{P}; ! Pbs2_[ALT518]-{P}
