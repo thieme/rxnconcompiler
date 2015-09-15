@@ -66,17 +66,14 @@ class Commandline(object):
 
         self.inputdir=inputdir
 
-    def outputformat(self):
-
-        #output_format='xls' #delete
-        #reactivate :
-        self.output_format= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
-        if self.output_format=='':
-            self.output_format='txt'
+    def read_outputformat(self):
+        self.outputformat= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
+        if self.outputformat=='':
+            self.outputformat='txt'
         else:
-            self.output_format = self.output_format[-3:]
-        if self.output_format!='txt' and self.output_format!='xls':
-            print 'Error, the format ',self.output_format,' is not supported.'
+            self.outputformat = self.outputformat[-3:]
+        if self.outputformat!='txt' and self.outputformat!='xls':
+            print 'Error, the format ',self.outputformat,' is not supported.'
 
 class DirCheck(object):
     def __init__(self, inputdir):
@@ -85,7 +82,7 @@ class DirCheck(object):
         self.sbtab_detected = False
         self.other_detected = False
         self.target_format=''
-        self.parsable=False
+        self.parsable_to=''
 
     def check_directory_type(self):
         '''
@@ -135,6 +132,7 @@ class DirCheck(object):
             else:
                 print 'Directory of rxncon files detected. Starting parser.'
                 self.look_for_rxncon_files()
+                self.parsable_to='sbtab'
         elif self.sbtab_detected==True:
             if self.other_detected==True:
                 print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
@@ -146,7 +144,7 @@ class DirCheck(object):
                         print "Warning: You can export the files in current directory only to rxncon quick format (.txt)." \
                               "         Not all needed Files for xls export are found." \
                               "         If you still choose xls export, the program will crash."
-                    self.parsable=True
+                    self.parsable_to='rxncon'
 
     def check_txt_File(self, filedir):
         '''
@@ -264,7 +262,7 @@ class DirCheck(object):
                 found_tables.append(table)
 
         if 'reaction_definition' in found_tables and 'contingency_list' in found_tables and 'reaction_list' in found_tables:
-            self.parsable=True
+            self.parsable_to='sbtab'
 
         else:
             print 'Error: In order to translate the rxncon format to SBtab, you need the following tables:' \
@@ -277,11 +275,12 @@ class DirCheck(object):
 
 class SBtabParser(Commandline):
 
-    def __init__(self, parsable, inputdir):
+    def __init__(self, parsable_to, inputdir, target_format):
         super(SBtabParser, self).__init__()
-        self.parsable=parsable
+        self.parsable_to=parsable_to
         self.inputdir=inputdir
-
+        self.target_format = target_format
+        self.gene_list=None
 
     def get_info(ob):
         '''
@@ -314,18 +313,19 @@ class SBtabParser(Commandline):
         #print ob.table
         print 'TableType:\t', ob.table_type
 
+# started to 'objectify' on my own from here on
     def parse_SBtab2rxncon(self):
         '''
-        Main function for parsing SBtab --> rxncon Format
+        Main function for parsing SBtab --> rxncon Format. Creates rxncon object
         '''
         files = get_files(self.inputdir)
-        self.outputformat()
+        self.read_outputformat()
 
-        ob_list=[] # List of dictionaries
+        self.ob_list=[] # List of dictionaries
         reaction_def_found=False
         for filename in files:
             ob= build_SBtab_object(self.inputdir, filename)
-            ob_list.append({'object':ob, 'type':ob.table_type, 'filename':filename })
+            self.ob_list.append({'object':ob, 'type':ob.table_type, 'filename':filename })
             if ob.table_type=='ReactionList' and ob.table_name=='Reaction definitions':
                 reaction_def_found=True
                 print 'Custom reaction definition file detected in: ' + filename
@@ -334,19 +334,14 @@ class SBtabParser(Commandline):
             print 'No reaction definition file found. Using default.'
             reaction_definition = DEFAULT_DEFINITION
         else:
-            reaction_definition=self.build_reaction_definition(ob_list)
+            reaction_definition=self.build_reaction_definition(self.ob_list)
 
-        rxncon = self.build_rxncon(ob_list, reaction_definition)
+        if self.outputformat=='xls' and self.target_format=='xls':
+            self.gene_list=self.build_gene_list(self.ob_list)
 
-        if self.output_format=='txt':
-            #write_rxncon_txt(self.inputdir,rxncon)
-            pass
-        elif self.output_format=='xls':
-            gene_list=self.build_gene_list(ob_list)
-            #write_rxncon_xls(inputdir, rxncon, gene_list)
+        self.rxncon = self.build_rxncon(self.ob_list, reaction_definition) #rxncon object
 
-
-    def build_rxncon(ob_list, reaction_definition):
+    def build_rxncon(self, ob_list, reaction_definition):
         '''
         Creates rxncon object from given SBtab files
         '''
@@ -418,13 +413,13 @@ class SBtabParser(Commandline):
                             'ComponentB[Domain]': row[indexes_dict['cbd']],
                             'ComponentB[Subdomain]': row[indexes_dict['cbs']],
                             'ComponentB[Residue]': row[indexes_dict['cbr']],
-                            'Reaction[Full]': build_full(row,indexes_dict)
+                            'Reaction[Full]': self.build_full(row,indexes_dict)
                         })
                 reaction_list.pop(0)
 
         return Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
 
-    def build_full(row,d):
+    def build_full(self, row,d):
         '''
         Creates Full Reaction String from given SBtab reaction row and a dictionary, that tells in which column is what.
         Template: ComponentA_[Domain/Subdomain(Residue)]_reaction_ComponentB_[Domain/Subdomain(Residue)]
@@ -479,7 +474,7 @@ class SBtabParser(Commandline):
              #   print 'missmatch'
               #  print full_reaction, d['Target']
 
-    def build_gene_list(ob_list):
+    def build_gene_list(self, ob_list):
         '''
         Creates gene list from given SBtab file
         '''
@@ -501,7 +496,7 @@ class SBtabParser(Commandline):
                 gene_list.pop(0)
         return gene_list
 
-    def build_reaction_definition(ob_list):
+    def build_reaction_definition(self, ob_list):
         '''
         Creates Reaction definition dictionary, from given table
         '''
@@ -553,28 +548,29 @@ class SBtabParser(Commandline):
                 reaction_definition_list.pop(0)
             return reaction_definition_list
 
-    def parse_rxncon2SBtab(inputdir):
+    def parse_rxncon2SBtab(self):
         '''
         Main function for parsing rxncon--> SBtab Format
         '''
-        files = get_files(inputdir)
-        output_format='xls' #delete
+        files = get_files(self.inputdir)
+        self.read_outputformat()
+        #outputformat='xls' #delete
         #reactivate :
-        # output_format= raw_input('Please enter the output format. Possible are .csv, .xls, .tsv, .ods (default= .csv):\n')
-        if output_format=='':
-            output_format='csv'
+        # outputformat= raw_input('Please enter the output format. Possible are .csv, .xls, .tsv, .ods (default= .csv):\n')
+        if self.outputformat=='':
+            self.outputformat='csv'
         else:
-            output_format = output_format[-3:]
-        if output_format!='csv' and output_format!='xls' and output_format!='txv' and output_format!='ods':
-            print 'Error, the format ',output_format,' is not supported.'
+            self.outputformat = self.outputformat[-3:]
+        if self.outputformat!='csv' and self.outputformat!='xls' and self.outputformat!='txv' and self.outputformat!='ods':
+            print 'Error, the format ',self.outputformat,' is not supported.'
 
         for file in files:
-            filedir=inputdir+'/'+file
+            filedir=self.inputdir+'/'+file
             #################################################
             #xls_tables= parse_xls(filedir)
             #print xls_tables
             #################################################
-            d= build_rxncon_dict(inputdir,file)
+            d= build_rxncon_dict(self.inputdir,file)
             for key in d.keys():
                 #print key
                 #print d[key][1]
@@ -653,13 +649,21 @@ class SBtabWriter(object):
 
         sbtab.writeSBtab('csv',inputdir+output_directory+'/'+filename+outputname)
 
-
-
 class RxnconWriter(object):
-    def __init__(self):
-        pass
+    def __init__(self, rxncon, outputformat, target_format, inputdir, gene_list):
+        self.rxncon = rxncon
+        self.outputformat = outputformat
+        self.target_format= target_format
+        self.inputdir = inputdir
+        self.gene_list= gene_list
 
-    def write_rxncon_txt(inputdir, rxncon):
+    def write(self):
+        if self.outputformat=='txt' and (self.target_format=='txt' or self.target_format=='xls'):
+            self.write_rxncon_txt(self.inputdir, self.rxncon)
+        elif self.outputformat=='xls' and self.target_format=='xls':
+            self.write_rxncon_xls(self.inputdir, self.rxncon, self.gene_list)
+
+    def write_rxncon_txt(self, inputdir, rxncon):
         '''
         Gets rxncon Object and saves it as a txt file
         '''
@@ -678,7 +682,7 @@ class RxnconWriter(object):
         f.close()
         print 'Successfully wrote rxncon quick format to '+inputdir+'/'+output_directory+'/'+outputname
 
-    def write_rxncon_xls(inputdir, rxncon, gene_list):
+    def write_rxncon_xls(self, inputdir, rxncon, gene_list):
         '''
         Writes rxncon Object to xls File using XlsxWriter library
         '''
@@ -736,8 +740,6 @@ class RxnconWriter(object):
             rd_sheet.write('P'+str(i+1),reaction_definition_list[i-1]['coSubstrate(s)'])
             rd_sheet.write('Q'+str(i+1),reaction_definition_list[i-1]['coProduct(s)'])
             rd_sheet.write('R'+str(i+1),reaction_definition_list[i-1]['Comments'])
-
-
 
     # reaction List sheet
         r_sheet= workbook.add_worksheet('(I) Reaction list')
@@ -869,6 +871,7 @@ class RxnconWriter(object):
         n_sheet= workbook.add_worksheet('(VII) Non ORF IDs') #wird das benoetigt?
 
         workbook.close()
+        print 'Successfully wrote rxncon xls format to '+inputdir+'/'+output_directory+'/'+outputname
 
 
 
@@ -876,14 +879,25 @@ class RxnconWriter(object):
 if __name__=="__main__":
 
     c=Commandline()
-    c.hello()
-    print c.inputdir
+    #c.hello()
+    c.inputdir='sbtab_files/tiger_files_csv_cut'
 
     d=DirCheck(c.inputdir)
     d.check_directory_type()
 
-    p=SBtabParser(d.parsable, d.inputdir)
-    p.
+    p=SBtabParser(d.parsable_to, d.inputdir, d.target_format)
+
+    if d.parsable_to=='rxncon':
+        p.parse_SBtab2rxncon()
+        w=RxnconWriter(p.rxncon, p.outputformat, p.target_format, p.inputdir, p.gene_list)
+
+    elif d.parsable_to=='sbtab':
+        p.parse_rxncon2SBtab()
+        w= SBtabWriter()
+
+    w.write()
+
+
     pass
 
 
