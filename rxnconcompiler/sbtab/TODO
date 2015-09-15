@@ -3,7 +3,7 @@
    - hello text verbessern (update sebastian: am ende wird eh nix console sein, sondern alles im Framwork, von daher egal)
    - eigentlich sollten contingencies und reactions automatisch geupdatert werden, wenn man zb die domains ändert. dies geht über links in excel
      wenn aber kein excel verwendet wird sondern ods klappt das nicht so gut. Deswegen wird vllt ein skript benötigt, das das updatet
-   - TODO: aus einem rxncon input und sbtab unout jeweils ein rxncon object machen und daraus zum beispiel einen bngl txt file exporten. Diese beiden Files dann vergleichen um guete des parsers zu bewerten (testen)
+   - TODO: aus einem rxncon input und sbtab output jeweils ein rxncon object machen und daraus zum beispiel einen bngl txt file exporten. Diese beiden Files dann vergleichen um guete des parsers zu bewerten (testen)
    - außerdem: draft lesen zu syntax and semantics
 
    *fragen an Marcus:

@@ -709,48 +709,6 @@ class RxnconWriter(object):
 
         workbook = xlsxwriter.Workbook(inputdir+'/'+output_directory+'/'+outputname)
 
-    # reaction defintion sheet
-        rd_sheet= workbook.add_worksheet('(IV) Reaction Definitions')
-
-        # set colums widths
-        small_cols_rd =['A','D','H','P','Q']
-        medium_cols_rd =['B','F','G','J','K','R']
-        big_cols_rd=['C','E','I','L','M','N','O']
-
-        for c in small_cols_rd:
-            rd_sheet.set_column(c+':'+c,15)
-        for c in medium_cols_rd:
-            rd_sheet.set_column(c+':'+c,23)
-        for c in big_cols_rd:
-            rd_sheet.set_column(c+':'+c,33)
-        #write headers
-        headers_rd= ['Reaction', 'CategoryType', 'Category', 'SubclassID', 'Subclass', 'Modifier or Boundary', 'ReactionTypeID', 'ReactionType', 'ReactionName', 'Reversibility', 'Directionality', 'SourceState[Component]', 'SourceState[Modification]', 'ProductState[Component]', 'ProductState[Modification]', 'coSubstrate(s)', 'coProduct(s)', 'Comments']
-        for c in alfa[0:len(headers_rd)]:
-            rd_sheet.write(c+'1', headers_rd[alfa.index(c)])
-
-        #write content
-        reaction_definition_list= rxncon.xls_tables['reaction_definition']
-        number_reactions_rd = len(reaction_definition_list)
-
-        for i in range(1,number_reactions_rd+1):
-            rd_sheet.write('A'+str(i+1),reaction_definition_list[i-1]['Reaction'])
-            rd_sheet.write('B'+str(i+1),reaction_definition_list[i-1]['CategoryType'])
-            rd_sheet.write('C'+str(i+1),reaction_definition_list[i-1]['Category'])
-            rd_sheet.write('D'+str(i+1),reaction_definition_list[i-1]['SubclassID'])
-            rd_sheet.write('E'+str(i+1),reaction_definition_list[i-1]['Subclass'])
-            rd_sheet.write('F'+str(i+1),reaction_definition_list[i-1]['Modifier or Boundary'])
-            rd_sheet.write('G'+str(i+1),reaction_definition_list[i-1]['ReactionTypeID'])
-            rd_sheet.write('H'+str(i+1),reaction_definition_list[i-1]['ReactionType'])
-            rd_sheet.write('I'+str(i+1),reaction_definition_list[i-1]['ReactionName'])
-            rd_sheet.write('J'+str(i+1),reaction_definition_list[i-1]['Reversibility'])
-            rd_sheet.write('K'+str(i+1),reaction_definition_list[i-1]['Directionality'])
-            rd_sheet.write('L'+str(i+1),reaction_definition_list[i-1]['SourceState[Component]'])
-            rd_sheet.write('M'+str(i+1),reaction_definition_list[i-1]['SourceState[Modification]'])
-            rd_sheet.write('N'+str(i+1),reaction_definition_list[i-1]['ProductState[Component]'])
-            rd_sheet.write('O'+str(i+1),reaction_definition_list[i-1]['ProductState[Modification]'])
-            rd_sheet.write('P'+str(i+1),reaction_definition_list[i-1]['coSubstrate(s)'])
-            rd_sheet.write('Q'+str(i+1),reaction_definition_list[i-1]['coProduct(s)'])
-            rd_sheet.write('R'+str(i+1),reaction_definition_list[i-1]['Comments'])
 
     # reaction List sheet
         r_sheet= workbook.add_worksheet('(I) Reaction list')
@@ -839,7 +797,48 @@ class RxnconWriter(object):
             # no pubmed IDs given
             # no quality given
             # no comments given
+    # reaction defintion sheet
+        rd_sheet= workbook.add_worksheet('(IV) Reaction Definitions')
 
+        # set colums widths
+        small_cols_rd =['A','D','H','P','Q']
+        medium_cols_rd =['B','F','G','J','K','R']
+        big_cols_rd=['C','E','I','L','M','N','O']
+
+        for c in small_cols_rd:
+            rd_sheet.set_column(c+':'+c,15)
+        for c in medium_cols_rd:
+            rd_sheet.set_column(c+':'+c,23)
+        for c in big_cols_rd:
+            rd_sheet.set_column(c+':'+c,33)
+        #write headers
+        headers_rd= ['Reaction', 'CategoryType', 'Category', 'SubclassID', 'Subclass', 'Modifier or Boundary', 'ReactionTypeID', 'ReactionType', 'ReactionName', 'Reversibility', 'Directionality', 'SourceState[Component]', 'SourceState[Modification]', 'ProductState[Component]', 'ProductState[Modification]', 'coSubstrate(s)', 'coProduct(s)', 'Comments']
+        for c in alfa[0:len(headers_rd)]:
+            rd_sheet.write(c+'1', headers_rd[alfa.index(c)])
+
+        #write content
+        reaction_definition_list= rxncon.xls_tables['reaction_definition']
+        number_reactions_rd = len(reaction_definition_list)
+
+        for i in range(1,number_reactions_rd+1):
+            rd_sheet.write('A'+str(i+1),reaction_definition_list[i-1]['Reaction'])
+            rd_sheet.write('B'+str(i+1),reaction_definition_list[i-1]['CategoryType'])
+            rd_sheet.write('C'+str(i+1),reaction_definition_list[i-1]['Category'])
+            rd_sheet.write('D'+str(i+1),reaction_definition_list[i-1]['SubclassID'])
+            rd_sheet.write('E'+str(i+1),reaction_definition_list[i-1]['Subclass'])
+            rd_sheet.write('F'+str(i+1),reaction_definition_list[i-1]['Modifier or Boundary'])
+            rd_sheet.write('G'+str(i+1),reaction_definition_list[i-1]['ReactionTypeID'])
+            rd_sheet.write('H'+str(i+1),reaction_definition_list[i-1]['ReactionType'])
+            rd_sheet.write('I'+str(i+1),reaction_definition_list[i-1]['ReactionName'])
+            rd_sheet.write('J'+str(i+1),reaction_definition_list[i-1]['Reversibility'])
+            rd_sheet.write('K'+str(i+1),reaction_definition_list[i-1]['Directionality'])
+            rd_sheet.write('L'+str(i+1),reaction_definition_list[i-1]['SourceState[Component]'])
+            rd_sheet.write('M'+str(i+1),reaction_definition_list[i-1]['SourceState[Modification]'])
+            rd_sheet.write('N'+str(i+1),reaction_definition_list[i-1]['ProductState[Component]'])
+            rd_sheet.write('O'+str(i+1),reaction_definition_list[i-1]['ProductState[Modification]'])
+            rd_sheet.write('P'+str(i+1),reaction_definition_list[i-1]['coSubstrate(s)'])
+            rd_sheet.write('Q'+str(i+1),reaction_definition_list[i-1]['coProduct(s)'])
+            rd_sheet.write('R'+str(i+1),reaction_definition_list[i-1]['Comments'])
 
     # contingency definitions sheet
         # just going to print the default
@@ -892,9 +891,11 @@ if __name__=="__main__":
     c=Commandline()
     #c.hello()
     c.inputdir='rxncon_files/rxncon_xls/sps'
+    c.inputdir='sbtab_files/tiger_files_csv_cut'
 
     d=DirCheck(c.inputdir)
     d.check_directory_type()
+
 
     p=SBtabParser(d.parsable_to, d.inputdir, d.target_format)
 
@@ -909,9 +910,6 @@ if __name__=="__main__":
         w= SBtabWriter()
 
     w.write()
-
-
-    pass
 
 
     #'to be' usage:
