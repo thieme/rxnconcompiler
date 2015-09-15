@@ -66,14 +66,20 @@ class Commandline(object):
 
         self.inputdir=inputdir
 
-    def read_outputformat(self):
-        self.outputformat= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
-        if self.outputformat=='':
-            self.outputformat='txt'
-        else:
-            self.outputformat = self.outputformat[-3:]
-        if self.outputformat!='txt' and self.outputformat!='xls':
-            print 'Error, the format ',self.outputformat,' is not supported.'
+    def read_outputformat(self, parsable_to):
+        if parsable_to=='rxncon':
+            self.outputformat= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
+            if self.outputformat=='':
+                self.outputformat='txt'
+            else:
+                self.outputformat = self.outputformat[-3:]
+
+        elif parsable_to=='sbtab':
+            self.outputformat= raw_input('Please enter the output format. Possible are .csv & .xls (default= .csv):\n')
+            if self.outputformat=='':
+                self.outputformat='csv'
+            else:
+                self.outputformat = self.outputformat[-3:]
 
 class DirCheck(object):
     def __init__(self, inputdir):
@@ -132,7 +138,7 @@ class DirCheck(object):
             else:
                 print 'Directory of rxncon files detected. Starting parser.'
                 self.look_for_rxncon_files()
-                self.parsable_to='sbtab'
+
         elif self.sbtab_detected==True:
             if self.other_detected==True:
                 print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
@@ -144,7 +150,7 @@ class DirCheck(object):
                         print "Warning: You can export the files in current directory only to rxncon quick format (.txt)." \
                               "         Not all needed Files for xls export are found." \
                               "         If you still choose xls export, the program will crash."
-                    self.parsable_to='rxncon'
+
 
     def check_txt_File(self, filedir):
         '''
@@ -230,11 +236,13 @@ class DirCheck(object):
             ob= build_SBtab_object(inputdir, filename)
             found_table_types.append(ob.table_type)
 
-        if 'ReactionList' in found_table_types and 'ReactionID' in found_table_types and'ContingencyID' in found_table_types and 'Gene' in found_table_types:
+        if 'ReactionID' in found_table_types and'ContingencyID' in found_table_types:
+            self.parsable_to='rxncon'
+            self.target_format= 'txt'
+
+        if 'ReactionList' in found_table_types and 'Gene' in found_table_types:
             self.target_format= 'xls'
 
-        elif 'ReactionID' in found_table_types and'ContingencyID' in found_table_types:
-            self.target_format= 'txt'
         else:
             print 'Error: In order to translate the SBtab format to rxncon, you need tables with following TableTypes:' \
                   ' - ReactionID' \
@@ -244,6 +252,7 @@ class DirCheck(object):
                   '     - ReactionList(only for export to xls)'
             print 'Only the follwing TableTypes were found:'
             print found_table_types
+            self.parsable_to=''
 
     def look_for_rxncon_files(self):
         '''
@@ -319,7 +328,9 @@ class SBtabParser(Commandline):
         Main function for parsing SBtab --> rxncon Format. Creates rxncon object
         '''
         files = get_files(self.inputdir)
-        self.read_outputformat()
+        self.read_outputformat(self.parsable_to)
+        if self.outputformat!='txt' and self.outputformat!='xls':
+            print 'Error, the format ',self.outputformat,' is not supported.'
 
         self.ob_list=[] # List of dictionaries
         reaction_def_found=False
@@ -553,7 +564,7 @@ class SBtabParser(Commandline):
         Main function for parsing rxncon--> SBtab Format
         '''
         files = get_files(self.inputdir)
-        self.read_outputformat()
+        self.read_outputformat(self.parsable_to)
         #outputformat='xls' #delete
         #reactivate :
         # outputformat= raw_input('Please enter the output format. Possible are .csv, .xls, .tsv, .ods (default= .csv):\n')
@@ -880,12 +891,14 @@ if __name__=="__main__":
 
     c=Commandline()
     #c.hello()
-    c.inputdir='sbtab_files/tiger_files_csv_cut'
+    c.inputdir='rxncon_files/rxncon_xls/sps'
 
     d=DirCheck(c.inputdir)
     d.check_directory_type()
 
     p=SBtabParser(d.parsable_to, d.inputdir, d.target_format)
+
+    print p.target_format
 
     if d.parsable_to=='rxncon':
         p.parse_SBtab2rxncon()
@@ -922,7 +935,8 @@ if __name__=="__main__":
 
     #read rxncon input:
     #parse_rxncon2SBtab('rxncon_files/rxncon_xls/rxncon_simple_example-1.xls')
-    #check_directory_type('rxncon_files/rxncon_xls/simple_xls')
+    #check_directory_type('rxncon_files/rxncon_xls/sps')
+    #print '------------------------'#check_directory_type('rxncon_files/rxncon_xls/simple_xls')
     #print '------------------------'
     #check_directory_type('rxncon_files/rxncon_txt/test_txt')
     #print '------------------------'
