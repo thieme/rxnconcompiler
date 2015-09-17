@@ -55,12 +55,13 @@ class Commandline(object):
         Introduces parser to user and reads input directory from comment line
         '''
         print 'You are using rxncon SBtab parser.' \
-              'If you want to parse a rxncon file to a SBtab file, the following input filetypes are supported:' \
-              ' - .txt' \
-              ' - .xls'
-        print 'If you want to parse a SBtab file to a rxncon file, these input filetypes are supported:' \
-              ' - .xls' \
-              ' - .csv'
+              'It helps you to translate network data from rxncon format to SBtab format and vice versa.' \
+        #      'If you want to parse a rxncon file to a SBtab file, the following input filetypes are supported:' \
+        #       ' - .txt' \
+        #       ' - .xls'
+        # print 'If you want to parse a SBtab file to a rxncon file, these input filetypes are supported:' \
+        #       ' - .xls' \
+        #       ' - .csv'
         print ''
         inputdir = raw_input('Please enter the path to the directory containing your network files: \n') # only works in python 2.x, for python3 would be input()
 
@@ -328,7 +329,7 @@ class SBtabParser(Commandline):
         Main function for parsing SBtab --> rxncon Format. Creates rxncon object
         '''
         files = get_files(self.inputdir)
-        self.read_outputformat(self.parsable_to)
+        #self.read_outputformat(self.parsable_to) reactivate
         if self.outputformat!='txt' and self.outputformat!='xls':
             print 'Error, the format ',self.outputformat,' is not supported.'
 
@@ -395,8 +396,7 @@ class SBtabParser(Commandline):
                 reaction_list=[{}]
                 for row in ob['object'].getRows():
                 #     if check_full_rxns(build_full(row,indexes_dict),contingency_list):
-                #     ich glaube dieser Check, den Sebastian sich gewuenscht hat macht gar keinen sinn. Es kann auch sein
-                #     , dass eine reaction in reactionID existiert, die in ContigencyID gar nicht vorkommt.  oder?
+                #
                 #         reaction_list.append({
                 #             'ReactionType': row[indexes_dict['rea']],
                 #             'ComponentA[Name]': row[indexes_dict['can']],
@@ -430,60 +430,57 @@ class SBtabParser(Commandline):
 
         return Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
 
+
+
     def build_full(self, row,d):
         '''
         Creates Full Reaction String from given SBtab reaction row and a dictionary, that tells in which column is what.
         Template: ComponentA_[Domain/Subdomain(Residue)]_reaction_ComponentB_[Domain/Subdomain(Residue)]
         '''
-        out=''
-        out+=row[d['can']]
 
-        if row[d['cad']]:
-            out+='_['+row[d['cad']]
-            if row[d['cas']]:
-                out+='/'+row[d['cas']]
-            if row[d['car']]:
-                out+='('+row[d['car']]+')'
-            out+=']'
-        elif row[d['cas']]:
-            out+='_['+row[d['cas']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
-            if row[d['car']]:
-                out+='('+row[d['car']]+')'
-            out+=']'
-        elif row[d['car']]:
-            out+='_[(' + row[d['car']] + ')]'
+        def component(comp):
+            out=''
+            out+=row[d['c%sn'%comp]]
 
+            if row[d['c%sd'%comp]]:
+                out+='_['+row[d['c%sd'%comp]]
+                if row[d['c%ss'%comp]]:
+                    out+='/'+row[d['c%ss'%comp]]
+                if row[d['c%sr'%comp]]:
+                    out+='('+row[d['c%sr'%comp]]+')'
+                out+=']'
+            elif row[d['c%ss'%comp]]:
+                out+='_['+row[d['c%ss'%comp]]  # if no dom%sin but only subdom%sin is given, the subdom%sin becomes dom%sin. is th%st correct?
+                if row[d['c%sr'%comp]]:
+                    out+='('+row[d['c%sr'%comp]]+')'
+                out+=']'
+            elif row[d['c%sr'%comp]]:
+                out+='_[(' + row[d['c%sr'%comp]] + ')]'
+
+            return out
+
+        out = component("a")
         out+='_'+row[d['rea']]+'_'
-
+        out+= component("b")
         # Reaction B
-        out+=row[d['cbn']]
-        if row[d['cbd']]:
-            out+='_['+row[d['cbd']]
-            if row[d['cbs']]:
-                out+='/'+row[d['cbs']]
-            if row[d['cbr']]:
-                out+='('+row[d['cbr']]+')'
-            out+=']'
-        elif row[d['cbs']]:
-            out+='_['+row[d['cbs']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
-            if row[d['cbr']]:
-                out+='('+row[d['cbr']]+')'
-            out+=']'
-        elif row[d['cbr']]:
-            out+='_[(' + row[d['cbr']] + ')]'
+        # out+=row[d['cbn']]
+        # if row[d['cbd']]:
+        #     out+='_['+row[d['cbd']]
+        #     if row[d['cbs']]:
+        #         out+='/'+row[d['cbs']]
+        #     outif row[d['cbr']]:
+        #         out+='('+row[d['cbr']]+')'
+        #     out+=']'
+        # elif row[d['cbs']]:
+        #     out+='_['+row[d['cbs']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
+        #     if row[d['cbr']]:
+        #         out+='('+row[d['cbr']]+')'
+        #     out+=']'
+        # elif row[d['cbr']]:
+        #     out+='_[(' + row[d['cbr']] + ')]'
 
         return out
 
-    def check_full_rxns(full_reaction, dictionary_list):
-        '''
-        Checks whether all targets match a full reaction. Validation of Full Reaction creation function
-        '''
-        for d in dictionary_list:
-            if full_reaction.lower().strip() == d['Target'].lower().strip():
-                return True
-            #else:
-             #   print 'missmatch'
-              #  print full_reaction, d['Target']
 
     def build_gene_list(self, ob_list):
         '''
@@ -497,14 +494,12 @@ class SBtabParser(Commandline):
                 locus_col_index= ob['object'].columns.index('!LocusName')
 
                 # Save the data of these three columns to lists
-                gene_list=[{}]
-                for row in ob['object'].getRows():
-                    gene_list.append({
+                gene_list=[{
                         'Gene': row[gene_col_index],
                         'Name': row[name_col_index],
                         'LocusName': row[locus_col_index]
-                    })
-                gene_list.pop(0)
+                    } for row in ob['object'].getRows()]
+
         return gene_list
 
     def build_reaction_definition(self, ob_list):
@@ -564,10 +559,7 @@ class SBtabParser(Commandline):
         Main function for parsing rxncon--> SBtab Format
         '''
         files = get_files(self.inputdir)
-        self.read_outputformat(self.parsable_to)
-        #outputformat='xls' #delete
-        #reactivate :
-        # outputformat= raw_input('Please enter the output format. Possible are .csv, .xls, .tsv, .ods (default= .csv):\n')
+        #self.read_outputformat(self.parsable_to) reactivate
         if self.outputformat=='':
             self.outputformat='csv'
         else:
@@ -581,60 +573,90 @@ class SBtabParser(Commandline):
             #xls_tables= parse_xls(filedir)
             #print xls_tables
             #################################################
-            d= build_rxncon_dict(self.inputdir,file)
+            d= build_rxncon_dict(self.inputdir,file) #dict with 3 values, that are itself lists of dicts
             for key in d.keys():
                 #print key
                 #print d[key][1]
 
                 tableType=''
                 tableName=''
+
                 if 'reaction_list' in key:
                     tableType='ReactionID'
                     tableName='Reaction list'
                     filename='filename1'
 
-                    header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName+'"'
-                    big=header_row+'\n'
+                    header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName#+'\n'
                     #columns=d[key][1].keys()
                     columns= ['!ReactionID','!ComponentA:Name','!ComponentA:Domain','!ComponentA:Subdomain','!ComponentA:Residue','!Reaction','!ComponentB:Name','!ComponentB:Domain','!ComponentB:Subdomain','!ComponentB:Residue','!Quality','!PubMedIdentifiers','!Comment']
-                    value_rows=[]
-                    #print d[key][1].values()
-                    for row in d[key]:
-                        value_rows.append(row.values())
+                    mapping_dict={
+                        '!ReactionID' : 'ReactionID',
+                        '!ComponentA:Name' : 'ComponentA[Name]',
+                        '!ComponentA:Domain' : 'ComponentA[Domain]',
+                        '!ComponentA:Subdomain' : 'ComponentA[Subdomain]',
+                        '!ComponentA:Residue' : 'ComponentA[Residue]',
+                        '!Reaction' : 'ReactionType', # 'Reaction',
+                        '!ComponentB:Name' : 'ComponentB[Name]',
+                        '!ComponentB:Domain' : 'ComponentB[Domain]',
+                        '!ComponentB:Subdomain' : 'ComponentB[Subdomain]',
+                        '!ComponentB:Residue' : 'ComponentB[Residue]',
+                        '!Quality' : 'Quality',
+                        '!PubMedIdentifiers' : 'PubMedIdentifier(s)',
+                        '!Comment': 'Comments'
 
-                    for col in columns:
-                        big= big + col+ ' '
+                    }
+                    value_rows=[] #each list item is a list with the values of a row for easier delimiter organisation
+                    print 'erstes dictionary ',d[key][0]
+                    print 'keys innere liste: ', d[key][0].keys()
+                    for i in range(0,len(d[key])): # for all items in e.g. reaction_list
+                        values=[]
+                        for col in columns:
+                            values.append(d[key][i][mapping_dict[col]])
+                        value_rows.append(values)
 
                 elif 'contingency_list' in key:
                     tableType='ContingencyID'
                     tableName='Contingency list'
                     filename='filename2'
+                    header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName#+'"'+'\n'
+                    columns= ['!ContingencyID' ,'!Target' ,'!Contingency' ,'!Modifier' ,'!PubMedIdentifiers' ,'!Quality' ,'!Comment']
+                    value_rows=[] #each list item is a list with the values of a row for easier delimiter organisation
 
-                    header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName+'"'
-                    big=header_row+'\n'
                 elif 'reaction_definition' in key:
                     tableType='ReactionList'
                     tableName='Reactions definitions'
                     filename='filename3'
+                    columns=['!Reaction','!Category:Type','!Category','!SubclassID','!Subclass','!ModifierOrBoundary','!ReactionType:ID','!ReactionType','!Reaction:Name','!Reversibility','!Directionality','!SourceState:Component','!SourceState:Modification','!ProductState:Component','!ProductState:Modification','!coSubstrates','!coProducts','!Comment']
+                    header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName#+'"'+'\n'
+                    value_rows=[] #each list item is a list with the values of a row for easier delimiter organisation
 
-                    header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName+'"'
-                    big=header_row+'\n'
-
-                print '####################################'
                 print 'ist:'
-                print big
+                print header_row
+                for col in columns:
+                        #print col+ '\t', # using tabs as delimeters
+                        print col+ ',', # using comma as delimeters
                 print ''
+                k=0
+                while k < 2:
+                    for row in value_rows:
+                        for value in row:
+                            print str(value)+',',
+                        print ''
+                        k+=1
+
+                print ''
+                print '####################################'
                 #print len(columns), columns
                 #print len(value_rows[1]), value_rows[1]
                 #sbtab= createDataset(header_row, columns, value_rows, filename)
                 #print sbtab
                 #print 'inputdir: ', inputdir
                 #print 'filedir: ',filedir
-                #print '\nsoll:'
+                print 'soll:'
                 f= open('sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv', 'r')
                 #f=open(filedir, 'r')
                 ff= f.read()
-                #print ff[0:400]
+                print ff[0:400]    #das hier will ich lesen
 
                 #fff = tablibIO.importSetNew(ff,filedir)
                 #ffff = SBtab.SBtabTable(fff,filedir)
@@ -642,8 +664,11 @@ class SBtabParser(Commandline):
                 ffff = SBtab.SBtabTable(fff,'sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv')
                 ffff.update()
 
-                #ffff.writeSBtab('csv',filedir+'/output/test')   das schreiben sollte in eine eigene funktion so wie write_sbtab_xls oder so
+
+
+                #ffff.writeSBtab('csv',filedir+'/output/test')   #das schreiben sollte in eine eigene funktion so wie write_sbtab_xls oder so
                 #ffff.writeSBtab('csv')
+
 
 class SBtabWriter(object):
     def __init__(self):
@@ -890,7 +915,7 @@ if __name__=="__main__":
 
     c=Commandline()
     #c.hello()
-    c.inputdir='rxncon_files/rxncon_xls/sps'
+    #c.inputdir='rxncon_files/rxncon_xls/sps'
     c.inputdir='sbtab_files/tiger_files_csv_cut'
 
     d=DirCheck(c.inputdir)
@@ -909,7 +934,7 @@ if __name__=="__main__":
         p.parse_rxncon2SBtab()
         w= SBtabWriter()
 
-    w.write()
+    #w.write()
 
 
     #'to be' usage:
