@@ -67,20 +67,29 @@ class Commandline(object):
 
         self.inputdir=inputdir
 
+    def outputformat_formating(self, possibilities, default):
+        self.outputformat= raw_input('Please enter the output format. Possible are .{0} (default= .{1}):\n'.format(" & .".join(possibilities), default))
+        if self.outputformat=='':
+            self.outputformat='{0}'.format(default)
+        else:
+            self.outputformat = self.outputformat[-3:] # basti: nach dem letzten punkt mit split
+
     def read_outputformat(self, parsable_to):
         if parsable_to=='rxncon':
-            self.outputformat= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
-            if self.outputformat=='':
-                self.outputformat='txt'
-            else:
-                self.outputformat = self.outputformat[-3:]
+            self.outputformat_formating(["txt","xls"], "txt")
+            # self.outputformat= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
+            # if self.outputformat=='':
+            #     self.outputformat='txt'
+            # else:
+            #     self.outputformat = self.outputformat[-3:]
 
         elif parsable_to=='sbtab':
-            self.outputformat= raw_input('Please enter the output format. Possible are .csv & .xls (default= .csv):\n')
-            if self.outputformat=='':
-                self.outputformat='csv'
-            else:
-                self.outputformat = self.outputformat[-3:]
+            self.outputformat_formating(["csv","xls"], "csv")
+            # self.outputformat= raw_input('Please enter the output format. Possible are .csv & .xls (default= .csv):\n')
+            # if self.outputformat=='':
+            #     self.outputformat='csv'
+            # else:
+            #     self.outputformat = self.outputformat[-3:]
 
 class DirCheck(object):
     def __init__(self, inputdir):
@@ -104,25 +113,25 @@ class DirCheck(object):
         for filename in files:
             filedir= self.inputdir+'/'+filename
 
-            if filename.startswith('.'):
+            if filename.startswith('.'): # filename[0]
                 #skips temp files
                 continue
 
-            if filename.endswith('.txt'):
+            if filename.endswith('.txt'):# basti: nach dem letzten punkt mit split
                 self.check_txt_File(filedir)
 
-            elif filename.endswith('.xls'):
+            elif filename.endswith('.xls'):# basti: nach dem letzten punkt mit split
                 # Read Excel Document
                 self.check_xls_File(filedir)
 
-            elif filename.endswith('.ods'):
+            elif filename.endswith('.ods'):# basti: nach dem letzten punkt mit split
                 # Read Open / Libre Office Document
                 print 'Found File(s) in .ods format. This format ist not supported. ' \
                       '\nPlease export to .xls or .txt format (Open/Libre Office and Excel can do this).\n' \
                       'If you want to translate from SBtab to rxncon you can also use .csv format.'
                 #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
-            elif filename.endswith('.csv'):
+            elif filename.endswith('.csv'):# basti: nach dem letzten punkt mit split
                 # Read csv Table
                 self.check_csv_File(filedir)
                 if self.rxncon_detected:
@@ -135,7 +144,7 @@ class DirCheck(object):
             if self.sbtab_detected==True:
                 print 'Error, both SBtab and rxncon files detected in input directory! Please clean up the directory!'
             elif self.other_detected==True:
-                print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
+                print 'Error, files of unknown format (neither SBtab nor rxncon) detected!' # basti: fkt da doppelt spaeter
             else:
                 print 'Directory of rxncon files detected. Starting parser.'
                 self.look_for_rxncon_files()
@@ -158,14 +167,14 @@ class DirCheck(object):
         Checks whether txt file is rxncon, SBtab or other file type
         '''
         with open(filedir, 'r') as f:
-                    first_line= f.readline().strip()
-                    if 'SBtab' in first_line:
-                        self.sbtab_detected=True
-                    elif 'rxncon' in first_line:
-                        # sollte im rxncon header fuer txt files vorkommen, gibt es bisher nicht
-                        self.rxncon_detected=True
-                    else:
-                        self.other_detected=True
+            first_line= f.readline().strip()
+            if 'SBtab' in first_line:
+                self.sbtab_detected=True
+            elif 'rxncon' in first_line:
+                # sollte im rxncon header fuer txt files vorkommen, gibt es bisher nicht
+                self.rxncon_detected=True
+            else:
+                self.other_detected=True
 
 
 
@@ -265,9 +274,11 @@ class DirCheck(object):
 
         files = get_files(self.inputdir)
         found_tables=[]
-
+        # basti
+        #found_tables = [table for filename in files for table in build_rxncon_dict(self.inputdir, filename)]
         for filename in files:
             d= build_rxncon_dict(self.inputdir, filename)
+            #found_tables = [table for table in d]
             for table in d.keys():
                 found_tables.append(table)
 
@@ -329,7 +340,8 @@ class SBtabParser(Commandline):
         Main function for parsing SBtab --> rxncon Format. Creates rxncon object
         '''
         files = get_files(self.inputdir)
-        #self.read_outputformat(self.parsable_to) reactivate
+        self.read_outputformat(self.parsable_to) #reactivate
+        print self.outputformat
         if self.outputformat!='txt' and self.outputformat!='xls':
             print 'Error, the format ',self.outputformat,' is not supported.'
 
@@ -574,7 +586,8 @@ class SBtabParser(Commandline):
             #print xls_tables
             #################################################
             d= build_rxncon_dict(self.inputdir,file) #dict with 3 values, that are itself lists of dicts
-            for key in d.keys():
+            for key in d:#.keys():
+
                 #print key
                 #print d[key][1]
 
@@ -741,6 +754,16 @@ class RxnconWriter(object):
         small_cols_r =['A','C','E','F','I','J','P','U']
         medium_cols_r=['D','G','L','M','N','O','Q','R','S','T','V']
         big_cols_r=['B','H','K','W']
+
+        #def column_gen(self, sheet, cols_r, size ):  basti
+        #    for c in cols_r:
+        #        sheet.set_column(c+':'+c, size)
+        #    return sheet
+
+        #column_gen(r_sheet, small_cols_r, 15)
+        #column_gen(r_sheet, medium_cols_r, 23)
+
+
         for c in small_cols_r:
             r_sheet.set_column(c+':'+c,15)
         for c in medium_cols_r:
@@ -810,11 +833,14 @@ class RxnconWriter(object):
         for c in alfa[0:len(headers_c)]:
             c_sheet.write(c+'1', headers_c[alfa.index(c)])
 
+        #for i in range(len(headers_c)): basti
+            #c_sheet.write(alfa[i]+'1', headers_c[i])
+
         #write content
         contingency_list= rxncon.xls_tables['contingency_list']
         number_reactions_c = len(contingency_list)
 
-        for i in range(1,number_reactions_c+1):
+        for i in range(1,number_reactions_c+1):  # basti: mapping
             c_sheet.write('A'+str(i+1),contingency_list[i-1]['ContingencyID'])
             c_sheet.write('B'+str(i+1),contingency_list[i-1]['Target'])
             c_sheet.write('C'+str(i+1),contingency_list[i-1]['Contingency'])
@@ -830,7 +856,7 @@ class RxnconWriter(object):
         medium_cols_rd =['B','F','G','J','K','R']
         big_cols_rd=['C','E','I','L','M','N','O']
 
-        for c in small_cols_rd:
+        for c in small_cols_rd:  # see function column_gen
             rd_sheet.set_column(c+':'+c,15)
         for c in medium_cols_rd:
             rd_sheet.set_column(c+':'+c,23)
@@ -838,14 +864,14 @@ class RxnconWriter(object):
             rd_sheet.set_column(c+':'+c,33)
         #write headers
         headers_rd= ['Reaction', 'CategoryType', 'Category', 'SubclassID', 'Subclass', 'Modifier or Boundary', 'ReactionTypeID', 'ReactionType', 'ReactionName', 'Reversibility', 'Directionality', 'SourceState[Component]', 'SourceState[Modification]', 'ProductState[Component]', 'ProductState[Modification]', 'coSubstrate(s)', 'coProduct(s)', 'Comments']
-        for c in alfa[0:len(headers_rd)]:
+        for c in alfa[0:len(headers_rd)]: # basti: duplication
             rd_sheet.write(c+'1', headers_rd[alfa.index(c)])
 
         #write content
         reaction_definition_list= rxncon.xls_tables['reaction_definition']
         number_reactions_rd = len(reaction_definition_list)
 
-        for i in range(1,number_reactions_rd+1):
+        for i in range(1,number_reactions_rd+1): # basti; mapping
             rd_sheet.write('A'+str(i+1),reaction_definition_list[i-1]['Reaction'])
             rd_sheet.write('B'+str(i+1),reaction_definition_list[i-1]['CategoryType'])
             rd_sheet.write('C'+str(i+1),reaction_definition_list[i-1]['Category'])
@@ -865,7 +891,7 @@ class RxnconWriter(object):
             rd_sheet.write('Q'+str(i+1),reaction_definition_list[i-1]['coProduct(s)'])
             rd_sheet.write('R'+str(i+1),reaction_definition_list[i-1]['Comments'])
 
-    # contingency definitions sheet
+    # contingency definitions sheet # basti: kann weck
         # just going to print the default
         cd_sheet= workbook.add_worksheet('(V) Contingency Definitions')
         cd_sheet.set_column('A:A',23)
@@ -885,7 +911,7 @@ class RxnconWriter(object):
         cd_sheet.write('C8','Used when several states are required for a certain effect (Intersection of states)')
         cd_sheet.write('C9','Used when severak states can give an effect individually (Union of states)')
 
-    # ORF sheet
+    # ORF sheet  # basti: weck
         #ich baller hier alle gene rein, keine ahung welche orf und welche non orf sind
         o_sheet= workbook.add_worksheet('(VI) ORF IDs')
         o_sheet.set_column('A:A',15)
