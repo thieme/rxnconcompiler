@@ -1,3 +1,29 @@
+New:
+   Marcus:
+      - make sbtab file from rxncon file and make excel color coding depending on:
+         grey: not user editable (wie halt in rxncon)
+         sth other: neede
+         sth other other: optional
+         - dazu notizen im Block (Sbtab kapitel) und oder Foto vom Whiteboard angucken (17.09)
+   Basti:
+      - make clean todo list in gitlab using issues
+      - finish testing program
+      - den ganzen outputkram auslagern (directory erstellen wenns keins gibt usw)
+      - im programm sollte folgende auteilung erkennbar sein (die stufen des programms):
+         - parsing
+         - translating
+         - writing
+         --> translating teil auslagern
+      - die ganzen "der inhalt muss in die spalte" stellen einfacher machen:
+         - irgendwo eine mapping struktur definieren, die quasi alle zusammenhänge zwischen rxncon und sbtab enthält:
+            welche spalte heißt in dem anderen format wie, welcher spaltenindex passt zu dem im anderen format
+         - diese dann überall verwenden wo diese ewig langen "spalte hat der wert von blah am index blah" dinger sind
+         - vielleicht mit dicts, vllt mit dicts von dicts, vllt andere objekte?
+         - for schelife, die indexes_dict generation besser macht? (noch nötig, wenn der vorherige punk tumgesetzte ist?)
+
+
+
+
 *Marcus*:
    - sourcde state und product state werden nicht ausgefüllt, soll ich aber erst mal ignorieren, vllt ändert sich das eh noch
    - hello text verbessern (update sebastian: am ende wird eh nix console sein, sondern alles im Framwork, von daher egal)
