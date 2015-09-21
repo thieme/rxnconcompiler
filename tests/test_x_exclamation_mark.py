@@ -20,6 +20,11 @@ from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 # X_P+_A
 from unittest import main, TestCase
 from rxnconcompiler.rxncon import Rxncon
+<<<<<<< HEAD
+=======
+from rxnconcompiler.parser.rxncon_parser import parse_rxncon
+from rxnconcompiler.sbtab import test
+>>>>>>> 7434a383672e6a4bcc1eaae8cffa25ecc62b243a
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state
@@ -27,7 +32,6 @@ from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicat
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
 from rxnconcompiler.molecule.molecule import Molecule
 from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder
-from rxnconcompiler.compiler import Compiler
 import copy
 
 
@@ -35,6 +39,7 @@ class x_exclamation_mark_Tests(TestCase):
 
     """
     Unit tests for Rxncon class.
+
     Tests top rxncon objects.
     """
 
@@ -46,7 +51,6 @@ class x_exclamation_mark_Tests(TestCase):
         # basic reaction with one contingency.
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
         input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
-
 
 
 #######################################   Presentation ########################################
@@ -289,9 +293,6 @@ class x_exclamation_mark_Tests(TestCase):
         # <FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]
 
 
-
-
-
 #         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
 # <Comp>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]
 #         """)
@@ -304,7 +305,6 @@ class x_exclamation_mark_Tests(TestCase):
 # <Comp>; OR <C1>; OR <C2>
 # <C1>; AND Ste7--Ste11
 # <C2>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]""")
-
 
 #####################################################################################################################################
         #simple chain
@@ -351,6 +351,7 @@ class x_exclamation_mark_Tests(TestCase):
 
         #rxncon = Rxncon('Cdc42_ppi_Ste20_[CRIB2]; ! Cdc42_[GnP]-{P}; x Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]')
 
+
         ##### print test #########
 
 #         rxncon = Rxncon("""
@@ -390,6 +391,7 @@ class x_exclamation_mark_Tests(TestCase):
         self.bngl_src = Bngl(
             rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
         # print bngl_src.get_src()
+
 
     def test_change(self):
         """
