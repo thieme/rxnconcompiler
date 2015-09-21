@@ -20,11 +20,7 @@ from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 # X_P+_A
 from unittest import main, TestCase
 from rxnconcompiler.rxncon import Rxncon
-<<<<<<< HEAD
-=======
-from rxnconcompiler.parser.rxncon_parser import parse_rxncon
-from rxnconcompiler.sbtab import test
->>>>>>> 7434a383672e6a4bcc1eaae8cffa25ecc62b243a
+
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state
