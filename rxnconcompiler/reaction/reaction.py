@@ -46,7 +46,7 @@ class Reaction:
         self.substrat_complexes = []
         self.product_complexes = [] #RxnconMolecule objects
         self.conditions = None # e.g. ['Start'], ['Turgor'] ...
-        self.to_change = None # domain that will chage during reaction.
+        self.to_change = None # domain that will change during reaction.
         self.to_change_pt = None # used only in PT reaction - here two domains change.
         self.rate = None # Rate object
 
@@ -202,7 +202,10 @@ class Reaction:
         120_1 ---> 120
         33 ---> 33
         """  
-        return str(self.rid).split('_')[0]    
+        return str(self.rid).split('_')[0]
+
+    def get_reactants(self):
+        return [self.left_reactant, self.right_reactant]
         
 
 class Interaction(Reaction):

@@ -159,7 +159,10 @@ class ReactionContainer(list):
         Removes all reactions.
         """
         while self:
-            self.pop()    
+            self.pop()
+
+    def get_reactants(self):
+        return self[0].get_reactants()
 
 
 class ReactionPool(dict):
@@ -234,7 +237,7 @@ class ReactionPool(dict):
     def find_modification_product(self, state):
         """
         Finds Covalent Modification state in products of all reactions,
-        when gicen state - check with name and modifier not with domain.
+        when given state - check with name and modifier not with domain.
 
         Used when exchenging default bd domain in contingency.
         """

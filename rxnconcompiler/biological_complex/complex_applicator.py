@@ -136,7 +136,7 @@ class ComplexApplicator:
         """"""
         self.reaction_container = reaction_container
         self.complexes = complexes
-        self.possible_roots = [self.reaction_container[0].left_reactant, self.reaction_container[0].right_reactant]
+        self.possible_roots = reaction_container.get_reactants()
 
     def change_contingency_relation(self, inner_list, cont_sign):
         """
@@ -421,7 +421,10 @@ class ComplexApplicator:
             for inner_list in complex:
                 for cont in inner_list:
                     if cont.state.has_component(root):
-                        negative_complex_tree.merge_complex(self.build_tree_combinations_from_list(inner_list, root))
+                        negative_tree = self.build_tree_combinations_from_list(inner_list, root)
+                        for tree in negative_tree:
+                            if tree not in negative_complex_tree:
+                                negative_complex_tree.add_complex(tree)
                         break
         return negative_complex_tree
 
@@ -723,18 +726,21 @@ class ComplexApplicator:
         @return: None if the ref_cont is member of complex_copy and there is no conflict
         """
         for cont in complex_copy:
-            if ref_cont.state.state_str == cont.state.state_str and ref_cont.target_reaction == cont.target_reaction:
-                if ref_cont.ctype != cont.ctype:
-                    return True
-                else:
-                    return None
+            #if ref_cont.state.state_str == cont.state.state_str and ref_cont.target_reaction == cont.target_reaction:
+            if ref_cont.state.state_str == cont.state.state_str:
+                #for comp in ref_cont.state.components:
+                if cont.state.has_component(ref_cont.state.components[0]) and cont.state.has_component(ref_cont.state.components[1]):
+                    if ref_cont.ctype != cont.ctype:
+                        return True
+                    else:
+                        return None
         return False
 
 
     def adapt_complex(self, rules, complex_copy, root):
         """
         if rules is not empty the current complex (complex_copy) is checked versus all the rules if there is an overlap with one rule
-        this will be eleminated and the complex_copy will be modified. all further checks will be done with the modified complex_copy
+        this will be eliminated and the complex_copy will be modified. all further checks will be done with the modified complex_copy
         @param rules: all non-overlapping rules until this step
         @param complex_copy: current complex
         @param root: current root
@@ -792,7 +798,7 @@ class ComplexApplicator:
                         if len(tree) == 1:
                             if not next:
                                 complex_copy = copy.deepcopy(complex_copy)
-                                complex_copy, tree = self.check_combinatorial_conflict(complex_copy, not_in_cont, tree)
+                                #complex_copy, tree = self.check_combinatorial_conflict(complex_copy, not_in_cont, tree)
                                 complex_copy.extend(tree)
                                 rules.append(copy.deepcopy(complex_copy))
                                 next = True
@@ -802,7 +808,7 @@ class ComplexApplicator:
 
                             if complex_copy not in rules:
                                 rules.append(complex_copy)
-                            complex_copy, tree = self.check_combinatorial_conflict(complex_copy, not_in_cont, tree)
+                            #complex_copy, tree = self.check_combinatorial_conflict(complex_copy, not_in_cont, tree)
                             new_complex_copy = copy.deepcopy(complex_copy)
                             for complex_cont in copy.deepcopy(new_complex_copy):
                                 check = self.conflict_check(complex_cont, tree)
