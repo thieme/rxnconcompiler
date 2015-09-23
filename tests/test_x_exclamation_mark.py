@@ -59,18 +59,27 @@ class x_exclamation_mark_Tests(TestCase):
         #                  <comp1C1>; AND C--D [B2]""")
 
 
-        # rxncon = Rxncon("""
-        #                 <c2>; OR A--E
-        #                 <c2>; OR A--F
-        #                 <c1>; OR A--C
-        #                 <c1>; OR A--D
-        #                 A_ppi_B; ! <comp>
-        #                 <comp>; AND <c1>
-        #                 <comp>; AND <c2>
-        #                 <comp>; AND A_[x]-{P}
-        #                  """)
+# genauer anschauen
+        rxncon = Rxncon("""
 
-
+                        A_ppi_B; ! <comp> \n <comp>; AND <c1> \n <comp>; AND <c2> \n <c2>; OR A--E \n <c2>; OR A--F \n <c1>; OR A--C \n <c1>; OR A--D
+                         """)
+#         rxncon = Rxncon("""
+#                         A_ppi_B; ! <comp1>
+#                         <comp1>; OR <comp1C1>
+#                         <comp1>; OR <comp1C2>
+#                         <comp1C1>; AND A--A1
+#                         <comp1C1>; AND A--A2
+#                         <comp1C2>; AND B--B2
+#                         <comp1C2>; AND B2--B1
+#                         A_ppi_B; x <comp2>
+#                         <comp2>; OR <comp2C1>
+#                         <comp2>; OR <comp2C2>
+#                         <comp2C1>; AND A--C1
+#                         <comp2C1>; AND A--C2
+#                         <comp2C2>; AND A--D1
+#                         <comp2C2>; AND A--D2
+#                         """)
 ##### ordered bool ####
  #        rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
  # <Comp>; OR <C1>; OR <C2>
@@ -109,23 +118,17 @@ class x_exclamation_mark_Tests(TestCase):
         #
         #                 """)
 
-########################## !x combination one is fully connected ###########
-        # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <comp1>
+
+        # rxncon = Rxncon("""A_ppi_B; ! <comp1>
         #                 <comp1>; OR <comp1C1>
         #                 <comp1>; OR <comp1C2>
         #                 <comp1C1>; AND A--A1
         #                 <comp1C1>; AND A--A2
-        #                 <comp1C2>; AND B--B2
-        #                 <comp1C2>; AND B2--B1
-        #                 A_ppi_B; x <comp2>
-        #                 <comp2>; OR <comp2C1>
-        #                 <comp2>; OR <comp2C2>
-        #                 <comp2C1>; AND A--C1
-        #                 <comp2C1>; AND A--C2
-        #                 <comp2C2>; AND A--D1
-        #                 <comp2C2>; AND A--D2
-        #                 """)
+        #                 <comp1C2>; AND B--B1
+        #                 <comp1C2>; AND B--B2""")
+
+########################## !x combination one is fully connected ###########
+
 
         # rxncon = Rxncon(""" A_ppi_B; ! <comp1>
         #                 <comp1>; OR <comp1C1>
@@ -243,8 +246,8 @@ class x_exclamation_mark_Tests(TestCase):
         #
         # ''')
 
-        rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}> \n <Cdc24^{M}>; or <Cdc24^{M/4}> \n <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24] \n <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4] \n <Cdc24^{M}>; or <Cdc24^{M/F}> \n <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c] \n <Cdc24^{M/F}>; and <Far1^{M}> \n <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1] \n <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-        ''')
+        #rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}> \n <Cdc24^{M}>; or <Cdc24^{M/4}> \n <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24] \n <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4] \n <Cdc24^{M}>; or <Cdc24^{M/F}> \n <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c] \n <Cdc24^{M/F}>; and <Far1^{M}> \n <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1] \n <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #''')
 
 
         #rxncon = Rxncon(""" A_SymExtCyt_B,C,D,E""")

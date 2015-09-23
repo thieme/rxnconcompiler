@@ -725,11 +725,19 @@ class ComplexApplicator:
         @return: True if the ref_cont is member of complex_copy and there is a conflict
         @return: None if the ref_cont is member of complex_copy and there is no conflict
         """
+        found = False
         for cont in complex_copy:
             #if ref_cont.state.state_str == cont.state.state_str and ref_cont.target_reaction == cont.target_reaction:
             if ref_cont.state.state_str == cont.state.state_str:
                 #for comp in ref_cont.state.components:
-                if cont.state.has_component(ref_cont.state.components[0]) and cont.state.has_component(ref_cont.state.components[1]):
+                if len(ref_cont.state.components) > 1:
+                    if cont.state.has_component(ref_cont.state.components[0]) and cont.state.has_component(ref_cont.state.components[1]):
+                        found = True
+
+                elif cont.state.has_component(ref_cont.state.components[0]):
+                    found = True
+
+                if found:
                     if ref_cont.ctype != cont.ctype:
                         return True
                     else:
@@ -805,83 +813,20 @@ class ComplexApplicator:
                             elif next:
                                 rules[-1].append(copy.deepcopy(not_in[0]))
                         else:
-
-                            if complex_copy not in rules:
-                                rules.append(complex_copy)
+                            # important for conntected states
+                            #if complex_copy not in rules:
+                            #    rules.append(complex_copy)
                             #complex_copy, tree = self.check_combinatorial_conflict(complex_copy, not_in_cont, tree)
                             new_complex_copy = copy.deepcopy(complex_copy)
                             for complex_cont in copy.deepcopy(new_complex_copy):
                                 check = self.conflict_check(complex_cont, tree)
-                                if check:
+                                if check or check == None:
                                     new_complex_copy.remove(complex_cont)
                             new_complex_copy.extend(tree)
-                            rules.append(new_complex_copy)
+                            if new_complex_copy not in rules:
+                                rules.append(new_complex_copy)
 
         return rules
-
-    def check_combinatorial_conflict(self, current_complex, not_in_cont, not_in_tree):
-        # first revert the change in not_in_cont
-        self.change_contingency_opposite(not_in_cont)
-        complex_tree = []
-
-        # build full ordered trees
-        for root in self.possible_roots:
-            for complex in self.complexes:
-                for inner_list in complex[1]:
-                    for cont in inner_list:
-                        if cont.state.has_component(root):
-                            cont_tree, state_tree = self.get_ordered_tree(inner_list,root)
-                            complex_tree.append(cont_tree)
-
-        complex_states = []
-        for comp in current_complex:
-            complex_states.append(comp.state)
-
-        not_in_full_tree = []
-        complex_cont_full_tree = []
-        new_current_complex = current_complex
-        if not_in_cont.state in complex_states:
-            complex_cont_idx = complex_states.index(not_in_cont.state)
-            complex_cont = current_complex[complex_cont_idx]
-            for tree in complex_tree:
-                if not_in_cont in tree:
-                    not_in_full_tree = tree
-                if complex_cont in tree:
-                    complex_cont_full_tree = tree
-                if not_in_full_tree and complex_cont_full_tree:
-                    if not_in_full_tree != complex_cont_full_tree:
-                        sid_right = 0
-                        for i, tree_cont in enumerate(not_in_tree):
-                            if tree_cont.state.sid == None:
-                                #### pay attention on the combonent order?
-                                # Cdc24--Far1, Ste4--Far1, Ste4--Ste18
-
-                                sid_left = i + 1
-                                sid_right = i + 2
-                                sid = "{0}--{1}".format(sid_left, sid_right)
-                                state = get_state(tree_cont.state.state_str, sid)
-                                tree_cont.state = state
-                        counter = sid_right + 1
-                        new_current_complex = Association([], current_complex.get_complex_type())
-                        for tree_cont in complex_cont_full_tree:
-                            for cont in current_complex:
-                                if tree_cont == cont:
-                                    if cont.state.sid == None:
-                                        #### pay attention on the combonent order
-                                        sid_left = counter + 1
-                                        sid_right = counter + 2
-                                        sid = "{0}--{1}".format(sid_left, sid_right)
-                                        state = get_state(cont.state.state_str, sid)
-                                        cont.state = state
-                                        new_current_complex.append(cont)
-                                        counter += 1
-                        break
-                    else:
-                        return current_complex, []
-
-            pass
-        return new_current_complex, not_in_tree
-
 
     def building_rules(self, complex_combination_list):
         """

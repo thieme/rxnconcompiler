@@ -42,8 +42,8 @@ class Contingency:
 
 
     def __repr__(self):
-        """Representation of contingency: ctype state, e.g. ! A--B"""
-        return "%s %s" % (self.ctype, self.state)
+        """Representation of contingency: target_reaction ctype state, e.g. ! A--B"""
+        return "%s %s %s" % (self.target_reaction, self.ctype, self.state)
 
     def __eq__(self, other):
         """
