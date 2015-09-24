@@ -90,9 +90,21 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <comp2C2>; AND A--D1
         #                 <comp2C2>; AND A--D2
         #                 """)
-        rxncon = Rxncon("""SCF_Ub+_Tec1; ! <bool>
-                            <bool>; AND Cdc4_[WD40]--Tec1_[CPD]
-                            <bool>; AND Cdc4_[SCF]--SCF_[Cdc4]""")
+        rxncon = Rxncon("""SCF_p+_Tec1; ! <bool>
+                            <bool>; and Cdc4_[SCF]--SCF_[Cdc4]
+                            <bool>; and Cdc4_[WD40]--Tec1_[CPD]
+                            """)
+
+
+
+        # rxncon = Rxncon("""SCF_p+_Tec1; ! Cdc4_[SCF]--SCF_[Cdc4]
+        #                     SCF_p+_Tec1; ! Cdc4_[WD40]--Tec1_[CPD]
+        #                      """)
+# have to check
+#         rxncon = Rxncon("""SCF_PT_Tec1; ! <bool>
+#                             <bool>; and Cdc4_[SCF]--SCF_[Cdc4]
+#                             <bool>; and Cdc4_[WD40]--Tec1_[CPD]
+#                             """)
 ##### ordered bool ####
  #        rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
  # <Comp>; OR <C1>; OR <C2>

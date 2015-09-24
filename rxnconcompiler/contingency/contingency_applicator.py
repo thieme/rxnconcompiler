@@ -194,7 +194,11 @@ class ContingencyApplicator():
             # TODO: Refactor make a function to check this condition.
             # A--B, A and B present in substrates
             if ((left.has_molecule(component1.name) and right.has_molecule(component2.name))\
-                or (left.has_molecule(component2.name) and right.has_molecule(component1.name)))\
+                or (left.has_molecule(component2.name) and right.has_molecule(component1.name))\
+                or (left.has_molecule(component1.name, component1.cid) and right.has_molecule(component2.name))\
+                or (left.has_molecule(component1.name) and right.has_molecule(component2.name, component2.cid))\
+                or (left.has_molecule(component2.name, component2.cid) and right.has_molecule(component1.name))
+                or (left.has_molecule(component2.name) and right.has_molecule(component1.name, component1.cid)))\
                 and not cont.state == reaction.to_change: 
                 
                 #if component1.name in [reaction.left_reactant.name, reaction.right_reactant.name] \

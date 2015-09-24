@@ -364,17 +364,27 @@ class ComplexBuilder:
                     for complex in complex_tuple[1]:
                         self.get_structured_complex(complex, self.tree.get_node(name=root.name))
                         #self.structured_complexes.append(complex)
-        self.process_structured_complex()
+        self.process_structured_complex(possible_roots)
 
-    def process_structured_complex(self):
+    def process_structured_complex(self,possible_roots):
+        #possible_roots = reaction_container.get_reactants()
         for root in self.tree.get_root_nodes():
+            #if root
+            # if root.name == str(possible_roots[0].name) and possible_roots[0].mid is None:
+            #     possible_roots[0].mid = root.id
+            # elif root.name == str(possible_roots[1].name) and possible_roots[1].mid is None:
+            #     possible_roots[1].mid = root.id
             if root.children:
-                self.update_tree_contingencies(root.id)
+                self.update_tree_contingencies(root.id, possible_roots)
 
 
-    def update_tree_contingencies(self, node_id):
+    def update_tree_contingencies(self, node_id, possible_roots):
         if self.tree.contains(node_id):
             node = self.tree.get_node(id=node_id)
+            # if node.name == str(possible_roots[0].name) and possible_roots[0].mid is None:
+            #     possible_roots[0].mid = node.id
+            # elif node.name == str(possible_roots[1].name) and possible_roots[1].mid is None:
+            #     possible_roots[1].mid = node.id
             queue = node.children
             if node.new_lvl:
 
@@ -391,7 +401,7 @@ class ComplexBuilder:
                     if root_cont.ctype in ["and", "or"]:
                         root_cont.ctype = sid
                     root_cont.state = state
-                    self.update_tree_contingencies(child_id)  # recursive call
+                    self.update_tree_contingencies(child_id, possible_roots)  # recursive call
         else:
             raise NameError("NodeID {0} does not exists!".format(node_id))
 
