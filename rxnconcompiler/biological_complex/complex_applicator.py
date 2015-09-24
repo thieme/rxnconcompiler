@@ -619,9 +619,15 @@ class ComplexApplicator:
                 #self.apply_cont(reaction, cont, cap)
                 cap.apply_simple_cont_on_reaction(reaction, cont)
             else:
-                if cont.state.type == "Input":
+                cont_applied =False
+                for comp in reaction.substrat_complexes:
+                    if comp.has_molecule(cont.state.components[0].name, cont.state.components[0].cid) or comp.has_molecule(cont.state.components[1].name, cont.state.components[1].cid):
+                        cap.apply_simple_cont_on_reaction(reaction, cont)
+                        cont_applied = True
+
+                if not cont_applied and cont.state.type == "Input":
                     input_cont.append(cont)
-                else:
+                elif not cont_applied:
                     apply_later.append(cont)
 
         for cont in apply_later:
@@ -770,12 +776,13 @@ class ComplexApplicator:
 
             if verify:
                 for ref_ele in verify:
-                    #if ref_ele.state.has_component(root):
-                    #    complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_ele)))
+                    if ref_ele.state.has_component(root):
+                        complex_copy.append(self.change_contingency_opposite(copy.deepcopy(ref_ele)))
                     #elif not ref_ele.state.has_component(root) and ref_ele not in not_in:
-                    already_known_states = [known_ele.state.state_str for known in not_in_complex for known_ele in known]
-                    if ref_ele.state.state_str not in already_known_states:
-                        not_in.append(copy.deepcopy(ref_ele))
+                    else:
+                        already_known_states = [known_ele.state.state_str for known in not_in_complex for known_ele in known]
+                        if ref_ele.state.state_str not in already_known_states:
+                            not_in.append(copy.deepcopy(ref_ele))
 
             if not_in != [] and not_in not in not_in_complex:
                 not_in_complex.append(not_in)
@@ -814,8 +821,8 @@ class ComplexApplicator:
                                 rules[-1].append(copy.deepcopy(not_in[0]))
                         else:
                             # important for conntected states
-                            #if complex_copy not in rules:
-                            #    rules.append(complex_copy)
+                            if complex_copy not in rules:
+                                rules.append(complex_copy)
                             #complex_copy, tree = self.check_combinatorial_conflict(complex_copy, not_in_cont, tree)
                             new_complex_copy = copy.deepcopy(complex_copy)
                             for complex_cont in copy.deepcopy(new_complex_copy):
