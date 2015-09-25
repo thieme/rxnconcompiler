@@ -217,7 +217,7 @@ class Tree(object):
                 parent.update_children(id, mode)
                 return parent
 
-    def get_index(self, name):
+    def get_index(self, idx):
         """
         get the index of identifier
         """
@@ -280,8 +280,8 @@ class Tree(object):
             elif name != None and parent_id == None and node.name == name: # we have a root node
                 return node
 
-    def __getitem__(self, name):
-        return self.nodes[self.get_index(name)]
+    def __getitem__(self, idx):
+        return self.nodes[idx]
 
     def contains(self, id):
         """
@@ -347,6 +347,13 @@ class ComplexBuilder:
         return []
 
     def structure_complex(self, complexes, reaction_container):
+        """
+        This function was implemented to structure a certain given complex in regard to the respective reaction.
+        The structure can vary with different reactoins
+        @param complexes: tuple (contingency, list of list of contingencies)
+        @param reaction_container:
+        @return:
+        """
         self.complexes_test = complexes
         possible_roots = reaction_container.get_reactants()
         self.structured_complexes = self.check_for_structured_complex(complexes)
@@ -357,40 +364,51 @@ class ComplexBuilder:
         else:
             #root_id = 0
             for root in possible_roots:
-                # check if the other root allready exists in the tree
-                #root_id += 1
                 self.tree.add_Node(root.name)
                 for complex_tuple in complexes:
                     for complex in complex_tuple[1]:
                         self.get_structured_complex(complex, self.tree.get_node(name=root.name))
-                        #self.structured_complexes.append(complex)
-        self.process_structured_complex(possible_roots)
 
-    def process_structured_complex(self,possible_roots):
-        #possible_roots = reaction_container.get_reactants()
+        self.process_structured_complex()
+
+    def process_structured_complex(self):
+        """
+        This function iterates over the constructed tree and adapted the contingencies for a certain parent, children
+
+              A (id: 1) (cont: and A--B, and A--C)
+            /  \
+           B   C
+        (id:2)(id:3)
+
+        [1--2 A--B, 1--3 A--C]
+
+        @return:
+        """
         for root in self.tree.get_root_nodes():
-            #if root
-            # if root.name == str(possible_roots[0].name) and possible_roots[0].mid is None:
-            #     possible_roots[0].mid = root.id
-            # elif root.name == str(possible_roots[1].name) and possible_roots[1].mid is None:
-            #     possible_roots[1].mid = root.id
             if root.children:
-                self.update_tree_contingencies(root.id, possible_roots)
+                self.update_tree_contingencies(root.id)
 
 
-    def update_tree_contingencies(self, node_id, possible_roots):
+    def update_tree_contingencies(self, node_id):
+        """
+        helper function for process_structured_complex
+            sid: is a property of state which shows the orientation/structured relation of the components
+                 if structured: 1--2 or something like that
+                 if not structured: None
+            ctype: shows the contingency type if we have a sid then the type is the same as the sid otherwise it
+                   is another contingency
+        @param node_id: id of a certain node (new root)
+        @return:
+        """
         if self.tree.contains(node_id):
             node = self.tree.get_node(id=node_id)
-            # if node.name == str(possible_roots[0].name) and possible_roots[0].mid is None:
-            #     possible_roots[0].mid = node.id
-            # elif node.name == str(possible_roots[1].name) and possible_roots[1].mid is None:
-            #     possible_roots[1].mid = node.id
             queue = node.children
             if node.new_lvl:
 
                 for i, child_id in enumerate(queue):
                     child_node = self.tree.get_node(child_id)
                     root_cont = node.cont[i]
+                    # ToDo: what if we have modification then it should be just an integer
                     if root_cont.state.components[0].name == node.name:
                         sid = "{0}--{1}".format(node.id ,child_node.id)
                     else:
@@ -401,48 +419,9 @@ class ComplexBuilder:
                     if root_cont.ctype in ["and", "or"]:
                         root_cont.ctype = sid
                     root_cont.state = state
-                    self.update_tree_contingencies(child_id, possible_roots)  # recursive call
+                    self.update_tree_contingencies(child_id)  # recursive call
         else:
             raise NameError("NodeID {0} does not exists!".format(node_id))
-
-    def get_structured_complex(self, inner_list, root):
-        """
-
-        """
-        stack = [root]
-
-        while stack:
-            stack = self._get_complex_layer(inner_list, stack)
-
-    def _get_complex_layer(self, inner_list, root_list):
-        """
-        Helper function for get_ordered_tree.
-
-        save the path of a certain component
-        use the mol structure for saving the id and the path
-        """
-        already = self.tree.get_all_cont()
-        new_roots = []
-        for root in root_list:
-            root_cont = []
-            root_node = self.tree.get_node(id=root.id)
-            for cont in inner_list:
-                if cont.state.has_component(root):
-                    root_cont.append(cont)
-            for bond in root_cont:
-                if bond not in already:  # to avoid double contingency recognistion A--B, root: A next root B
-                    if bond.state.type == "Association":
-                        new_root = bond.state.get_partner(bond.state.get_component(root.name))
-                        if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
-                            self.tree.add_Node(new_root.name, parent=root.name, parent_id=root.id)
-                        else:
-                            child = self.tree.get_node(name=new_root.name, parent_id=root.id)
-                            root.update_children(child.id, _ADD)
-                        root_node.cont.append(bond)
-                        new_roots.append(self.tree.get_node(name=new_root.name, parent_id=root.id))
-                    else:
-                        new_roots = new_roots
-        return new_roots
 
     def get_state_sets(self, bool_cont):
         """
