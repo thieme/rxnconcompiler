@@ -224,16 +224,31 @@ class x_exclamation_mark_Tests(TestCase):
 
 #! Cdc24_[AssocFar1]--Far1_[c], ! Ste4_[AssocSte18]--Ste18_[AssocSte4], ! Far1_[nRING-H2]--Ste4_[AssocFar1], ! Cdc24_[AssocSte4]--Ste4_[AssocCdc24], x Ste4_[AssocSte18]--Ste18_[AssocSte4]
 
-        rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
-                <Cdc24^{M}>; or <Cdc24^{M/4}>
-                <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
-                <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-                <Cdc24^{M}>; or <Cdc24^{M/F}>
-                <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
-                <Cdc24^{M/F}>; and <Far1^{M}>
-                <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
-                <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
- ''')
+        # rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
+        #         <Cdc24^{M}>; or <Cdc24^{M/4}>
+        #         <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+        #         <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #         <Cdc24^{M}>; or <Cdc24^{M/F}>
+        #         <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+        #         <Cdc24^{M/F}>; and <Far1^{M}>
+        #         <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+        # ''')
+        rxncon = Rxncon("""A_ppi_E; ! <comp>
+                            <comp>; 5--6 A--B
+                            <comp>; 6--7 B--B
+                            <comp>; 7--8 B--C
+                            <comp>; 6--9 B--D
+                            <comp>; 5--10 A--F
+                            <comp>; 10--11 F--B
+                            <comp>; 11--12 B--G
+                            A_ppi_E; ! <comp2>
+                            <comp2>; AND A--B
+                            <comp2>; AND B--C
+                            <comp2>; AND B--B
+                            <comp2>; AND B--G
+
+                            """)
 
 # # # example for [! Cdc24_[AssocFar1]--Far1_[c], ! Ste4_[AssocSte18]--Ste18_[AssocSte4], ! Far1_[nRING-H2]--Ste4_[AssocFar1], x Cdc24_[AssocSte4]--Ste4_[AssocCdc24]]
 #         rxncon = Rxncon("""Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <comp>

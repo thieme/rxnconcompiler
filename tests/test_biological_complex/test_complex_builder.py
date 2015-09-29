@@ -45,11 +45,11 @@ class BiologicalComplexBuilderTests(TestCase):
 
         self.expected_tree = Tree()
         self.expected_tree.add_Node("Cdc24")
-        self.expected_tree.add_Node("Far1",parent="Cdc24", parent_id=1)
-        self.expected_tree.add_Node("Ste4", parent="Far1", parent_id=2)
-        self.expected_tree.add_Node("Ste18", parent="St4", parent_id=3)
-        self.expected_tree.add_Node("Ste4", parent="Cdc24", parent_id=1)
-        self.expected_tree.add_Node("Ste18", parent="St4", parent_id=5)
+        self.expected_tree.add_Node("Far1",parent="Cdc24", parent_cid=1)
+        self.expected_tree.add_Node("Ste4", parent="Far1", parent_cid=2)
+        self.expected_tree.add_Node("Ste18", parent="St4", parent_cid=3)
+        self.expected_tree.add_Node("Ste4", parent="Cdc24", parent_cid=1)
+        self.expected_tree.add_Node("Ste18", parent="St4", parent_cid=5)
         self.expected_tree.add_Node("Cdc42")
 
 
@@ -104,7 +104,7 @@ class BiologicalComplexBuilderTests(TestCase):
         builder_tree = builder.tree
         for i, builder_node in enumerate(builder_tree):
             self.assertEquals(builder_node.name, self.expected_tree[i].name)
-            self.assertEquals(builder_node.id, self.expected_tree[i].id)
+            self.assertEquals(builder_node.cid, self.expected_tree[i].cid)
             self.assertEquals(builder_node.children, self.expected_tree[i].children)
             self.assertEquals(builder_node.parent, self.expected_tree[i].parent)
 
