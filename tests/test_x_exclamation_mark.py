@@ -242,14 +242,45 @@ class x_exclamation_mark_Tests(TestCase):
                             <comp>; 5--10 A--F
                             <comp>; 10--11 F--B
                             <comp>; 11--12 B--G
-                            A_ppi_E; ! <comp2>
-                            <comp2>; AND A--B
-                            <comp2>; AND B--C
-                            <comp2>; AND B--B
-                            <comp2>; AND B--G
-
                             """)
 
+        #
+# solved issue with application of multiple proteins with same name and default binding domain. The problen was, that if we have a reaction
+# like A_ppi_B; ! <comp> \n <comp>; 1--2 A--C \n <comp>; 2--3 C--C; <comp>; 3--4 C--D we have the AssocC domain in A(1) C(2) and D(3).
+# In the previous implementation was checked if the binding domain of mol1 of component1 is occupied by comparing the occupied binding domains of
+# mol1 with the domain of component2
+
+# This works as long as we have specified domains and no overlap. In this example we would add a AssocC binding domain to the left and right of the molecules of 2--3 C--C In the next contingency 3--4 C--D we would check if the domain of component2 (D_[AssocC]) is already occupied in mol1 with binding_partners [C_[AssocC]--C_[AssocC]] which is true because AssocC occures in both. But this makes no sense because we want to know if C can bind to D and therefore if AssocD (default domain of the first component of the contingency) is already occupied in mol1. Hence I changed this and now we check if the domain of a component for a respective molecule is allready used in the mol. Hence, we check if the domain of component1 is already occupied in mol1 and component2 is already occupied in mol2
+#         # rxncon = Rxncon("""A_ppi_E; ! <comp>
+        #                     <comp>; 5--6 A--B
+        #                     <comp>; 6--7 B--B
+        #                     <comp>; 7--8 B--C
+        #                     <comp>; 6--9 B--D
+        #                     <comp>; 5--10 A--F
+        #                     <comp>; 10--11 F--B
+        #                     <comp>; 11--12 B--G
+        #                     A_ppi_E; ! <comp2>
+        #                     <comp2>; AND A--B
+        #                     <comp2>; AND B--C
+        #                     <comp2>; AND B--B
+        #                     <comp2>; AND B--G
+        #
+        #                     """)
+        # rxncon = Rxncon("""A_ppi_E; ! <comp>
+        #                     <comp>; 5--6 A--B
+        #                     <comp>; 6--7 B--B
+        #                     <comp>; 7--8 B--C
+        #                     <comp>; 6--9 B--D
+        #                     <comp>; 5--10 A--F
+        #                     <comp>; 10--11 F--B
+        #                     <comp>; 11--12 B--G
+        #                     A_ppi_E; ! <comp2>
+        #                     <comp2>; 1--2 A--B
+        #                     <comp2>; 2--3 B--C
+        #                     <comp2>; 2--4 B--B
+        #                     <comp2>; 4--5 B--G
+        #
+        #                     """)
 # # # example for [! Cdc24_[AssocFar1]--Far1_[c], ! Ste4_[AssocSte18]--Ste18_[AssocSte4], ! Far1_[nRING-H2]--Ste4_[AssocFar1], x Cdc24_[AssocSte4]--Ste4_[AssocCdc24]]
 #         rxncon = Rxncon("""Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <comp>
 #                             <comp>; AND Cdc24_[AssocFar1]--Far1_[c]

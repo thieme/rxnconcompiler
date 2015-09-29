@@ -347,7 +347,7 @@ class ComplexBuilder:
         self.get_state_sets(bool_cont) # we want only the list
         return self.final_states
 
-    def check_for_structured_complex(self, complexes):
+    def check_for_structured_complex(self, complexes, root):
         """
         This function checks if a complex is already structured.
         @return: structured complex
@@ -356,8 +356,10 @@ class ComplexBuilder:
             for complex in complex_tuple[1]:
                 for cont in complex:
                     if "--" in cont.ctype:
-                        return complex
-                    break
+                        if self.check_cont_components(cont, root):
+                            return complex
+                    else:
+                        break
 
         return []
 
@@ -371,27 +373,19 @@ class ComplexBuilder:
         """
         self.complexes_test = complexes
         possible_roots = reaction_container.get_reactants()
-        self.structured_complexes = self.check_for_structured_complex(complexes)
 
         self.tree = Tree()
-        #if self.structured_complexes:
 
         for root in possible_roots:
             self.tree.add_Node(root.name)
+            root_node = self.tree.get_node(name=root.name)
+            self.structured_complexes = self.check_for_structured_complex(complexes, root_node)
             if self.structured_complexes:
-                self.rename_tree(self.structured_complexes, self.tree.get_node(name=root.name))
+                self.get_structured_complex(self.structured_complexes, root_node, structure=True)
             for complex_tuple in complexes:
                 for complex in complex_tuple[1]:
                     if complex != self.structured_complexes:
                         self.get_structured_complex(complex, self.tree.get_node(name=root.name))
-                #self.get_structured_complex(self.structured_complexes, self.tree.get_node(name=root.name))
-        # else:
-        #     #root_id = 0
-        #     for root in possible_roots:
-        #         self.tree.add_Node(root.name)
-        #         for complex_tuple in complexes:
-        #             for complex in complex_tuple[1]:
-        #                 self.get_structured_complex(complex, self.tree.get_node(name=root.name))
 
         self.process_structured_complex()
 
@@ -405,58 +399,39 @@ class ComplexBuilder:
         return False
 
 
-    def rename_tree(self, inner_list, root):
-        stack = [root]
-        while stack:
-            stack = self._get_rename_layer(inner_list, stack)
-
-    def _get_rename_layer(self, inner_list, root_list):
-
-
-        already = self.tree.get_all_cont()
-        new_roots = []
-        for root in root_list:
-            root_cont = []
-            root_node = self.tree.get_node(cid=root.cid)
-
-            for cont in inner_list:
-                if self.check_cont_components(cont, root):
-                    root_cont.append(cont)
-            for bond in root_cont:
-                if bond not in already:  # to avoid double contingency recognistion A--B, root: A next root B
-                    if bond.state.type == "Association":
-                        new_root = bond.state.get_partner(bond.state.get_component(root.name))
-                        if not new_root.cid in self.tree.children_by_old_cid(root): # check if the node already exists
-                            self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid, old_cid=new_root.cid)
-                            if root_node.old_cid == None:
-                                old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
-                                root_node.old_cid = old_root.cid
-                        else:
-                            child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
-                            root.update_children(child.cid, _ADD)
-                        root_node.cont.append(bond)
-                        new_roots.append(self.tree.get_node(name=new_root.name, parent_cid=root.cid))
-                    else:
-                        new_roots = new_roots
-        return new_roots
-
-
-    def get_structured_complex(self, inner_list, root):
+    def get_structured_complex(self, inner_list, root, structure=False):
         """
 
         """
         stack = [root]
 
         while stack:
-            stack = self._get_complex_layer(inner_list, stack)
+            stack = self._get_complex_layer(inner_list, stack, structure)
 
-    def _get_complex_layer(self, inner_list, root_list, structure=False):
+    def _get_complex_layer(self, inner_list, root_list, structure):
         """
         Helper function for get_ordered_tree.
 
         save the path of a certain component
         use the mol structure for saving the id and the path
         """
+        def non_structured(new_root, root):
+            if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
+                self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid)
+            else:
+                child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
+                root.update_children(child.cid, _ADD)
+
+        def structured(new_root, root):
+            if not new_root.cid in self.tree.children_by_old_cid(root): # check if the node already exists
+                self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid, old_cid=new_root.cid)
+                if root_node.old_cid == None:
+                    old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
+                    root_node.old_cid = old_root.cid
+            else:
+                child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
+                root.update_children(child.cid, _ADD)
+
         already = self.tree.get_all_cont()
         new_roots = []
         for root in root_list:
@@ -465,7 +440,7 @@ class ComplexBuilder:
             for cont in inner_list:
                 if structure:
                     if self.check_cont_components(cont, root):
-                        pass
+                        root_cont.append(cont)
                 else:
                     if cont.state.has_component(root):
                         root_cont.append(cont)
@@ -473,11 +448,10 @@ class ComplexBuilder:
                 if bond not in already:  # to avoid double contingency recognistion A--B, root: A next root B
                     if bond.state.type == "Association":
                         new_root = bond.state.get_partner(bond.state.get_component(root.name))
-                        if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
-                            self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid)
+                        if structure:
+                            structured(new_root, root)
                         else:
-                            child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
-                            root.update_children(child.cid, _ADD)
+                            non_structured(new_root, root)
                         root_node.cont.append(bond)
                         new_roots.append(self.tree.get_node(name=new_root.name, parent_cid=root.cid))
                     else:

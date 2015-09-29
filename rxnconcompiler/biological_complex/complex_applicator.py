@@ -621,7 +621,7 @@ class ComplexApplicator:
             else:
                 cont_applied =False
                 for comp in reaction.substrat_complexes:
-                    if len(cont.state.components) > 2:
+                    if len(cont.state.components) > 1:
                         if comp.has_molecule(cont.state.components[0].name, cont.state.components[0].cid) or comp.has_molecule(cont.state.components[1].name, cont.state.components[1].cid):
                             cap.apply_simple_cont_on_reaction(reaction, cont)
                             cont_applied = True

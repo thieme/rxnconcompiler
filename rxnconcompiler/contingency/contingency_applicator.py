@@ -55,7 +55,6 @@ class ContingencyApplicator():
         indicates which domain is used.
         """
         if (cont.state.type == 'Association' or cont.state.type == "Intraprotein") and cont.ctype == 'x':
-            #mol.binding_sites.append(cont.state)
             mol.add_binding_site(cont.state, side)
         elif cont.state.type == 'Covalent Modification' and cont.ctype == '!':
             mol.add_modification(cont.state)
@@ -102,7 +101,7 @@ class ContingencyApplicator():
         new_mols = []
         for mol in mols:
             occupied_doms = mol.get_domains('binding', True)
-            if component.domain not in occupied_doms:
+            if component.domain not in occupied_doms:  # if the domain is not occupied the partner can be added
                 new_mols.append(mol)
         mols = new_mols
         if not mols:
@@ -120,20 +119,11 @@ class ContingencyApplicator():
                 mols[1].binding_partners = []
                 mols[1].binding_partners.append(cont.state)
             else:
-
-                mol_ob = Molecule(component.name)
-                mol_ob.mid = component.cid
+                partner_comp = cont.state.get_partner(cont.state.get_component(mol.name))
+                mol_ob = Molecule(partner_comp.name)
+                mol_ob.mid = partner_comp.cid
                 mol_ob.binding_partners.append(cont.state)
-                #partners = compl.get_molecules(mol_ob.name, mol_ob.mid)
-                #if not partners:
-                #    compl.molecules.append(mol_ob)
-                    #[A,B]
-                    #KR: append to mol1.binding_partners here
-                    #    or add method create_molecule(component)
-                #else:
-                    #if cont.state not in partners[0].binding_partners:
-                    #    partners[0].add_bond(cont.state)
-                #mol_ob.binding_partners.append(cont.state)
+
                 compl.molecules.append(mol_ob)
 
     def apply_positive_intraprotein(self, reaction, cont):
@@ -184,10 +174,10 @@ class ContingencyApplicator():
                 #print "PROBLEM", mols1, mols2
                 pass
             if mols1:
-                self.add_molecule_to_complex(mols1, cont, component2, left_right, reaction)
+                self.add_molecule_to_complex(mols1, cont, component1, left_right, reaction)
 
             elif mols2:
-                self.add_molecule_to_complex(mols2, cont, component1, left_right, reaction)
+                self.add_molecule_to_complex(mols2, cont, component2, left_right, reaction)
 
         elif left and right:
 
@@ -275,10 +265,10 @@ class ContingencyApplicator():
             pass
 
         if mols1:
-            self.add_molecule_to_complex(mols1, cont, component2, compl, reaction)
+            self.add_molecule_to_complex(mols1, cont, component1, compl, reaction)
 
         elif mols2:
-            self.add_molecule_to_complex(mols2, cont, component1, compl, reaction)
+            self.add_molecule_to_complex(mols2, cont, component2, compl, reaction)
 
     def apply_on_complex(self, compl, cont):
         """
