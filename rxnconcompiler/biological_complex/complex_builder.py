@@ -371,6 +371,47 @@ class ComplexBuilder:
 
         self.process_structured_complex()
 
+
+
+    def get_structured_complex(self, inner_list, root):
+        """
+
+        """
+        stack = [root]
+
+        while stack:
+            stack = self._get_complex_layer(inner_list, stack)
+
+    def _get_complex_layer(self, inner_list, root_list):
+        """
+        Helper function for get_ordered_tree.
+
+        save the path of a certain component
+        use the mol structure for saving the id and the path
+        """
+        already = self.tree.get_all_cont()
+        new_roots = []
+        for root in root_list:
+            root_cont = []
+            root_node = self.tree.get_node(id=root.id)
+            for cont in inner_list:
+                if cont.state.has_component(root):
+                    root_cont.append(cont)
+            for bond in root_cont:
+                if bond not in already:  # to avoid double contingency recognistion A--B, root: A next root B
+                    if bond.state.type == "Association":
+                        new_root = bond.state.get_partner(bond.state.get_component(root.name))
+                        if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
+                            self.tree.add_Node(new_root.name, parent=root.name, parent_id=root.id)
+                        else:
+                            child = self.tree.get_node(name=new_root.name, parent_id=root.id)
+                            root.update_children(child.id, _ADD)
+                        root_node.cont.append(bond)
+                        new_roots.append(self.tree.get_node(name=new_root.name, parent_id=root.id))
+                    else:
+                        new_roots = new_roots
+        return new_roots
+
     def process_structured_complex(self):
         """
         This function iterates over the constructed tree and adapted the contingencies for a certain parent, children
