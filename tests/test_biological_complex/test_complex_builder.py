@@ -5,6 +5,7 @@ Unit tests fror complex_builder module.
 """
 
 from unittest import main, TestCase
+import copy
 
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
 from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder, Tree
@@ -43,6 +44,7 @@ restructured_Tree = """A_ppi_E; ! <comp>
                             <comp>; 5--10 A--F
                             <comp>; 10--11 F--B
                             <comp>; 11--12 B--G"""
+
 structured_unstructured_Tree = """A_ppi_E; ! <comp>
                                     <comp>; 5--25 A--B
                                     <comp>; 25--7 B--B
@@ -56,6 +58,22 @@ structured_unstructured_Tree = """A_ppi_E; ! <comp>
                                     <comp2>; AND B--C
                                     <comp2>; AND B--B
                                     <comp2>; AND B--G"""
+
+structured_structured_Tree = """A_ppi_E; ! <comp>
+                            <comp>; 5--25 A--B
+                            <comp>; 25--7 B--B
+                            <comp>; 7--8 B--C
+                            <comp>; 25--9 B--D
+                            <comp>; 5--10 A--F
+                            <comp>; 10--11 F--B
+                            <comp>; 11--12 B--G
+                            A_ppi_E; ! <comp2>
+                            <comp2>; 36--37 A--B
+                            <comp2>; 37--38 B--C
+                            <comp2>; 37--39 B--B
+                            <comp2>; 39--40 B--G
+                            """
+
 class BiologicalComplexBuilderTests(TestCase):
     """
     Unit Tests for ComplexBuilder class.
@@ -70,51 +88,90 @@ class BiologicalComplexBuilderTests(TestCase):
             self.comp.add_state(state)
         self.comp.cid = '1'
 
-        self.expected_basic_tree = Tree()
-        self.expected_basic_tree.add_Node("Cdc24")
-        self.expected_basic_tree.add_Node("Far1",parent="Cdc24", parent_cid=1)
-        self.expected_basic_tree.add_Node("Ste4", parent="Far1", parent_cid=2)
-        self.expected_basic_tree.add_Node("Ste18", parent="St4", parent_cid=3)
-        self.expected_basic_tree.add_Node("Ste4", parent="Cdc24", parent_cid=1)
-        self.expected_basic_tree.add_Node("Ste18", parent="St4", parent_cid=5)
-        self.expected_basic_tree.add_Node("Cdc42")
+        self.expected_Cdc24_tree = Tree()
+        self.expected_Cdc24_tree.add_Node("Cdc24")
+        self.expected_Cdc24_tree.add_Node("Far1",parent="Cdc24", parent_cid=1)
+        self.expected_Cdc24_tree.add_Node("Ste4", parent="Far1", parent_cid=2)
+        self.expected_Cdc24_tree.add_Node("Ste18", parent="St4", parent_cid=3)
+        self.expected_Cdc24_tree.add_Node("Ste4", parent="Cdc24", parent_cid=1)
+        self.expected_Cdc24_tree.add_Node("Ste18", parent="St4", parent_cid=5)
+        self.expected_Cdc24_tree.add_Node("Cdc42")
 
-        self.expected_restructured_tree = Tree()
-        self.expected_restructured_tree.add_Node("A", old_cid="5")
-        self.expected_restructured_tree.add_Node("B",parent="A", parent_cid=1, old_cid="25")
-        self.expected_restructured_tree.add_Node("F",parent="A", parent_cid=1, old_cid="10")
-        self.expected_restructured_tree.add_Node("B",parent="B", parent_cid=2, old_cid="7")
-        self.expected_restructured_tree.add_Node("D",parent="B", parent_cid=2, old_cid="9")
-        self.expected_restructured_tree.add_Node("B",parent="F", parent_cid=3, old_cid="11")
-        self.expected_restructured_tree.add_Node("C",parent="B", parent_cid=4, old_cid="8")
-        self.expected_restructured_tree.add_Node("G",parent="B", parent_cid=6, old_cid="12")
+        basic_tree = Tree()
+        basic_tree.add_Node("A", old_cid="5")
+        basic_tree.add_Node("B",parent="A", parent_cid=1, old_cid="25")
+        basic_tree.add_Node("F",parent="A", parent_cid=1, old_cid="10")
+        basic_tree.add_Node("B",parent="B", parent_cid=2, old_cid="7")
+        basic_tree.add_Node("D",parent="B", parent_cid=2, old_cid="9")
+        basic_tree.add_Node("B",parent="F", parent_cid=3, old_cid="11")
+        basic_tree.add_Node("C",parent="B", parent_cid=4, old_cid="8")
+        basic_tree.add_Node("G",parent="B", parent_cid=6, old_cid="12")
+###############################
+        """
+                            A(1)
+                           /    \
+                          B(2)   F(3)
+                         /    \     |
+                        B(4)   D(5) B(6)
+                        |           |
+                        C(7)        G(8)
+        """
+        self.expected_restructured_tree = copy.deepcopy(basic_tree)
         self.expected_restructured_tree.add_Node("E")
-
-
-
-        self.expected_structued_unstructured_Tree = Tree()
-        self.expected_structued_unstructured_Tree.add_Node("A", old_cid="5")
-        self.expected_structued_unstructured_Tree.add_Node("B",parent="A", parent_cid=1, old_cid="25")
-        self.expected_structued_unstructured_Tree.add_Node("F",parent="A", parent_cid=1, old_cid="10")
-        self.expected_structued_unstructured_Tree.add_Node("B",parent="B", parent_cid=2, old_cid="7")
-        self.expected_structued_unstructured_Tree.add_Node("D",parent="B", parent_cid=2, old_cid="9")
-        self.expected_structued_unstructured_Tree.add_Node("B",parent="F", parent_cid=3, old_cid="11")
-        self.expected_structued_unstructured_Tree.add_Node("C",parent="B", parent_cid=4, old_cid="8")
-        self.expected_structued_unstructured_Tree.add_Node("G",parent="B", parent_cid=6, old_cid="12")
+#########################################
+        """
+                                 ____A(1)___
+                                //          \
+                         _____B(2)__       F(3)
+                        /   /    \\ \       |
+                    G(10) C(9)  B(4) D(5)  B(6)
+                                 |          |
+                                C(7)       G(8)
+        """
+        self.expected_structured_unstructured_Tree = copy.deepcopy(basic_tree)
         # Node for A--B connection is already known
         # add Node B a second time to children of A
-        root = self.expected_structued_unstructured_Tree.get_node(cid=1)
-        child = self.expected_structued_unstructured_Tree.get_node(name="B", parent_cid=1)
+        root = self.expected_structured_unstructured_Tree.get_node(cid=1)
+        child = self.expected_structured_unstructured_Tree.get_node(name="B", parent_cid=1)
         root.update_children(child.cid, _ADD)
 
-        self.expected_structued_unstructured_Tree.add_Node("C",parent="B", parent_cid=2)
+        self.expected_structured_unstructured_Tree.add_Node("C",parent="B", parent_cid=2)
         # Node for B--B connection is already known
         # add Node B a second time to children of B
-        root = self.expected_structued_unstructured_Tree.get_node(cid=2)
-        child = self.expected_structued_unstructured_Tree.get_node(name="B", parent_cid=2)
+        root = self.expected_structured_unstructured_Tree.get_node(cid=2)
+        child = self.expected_structured_unstructured_Tree.get_node(name="B", parent_cid=2)
         root.update_children(child.cid, _ADD)
-        self.expected_structued_unstructured_Tree.add_Node("G",parent="B", parent_cid=2)
-        self.expected_structued_unstructured_Tree.add_Node("E")
+        self.expected_structured_unstructured_Tree.add_Node("G",parent="B", parent_cid=2)
+        self.expected_structured_unstructured_Tree.add_Node("E")
+
+############################################
+        """
+                         ____A(1)___
+                        //           \
+                     __B(2)___       F(3)
+                    /    \\   \       |
+                  C(9)   B(4) D(5)   B(6)
+                        /   \         |
+                      C(7)   G(10)   G(8)
+        """
+        self.expected_structured_structured_Tree = copy.deepcopy(basic_tree)
+        self.expected_structured_structured_Tree.reset_old_cid()
+
+        root = self.expected_structured_structured_Tree.get_node(cid=1)
+        child = self.expected_structured_structured_Tree.get_node(name="B", parent_cid=1)
+        root.update_children(child.cid, _ADD)
+        root.old_cid = "36"
+
+        self.expected_structured_structured_Tree.add_Node("C", parent="B", parent_cid=2, old_cid="38")
+
+        root = self.expected_structured_structured_Tree.get_node(cid=2)
+        child = self.expected_structured_structured_Tree.get_node(name="B", parent_cid=2)
+        root.update_children(child.cid, _ADD)
+        root.old_cid = "37"
+        child.old_cid = "39"
+
+        self.expected_structured_structured_Tree.add_Node("G", parent="B", parent_cid=4, old_cid="40")
+        self.expected_structured_structured_Tree.add_Node("E")
 
     def test_complex(self):
         """Tests whether complex in the setup is correctly built."""
@@ -166,10 +223,10 @@ class BiologicalComplexBuilderTests(TestCase):
         builder.structure_complex(rxncon.get_complexes(rxncon_container.name), rxncon_container)
         builder_tree = builder.tree
         for i, builder_node in enumerate(builder_tree):
-            self.assertEquals(builder_node.name, self.expected_basic_tree[i].name)
-            self.assertEquals(builder_node.cid, self.expected_basic_tree[i].cid)
-            self.assertEquals(builder_node.children, self.expected_basic_tree[i].children)
-            self.assertEquals(builder_node.parent, self.expected_basic_tree[i].parent)
+            self.assertEquals(builder_node.name, self.expected_Cdc24_tree[i].name)
+            self.assertEquals(builder_node.cid, self.expected_Cdc24_tree[i].cid)
+            self.assertEquals(builder_node.children, self.expected_Cdc24_tree[i].children)
+            self.assertEquals(builder_node.parent, self.expected_Cdc24_tree[i].parent)
 
     def test_structuring(self):
         """
@@ -198,7 +255,6 @@ class BiologicalComplexBuilderTests(TestCase):
             self.assertEquals(builder_node.children, self.expected_restructured_tree[i].children)
             self.assertEquals(builder_node.parent, self.expected_restructured_tree[i].parent)
 
-
     def test_structured_unstructured(self):
         rxncon = Rxncon(structured_unstructured_Tree)
         rxncon_container = rxncon.reaction_pool['A_ppi_E']
@@ -206,10 +262,30 @@ class BiologicalComplexBuilderTests(TestCase):
         builder.structure_complex(rxncon.get_complexes(rxncon_container.name), rxncon_container)
         builder_tree = builder.tree
         for i, builder_node in enumerate(builder_tree):
-            self.assertEquals(builder_node.name, self.expected_structued_unstructured_Tree[i].name)
-            self.assertEquals(builder_node.cid, self.expected_structued_unstructured_Tree[i].cid)
-            self.assertEquals(builder_node.old_cid, self.expected_structued_unstructured_Tree[i].old_cid)
-            self.assertEquals(builder_node.children, self.expected_structued_unstructured_Tree[i].children)
-            self.assertEquals(builder_node.parent, self.expected_structued_unstructured_Tree[i].parent)
+            self.assertEquals(builder_node.name, self.expected_structured_unstructured_Tree[i].name)
+            self.assertEquals(builder_node.cid, self.expected_structured_unstructured_Tree[i].cid)
+            self.assertEquals(builder_node.old_cid, self.expected_structured_unstructured_Tree[i].old_cid)
+            self.assertEquals(builder_node.children, self.expected_structured_unstructured_Tree[i].children)
+            self.assertEquals(builder_node.parent, self.expected_structured_unstructured_Tree[i].parent)
+
+    def test_reset_old_cid(self):
+        expected_reset_basic_tree = copy.deepcopy(self.expected_restructured_tree)
+        expected_reset_basic_tree.reset_old_cid()
+        for node in expected_reset_basic_tree:
+            self.assertEquals(node.old_cid, None)
+
+    def test_structured_structured(self):
+        rxncon = Rxncon(structured_structured_Tree)
+        rxncon_container = rxncon.reaction_pool['A_ppi_E']
+        builder = ComplexBuilder()
+        builder.structure_complex(rxncon.get_complexes(rxncon_container.name), rxncon_container)
+        builder_tree = builder.tree
+        for i, builder_node in enumerate(builder_tree):
+            self.assertEquals(builder_node.name, self.expected_structured_structured_Tree[i].name)
+            self.assertEquals(builder_node.cid, self.expected_structured_structured_Tree[i].cid)
+            self.assertEquals(builder_node.old_cid, self.expected_structured_structured_Tree[i].old_cid)
+            self.assertEquals(builder_node.children, self.expected_structured_structured_Tree[i].children)
+            self.assertEquals(builder_node.parent, self.expected_structured_structured_Tree[i].parent)
+
 if __name__ == '__main__':
     main()

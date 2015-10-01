@@ -323,6 +323,11 @@ class Tree(object):
             result.extend(node.cont)
         return result
 
+    def reset_old_cid(self):
+        for node in self.nodes:
+            if node.old_cid is not None:
+                node.old_cid = None
+
 class ComplexBuilder:
     """
 
@@ -404,7 +409,10 @@ class ComplexBuilder:
 
         """
         stack = [root]
-
+        if "--" in inner_list[0].ctype:
+            structure = True
+            if root.old_cid is not None:
+                self.tree.reset_old_cid()
         while stack:
             stack = self._get_complex_layer(inner_list, stack, structure)
 
@@ -422,15 +430,20 @@ class ComplexBuilder:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
                 root.update_children(child.cid, _ADD)
 
-        def structured(new_root, root):
-            if not new_root.cid in self.tree.children_by_old_cid(root): # check if the node already exists
+        def structured(new_root, root, bond):
+            if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
                 self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid, old_cid=new_root.cid)
-                if root_node.old_cid == None:
+                if root.old_cid == None:
                     old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
-                    root_node.old_cid = old_root.cid
+                    root.old_cid = old_root.cid
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
                 root.update_children(child.cid, _ADD)
+                if root_node.old_cid == None:
+                    old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
+                    root_node.old_cid = old_root.cid
+                if child.old_cid == None:
+                    child.old_cid = new_root.cid
 
         already = self.tree.get_all_cont()
         new_roots = []
@@ -449,9 +462,9 @@ class ComplexBuilder:
                     if bond.state.type == "Association":
                         new_root = bond.state.get_partner(bond.state.get_component(root.name))
                         if structure:
-                            structured(new_root, root)
+                            structured(new_root, root_node, bond)
                         else:
-                            non_structured(new_root, root)
+                            non_structured(new_root, root_node)
                         root_node.cont.append(bond)
                         new_roots.append(self.tree.get_node(name=new_root.name, parent_cid=root.cid))
                     else:
