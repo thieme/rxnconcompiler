@@ -253,7 +253,10 @@ class StateFactory:
         """
         comp_name_dom = state_str.split('-{')[0].split('_')
         comp_dom = self.df.get_modification_domain_from_str(state_str)
-        comp = Component(comp_name_dom[0], comp_dom)
+        if state_id:
+            comp = Component(comp_name_dom[0], comp_dom, state_id)
+        else:
+            comp = Component(comp_name_dom[0], comp_dom)
         state.components.append(comp)   
         modifier = state_str.split('-{')[1].replace('}','')
         compartments = [compartment.lower() for compartment in self.loc]
@@ -266,6 +269,7 @@ class StateFactory:
             state.type = 'Covalent Modification'
             state.modifier = state_str.split('-{')[1].replace('}','') # e.g. P, Ub, truncated
             state.not_modifier = 'U' # for Unmodified
+
         return state
 
     def get_state_from_string(self, state_str, state_id=None, loc_not_modifier=None):

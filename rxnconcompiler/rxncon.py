@@ -83,6 +83,7 @@ from contingency.contingency_factory import ContingencyFactory
 from reaction.reaction_factory import ReactionFactory
 from parser.rxncon_parser import parse_rxncon
 import copy
+import re
 
 class Rxncon():
     """
@@ -155,7 +156,7 @@ class Rxncon():
                         bool_root = self.contingency_pool[cont.state.state_str]
                         bool_def = bool_root.get_children()
                         for bool_cont in bool_def:
-                            if bool_cont.ctype in ['or', 'and', "not"] or '--' in bool_cont.ctype:
+                            if bool_cont.ctype in ['or', 'and', "not"] or '--' in bool_cont.ctype or re.match("^[0-9]*$", bool_cont.ctype):
                                 later.append(bool_cont)
                     else:
                         result += '; %s' % str(cont)

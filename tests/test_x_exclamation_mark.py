@@ -234,18 +234,6 @@ class x_exclamation_mark_Tests(TestCase):
         #         <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
         #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
         # ''')
-        # rxncon = Rxncon("""A_ppi_E; ! <comp>
-        #                     <comp>; 5--25 A--B
-        #                     <comp>; 25--7 B--B
-        #                     <comp>; 7--8 B--C
-        #                     <comp>; 25--9 B--D
-        #                     <comp>; 5--10 A--F
-        #                     <comp>; 10--11 F--B
-        #                     <comp>; 11--12 B--G
-        #                      <comp>; 25 B-{P}
-        #                     """)
-
-
         rxncon = Rxncon("""A_ppi_E; ! <comp>
                             <comp>; 5--25 A--B
                             <comp>; 25--7 B--B
@@ -254,13 +242,25 @@ class x_exclamation_mark_Tests(TestCase):
                             <comp>; 5--10 A--F
                             <comp>; 10--11 F--B
                             <comp>; 11--12 B--G
-                            A_ppi_E; ! <comp2>
-                            <comp2>; 36--37 A--B
-                            <comp2>; 37--38 B--C
-                            <comp2>; 37--39 B--B
-                            <comp2>; 39--40 B--G
-
+                            <comp>; 11 B-{P}
                             """)
+
+
+        # rxncon = Rxncon("""A_ppi_E; ! <comp>
+        #                     <comp>; 5--25 A--B
+        #                     <comp>; 25--7 B--B
+        #                     <comp>; 7--8 B--C
+        #                     <comp>; 25--9 B--D
+        #                     <comp>; 5--10 A--F
+        #                     <comp>; 10--11 F--B
+        #                     <comp>; 11--12 B--G
+        #                     A_ppi_E; ! <comp2>
+        #                     <comp2>; 36--37 A--B
+        #                     <comp2>; 37--38 B--C
+        #                     <comp2>; 37--39 B--B
+        #                     <comp2>; 39--40 B--G
+        #
+        #                     """)
         # rxncon = Rxncon("""A_ppi_E; ! <comp>
         #                     <comp>; 5--6 A--B
         #                     <comp>; 6--7 B--B

@@ -28,6 +28,7 @@ if AlternativeComplexes > 1 BiologicalComplex
 
 import copy
 import itertools
+import re
 from biological_complex import BiologicalComplex, AlternativeComplexes
 from complex_builder import ComplexBuilder
 from rxnconcompiler.util.util import product
@@ -148,7 +149,7 @@ class ComplexApplicator:
         @return:
         """
         for cont in inner_list:
-            if cont.ctype in ["and", "or", "not"] or "--" in cont.ctype:
+            if cont.ctype in ["and", "or", "not"] or "--" in cont.ctype or re.match("^[1-9]*$", cont.ctype):
                 cont.ctype = cont_sign
             elif cont_sign == "x": # we only have to change the cont sign in opposite if the very first cont is negative
                 self.change_contingency_opposite(cont)

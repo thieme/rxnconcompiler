@@ -43,6 +43,7 @@ How contingencies with Input states inside boolean are treated?
 (- later in the flow when applying complexes on reaction it will change reaction rate.) 
 """
 
+
 from biological_complex import BiologicalComplex, \
         AlternativeComplexes
 from rxnconcompiler.molecule.molecule import Molecule
@@ -51,6 +52,7 @@ from rxnconcompiler.util.util import product
 from rxnconcompiler.molecule.state import get_state
 import itertools
 import copy
+import re
 
 (_ADD, _DELETE, _INSERT) = range(3)
 (_ROOT, _DEPTH, _WIDTH) = range(3)
@@ -409,10 +411,13 @@ class ComplexBuilder:
 
         """
         stack = [root]
-        if "--" in inner_list[0].ctype:
-            structure = True
-            if root.old_cid is not None:
-                self.tree.reset_old_cid()
+        if not structure:
+            for cont in inner_list:
+                if "--" in inner_list[0].ctype:
+                    structure = True
+                    if root.old_cid is not None:
+                        self.tree.reset_old_cid()
+                    break
         while stack:
             stack = self._get_complex_layer(inner_list, stack, structure)
 
@@ -435,13 +440,15 @@ class ComplexBuilder:
                 self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid, old_cid=new_root.cid)
                 if root.old_cid == None:
                     old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
-                    root.old_cid = old_root.cid
+                    if old_root is not None:
+                        root.old_cid = old_root.cid
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
                 root.update_children(child.cid, _ADD)
                 if root_node.old_cid == None:
                     old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
-                    root_node.old_cid = old_root.cid
+                    if old_root is not None:
+                        root_node.old_cid = old_root.cid
                 if child.old_cid == None:
                     child.old_cid = new_root.cid
 
@@ -468,6 +475,12 @@ class ComplexBuilder:
                         root_node.cont.append(bond)
                         new_roots.append(self.tree.get_node(name=new_root.name, parent_cid=root.cid))
                     else:
+                        comp = bond.state.components[0]
+                        if structure:
+                            structured(comp, root_node, bond)
+                        else:
+                            non_structured(comp, root_node)
+                        root_node.cont.append(bond)
                         new_roots = new_roots
         return new_roots
 
@@ -509,14 +522,19 @@ class ComplexBuilder:
                     child_node = self.tree.get_node(child_cid)
                     root_cont = node.cont[i]
                     # ToDo: what if we have modification then it should be just an integer
-                    if root_cont.state.components[0].name == node.name:
-                        sid = "{0}--{1}".format(node.cid ,child_node.cid)
+                    if len(root_cont.state.components) > 1:
+                        if root_cont.state.components[0].name == node.name:
+                            sid = "{0}--{1}".format(node.cid ,child_node.cid)
+                        else:
+                            sid = "{0}--{1}".format(child_node.cid, node.cid)
                     else:
-                        sid = "{0}--{1}".format(child_node.cid, node.cid)
+                        #if we have a modification or relocalisation in a structured complex the sid
+                        # should show where the modifcation/relocalisation occures
+                        sid = str(node.cid)
                     state = get_state(root_cont.state.state_str, sid)
                     # if we have a boolean AND/OR we can change the ctype into --
                     # else we should keep the contingency and just change the cid (complex id)
-                    if root_cont.ctype in ["and", "or"] or "--" in root_cont.ctype:
+                    if root_cont.ctype in ["and", "or"] or "--" in root_cont.ctype or re.match("^[1-9]*$", root_cont.ctype):
                         root_cont.ctype = sid
                     root_cont.state = state
                     self.update_tree_contingencies(child_cid)  # recursive call

@@ -12,7 +12,7 @@ ContingencyFactory   - parses contingencies from xls to a tree.
 
 from contingency import Contingency
 from rxnconcompiler.molecule.state import get_state, Component
-
+import re
 
 class ContingencyWrapper:
     """
@@ -247,7 +247,9 @@ class ContingencyFactory(dict):
 
         ctype = row['Contingency']
         if '--' in ctype:
-            sid = ctype 
+            sid = ctype
+        elif re.match("^[1-9]*$",ctype):
+            sid = ctype
         else:
             sid = None
         state = get_state(row['Modifier'], sid)
