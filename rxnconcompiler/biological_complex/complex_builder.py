@@ -503,7 +503,7 @@ class ComplexBuilder:
                     state = get_state(root_cont.state.state_str, sid)
                     # if we have a boolean AND/OR we can change the ctype into --
                     # else we should keep the contingency and just change the cid (complex id)
-                    if root_cont.ctype in ["and", "or"]:
+                    if root_cont.ctype in ["and", "or"] or "--" in root_cont.ctype:
                         root_cont.ctype = sid
                     root_cont.state = state
                     self.update_tree_contingencies(child_cid)  # recursive call
