@@ -73,7 +73,16 @@ structured_structured_Tree = """A_ppi_E; ! <comp>
                             <comp2>; 37--39 B--B
                             <comp2>; 39--40 B--G
                             """
-
+structured_pPlus_Tree = """A_ppi_E; ! <comp>
+                            <comp>; 5--25 A--B
+                            <comp>; 25--7 B--B
+                            <comp>; 7--8 B--C
+                            <comp>; 25--9 B--D
+                            <comp>; 5--10 A--F
+                            <comp>; 10--11 F--B
+                            <comp>; 11--12 B--G
+                            <comp>; 11 B-{P}
+                            """
 class BiologicalComplexBuilderTests(TestCase):
     """
     Unit Tests for ComplexBuilder class.
@@ -173,6 +182,21 @@ class BiologicalComplexBuilderTests(TestCase):
         self.expected_structured_structured_Tree.add_Node("G", parent="B", parent_cid=4, old_cid="40")
         self.expected_structured_structured_Tree.add_Node("E")
 
+############################################
+        """
+
+                            A(1)
+                           /    \
+                          B(2)   F(3)
+                         /    \     |
+                        B(4)   D(5) B(6)
+                        |           /  \
+                        C(7)      G(8) B(9)
+        """
+        self.expected_structured_pPlus_Tree = copy.deepcopy(basic_tree)
+        self.expected_structured_pPlus_Tree.add_Node("B", parent="B", parent_cid=6, old_cid="11")
+        self.expected_structured_pPlus_Tree.add_Node("E")
+
     def test_complex(self):
         """Tests whether complex in the setup is correctly built."""
         self.assertEqual(len(self.comp.molecules), 10)
@@ -242,18 +266,21 @@ class BiologicalComplexBuilderTests(TestCase):
         self.assertEquals(str(rxncon.get_complexes(rxncon_container.name)[0][1][0]), expected_complex1)
         self.assertEquals(str(rxncon.get_complexes(rxncon_container.name)[0][1][1]), expected_complex2)
 
+    def check_strucured_tree(self, builder_tree, expected_tree):
+        for i, builder_node in enumerate(builder_tree):
+            self.assertEquals(builder_node.name, expected_tree[i].name)
+            self.assertEquals(builder_node.cid, expected_tree[i].cid)
+            self.assertEquals(builder_node.old_cid, expected_tree[i].old_cid)
+            self.assertEquals(builder_node.children, expected_tree[i].children)
+            self.assertEquals(builder_node.parent, expected_tree[i].parent)
+
     def test_restructuring(self):
         rxncon = Rxncon(restructured_Tree)
         rxncon_container = rxncon.reaction_pool['A_ppi_E']
         builder = ComplexBuilder()
         builder.structure_complex(rxncon.get_complexes(rxncon_container.name), rxncon_container)
         builder_tree = builder.tree
-        for i, builder_node in enumerate(builder_tree):
-            self.assertEquals(builder_node.name, self.expected_restructured_tree[i].name)
-            self.assertEquals(builder_node.cid, self.expected_restructured_tree[i].cid)
-            self.assertEquals(builder_node.old_cid, self.expected_restructured_tree[i].old_cid)
-            self.assertEquals(builder_node.children, self.expected_restructured_tree[i].children)
-            self.assertEquals(builder_node.parent, self.expected_restructured_tree[i].parent)
+        self.check_strucured_tree(builder_tree, self.expected_restructured_tree)
 
     def test_structured_unstructured(self):
         rxncon = Rxncon(structured_unstructured_Tree)
@@ -261,12 +288,7 @@ class BiologicalComplexBuilderTests(TestCase):
         builder = ComplexBuilder()
         builder.structure_complex(rxncon.get_complexes(rxncon_container.name), rxncon_container)
         builder_tree = builder.tree
-        for i, builder_node in enumerate(builder_tree):
-            self.assertEquals(builder_node.name, self.expected_structured_unstructured_Tree[i].name)
-            self.assertEquals(builder_node.cid, self.expected_structured_unstructured_Tree[i].cid)
-            self.assertEquals(builder_node.old_cid, self.expected_structured_unstructured_Tree[i].old_cid)
-            self.assertEquals(builder_node.children, self.expected_structured_unstructured_Tree[i].children)
-            self.assertEquals(builder_node.parent, self.expected_structured_unstructured_Tree[i].parent)
+        self.check_strucured_tree(builder_tree, self.expected_structured_unstructured_Tree)
 
     def test_reset_old_cid(self):
         expected_reset_basic_tree = copy.deepcopy(self.expected_restructured_tree)
@@ -280,12 +302,15 @@ class BiologicalComplexBuilderTests(TestCase):
         builder = ComplexBuilder()
         builder.structure_complex(rxncon.get_complexes(rxncon_container.name), rxncon_container)
         builder_tree = builder.tree
-        for i, builder_node in enumerate(builder_tree):
-            self.assertEquals(builder_node.name, self.expected_structured_structured_Tree[i].name)
-            self.assertEquals(builder_node.cid, self.expected_structured_structured_Tree[i].cid)
-            self.assertEquals(builder_node.old_cid, self.expected_structured_structured_Tree[i].old_cid)
-            self.assertEquals(builder_node.children, self.expected_structured_structured_Tree[i].children)
-            self.assertEquals(builder_node.parent, self.expected_structured_structured_Tree[i].parent)
+        self.check_strucured_tree(builder_tree, self.expected_structured_structured_Tree)
+
+    def test_structured_pPlus(self):
+        rxncon = Rxncon(structured_pPlus_Tree)
+        rxncon_container = rxncon.reaction_pool['A_ppi_E']
+        builder = ComplexBuilder()
+        builder.structure_complex(rxncon.get_complexes(rxncon_container.name), rxncon_container)
+        builder_tree = builder.tree
+        self.check_strucured_tree(builder_tree, self.expected_structured_pPlus_Tree)
 
 if __name__ == '__main__':
     main()

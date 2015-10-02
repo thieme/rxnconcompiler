@@ -72,7 +72,43 @@ GEOMETRY = {
     'Rules':[
     'A(AssocB!9,AssocE,AssocF!4).B(AssocA!9,AssocB!8,AssocC!7,AssocD!5,AssocG!2).B(AssocB!8,AssocC!6).B(AssocF!3,AssocG!1).C(AssocB!7).C(AssocB!6).D(AssocB!5).F(AssocA!4,AssocB!3).G(AssocB!2).G(AssocB!1) + E(AssocA) <-> A(AssocB!10,AssocE!5,AssocF!4).B(AssocA!10,AssocB!9,AssocC!8,AssocD!6,AssocG!2).B(AssocB!9,AssocC!7).B(AssocF!3,AssocG!1).C(AssocB!8).C(AssocB!7).D(AssocB!6).E(AssocA!5).F(AssocA!4,AssocB!3).G(AssocB!2).G(AssocB!1)'],
     'Tags': [
-    1, 'ppi','contingencies', '!', 'bool', 'defined geometry']}
+    1, 'ppi','contingencies', '!', 'bool', 'defined geometry']},
+
+    """A_ppi_E; ! <comp>
+        <comp>; 5--25 A--B
+        <comp>; 25--7 B--B
+        <comp>; 7--8 B--C
+        <comp>; 25--9 B--D
+        <comp>; 5--10 A--F
+        <comp>; 10--11 F--B
+        <comp>; 11--12 B--G
+        <comp>; 11 B_[x]-{P}
+        <comp>; 7 B_[y]-{P}
+        """: {
+    'Rules':[
+    'A(AssocB!7,AssocE,AssocF!3).B(AssocA!7,AssocB!6,AssocD!4).B(y~P,AssocB!6,AssocC!5).B(x~P,AssocF!2,AssocG!1).C(AssocB!5).D(AssocB!4).F(AssocA!3,AssocB!2).G(AssocB!1) + E(AssocA) <-> A(AssocB!8,AssocE!4,AssocF!3).B(AssocA!8,AssocB!7,AssocD!5).B(y~P,AssocB!7,AssocC!6).B(x~P,AssocF!2,AssocG!1).C(AssocB!6).D(AssocB!5).E(AssocA!4).F(AssocA!3,AssocB!2).G(AssocB!1)'],
+    'Tags': [
+    1, 'ppi','contingencies', '!', 'bool', 'defined geometry']},
+
+# the same as befor but the modifications are defined first
+    """A_ppi_E; ! <comp>
+        <comp>; 11 B_[x]-{P}
+        <comp>; 7 B_[y]-{P}
+        <comp>; 5--25 A--B
+        <comp>; 25--7 B--B
+        <comp>; 7--8 B--C
+        <comp>; 25--9 B--D
+        <comp>; 5--10 A--F
+        <comp>; 10--11 F--B
+        <comp>; 11--12 B--G
+
+        """: {
+    'Rules':[
+    'A(AssocB!7,AssocE,AssocF!3).B(AssocA!7,AssocB!6,AssocD!4).B(y~P,AssocB!6,AssocC!5).B(x~P,AssocF!2,AssocG!1).C(AssocB!5).D(AssocB!4).F(AssocA!3,AssocB!2).G(AssocB!1) + E(AssocA) <-> A(AssocB!8,AssocE!4,AssocF!3).B(AssocA!8,AssocB!7,AssocD!5).B(y~P,AssocB!7,AssocC!6).B(x~P,AssocF!2,AssocG!1).C(AssocB!6).D(AssocB!5).E(AssocA!4).F(AssocA!3,AssocB!2).G(AssocB!1)'],
+    'Tags': [
+    1, 'ppi','contingencies', '!', 'bool', 'defined geometry']},
+
+
 }
 
 

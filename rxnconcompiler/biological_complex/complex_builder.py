@@ -362,7 +362,7 @@ class ComplexBuilder:
         for complex_tuple in complexes:
             for complex in complex_tuple[1]:
                 for cont in complex:
-                    if "--" in cont.ctype:
+                    if "--" in cont.ctype or re.match("^[1-9]*$", cont.ctype):
                         if self.check_cont_components(cont, root):
                             return complex
                     else:
@@ -568,7 +568,9 @@ class ComplexBuilder:
         # TODO: if not implemented bool raise error/warning add it to warnings don't raise and break the program
         reference_child_ctype = children[0].ctype
         for child in children[1:]:
-            if not "--" in reference_child_ctype and reference_child_ctype != child.ctype:
+            if (("--" in reference_child_ctype or re.search("^[1-9]*$", reference_child_ctype)) and not ("--" in child.ctype or re.search("^[1-9]*$", child.ctype))):
+                raise Exception('Boolean not properly defined mix of {0} and {1}'.format(reference_child_ctype, child.ctype))
+            elif (not ("--" in reference_child_ctype or re.search("^[1-9]*$", reference_child_ctype)) and reference_child_ctype != child.ctype):
                 raise Exception('Boolean not properly defined mix of {0} and {1}'.format(reference_child_ctype, child.ctype))
         return True
 
@@ -589,14 +591,14 @@ class ComplexBuilder:
                 to_remove.append(node)
                 child = node.children[0]
 
-                if child.ctype == 'and' or '--' in child.ctype:
+                if child.ctype == 'and' or '--' in child.ctype or re.match("^[1-9]*$", child.ctype):
                     to_add.extend(node.children)
                 elif child.ctype == 'or':
-                    if node.ctype!= None and (node.ctype == "and" or '--' in node.ctype):
+                    if node.ctype!= None and (node.ctype == "and" or '--' in node.ctype or re.match("^[1-9]*$", node.ctype)):
                         to_clone.append(node.children) # [[AND A--C, AND A--E], [AND A--F, AND A--D]]
                     else:
                         to_clone.extend(node.children) # [AND A--C, AND A--E , AND A--F, AND A--D]
-                elif child.ctype == 'not' and (node.ctype!= None and (node.ctype == "and" or '--' in node.ctype)):
+                elif child.ctype == 'not' and (node.ctype!= None and (node.ctype == "and" or '--' in node.ctype or re.match("^[1-9]*$", node.ctype))):
                     for child in node.children:
                         child.ctype = "x"
                         to_add.append(child)
