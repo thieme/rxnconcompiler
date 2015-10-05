@@ -43,7 +43,10 @@ class ReactionFactoryFromDict:
             container = ReactionContainer()
             container.name = row['Reaction[Full]']
             container.rid = row_id + 1
-            container.rtype = row['ReactionTypeID']
+            if "Reaction" in row:
+                container.rtype = row['ReactionType']
+            else:
+                container.rtype = row['ReactionTypeID']
 
             reaction = self.get_reaction_object(row) 
             reaction.rid = row_id + 1
@@ -90,9 +93,9 @@ class ReactionFactoryFromDict:
             reaction = Modification()
         elif ('Association' in categories_dict and r_type in categories_dict['Association']) or  r_type.split(".")[0] == "2":
             reaction = Interaction()
-        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(".")[0] == "3":
+        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(",")[0] == "3":
             reaction = SyntDeg()
-        elif ("Relocalisation" in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(".")[0] == "4":
+        elif ("Relocalisation" in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(",")[0] == "4":
             reaction = Relocalisation()
 
         
@@ -147,10 +150,10 @@ class ReactionFactoryFromDict:
                 reaction.right_reactant.add_binding_site(state)
                 reaction.to_change = state
 
-        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(".")[0] == "3":
+        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(",")[0] == "3":
             pass
 
-        elif ('Relocalisation' in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(".")[0] == "4":
+        elif ('Relocalisation' in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(",")[0] == "4":
             state = get_state(row, reaction, 'Relocalisation')
             reaction.to_change = state
             reaction.right_reactant.localisation = state

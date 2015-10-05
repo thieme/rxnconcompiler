@@ -129,88 +129,63 @@ DEFAULT_DEFINITION = [
  'ModifierBoundary': u'N/A',
  'Comments': '',
 },
- 
+
+#################   Synthesis/Degradation #################
 #
+{
+#has to be changed
+'ReactionDefinitionID': u'TRSC',
+ 'ReactionName': u'Transcription',
+ 'ReactionTypeID': "3,1",
+ 'ReactionTypeName': '',
+ 'ModifierBoundary': u'N/A',
+ 'Comments': '',
+ },
+
 #
-# {
-# #has to be changed
-# 'Category': u'Synthesis/Degradation',
-# '!ReactionID': u'TRSC',
-#  'ProductState[Component]': u'ComponentB-mRNA',
-#  'Modifier or Boundary': u'N/A',
-#  'ReactionName': u'Transcription',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'TRSC',
-#  'Comments': '',
-#  'ReactionTypeID': "3.1",
-#  'ProductState[Modification]': u'N/A',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
+{
+'ReactionDefinitionID': u'TRSL',
+'ReactionName': u'Translation',
+ 'ReactionTypeID': "3,2",
+ 'ReactionTypeName': '',
+ 'ModifierBoundary': u'N/A',
+ 'Comments': '',
+ },
+
+{
+#has to be changed
+
+'ReactionDefinitionID': u'DEG',
+'ReactionName': u'Degradation',
+ 'ReactionTypeID': "3,4",
+ 'ReactionTypeName': '',
+ 'ModifierBoundary': u'N/A',
+  'Comments': '',
+},
 #
-# {
-# #has to be changed
-# 'Category': u'Synthesis/Degradation',
-# '!ReactionID': u'TRSL',
-#  'ProductState[Component]': u'ComponentB',
-#  'Modifier or Boundary': u'N/A',
-#  'ReactionName': u'Translation',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'TRSL',
-#  'Comments': '',
-#  'ReactionTypeID': "3.2",
-#  'ProductState[Modification]': u'N/A',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
-#
-# {
-# #has to be changed
-# 'Category': u'Synthesis/Degradation',
-# '!ReactionID': u'DEG',
-#  'ProductState[Component]': u'N/A',
-#  'Modifier or Boundary': u'N/A',
-#  'ReactionName': u'Degradation',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'DEG',
-#  'Comments': '',
-#  'ReactionTypeID': "3.3",
-#  'ProductState[Modification]': u'N/A',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'ComponentB',
-#  'SourceState[Modification]': u'N/A'},
-#
-# {
-# #has to be changed
-# 'Category': u'Synthesis/Degradation',
-# '!ReactionID': u'CONSUME',
-#  'ProductState[Component]': u'N/A',
-#  'Modifier or Boundary': u'N/A',
-#  'ReactionName': u'Consumption',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'CONSUME',
-#  'Comments': '',
-#  'ReactionTypeID': "3.4",
-#  'ProductState[Modification]': u'N/A',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'ComponentB',
-#  'SourceState[Modification]': u'N/A'},
-#
-# {
-# #has to be changed
-# 'Category': u'Synthesis/Degradation',
-# '!ReactionID': u'PRODUCE',
-#  'ProductState[Component]': u'ComponentB',
-#  'Modifier or Boundary': u'N/A',
-#  'ReactionName': u'Production',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'PRODUCE',
-#  'Comments': '',
-#  'ReactionTypeID': "3.5",
-#  'ProductState[Modification]': u'N/A',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
+{
+#has to be changed
+
+'ReactionDefinitionID': u'CONSUME',
+'ReactionName': u'Consumption',
+  'ReactionTypeID': "3,5",
+ 'ReactionTypeName': '',
+ 'ModifierBoundary': u'N/A',
+ 'Comments': '',
+},
+
+{
+#has to be changed
+
+'ReactionDefinitionID': u'PRODUCE',
+ 'ReactionName': u'Production',
+
+'ReactionTypeID': "3,3",
+ 'ReactionTypeName': '',
+ 'ModifierBoundary': u'N/A',
+
+ 'Comments': '',
+},
 #
 #
 #

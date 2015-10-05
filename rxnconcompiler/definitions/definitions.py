@@ -20,7 +20,7 @@ class ReactionDefinitions(dict):
         """returns row from reaction_definition table."""
         for rrow in self.xls_tables['reaction_definition']:
             if 'ReactionTypeID' in rrow:
-                self[rrow['ReactionTypeID'].lower()] = rrow
+                self[rrow['ReactionTypeID']] = rrow
             else:
                 self[rrow['Reaction'].lower()] = rrow
 
@@ -80,7 +80,7 @@ class ReactionDefinitions(dict):
                 if 'Reaction' in self[definition]:
                     cat_dict[cat].append(self[definition]['Reaction'].lower())
                 else:
-                    cat_dict[cat].append(self[definition]['ReactionDefinitionID'].lower())
+                    cat_dict[cat].append(self[definition]['ReactionDefinitionID'])
         if cat_dict.has_key(''): 
             del(cat_dict[''])
         return cat_dict

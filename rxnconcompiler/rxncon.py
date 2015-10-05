@@ -360,8 +360,9 @@ class Rxncon():
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name) #1
-                builder = ComplexBuilder()
-                builder.structure_complex(complexes, react_container)
+                if complexes:
+                    builder = ComplexBuilder()
+                    builder.structure_complex(complexes, react_container)
 
             if add_contingencies:
                 complexes = self.apply_contingencies(react_container, complexes)

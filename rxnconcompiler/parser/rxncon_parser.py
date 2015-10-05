@@ -63,6 +63,7 @@ def parse_text(rxncon_text):
     reaction_template = REACTION_TEMPLATE
     reaction2def = dict([(row['ReactionDefinitionID'].lower(), row) for row in reaction_definition])
     reactionTypeID2def = dict([(row['ReactionTypeID'], row) for row in reaction_template])
+    used_reaction_definition = []
 
     lines = rxncon_text.split("\n")
     reaction_list = []
@@ -104,9 +105,11 @@ def parse_text(rxncon_text):
             if not reaction_full[0] in '<[{':
                 raise RxnconParserError('unknown reaction type in %s' % reaction_full)
 
-        r_def.update(reactionTypeID2def[r_def["ReactionTypeID"]]) # get the respective template information
-
+        
+         # consider only definitions we are really using
         if r_def:
+            r_def.update(reactionTypeID2def[r_def["ReactionTypeID"]]) # get the respective template information
+            used_reaction_definition.append(r_def)
             start = reaction_full.lower().find('_%s_' % r_def['ReactionDefinitionID'].lower())
             reaction_components = reaction_full.split(reaction_full[start:start + len(r_def['ReactionDefinitionID']) + 2])
             comp_name2index = dict(ComponentA=0, ComponentB=1)
@@ -214,7 +217,7 @@ def parse_text(rxncon_text):
                     contingency_id += 1
         except:
             raise RxnconParserError('Error in line:<br/>\n%s<br/>\n%s' % (line, sys.exc_info()[1]))
-    return dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition)
+    return dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=used_reaction_definition)
 
 
 def parse_xls(file_path):
