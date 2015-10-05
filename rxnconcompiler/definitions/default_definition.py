@@ -11,7 +11,8 @@ DEFAULT_DEFINITION = [
 
 {
  'ReactionDefinitionID': u'P-',
- 'ReactionTypeID': 'p-',
+ 'ReactionTypeID': u'1.1.2.1',
+ #'ReactionTypeID': 'p-',
  'ReactionName': u'dephosphorylation',
  #'ReactionTypeID': u'1.1.2.1',
  'ReactionTypeName': 'Covalent_reversible_negative_trans',
