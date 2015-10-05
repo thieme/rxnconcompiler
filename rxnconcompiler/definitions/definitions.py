@@ -19,7 +19,10 @@ class ReactionDefinitions(dict):
     def get_reaction_definitions_dict(self):
         """returns row from reaction_definition table."""
         for rrow in self.xls_tables['reaction_definition']:
-            self[rrow['Reaction'].lower()] = rrow
+            if 'ReactionTypeID' in rrow:
+                self[rrow['ReactionTypeID'].lower()] = rrow
+            else:
+                self[rrow['Reaction'].lower()] = rrow
 
     def get_localization_modifications(self):
         """
@@ -28,7 +31,8 @@ class ReactionDefinitions(dict):
         """
         localization_modifications = {}
         for row in self.xls_tables['reaction_definition']:
-            if row['CategoryType'] and (int(row['CategoryType']) == 4):
+            if row['ReactionTypeID'] and (int(row['ReactionTypeID'].split(".")[0]) == 4):
+
                 mod_list = row['SourceState[Modification]'].split(',')
                 mod_list += row['ProductState[Modification]'].split(',')
                 mod_list = [x.strip() for x in mod_list]           
@@ -70,9 +74,13 @@ class ReactionDefinitions(dict):
         """      
         cat_dict = {}
         for definition in self:
-            cat = self[definition]['Category']
-            cat_dict.setdefault(cat, [])
-            cat_dict[cat].append(self[definition]['Reaction'].lower())
+            if 'Category' in self[definition]: # if Category is not in self[definition] we don't saw this definition during the parsing step and don't need it
+                cat = self[definition]['Category']
+                cat_dict.setdefault(cat, [])
+                if 'Reaction' in self[definition]:
+                    cat_dict[cat].append(self[definition]['Reaction'].lower())
+                else:
+                    cat_dict[cat].append(self[definition]['ReactionDefinitionID'].lower())
         if cat_dict.has_key(''): 
             del(cat_dict[''])
         return cat_dict

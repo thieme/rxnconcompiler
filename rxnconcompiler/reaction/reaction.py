@@ -225,7 +225,7 @@ class Interaction(Reaction):
         """
         Assumes that there are always two substrate complexes.
         """
-        if self.rtype == 'ipi':
+        if self.rtype == 'ipi' or self.rtype == "2.1.1.2":
             self.run_ipi_reaction()
         else:
             #if len(self.substrat_complexes) != 2:
@@ -266,7 +266,7 @@ class Modification(Reaction):
     def run_reaction(self):
         """
         """
-        if self.rtype == 'pt':
+        if self.rtype == 'pt' or self.rtype == "1.1.3.1":
             self.run_reaction_pt()
         else:
             rmol = self.right_reactant
@@ -277,14 +277,14 @@ class Modification(Reaction):
             prmol = prcomp.get_molecules_on_state_condition(name=rmol.name, state=self.to_change, mid=rmol.mid)[0]
 
 
-            if '-' in self.rtype or self.rtype in ['gap']:
+            if ('-' in self.rtype or self.rtype in ['gap']) or (len(self.rtype.split(".")) == 4 and self.rtype.split(".")[2] == "2"):
                 prmol.remove_modification(self.to_change)
             else:  
                 prmol.add_modification(self.to_change)
      
             self.product_complexes.append(prcomp)
    
-            if len(self.substrat_complexes) == 2 and self.rtype != 'pt':
+            if len(self.substrat_complexes) == 2 and (self.rtype != 'pt' or self.rtype != "1.1.3.1"):
 
                 lcomp = self.get_substrate_complex('L')
                 if lcomp:
@@ -339,9 +339,14 @@ class Modification(Reaction):
         Returns a contingency that describes what is 
         prodused/destroyed within a reaction.
         """
-        if '+' in self.rtype or self.rtype in ['pt', 'gap']:
+        if ('+' in self.rtype or self.rtype in ['pt', 'gap']):
             return Contingency(self.name, '!', self.to_change)
-        elif '-' in self.rtype or self.rtype in ['ap', 'gef', 'cut']: 
+        elif  (len(self.rtype.split(".")) == 4 and self.rtype.split(".")[2] == 1) or self.rtype in ["1.1.3.1", "1.1.2.1"]:
+            return Contingency(self.name, '!', self.to_change)
+            
+        elif ('-' in self.rtype or self.rtype in ['ap', 'gef', 'cut'])
+            return Contingency(self.name, 'x', self.to_change)
+        elif (len(self.rtype.split(".")) == 4 and self.rtype.split(".")[2] == 2) or self.rtype in ["1.1.1.2", "1.1.1.1", "1.2.1.1"]: 
             return Contingency(self.name, 'x', self.to_change)
 
     def get_source_contingency(self):
