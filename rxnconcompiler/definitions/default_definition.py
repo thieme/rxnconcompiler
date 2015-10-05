@@ -11,192 +11,125 @@ DEFAULT_DEFINITION = [
 
 {
  'ReactionDefinitionID': u'P-',
- 'ReactionTypeID': u'1.1.2.1',
- #'ReactionTypeID': 'p-',
  'ReactionName': u'dephosphorylation',
- #'ReactionTypeID': u'1.1.2.1',
+
+ 'ReactionTypeID': u'1.1.2.1',
  'ReactionTypeName': 'Covalent_reversible_negative_trans',
+ #'ReactionTypeID': 'p-',
+
  'ModifierBoundary': u'P',
  'Comments': ''
-}
-#{
-# #has to be changed
-# 'Category': u'Covalent Modification',
-# '!ReactionID': u'AP',
-#  'ProductState[Component]': u'ComponentB',
-#  'Modifier or Boundary': u'P',
-#  'ReactionName': u'Autophosphorylation',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'AP',
-#  'Comments': '',
-#  'ReactionTypeID': u'1.1.3',
-#  'ProductState[Modification]': u'-{P}',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
-#
-# {
-# #has to be changed
-# 'Category': u'Covalent Modification',
-# '!ReactionID': u'PT',
-#  'ProductState[Component]': u'ComponentB',
-#  'Modifier or Boundary': u'P',
-#  'ReactionName': u'Phosphotransfer',
-#  'Reversibility': u'reversible',
-#  'ReactionType': u'PT',
-#  'Comments': '',
-#  'ReactionTypeID': u'1.1.4',
-#  'ProductState[Modification]': u'-{P}',
-#  'Directionality': u'bidirectional',
-#  'SourceState[Component]': u'ComponentA',
-#  'SourceState[Modification]': u'-{P}'},
-#
-# {
-# #has to be changed
-# 'Category': u'Covalent Modification',
-# '!ReactionID': u'GEF',
-#  'ProductState[Component]': u'ComponentB',
-#  'Modifier or Boundary': u'P',
-#  'ReactionName': u'Guanine Nucleotide Exchange',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'GEF',
-#  'Comments': u'*G-proteins are assumed to bind GDP in their "basic" state. Exchange to GTP is denoted with the additional -{Pi}, which constitute the difference between the nucleotides.',
-#  'ReactionTypeID': u'1.2.1',
-#  'ProductState[Modification]': u'-{P}',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
-#
-# {
-# #has to be changed
-# 'Category': u'Covalent Modification',
-# '!ReactionID': u'GAP',
-#  'ProductState[Component]': u'N/A',
-#  'Modifier or Boundary': u'P',
-#  'ReactionName': u'GTPase Activation',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'GAP',
-#  'Comments': u'*G-proteins are assumed to bind GDP in their "basic" state. Exchange to GTP is denoted with the additional -{Pi}, which constitute the difference between the nucleotides.',
-#  'ReactionTypeID': u'1.2.2',
-#  'ProductState[Modification]': u'N/A',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'ComponentB',
-#  'SourceState[Modification]': u'-{P}'},
-#
-# {
-# #has to be changed
-# 'Category': u'Covalent Modification',
-# '!ReactionID': u'Ub+',
-#  'ProductState[Component]': u'ComponentB',
-#  'Modifier or Boundary': u'Ub',
-#  'ReactionName': u'Ubiquitination',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'Ub+',
-#  'Comments': '',
-#  'ReactionTypeID': u'1.3.1',
-#  'ProductState[Modification]': u'-{Ub}',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
-#
-# {
-# #has to be changed
-# 'Category': u'Covalent Modification',
-# '!ReactionID': u'Ub-',
-#  'ProductState[Component]': u'ComponentB',
-#  'Modifier or Boundary': u'Ub',
-#  'ReactionName': u'Deubiquitination',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'Ub+',
-#  'Comments': '',
-#  'ReactionTypeID': u'1.3.1',
-#  'ProductState[Modification]': u'N/A',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'ComponentB',
-#  'SourceState[Modification]': u'-{Ub}'},
-#
-# {
-# #has to be changed
-# 'Category': u'Covalent Modification',
-# '!ReactionID': u'CUT',
-#  'ProductState[Component]': u'ComponentB',
-#  'Modifier or Boundary': u'Truncated',
-#  'ReactionName': u'Proteolytic cleaveage',
-#  'Reversibility': u'irreversible',
-#  'ReactionType': u'CUT',
-#  'Comments': '',
-#  'ReactionTypeID': "1.4",
-#  'ProductState[Modification]': u'-{Truncated}',
-#  'Directionality': u'unidirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
+},
+
+{
+  'ReactionDefinitionID': u'AP',
+ 'ReactionName': u'Autophosphorylation',
+  'ReactionTypeID': u'1.1.1.2',
+ 'ReactionTypeName': 'Covalent_reversible_positive_cis',
+  'ModifierBoundary': u'P',
+  'Comments': '',
+},
+
+{
+ 'ReactionDefinitionID': u'PT',
+ 'ReactionName': u'Phosphotransfer',
+ 'ReactionTypeID': u'1.1.3.1',
+ 'ReactionTypeName': 'Covalent_reversible_transfer_trans',
+ 'ModifierBoundary': u'P',
+ 'Comments': '',
+},
+
+{
+'ReactionDefinitionID': u'GEF',
+'ReactionName': u'Guanine Nucleotide Exchange',
+'ReactionTypeID': u'1.1.1.1',
+'ReactionTypeName': 'Covalent_reversible_positive_trans',
+'ModifierBoundary': u'GTP',
+
+ 'Comments': u'*G-proteins are assumed to bind GDP in their "basic" state. Exchange to GTP is denoted with the additional -{Pi}, which constitute the difference between the nucleotides.',
+},
+
+{
+ 'ReactionDefinitionID': u'GAP',
+ 'ReactionName': u'GTPase Activation',
+ 'ReactionTypeID': u'1.1.2.1',
+ 'ReactionTypeName': 'Covalent_reversible_negative_trans',
+ 'ModifierBoundary': u'GTP',
+ 'Comments': u'*G-proteins are assumed to bind GDP in their "basic" state. Exchange to GTP is denoted with the additional -{Pi}, which constitute the difference between the nucleotides.',
+
+},
+
+ {
+ 'ReactionDefinitionID': u'Ub+',
+ 'ReactionName': u'Ubiquitination',
+ 'ReactionTypeID': u'1.1.1.1',
+  'ReactionTypeName': 'Covalent_reversible_positive_trans',
+ 'ModifierBoundary': u'Ub',
+ 'Comments': '',
+},
+
+
+{
+'ReactionDefinitionID': u'CUT',
+  'ReactionName': u'Proteolytic cleaveage',
+'ReactionTypeID': "1.2.1.1",
+ 'ReactionTypeName': '',
+ 'ModifierBoundary': u'Truncated',
+ 'Comments': ''
+},
+
 #
 #
 #
 #
-# {
-# #has to be changed
-# 'Category': u'Association',
-#  '!ReactionID': u'ppi',
-#  'ProductState[Component]': u'ComponentA',
-#  'Modifier or Boundary': u'N/A',
-#  'ReactionName': u'protein-protein interaction',
-#  'Reversibility': u'reversible',
-#  'ReactionType': u'ppi',
-#  'Comments': '',
-#  'ReactionTypeID': u'2.1.1',
-#  'ProductState[Modification]': u'--ComponentB',
-#  'Directionality': u'nondirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
-#
-# {
-# #has to be changed
-# 'Category': u'Association',
-# '!ReactionID': u'ipi',
-#  'ProductState[Component]': u'ComponentA',
-#  'Modifier or Boundary': '',
-#  'ReactionName': u'intra-protein interaction',
-#  'Reversibility': u'reversible',
-#  'ReactionType': u'ipi',
-#  'Comments': u'*Self interaction',
-#  'ReactionTypeID': u'2.1.2',
-#  'ProductState[Modification]': u'--ComponentB',
-#  'Directionality': u'nondirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
-#
-# {
-# #has to be changed
-# 'Category': u'Association',
-# '!ReactionID': u'i',
-#  'ProductState[Component]': u'ComponentA',
-#  'Modifier or Boundary': u'N/A',
-#  'ReactionName': u'interaction (non-proteins)',
-#  'Reversibility': u'reversible',
-#  'ReactionType': u'i',
-#  'Comments': '',
-#  'ReactionTypeID': "2.2",
-#  'ProductState[Modification]': u'--ComponentB',
-#  'Directionality': u'nondirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
-#
-# {
-# #has to be changed
-# 'Category': u'Association',
-# '!ReactionID': u'BIND',
-#  'ProductState[Component]': u'ComponentA',
-#  'Modifier or Boundary': u'N/A',
-#  'ReactionName': u'Binding to DNA',
-#  'Reversibility': u'reversible',
-#  'ReactionType': u'BIND',
-#  'Comments': '',
-#  'ReactionTypeID': "2.3",
-#  'ProductState[Modification]': u'--ComponentB',
-#  'Directionality': u'nondirectional',
-#  'SourceState[Component]': u'N/A',
-#  'SourceState[Modification]': u'N/A'},
+{
+#has to be changed
+
+'ReactionDefinitionID': u'ppi',
+'ReactionName': u'protein-protein interaction',
+'ReactionTypeID': u'2.1.1.1',
+ 'ReactionTypeName': '',
+'ModifierBoundary': u'N/A',
+
+ 'Comments': '',
+},
+
+
+{
+#has to be changed
+
+'ReactionDefinitionID': u'ipi',
+ 'ReactionName': u'intra-protein interaction',
+'ReactionTypeID': u'2.1.1.2',
+ 'ReactionTypeName': '',
+ 'ModifierBoundary': 'N/A',
+ 'Comments': u'*Self interaction',
+
+},
+
+{
+#has to be changed
+
+'ReactionDefinitionID': u'i',
+  'ReactionName': u'interaction (non-proteins)',
+  'ReactionTypeID': "2.1.1.1",
+ 'ReactionTypeName': '',
+'ModifierBoundary': u'N/A',
+'Comments': '',
+
+ },
+
+{
+#has to be changed
+
+'ReactionDefinitionID': u'BIND',
+'ReactionName': u'Binding to DNA',
+'ReactionTypeID': "2.1.1.1",
+'ReactionTypeName': '',
+ 'ModifierBoundary': u'N/A',
+ 'Comments': '',
+},
+ 
 #
 #
 # {

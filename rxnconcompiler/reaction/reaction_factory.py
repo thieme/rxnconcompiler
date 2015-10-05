@@ -86,13 +86,13 @@ class ReactionFactoryFromDict:
             r_type = row['ReactionTypeID']
 
         categories_dict = self.definitions.categories_dict
-        if r_type in categories_dict['Covalent Modification'] or  r_type.split(".")[0] == "1":
+        if ('Covalent Modification' in categories_dict and r_type in categories_dict['Covalent Modification']) or  r_type.split(".")[0] == "1":
             reaction = Modification()
-        elif r_type in categories_dict['Association'] or  r_type.split(".")[0] == "2":
+        elif ('Association' in categories_dict and r_type in categories_dict['Association']) or  r_type.split(".")[0] == "2":
             reaction = Interaction()
-        elif r_type in categories_dict['Synthesis/Degradation'] or  r_type.split(".")[0] == "3":
+        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(".")[0] == "3":
             reaction = SyntDeg()
-        elif r_type in categories_dict['Relocalisation'] or  r_type.split(".")[0] == "4":
+        elif ("Relocalisation" in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(".")[0] == "4":
             reaction = Relocalisation()
 
         
@@ -119,7 +119,7 @@ class ReactionFactoryFromDict:
         categories_dict = self.definitions.categories_dict
         reaction = self.get_preliminary_reaction(row)
 
-        if r_type in categories_dict['Covalent Modification'] or  r_type.split(".")[0] == "1" :
+        if ('Covalent Modification' in categories_dict and r_type in categories_dict['Covalent Modification']) or  r_type.split(".")[0] == "1" :
             state = get_state(row, reaction, 'Covalent Modification')
             if r_type == 'pt' or r_type == "1.1.3.1": # if subtype == Trnas
                 # second state changes in the reaction PT
@@ -133,7 +133,7 @@ class ReactionFactoryFromDict:
                 reaction.right_reactant.add_modification_site(state)
             reaction.to_change = state
 
-        elif r_type in categories_dict['Association'] or  r_type.split(".")[0] == "2":
+        elif ('Association' in categories_dict and r_type in categories_dict['Association']) or  r_type.split(".")[0] == "2":
             # ipi is destinctive state: it is A_[a]--[b]
             # where both domains are in the same protein.
             if r_type == 'ipi' or r_type == "2.1.1.2":
@@ -147,10 +147,10 @@ class ReactionFactoryFromDict:
                 reaction.right_reactant.add_binding_site(state)
                 reaction.to_change = state
 
-        elif r_type in categories_dict['Synthesis/Degradation'] or  r_type.split(".")[0] == "3":
+        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(".")[0] == "3":
             pass
 
-        elif r_type in categories_dict['Relocalisation'] or  r_type.split(".")[0] == "4":
+        elif ('Relocalisation' in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(".")[0] == "4":
             state = get_state(row, reaction, 'Relocalisation')
             reaction.to_change = state
             reaction.right_reactant.localisation = state

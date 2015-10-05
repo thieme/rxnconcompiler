@@ -234,7 +234,7 @@ class x_exclamation_mark_Tests(TestCase):
         #         <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
         #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
         # ''')
-        rxncon = Rxncon("""A_p-_B; ! A_[x]-{P} """)
+        rxncon = Rxncon("""A_[x]_gap_B""")
         # rxncon = Rxncon("""A_ppi_E; ! <comp>
         #                     <comp>; 11 B_[x]-{P}
         #                     <comp>; 7 B_[y]-{P}
