@@ -5,6 +5,7 @@ New:
          sth other: neede
          sth other other: optional
          - dazu notizen im Block (Sbtab kapitel) und oder Foto vom Whiteboard angucken (17.09)
+      - far future: Script that automatically cecks and updates rxncon files and adds product state and so on with regexp
    Basti:
       - make clean todo list in gitlab using issues
       - finish testing program
