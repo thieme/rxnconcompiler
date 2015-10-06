@@ -101,6 +101,9 @@ class Molecule:
     def __repr__(self):
         return self.name
 
+    def __getitem__(self, idx):
+        return self[idx]
+
     def __eq__(self, other):
         if not self.name == other.name:
             return False
@@ -327,6 +330,14 @@ class Molecule:
         doms += self.get_domains('modification', True, side)
         doms += self.get_domains('modification', False, side)
         return list(set(doms))
+
+    def get_all_involved_states(self):
+        to_search = self.binding_partners
+        to_search.extend(self.binding_sites)
+        to_search.extend(self.modifications)
+        to_search.extend(self.modification_sites)
+
+        return to_search
 
     def domain_is_present(self, domain, side = 'L'):        
         """

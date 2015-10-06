@@ -100,7 +100,7 @@ REACTIONS_DATA = {
     'Rules':[
     'Ribo + GenemRNA -> Ribo + GenemRNA + Gene'],
     'Tags': [
-    1, 'TRSC', 'no contingencies']},
+    1, 'TRSL', 'no contingencies']},
 
 'Proteasome_DEG_Protein': {
     'Rules':[
@@ -153,7 +153,13 @@ CONTINGENCIES_DATA = {
     'Rules':[
     'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a,b) <-> ProtA(AssocProtC!1,a,b).ProtC(Gnp~P,AssocProtA!1)'],
     'Tags': [
-    1, 'ipi', 'contingencies']}
+    1, 'ipi', 'contingencies']},
+
+    'A_ppi_B \n C_p+_B \n D_ub+_B_[x] \n Y_trsl_B': {
+    'Rules':[
+    'Y + BmRNA -> Y + BmRNA + B(C~U,x~U,AssocA)'],
+    'Tags': [
+    1, 'TRSL', 'contingencies']},
 
 
 }

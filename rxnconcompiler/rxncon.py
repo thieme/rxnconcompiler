@@ -353,7 +353,7 @@ class Rxncon():
             self.add_missing_reactions(list(self.war.not_in_products))
         if add_translation:
             self.add_translation()
-
+        trsl_reaction = []
         for react_container in self.reaction_pool:
             # initially container has one reaction 
             # (changes after running the process because of OR and K+/K-)
@@ -378,6 +378,32 @@ class Rxncon():
             self.update_reactions() #4
             for reaction in react_container: # 5
                 reaction.run_reaction()
+            if react_container.rtype in ["trsl", "3,2"]:
+                trsl_reaction.append(react_container)
+        if trsl_reaction:
+            self.update_trsl_reaction(trsl_reaction)
+
+    def update_trsl_reaction(self, trsl_reaction):
+        """
+        If a mRNA is translated the resulting protein should be completely undbounded und unmodified.
+        @param trsl_reaction: list of reaction container containing trsl reactions
+        @return:
+        """
+        for react_container in trsl_reaction:
+            for reaction in react_container:
+                transl_mol = reaction.right_reactant
+                for comp in reaction.product_complexes:
+                    if comp.has_molecule(transl_mol.name):
+                        for react_container_other in self.reaction_pool:
+                            for reaction_other in react_container_other:
+                                if reaction_other.rid == reaction.rid:
+                                    break
+                                for comp in reaction_other.substrat_complexes:
+                                    if comp.has_molecule(transl_mol.name):
+                                        additional_mol = comp.get_molecules(transl_mol.name)[0]
+                                        all_states = additional_mol.get_all_involved_states()
+                                        for state in all_states:
+                                            transl_mol.set_site(state)
 
 
 
