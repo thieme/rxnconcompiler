@@ -30,6 +30,7 @@ class ReactionContainer(list):
         self.name = None
         self.rid = None
         self.rtype = None
+        self.rtypeID = None
 
     def __repr__(self):
         """

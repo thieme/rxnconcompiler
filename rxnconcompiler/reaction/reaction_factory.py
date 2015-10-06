@@ -47,6 +47,7 @@ class ReactionFactoryFromDict:
                 container.rtype = row['ReactionType']
             else:
                 container.rtype = row['ReactionTypeID']
+                container.rtypeID = row['ReactionDefinitionID']
 
             reaction = self.get_reaction_object(row) 
             reaction.rid = row_id + 1
@@ -87,6 +88,7 @@ class ReactionFactoryFromDict:
 
         else:
             r_type = row['ReactionTypeID']
+            r_typeID = row['ReactionDefinitionID'].lower()
 
         categories_dict = self.definitions.categories_dict
         if ('Covalent Modification' in categories_dict and r_type in categories_dict['Covalent Modification']) or  r_type.split(".")[0] == "1":
@@ -102,10 +104,12 @@ class ReactionFactoryFromDict:
 
         reaction.rtype = r_type
         reaction.name = row['Reaction[Full]']
-        if self.definitions.has_key(r_type):
-            reaction.definition = self.definitions[r_type]
+        if r_typeID is not None:
+            reaction.rtypeID = r_typeID
+        if self.definitions.has_key(r_typeID):
+            reaction.definition = self.definitions[r_typeID]
         else: 
-            raise TypeError('No reaction type %s.') % r_type
+            raise TypeError('No reaction typeName %s.') % r_typeID
 
         self.add_reactants(reaction,row)
         return reaction
@@ -118,6 +122,7 @@ class ReactionFactoryFromDict:
             r_type = row['ReactionType'].lower()
         else:
             r_type = row['ReactionTypeID']
+            r_typeID = row['ReactionDefinitionID']
 
         categories_dict = self.definitions.categories_dict
         reaction = self.get_preliminary_reaction(row)
@@ -160,12 +165,14 @@ class ReactionFactoryFromDict:
         else:
             reaction = Reaction()
 
-        reaction.definition = self.definitions[r_type]
+        reaction.definition = self.definitions[r_typeID]
         return reaction
 
 
 class ReactionFactoryFromList:
-    """Builds ReactionPool and MoleculePool from a list of states."""
+    """
+    USAGE?
+    Builds ReactionPool and MoleculePool from a list of states."""
     def __init__(self, states_list):
         self.definitions = ReactionDefinitions({'reaction_definition': DEFAULT_DEFINITION})
         self.reaction_pool = ReactionPool()

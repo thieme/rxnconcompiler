@@ -359,17 +359,17 @@ class StateFactory:
         return state
 
 
-    def get_state(self, first_arg=None, sec_arg=None, third_arg=None):
+    def get_state(self, row=None, reaction_obj=None, reactionName=None):
         """
         Switch between two functions:
         - get_state_from_reaction
         - get_state_from_string
         depends on arguments.
         """
-        if type(first_arg) == dict:
-            return self.get_state_from_reaction(first_arg, sec_arg, third_arg)
-        elif type(first_arg) in [str, unicode]:
-            return self.get_state_from_string(first_arg, sec_arg, third_arg)
+        if type(row) == dict:
+            return self.get_state_from_reaction(row, reaction_obj, reactionName)
+        elif type(row) in [str, unicode]:
+            return self.get_state_from_string(row, reaction_obj, reactionName)
 
 
 get_state = StateFactory().get_state

@@ -40,6 +40,7 @@ class Reaction:
         self.name = None
         self.rid = None
         self.rtype = None
+        self.rtypeID = None
         self.definition = None
         self.left_reactant = None # RxnconMolecule object
         self.right_reactant = None # RxnconMolecule object
@@ -86,6 +87,7 @@ class Reaction:
         new.name = copy.deepcopy(self.name)
         new.rid = copy.deepcopy(self.rid)
         new.rtype = self.rtype
+        new.rtypeID = self.rtypeID
         new.definition = self.definition
         new.left_reactant = self.left_reactant #None # RxnconMolecule object
         new.right_reactant = self.right_reactant #None # RxnconMolecule object

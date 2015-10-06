@@ -143,12 +143,12 @@ def parse_text(rxncon_text):
 
                 #First part
                 modi = r_def['ModifierBoundary'].split(",")
-                if len(modi) == 2:
+                if len(modi) == 2 and modi[1] != 'N/A':
                     for component in range(len(components)):
                         modificats.append("-{%s}"%modi[1].strip())
-                elif len(modi) == 1:
+                elif len(modi) == 1 and modi[0] != 'N/A':
                     modificats.append("-{%s}"%modi[0].strip())
-                else:
+                elif len(modi) > 2:
                     raise ("more than 2 Modification are NOT IMPLEMENTED See rxncon_parser line 138")
 
                 #TODO can we merge this with the first part?

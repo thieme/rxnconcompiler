@@ -51,7 +51,7 @@ class RuleContainer(list):
         @rtype: string
         """
         react = self.reactions[0]
-        return '%s %s %s' % (react.left_reactant.name, react.rtype, react.right_reactant.name)
+        return '%s %s %s' % (react.left_reactant.name, react.rtypeID, react.right_reactant.name)
 
 
 class Rule:

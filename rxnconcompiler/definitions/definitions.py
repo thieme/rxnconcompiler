@@ -19,8 +19,8 @@ class ReactionDefinitions(dict):
     def get_reaction_definitions_dict(self):
         """returns row from reaction_definition table."""
         for rrow in self.xls_tables['reaction_definition']:
-            if 'ReactionTypeID' in rrow:
-                self[rrow['ReactionTypeID']] = rrow
+            if 'ReactionDefinitionID' in rrow:
+                self[rrow['ReactionDefinitionID'].lower()] = rrow
             else:
                 self[rrow['Reaction'].lower()] = rrow
 
