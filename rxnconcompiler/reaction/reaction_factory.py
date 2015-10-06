@@ -15,6 +15,7 @@ from reaction_container import ReactionContainer, ReactionPool
 from rate import Rate 
 from rxnconcompiler.definitions.definitions import ReactionDefinitions
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION
+
 from rxnconcompiler.molecule.molecule import Molecule, MoleculePool
 from rxnconcompiler.molecule.state import get_state
 
@@ -85,7 +86,7 @@ class ReactionFactoryFromDict:
         """
         if 'ReactionType' in row:
             r_type = row['ReactionType'].lower()
-
+            r_typeID = r_type
         else:
             r_type = row['ReactionTypeID']
             r_typeID = row['ReactionDefinitionID'].lower()
@@ -120,6 +121,7 @@ class ReactionFactoryFromDict:
         """
         if 'ReactionType' in row:
             r_type = row['ReactionType'].lower()
+            r_typeID = r_type
         else:
             r_type = row['ReactionTypeID']
             r_typeID = row['ReactionDefinitionID']

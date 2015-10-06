@@ -5,7 +5,7 @@ Class ReactionDefinitions - facilitates using reaction definitions.
 """
 
 import re
-
+from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE
 STATE_DOMAIN_PATTERN = re.compile(r'(.*)-\{(.*)}')
 
 class ReactionDefinitions(dict):
@@ -14,13 +14,23 @@ class ReactionDefinitions(dict):
     def __init__(self, xls_tables):
         dict.__init__(self)
         self.xls_tables = xls_tables
+
+        self.def_template = self.get_reaction_defintions_template_dict(REACTION_TEMPLATE)
         self.get_reaction_definitions_dict()
+
+    def get_reaction_defintions_template_dict(self, template_list):
+        def_template = {}
+        for template in template_list:
+            def_template[template['ReactionTypeID']] = template
+        return def_template
 
     def get_reaction_definitions_dict(self):
         """returns row from reaction_definition table."""
         for rrow in self.xls_tables['reaction_definition']:
             if 'ReactionDefinitionID' in rrow:
                 self[rrow['ReactionDefinitionID'].lower()] = rrow
+
+                self[rrow['ReactionDefinitionID'].lower()].update(self.def_template[rrow['ReactionTypeID']])
             else:
                 self[rrow['Reaction'].lower()] = rrow
 
@@ -80,7 +90,7 @@ class ReactionDefinitions(dict):
                 if 'Reaction' in self[definition]:
                     cat_dict[cat].append(self[definition]['Reaction'].lower())
                 else:
-                    cat_dict[cat].append(self[definition]['ReactionDefinitionID'])
+                    cat_dict[cat].append(self[definition]['ReactionDefinitionID'].lower())
         if cat_dict.has_key(''): 
             del(cat_dict[''])
         return cat_dict

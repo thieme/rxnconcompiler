@@ -311,7 +311,10 @@ class StateFactory:
         state.type = category
 
         if category == 'Covalent Modification':
-            state.modifier = reaction.definition['ModifierBoundary'] # e.g. P, Ub, truncated
+            if 'ModifierBoundary' in reaction.definition:
+                state.modifier = reaction.definition['ModifierBoundary'] # e.g. P, Ub, truncated
+            else:
+                state.modifier = reaction.definition['Modifier or Boundary']
             state.not_modifier = 'U' # for Unmodified
             comp_name = row['ComponentB[Name]'].split('_')[0]
             comp_dom = self.df.get_modification_domain_from_dict(row, reaction)
@@ -323,7 +326,10 @@ class StateFactory:
             # this is a special case
             # PT has two states that change in the reaction 
             # here the source_state is returned
-            state.modifier = reaction.definition['ModifierBoundary'] # e.g. P, Ub, truncated
+            if 'ModifierBoundary' in reaction.definition:
+                state.modifier = reaction.definition['ModifierBoundary'] # e.g. P, Ub, truncated
+            else:
+                state.modifier = reaction.definition['Modifier or Boundary'] # e.g. P, Ub, truncated
             state.not_modifier = 'U' # for Unmodified
             comp_name = row['ComponentA[Name]'].split('_')[0]
             comp_dom = self.df.get_modification_domain_from_dict(row, reaction, 'A')

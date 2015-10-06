@@ -67,7 +67,17 @@ DEFAULT_DEFINITION = [
  'ModifierBoundary': u'Ub',
  'Comments': '',
 },
+{
+ 'ReactionDefinitionID': u'Ub-',
+ 'ReactionName': u'dephosphorylation',
 
+ 'ReactionTypeID': u'1.1.2.1',
+ 'ReactionTypeName': 'Covalent_reversible_negative_trans',
+ #'ReactionTypeID': 'p-',
+
+ 'ModifierBoundary': u'Ub',
+ 'Comments': ''
+},
 
 {
 'ReactionDefinitionID': u'CUT',

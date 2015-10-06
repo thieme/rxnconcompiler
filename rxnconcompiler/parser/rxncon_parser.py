@@ -125,9 +125,18 @@ def parse_text(rxncon_text):
                 modi = r_def['ModifierBoundary'].split(",")
                 if len(modi) == 2:
                     for component in range(len(components)):
-                        modificats.append("-{%s}"%modi[1].strip())
+                        if modi[1].strip() not in  ["N/A",""]:
+                            modificats.append("-{%s}"%modi[1].strip())
+                        else:
+                            modificats.append("%s"%modi[1].strip())
+
                 elif len(modi) == 1:
-                    modificats.append("-{%s}"%modi[0].strip())
+                    if modi[0].strip() not in  ["N/A",""]:
+                        modificats.append("-{%s}"%modi[0].strip())
+                    else:
+                         modificats.append("%s"%modi[0].strip())
+                elif len(modi) > 2:
+                    raise ("more than 2 Modification are NOT IMPLEMENTED See rxncon_parser line 138")
 
                 for index in range(len(components)):
                     if modificats[index] != 'N/A':  # avoid adding N/A to the state name
@@ -143,19 +152,28 @@ def parse_text(rxncon_text):
 
                 #First part
                 modi = r_def['ModifierBoundary'].split(",")
-                if len(modi) == 2 and modi[1] != 'N/A':
+                if len(modi) == 2:
                     for component in range(len(components)):
-                        modificats.append("-{%s}"%modi[1].strip())
-                elif len(modi) == 1 and modi[0] != 'N/A':
-                    modificats.append("-{%s}"%modi[0].strip())
+                        if modi[1].strip() not in  ["N/A",""]:
+                            modificats.append("-{%s}"%modi[1].strip())
+                        else:
+                            modificats.append("%s"%modi[1].strip())
+
+                elif len(modi) == 1:
+                    if modi[0].strip() not in  ["N/A",""]:
+                        modificats.append("-{%s}"%modi[0].strip())
+                    else:
+                         modificats.append("%s"%modi[0].strip())
                 elif len(modi) > 2:
                     raise ("more than 2 Modification are NOT IMPLEMENTED See rxncon_parser line 138")
 
                 #TODO can we merge this with the first part?
                 for index in range(len(components)):
                     if modificats[index] != 'N/A':  # avoid adding N/A to the state name
-                        modification = modificats[index] if '--Component' not in modificats[index] \
-                                                         else '--' + reaction_components[1]
+                        modification = modificats[index] #if '--Component' not in modificats[index] \
+                                                         #else '--' + reaction_components[1]
+                    elif r_def['ReactionTypeID'].split(".")[0] == "2":
+                        modification = '--' + reaction_components[1]
                     else:
                         modification = ''
                     if 'mRNA' in components[index]:

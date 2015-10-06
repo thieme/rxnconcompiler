@@ -38,13 +38,13 @@ REACTIONS_DATA = {
 
 'Enzyme_GEF_GProt': {
     'Rules':[
-    'Enzyme + GProt(Enzyme~U) -> Enzyme + GProt(Enzyme~P)'],
+    'Enzyme + GProt(Enzyme~U) -> Enzyme + GProt(Enzyme~GTP)'],
     'Tags': [
     1, 'GEF', 'no contingencies']},
 
 'Enzyme_GAP_GProt': {
     'Rules':[
-    'Enzyme + GProt(Enzyme~P) -> Enzyme + GProt(Enzyme~U)'],
+    'Enzyme + GProt(Enzyme~GTP) -> Enzyme + GProt(Enzyme~U)'],
     'Tags': [
     1, 'GAP', 'no contingencies']},
 
