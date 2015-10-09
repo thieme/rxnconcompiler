@@ -44,55 +44,57 @@ def build_rxncon_dict(inputdir, filename):
         d = parse_rxncon(inputdir+'/'+filename)
         return d
 
-mapping_dict={
-                    #left : SBtab, right: rxncon
-                        # Reaction List
-                        '!ReactionID' : 'ReactionID',
-                        '!ComponentA:Name' : 'ComponentA[Name]',
-                        '!ComponentA:Domain' : 'ComponentA[Domain]',
-                        '!ComponentA:Subdomain' : 'ComponentA[Subdomain]',
-                        '!ComponentA:Residue' : 'ComponentA[Residue]',
-                        '!Reaction' : 'ReactionType', # 'Reaction',
-                        '!ComponentB:Name' : 'ComponentB[Name]',
-                        '!ComponentB:Domain' : 'ComponentB[Domain]',
-                        '!ComponentB:Subdomain' : 'ComponentB[Subdomain]',
-                        '!ComponentB:Residue' : 'ComponentB[Residue]',
-                        '!Quality' : 'Quality',
-                        '!PubMedIdentifiers' : 'PubMedIdentifier(s)',
-                        '!Comment': 'Comments',
-                        # Contigency List
-                        '!ContingencyID' : 'ContingencyID',
-                        '!Target' : 'Target',
-                        '!Contingency' : 'Contingency',
-                        '!Modifier' : 'Modifier',
-                        # Reaction definition
-                        #'!Reaction' : 'Reaction',
-                        '!Category:Type' : 'CategoryType',
-                        '!Category' : 'Category',
-                        '!SubclassID' : 'SubclassID',
-                        '!Subclass' : 'Subclass',
-                        '!ModifierOrBoundary' : 'Modifier or Boundary',
-                        '!ReactionType:ID' : 'ReactionTypeID',
-                        '!ReactionType' : 'ReactionType',
-                        '!Reaction:Name' : 'ReactionName',
-                        '!Reversibility' : 'Reversibility',
-                        '!Directionality' : 'Directionality',
-                        '!SourceState:Component' : 'SourceState[Component]',
-                        '!SourceState:Modification' : 'SourceState[Modification]',
-                        '!ProductState:Component' : 'ProductState[Component]',
-                        '!ProductState:Modification' : 'ProductState[Modification]',
-                        '!coSubstrates' : 'coSubstrate(s)',
-                        '!coProducts' : 'coProduct(s)'
-                }
+class Mapper(object):
+    def __init__(self):
+        self.mapping_dict={
+                            #left : SBtab, right: rxncon
+                                # Reaction List
+                                '!ReactionID' : 'ReactionID',
+                                '!ComponentA:Name' : 'ComponentA[Name]',
+                                '!ComponentA:Domain' : 'ComponentA[Domain]',
+                                '!ComponentA:Subdomain' : 'ComponentA[Subdomain]',
+                                '!ComponentA:Residue' : 'ComponentA[Residue]',
+                                '!Reaction' : 'ReactionType', # 'Reaction',
+                                '!ComponentB:Name' : 'ComponentB[Name]',
+                                '!ComponentB:Domain' : 'ComponentB[Domain]',
+                                '!ComponentB:Subdomain' : 'ComponentB[Subdomain]',
+                                '!ComponentB:Residue' : 'ComponentB[Residue]',
+                                '!Quality' : 'Quality',
+                                '!PubMedIdentifiers' : 'PubMedIdentifier(s)',
+                                '!Comment': 'Comments',
+                                # Contigency List
+                                '!ContingencyID' : 'ContingencyID',
+                                '!Target' : 'Target',
+                                '!Contingency' : 'Contingency',
+                                '!Modifier' : 'Modifier',
+                                # Reaction definition
+                                #'!Reaction' : 'Reaction',
+                                '!Category:Type' : 'CategoryType',
+                                '!Category' : 'Category',
+                                '!SubclassID' : 'SubclassID',
+                                '!Subclass' : 'Subclass',
+                                '!ModifierOrBoundary' : 'Modifier or Boundary',
+                                '!ReactionType:ID' : 'ReactionTypeID',
+                                '!ReactionType' : 'ReactionType',
+                                '!Reaction:Name' : 'ReactionName',
+                                '!Reversibility' : 'Reversibility',
+                                '!Directionality' : 'Directionality',
+                                '!SourceState:Component' : 'SourceState[Component]',
+                                '!SourceState:Modification' : 'SourceState[Modification]',
+                                '!ProductState:Component' : 'ProductState[Component]',
+                                '!ProductState:Modification' : 'ProductState[Modification]',
+                                '!coSubstrates' : 'coSubstrate(s)',
+                                '!coProducts' : 'coProduct(s)'
+                        }
 
-def update_mapping_dict(tableType):
-    if 'reaction_list' in tableType:
-        mapping_dict['!Reaction']= 'ReactionType'
-        mapping_dict['!Comment']='Comments'
-    else:
-        mapping_dict['!Reaction']= 'Reaction'
-        if 'contingency_list' in tableType:
-            mapping_dict['!Comment']='Comment'
+    def update_mapping_dict(self, tableType):
+        if 'reaction_list' in tableType:
+            self.mapping_dict['!Reaction']= 'ReactionType'
+            self.mapping_dict['!Comment']='Comments'
+        else:
+            self.mapping_dict['!Reaction']= 'Reaction'
+            if 'contingency_list' in tableType:
+                self.mapping_dict['!Comment']='Comment'
 
 class Commandline(object):
     def __init__(self):
@@ -156,8 +158,6 @@ class DirCheck(object):
         Checks whether input directory consists of SBtab, rxncon, both or other files
         '''
         print self.inputdir , '      delete this print in the end, check_directory_type()'
-
-
 
         files=get_files(self.inputdir)
 
@@ -344,11 +344,10 @@ class DirCheck(object):
                   'Only the following tables were found: '
             print found_tables
 
-
-class SBtabParser(Commandline):
+class Parser(Commandline):
 
     def __init__(self, parsable_to, inputdir, target_format):
-        super(SBtabParser, self).__init__()
+        super(Parser, self).__init__()
         self.parsable_to=parsable_to
         self.inputdir=inputdir
         self.target_format = target_format
@@ -385,7 +384,6 @@ class SBtabParser(Commandline):
         #print ob.table
         print 'TableType:\t', ob.table_type
 
-# started to 'objectify' on my own from here on
     def parse_SBtab2rxncon(self):
         '''
         Main function for parsing SBtab --> rxncon Format. Creates rxncon object
@@ -493,8 +491,6 @@ class SBtabParser(Commandline):
 
         return Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
 
-
-
     def build_full(self, row,d):
         '''
         Creates Full Reaction String from given SBtab reaction row and a dictionary, that tells in which column is what.
@@ -543,7 +539,6 @@ class SBtabParser(Commandline):
         #     out+='_[(' + row[d['cbr']] + ')]'
 
         return out
-
 
     def build_gene_list(self, ob_list):
         '''
@@ -626,13 +621,14 @@ class SBtabParser(Commandline):
             ''' Builds XXXX of XXX of values and maps it to the SBtab columns
             '''
 
-            print 'print self.d[\''+tableType+'\'][1].keys() :\n ', self.d[tableType][1].keys()
-            update_mapping_dict(tableType)
-            print tableType
+            #print 'print self.d[\''+tableType+'\'][1].keys() :\n ', self.d[tableType][1].keys()
+            #self.read_outputformat(self.parsable_to)
+            m = Mapper()
+            m.update_mapping_dict(tableType)
             for i in range(0,length): # for all items in e.g. reaction_list
                         values=[]
                         for col in columns:
-                            values.append(self.d[tableType][i][mapping_dict[col]])
+                            values.append(self.d[tableType][i][m.mapping_dict[col]])
                         value_rows.append(values)
             return value_rows
 
@@ -663,25 +659,13 @@ class SBtabParser(Commandline):
                     tableName='Reaction list'
                     filename='filename1'
 
-                    #columns=d[key][1].keys()
                     columns= ['!ReactionID','!ComponentA:Name','!ComponentA:Domain','!ComponentA:Subdomain','!ComponentA:Residue','!Reaction','!ComponentB:Name','!ComponentB:Domain','!ComponentB:Subdomain','!ComponentB:Residue','!Quality','!PubMedIdentifiers','!Comment']
-
-
-
                     value_rows=build_value_rows(key, columns, len(self.d[key])) #each list item is a list with the values of a row for easier delimiter organisation
-                    #print 'erstes dictionary ',d[key][0]
-                    #print 'keys innere liste: ', d[key][0].keys()
-                    # for i in range(0,len(d[key])): # for all items in e.g. reaction_list
-                    #     values=[]
-                    #     for col in columns:
-                    #         values.append(d[key][i][mapping_dict[col]])
-                    #     value_rows.append(values)
 
                 elif 'contingency_list' in key:
                     tableType='ContingencyID'
                     tableName='Contingency list'
                     filename='filename2'
-                    #header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName#+'"'+'\n'
                     columns= ['!ContingencyID' ,'!Target' ,'!Contingency' ,'!Modifier' ,'!PubMedIdentifiers' ,'!Quality' ,'!Comment']
                     value_rows=build_value_rows(key, columns, len(self.d[key])) #each list item is a list with the values of a row for easier delimiter organisation
 
@@ -690,7 +674,6 @@ class SBtabParser(Commandline):
                     tableName='Reactions definitions'
                     filename='filename3'
                     columns=['!Reaction','!Category:Type','!Category','!SubclassID','!Subclass','!ModifierOrBoundary','!ReactionType:ID','!ReactionType','!Reaction:Name','!Reversibility','!Directionality','!SourceState:Component','!SourceState:Modification','!ProductState:Component','!ProductState:Modification','!coSubstrates','!coProducts','!Comment']
-                    #header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName#+'"'+'\n'
                     value_rows=build_value_rows(key, columns, len(self.d[key])) #each list item is a list with the values of a row for easier delimiter organisation
 
                 header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName#+'\n'
@@ -706,10 +689,10 @@ class SBtabParser(Commandline):
                         print str(value)+',',
                     print ''
 
-
-
                 print ''
-                print '####################################'
+                print '-----------------------------'
+                print ''
+
                 #print len(columns), columns
                 #print len(value_rows[1]), value_rows[1]
                 #sbtab= createDataset(header_row, columns, value_rows, filename)
@@ -717,15 +700,19 @@ class SBtabParser(Commandline):
                 #print 'inputdir: ', inputdir
                 #print 'filedir: ',filedir
                 print 'soll:'
-                f= open('sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv', 'r')
+                #f= open('sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv', 'r')
+                f= open('rxncon_files/rxncon_xls/sps_cut/reduced_cols/sbtab_format/ContingencyID.csv', 'r')
                 #f=open(filedir, 'r')
                 ff= f.read()
                 print ff[0:400]    #das hier will ich lesen
+                print '####################################'
 
                 #fff = tablibIO.importSetNew(ff,filedir)
                 #ffff = SBtab.SBtabTable(fff,filedir)
-                fff = tablibIO.importSetNew(ff,'sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv')
-                ffff = SBtab.SBtabTable(fff,'sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv')
+                #fff = tablibIO.importSetNew(ff,'sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv')
+                #ffff = SBtab.SBtabTable(fff,'sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv')
+                fff = tablibIO.importSetNew(ff,'rxncon_files/rxncon_xls/sps_cut/reduced_cols/sbtab_format/ContingencyID.csv')
+                ffff = SBtab.SBtabTable(fff,'rxncon_files/rxncon_xls/sps_cut/reduced_cols/sbtab_format/ContingencyID.csv')
                 ffff.update()
 
 
@@ -999,7 +986,7 @@ if __name__=="__main__":
     d.check_directory_type()
 
 
-    p=SBtabParser(d.parsable_to, d.inputdir, d.target_format)
+    p=Parser(d.parsable_to, d.inputdir, d.target_format)
 
     print p.target_format
 

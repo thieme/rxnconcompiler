@@ -9,18 +9,13 @@ New:
    Basti:
       - make clean todo list in gitlab using issues
       - finish testing program
-      - den ganzen outputkram auslagern (directory erstellen wenns keins gibt usw)
-      - im programm sollte folgende auteilung erkennbar sein (die stufen des programms):
-         - parsing
-         - translating
-         - writing
-         --> translating teil auslagern
       - die ganzen "der inhalt muss in die spalte" stellen einfacher machen:
          - irgendwo eine mapping struktur definieren, die quasi alle zusammenhänge zwischen rxncon und sbtab enthält:
             welche spalte heißt in dem anderen format wie, welcher spaltenindex passt zu dem im anderen format
          - diese dann überall verwenden wo diese ewig langen "spalte hat der wert von blah am index blah" dinger sind
          - vielleicht mit dicts, vllt mit dicts von dicts, vllt andere objekte?
          - for schelife, die indexes_dict generation besser macht? (noch nötig, wenn der vorherige punk tumgesetzte ist?)
+       - generell: nach dem wort 'Basti' im code suchen, da sind oft Vorschläge von ihm genannt
 
 
 

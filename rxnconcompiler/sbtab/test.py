@@ -1,3 +1,7 @@
+'''
+This script tests the sbtab to rxncon (and vice versa) parser and translator
+'''
+
 from rxnconcompiler.parser.rxncon_parser import *
 from rxnconcompiler.sbtab.parser import *
 
