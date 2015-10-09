@@ -676,23 +676,23 @@ class Parser(Commandline):
                     columns=['!Reaction','!Category:Type','!Category','!SubclassID','!Subclass','!ModifierOrBoundary','!ReactionType:ID','!ReactionType','!Reaction:Name','!Reversibility','!Directionality','!SourceState:Component','!SourceState:Modification','!ProductState:Component','!ProductState:Modification','!coSubstrates','!coProducts','!Comment']
                     value_rows=build_value_rows(key, columns, len(self.d[key])) #each list item is a list with the values of a row for easier delimiter organisation
 
-                header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName#+'\n'
+                header_row='!!SBtab !!SBtabVersion=\'0.8\' TableType="'+ tableType +'" TableName="'+tableName+'"'
 
                 print 'ist:'
-                print header_row
+                ff2=header_row + '\n'
                 for col in columns:
                         #print col+ '\t', # using tabs as delimeters
-                        print col+ ',', # using comma as delimeters
-                print ''
+                        ff2=ff2+col+',' # using comma as delimeters
+                ff2=ff2+'\n'
                 for row in value_rows[0:2]:
                     for value in row:
-                        print str(value)+',',
-                    print ''
+                        ff2=ff2+str(value)+','
+                print ff2
 
                 print ''
                 print '-----------------------------'
                 print ''
-
+                #fff2= tablibIO.importSetNew(ff2, filedir)
                 #print len(columns), columns
                 #print len(value_rows[1]), value_rows[1]
                 #sbtab= createDataset(header_row, columns, value_rows, filename)
@@ -700,7 +700,7 @@ class Parser(Commandline):
                 #print 'inputdir: ', inputdir
                 #print 'filedir: ',filedir
                 print 'soll:'
-                #f= open('sbtab_files/tiger_files_csv_cut/Tiger_et_al_TableS1_SBtab_ReactionID.csv', 'r')
+                #f= open('rxncon_files/rxncon_xls/sps_cut/reduced_cols/sbtab_format/ReactionID.csv', 'r')
                 f= open('rxncon_files/rxncon_xls/sps_cut/reduced_cols/sbtab_format/ContingencyID.csv', 'r')
                 #f=open(filedir, 'r')
                 ff= f.read()
