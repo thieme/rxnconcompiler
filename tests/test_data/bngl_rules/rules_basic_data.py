@@ -161,7 +161,6 @@ CONTINGENCIES_DATA = {
     'Tags': [
     1, 'TRSL', 'contingencies']},
 
-
 }
 
 
