@@ -392,18 +392,8 @@ class Rxncon():
         for react_container in trsl_reaction:
             for reaction in react_container:
                 transl_mol = reaction.right_reactant
-                for comp in reaction.product_complexes:
-                    if comp.has_molecule(transl_mol.name):
-                        for react_container_other in self.reaction_pool:
-                            for reaction_other in react_container_other:
-                                if reaction_other.rid == reaction.rid:
-                                    break
-                                for comp in reaction_other.substrat_complexes:
-                                    if comp.has_molecule(transl_mol.name):
-                                        additional_mol = comp.get_molecules(transl_mol.name)[0]
-                                        all_states = additional_mol.get_all_involved_states()
-                                        for state in all_states:
-                                            transl_mol.set_site(state)
-
-
-
+                for mol in self.molecule_pool:
+                    if mol.name == transl_mol.name and mol._id != transl_mol._id:
+                        all_states = mol.get_all_involved_states()
+                        for state in all_states:
+                            transl_mol.set_site(state)

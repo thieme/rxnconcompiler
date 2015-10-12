@@ -332,7 +332,8 @@ class Molecule:
         return list(set(doms))
 
     def get_all_involved_states(self):
-        to_search = self.binding_partners
+        to_search = []
+        to_search.extend(self.binding_partners)
         to_search.extend(self.binding_sites)
         to_search.extend(self.modifications)
         to_search.extend(self.modification_sites)

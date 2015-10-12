@@ -1,6 +1,6 @@
 DEFAULT_DEFINITION = [
 {
- 'ReactionDefinitionID': u'P+',
+ 'UID:Reaction': u'P+',
  'ReactionName': u'phosphorylation',
  'ReactionTypeID': u'1.1.1.1',
  'ReactionTypeName': 'Covalent_reversible_positive_trans',
@@ -10,7 +10,7 @@ DEFAULT_DEFINITION = [
  },
 
 {
- 'ReactionDefinitionID': u'P-',
+ 'UID:Reaction': u'P-',
  'ReactionName': u'dephosphorylation',
 
  'ReactionTypeID': u'1.1.2.1',
@@ -22,7 +22,7 @@ DEFAULT_DEFINITION = [
 },
 
 {
-  'ReactionDefinitionID': u'AP',
+  'UID:Reaction': u'AP',
  'ReactionName': u'Autophosphorylation',
   'ReactionTypeID': u'1.1.1.2',
  'ReactionTypeName': 'Covalent_reversible_positive_cis',
@@ -31,7 +31,7 @@ DEFAULT_DEFINITION = [
 },
 
 {
- 'ReactionDefinitionID': u'PT',
+ 'UID:Reaction': u'PT',
  'ReactionName': u'Phosphotransfer',
  'ReactionTypeID': u'1.1.3.1',
  'ReactionTypeName': 'Covalent_reversible_transfer_trans',
@@ -40,7 +40,7 @@ DEFAULT_DEFINITION = [
 },
 
 {
-'ReactionDefinitionID': u'GEF',
+'UID:Reaction': u'GEF',
 'ReactionName': u'Guanine Nucleotide Exchange',
 'ReactionTypeID': u'1.1.1.1',
 'ReactionTypeName': 'Covalent_reversible_positive_trans',
@@ -50,7 +50,7 @@ DEFAULT_DEFINITION = [
 },
 
 {
- 'ReactionDefinitionID': u'GAP',
+ 'UID:Reaction': u'GAP',
  'ReactionName': u'GTPase Activation',
  'ReactionTypeID': u'1.1.2.1',
  'ReactionTypeName': 'Covalent_reversible_negative_trans',
@@ -60,7 +60,7 @@ DEFAULT_DEFINITION = [
 },
 
  {
- 'ReactionDefinitionID': u'Ub+',
+ 'UID:Reaction': u'Ub+',
  'ReactionName': u'Ubiquitination',
  'ReactionTypeID': u'1.1.1.1',
   'ReactionTypeName': 'Covalent_reversible_positive_trans',
@@ -68,7 +68,7 @@ DEFAULT_DEFINITION = [
  'Comments': '',
 },
 {
- 'ReactionDefinitionID': u'Ub-',
+ 'UID:Reaction': u'Ub-',
  'ReactionName': u'dephosphorylation',
 
  'ReactionTypeID': u'1.1.2.1',
@@ -80,7 +80,7 @@ DEFAULT_DEFINITION = [
 },
 
 {
-'ReactionDefinitionID': u'CUT',
+'UID:Reaction': u'CUT',
   'ReactionName': u'Proteolytic cleaveage',
 'ReactionTypeID': "1.2.1.1",
  'ReactionTypeName': '',
@@ -95,10 +95,10 @@ DEFAULT_DEFINITION = [
 {
 #has to be changed
 
-'ReactionDefinitionID': u'ppi',
+'UID:Reaction': u'ppi',
 'ReactionName': u'protein-protein interaction',
 'ReactionTypeID': u'2.1.1.1',
- 'ReactionTypeName': '',
+'ReactionTypeName': '',
 'ModifierBoundary': u'N/A',
 
  'Comments': '',
@@ -108,7 +108,7 @@ DEFAULT_DEFINITION = [
 {
 #has to be changed
 
-'ReactionDefinitionID': u'ipi',
+'UID:Reaction': u'ipi',
  'ReactionName': u'intra-protein interaction',
 'ReactionTypeID': u'2.1.1.2',
  'ReactionTypeName': '',
@@ -120,7 +120,7 @@ DEFAULT_DEFINITION = [
 {
 #has to be changed
 
-'ReactionDefinitionID': u'i',
+'UID:Reaction': u'i',
   'ReactionName': u'interaction (non-proteins)',
   'ReactionTypeID': "2.1.1.1",
  'ReactionTypeName': '',
@@ -132,7 +132,7 @@ DEFAULT_DEFINITION = [
 {
 #has to be changed
 
-'ReactionDefinitionID': u'BIND',
+'UID:Reaction': u'BIND',
 'ReactionName': u'Binding to DNA',
 'ReactionTypeID': "2.1.1.1",
 'ReactionTypeName': '',
@@ -144,7 +144,7 @@ DEFAULT_DEFINITION = [
 #
 {
 #has to be changed
-'ReactionDefinitionID': u'TRSC',
+'UID:Reaction': u'TRSC',
  'ReactionName': u'Transcription',
  'ReactionTypeID': "3,1",
  'ReactionTypeName': '',
@@ -154,7 +154,7 @@ DEFAULT_DEFINITION = [
 
 #
 {
-'ReactionDefinitionID': u'TRSL',
+'UID:Reaction': u'TRSL',
 'ReactionName': u'Translation',
  'ReactionTypeID': "3,2",
  'ReactionTypeName': '',
@@ -165,7 +165,7 @@ DEFAULT_DEFINITION = [
 {
 #has to be changed
 
-'ReactionDefinitionID': u'DEG',
+'UID:Reaction': u'DEG',
 'ReactionName': u'Degradation',
  'ReactionTypeID': "3,4",
  'ReactionTypeName': '',
@@ -176,7 +176,7 @@ DEFAULT_DEFINITION = [
 {
 #has to be changed
 
-'ReactionDefinitionID': u'CONSUME',
+'UID:Reaction': u'CONSUME',
 'ReactionName': u'Consumption',
   'ReactionTypeID': "3,5",
  'ReactionTypeName': '',
@@ -187,7 +187,7 @@ DEFAULT_DEFINITION = [
 {
 #has to be changed
 
-'ReactionDefinitionID': u'PRODUCE',
+'UID:Reaction': u'PRODUCE',
  'ReactionName': u'Production',
 
 'ReactionTypeID': "3,3",

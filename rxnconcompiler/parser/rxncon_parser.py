@@ -61,7 +61,7 @@ def parse_text(rxncon_text):
     """Parses quick format and returns xls_tables dict."""
     reaction_definition = DEFAULT_DEFINITION #pickle.load(open(reaction_definition_filename, 'r'))
     reaction_template = REACTION_TEMPLATE
-    reaction2def = dict([(row['ReactionDefinitionID'].lower(), row) for row in reaction_definition])
+    reaction2def = dict([(row['UID:Reaction'].lower(), row) for row in reaction_definition])
     reactionTypeID2def = dict([(row['ReactionTypeID'], row) for row in reaction_template])
     used_reaction_definition = []
 
@@ -110,8 +110,8 @@ def parse_text(rxncon_text):
         if r_def:
             r_def.update(reactionTypeID2def[r_def["ReactionTypeID"]]) # get the respective template information
             used_reaction_definition.append(r_def)
-            start = reaction_full.lower().find('_%s_' % r_def['ReactionDefinitionID'].lower())
-            reaction_components = reaction_full.split(reaction_full[start:start + len(r_def['ReactionDefinitionID']) + 2])
+            start = reaction_full.lower().find('_%s_' % r_def['UID:Reaction'].lower())
+            reaction_components = reaction_full.split(reaction_full[start:start + len(r_def['UID:Reaction']) + 2])
             comp_name2index = dict(ComponentA=0, ComponentB=1)
             source_state = 'N/A'
             #if r_def['SourceState[Component]'] != 'N/A':
@@ -205,7 +205,7 @@ def parse_text(rxncon_text):
                 'ReactionID': reaction_id,
                 'ReactionTypeID': r_def['ReactionTypeID'],
                 #'ReactionType': r_def['!ReactionID'].lower(),
-                'ReactionDefinitionID': r_def['ReactionDefinitionID'].lower(), # former Reaction
+                'UID:Reaction': r_def['UID:Reaction'].lower(), # former Reaction
                 'Reaction[Full]': reaction_full,
                 'SourceState': source_state,
                 'ProductState': product_state,

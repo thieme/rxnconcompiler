@@ -48,7 +48,7 @@ class ReactionFactoryFromDict:
                 container.rtype = row['ReactionType']
             else:
                 container.rtype = row['ReactionTypeID']
-                container.rtypeID = row['ReactionDefinitionID']
+                container.rtypeID = row['UID:Reaction']
 
             reaction = self.get_reaction_object(row) 
             reaction.rid = row_id + 1
@@ -89,7 +89,7 @@ class ReactionFactoryFromDict:
             r_typeID = r_type
         else:
             r_type = row['ReactionTypeID']
-            r_typeID = row['ReactionDefinitionID'].lower()
+            r_typeID = row['UID:Reaction'].lower()
 
         categories_dict = self.definitions.categories_dict
         if ('Covalent Modification' in categories_dict and r_type in categories_dict['Covalent Modification']) or  r_type.split(".")[0] == "1":
@@ -124,7 +124,7 @@ class ReactionFactoryFromDict:
             r_typeID = r_type
         else:
             r_type = row['ReactionTypeID']
-            r_typeID = row['ReactionDefinitionID']
+            r_typeID = row['UID:Reaction']
 
         categories_dict = self.definitions.categories_dict
         reaction = self.get_preliminary_reaction(row)
