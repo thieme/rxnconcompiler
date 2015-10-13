@@ -175,7 +175,7 @@ class Commandline(object):
 class DirCheck(Commandline):
     def __init__(self, inputdir):
         self.inputdir = inputdir
-        self.rxncon_detected = False
+        self.rxncon_detected = 0
         self.sbtab_detected = False
         self.rxncon_sbtab_detected = 0
         self.other_detected = False
@@ -214,25 +214,29 @@ class DirCheck(Commandline):
             elif filename.endswith('.csv'):# basti: nach dem letzten punkt mit split
                 # Read csv Table
                 self.check_csv_File(filedir)
-                if self.rxncon_detected:
+                if self.rxncon_detected>0:
                     sys.exit('Found rxncon file in .csv Format. This is not supported, please export zu .xls or Quick Format in .txt')
 
             else:
                 self.other_detected=True
 
-        if self.rxncon_detected==True:
+        if self.rxncon_detected>0:
             if self.sbtab_detected==True:
                 print 'Error, both SBtab and rxncon files detected in input directory! Please clean up the directory!'
             elif self.other_detected==True:
                 print 'Error, files of unknown format (neither SBtab nor rxncon) detected!' # basti: fkt da doppelt spaeter
             else:
-                print 'Directory of rxncon files detected. Starting parser.'
-                self.look_for_rxncon_files()
+                if self.rxncon_detected>1:
+                    target_filedir= self.multiple_rxncon_files(self.rxncon_detected, files)
+                    self.look_for_rxncon_files(self.inputdir+'/'+target_filedir)
+                else:
+                    print 'Rxncon file detected. Starting parser.'
+                    self.look_for_rxncon_files(self.inputdir)
 
         elif self.sbtab_detected==True:
             if self.other_detected==True:
                 print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
-            elif self.rxncon_sbtab_detected > 0:
+            elif self.rxncon_sbtab_detected > 1:
                 target_filedir= self.multiple_rxncon_files(self.rxncon_sbtab_detected, files)
                 self.look_for_SBtab_files(self.inputdir+'/'+target_filedir)
             else:
@@ -255,7 +259,7 @@ class DirCheck(Commandline):
                 self.sbtab_detected=True
             elif 'rxncon' in first_line:
                 # sollte im rxncon header fuer txt files vorkommen, gibt es bisher nicht
-                self.rxncon_detected=True
+                self.rxncon_detected+=1
             else:
                 self.other_detected=True
 
@@ -291,9 +295,9 @@ class DirCheck(Commandline):
             or 'contingency list' in sheet_name) \
             and not 'ContingencyID' in sheet_name\
             and self.rxncon_sbtab_detected==0:
-                self.rxncon_detected=True
+                self.rxncon_detected+=1
 
-        if self.sbtab_detected==False and self.rxncon_detected==False and self.rxncon_sbtab_detected==0:
+        if self.sbtab_detected==False and self.rxncon_detected==0 and self.rxncon_sbtab_detected==0:
             self.other_detected=True
 
 
@@ -325,17 +329,12 @@ class DirCheck(Commandline):
             except csv.Error as e:
                 sys.exit('file %s, line %d: %s' % (filedir, csvreader.line_num, e))
 
-
-    def look_for_SBtab_files(self, input):
+    def file_or_dir(self, input):
         '''
-        Checks whether all needed SBtab tables are inside given directory/document
-        - ReactionList
-        - ReactionID
-        - ContingencyID
-        - rxncon_Definition
-        - Gene
+        Checks whether inputstring is a directory or a file. Returns list of either the filename or all filenames
+        :param input: Path
+        :return: List of filename(s), path to file(s)
         '''
-
         if os.path.isfile(input):
             slash_index= [i for i, letter in enumerate(input) if letter == '/'] #find the occurences of the slash
             inputdir= input[0:max(slash_index)] # the string until the last slash is the inputdirectory
@@ -344,6 +343,21 @@ class DirCheck(Commandline):
         elif os.path.isdir(input):
             files = get_files(input)
             inputdir= input
+
+        return (files, inputdir)
+
+
+    def look_for_SBtab_files(self, input):
+        '''
+        Checks whether all needed SBtab tables are inside given directory/document
+        - ReactionList
+        - ReactionID
+        - ContingencyID
+        - rxncon_Definition
+        '''
+
+        files, inputdir= self.file_or_dir(input)
+
 
         found_table_types=[]
 
@@ -356,7 +370,7 @@ class DirCheck(Commandline):
             self.parsable_to='rxncon'
             self.target_format= 'txt'
 
-        if 'ReactionList' in found_table_types and 'Gene' in found_table_types:
+        if 'ReactionList' in found_table_types:
             self.target_format= 'xls'
 
         else:
@@ -370,7 +384,7 @@ class DirCheck(Commandline):
             print found_table_types
             self.parsable_to=''
 
-    def look_for_rxncon_files(self):
+    def look_for_rxncon_files(self, input):
         '''
         Checks weather all needed rxncon files/sheets are given inside input directory:
         - (I) Reaction List
@@ -378,7 +392,8 @@ class DirCheck(Commandline):
         - (IV) Reaction definition
         '''
 
-        files = get_files(self.inputdir)
+        files, inputdir= self.file_or_dir(input)
+
         found_tables=[]
         # basti
         #found_tables = [table for filename in files for table in build_rxncon_dict(self.inputdir, filename)]
@@ -1034,8 +1049,10 @@ if __name__=="__main__":
 
     c=Commandline()
     #c.hello()
-    #c.inputdir='rxncon_files/rxncon_xls/sps_cut'   # sbtab file export
-    c.inputdir='rxncon_sbtab_files'   # new rxncon input format
+    #c.inputdir='rxncon_files/rxncon_xls/sps_cut'   # sbtab file export, old rxncon
+    c.inputdir ='rxncon_files/rxncon_xls/multi'   # multiple old rxncon
+    #c.inputdir='rxncon_sbtab_files'   # new rxncon input format
+    #c.inputdir='rxncon_sbtab_files/noCompa'   # new rxncon input format without compartment
     #c.inputdir='sbtab_files/tiger_files_csv_cut'
 
     d=DirCheck(c.inputdir)
