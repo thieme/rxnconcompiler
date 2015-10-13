@@ -99,6 +99,7 @@ class Mapper(object):
 class Commandline(object):
     def __init__(self):
         self.inputdir= ''
+        self.inputfile=''
         self.outputformat='xls'
 
 
@@ -115,9 +116,36 @@ class Commandline(object):
         #       ' - .xls' \
         #       ' - .csv'
         print ''
-        inputdir = raw_input('Please enter the path to the directory containing your network files: \n') # only works in python 2.x, for python3 would be input()
+        self.inputdir = raw_input('Please enter the path to the directory containing your network files: \n') # only works in python 2.x, for python3 would be input()
 
-        self.inputdir=inputdir
+
+    def multiple_rxncon_files(self, counter, filelist):
+        '''
+        If multiple rxncon files (old or sbtab format) were found in one directory, asks user which one to use
+        :param counter: number of files in dir
+        :param filelist: file names
+        :return:
+        '''
+        i=0
+        print 'There were %i rxncon files found in the input directory: \n'%(counter+1)
+        print 'Index| Filename'
+        print '-----|','-'*60
+        for file in filelist:
+            print '%d    | %s'%(i, file)
+            i+=1
+        print '-----|','-'*60,'\n'
+        self.inputfile= raw_input('Please enter the index or filename of the rxncon file you want to parse. \n')
+
+        if self.inputfile in filelist:
+            return self.inputfile
+        else:
+            try:
+                return filelist[int(self.inputfile)]
+            except (TypeError, IndexError, ValueError):
+                print 'Error, either entered index is not in range or entered filename is not in this directory.'
+
+
+
 
     def outputformat_formating(self, possibilities, default):
         self.outputformat= raw_input('Please enter the output format. Possible are .{0} (default= .{1}):\n'.format(" & .".join(possibilities), default))
@@ -144,11 +172,12 @@ class Commandline(object):
             # else:
             #     self.outputformat = self.outputformat[-3:]
 
-class DirCheck(object):
+class DirCheck(Commandline):
     def __init__(self, inputdir):
         self.inputdir = inputdir
         self.rxncon_detected = False
         self.sbtab_detected = False
+        self.rxncon_sbtab_detected = 0
         self.other_detected = False
         self.target_format=''
         self.parsable_to=''
@@ -203,6 +232,9 @@ class DirCheck(object):
         elif self.sbtab_detected==True:
             if self.other_detected==True:
                 print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
+            elif self.rxncon_sbtab_detected > 0:
+                target_filedir= self.multiple_rxncon_files(self.rxncon_sbtab_detected, files)
+                self.look_for_SBtab_files(self.inputdir+'/'+target_filedir)
             else:
                 print 'Directory of SBtab files detected. Starting parser.'
                 self.look_for_SBtab_files(self.inputdir)
@@ -234,20 +266,34 @@ class DirCheck(object):
         Checks whether xls file is rxncon, SBtab or other file type
         '''
 
+        sheet_number=0 #sheet we use to check the format
         xlsreader = xlrd.open_workbook(filedir)
         xls_sheet_names = xlsreader.sheet_names()
-        first_sheet = xlsreader.sheet_by_index(0)
 
-        first_line = first_sheet.row(0)
+        for s in range(0,len(xls_sheet_names)):
+            # if the first sheet has no content, try the first line of the next sheet
+            try:
+                sheet = xlsreader.sheet_by_index(sheet_number)
+                first_line = sheet.row(0)
+                break
+            except IndexError:
+                sheet_number+=1
+
         for cell in first_line:
             if '!!SBtab' in str(cell):
                 self.sbtab_detected=True
+                if 'rxncon' in str(cell):
+                    self.rxncon_sbtab_detected+=1
 
         for sheet_name in xls_sheet_names:
-            if ('(III) Contingency list' in sheet_name or 'Contingency List' in sheet_name or 'contingency list' in sheet_name) and not 'ContingencyID' in sheet_name:
+            if ('(III) Contingency list' in sheet_name
+            or 'Contingency List' in sheet_name
+            or 'contingency list' in sheet_name) \
+            and not 'ContingencyID' in sheet_name\
+            and self.rxncon_sbtab_detected==0:
                 self.rxncon_detected=True
 
-        if self.sbtab_detected==False and self.rxncon_detected==False:
+        if self.sbtab_detected==False and self.rxncon_detected==False and self.rxncon_sbtab_detected==0:
             self.other_detected=True
 
 
@@ -280,7 +326,7 @@ class DirCheck(object):
                 sys.exit('file %s, line %d: %s' % (filedir, csvreader.line_num, e))
 
 
-    def look_for_SBtab_files(self, inputdir):
+    def look_for_SBtab_files(self, input):
         '''
         Checks whether all needed SBtab tables are inside given directory/document
         - ReactionList
@@ -289,7 +335,16 @@ class DirCheck(object):
         - rxncon_Definition
         - Gene
         '''
-        files = get_files(inputdir)
+
+        if os.path.isfile(input):
+            slash_index= [i for i, letter in enumerate(input) if letter == '/'] #find the occurences of the slash
+            inputdir= input[0:max(slash_index)] # the string until the last slash is the inputdirectory
+            inputfile = input[max(slash_index)+1:]
+            files=[inputfile]
+        elif os.path.isdir(input):
+            files = get_files(input)
+            inputdir= input
+
         found_table_types=[]
 
         for filename in files:
@@ -979,7 +1034,8 @@ if __name__=="__main__":
 
     c=Commandline()
     #c.hello()
-    c.inputdir='rxncon_files/rxncon_xls/sps_cut'
+    #c.inputdir='rxncon_files/rxncon_xls/sps_cut'   # sbtab file export
+    c.inputdir='rxncon_sbtab_files'   # new rxncon input format
     #c.inputdir='sbtab_files/tiger_files_csv_cut'
 
     d=DirCheck(c.inputdir)
