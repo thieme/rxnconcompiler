@@ -134,7 +134,13 @@ class Commandline(object):
             print '%d    | %s'%(i, file)
             i+=1
         print '-----|','-'*60,'\n'
-        self.inputfile= raw_input('Please enter the index or filename of the rxncon file you want to parse. \n')
+        #reactivate:
+        #self.inputfile= raw_input('Please enter the index or filename of the rxncon file you want to parse. \n')
+
+        self.inputfile=0
+        print '!!!!!!!!!!!!!!!!!!!################!!!!!!!!!!!!!!'
+        print 'Used testing shortcut in multiple_rxncon_files() to always pic first file'
+        print '!!!!!!!!!!!!!!!!!!!################!!!!!!!!!!!!!!'
 
         if self.inputfile in filelist:
             return self.inputfile
