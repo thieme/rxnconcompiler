@@ -105,7 +105,7 @@ class InterfaceTests(TestCase):
         Tests correct json string is returned.
         """
         json_output = interface.get_json_definitions('A_ppi_B', 'test.json')
-        words = ["Directionality", "Modifier or Boundary"]
+        words = ["Directionality", "ModifierBoundary"]
         for word in words:
             self.assertIn(word, json_output)
         self.assertTrue(os.path.exists('test.json'))      

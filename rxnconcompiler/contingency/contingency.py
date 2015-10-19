@@ -42,7 +42,7 @@ class Contingency:
 
 
     def __repr__(self):
-        """Representation of contingency: ctype state, e.g. ! A--B"""
+        """Representation of contingency: target_reaction ctype state, e.g. ! A--B"""
         return "%s %s" % (self.ctype, self.state)
 
     def __eq__(self, other):
@@ -52,7 +52,8 @@ class Contingency:
         """
         if self.target_reaction == other.target_reaction:
             if self.ctype == other.ctype:
-                if self.state == other.state: 
+                if self.state == other.state:
+                    #if self.state.state_str == other.state.state_str:
                     return True
         return False
 
@@ -123,6 +124,7 @@ class Contingency:
         """
         Adds given contingency to children list.
         """
+
         if self.inherited_ctype and self.inherited_ctype != 'none':
             contingency.inherited_ctype = self.inherited_ctype
         else:

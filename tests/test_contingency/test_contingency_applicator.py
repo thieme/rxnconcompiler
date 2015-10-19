@@ -16,14 +16,16 @@ from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicat
 class ContingencyApplicatorTests(TestCase):
     """Checks whether proper contingencies pool is generated for simple example."""
     def setUp(self):
-        rxn = Rxncon('A_ppi_B')
-        self.rcont = rxn.reaction_pool['A_ppi_B']  # reaction container
+        self.rxn = Rxncon('A_ppi_B')
+        self.rcont = self.rxn.reaction_pool['A_ppi_B']  # reaction container
 
     def test_kminus(self):
         """Tests whether k- is properly applied."""
         cont = Contingency('A_ppi_B', 'K+', get_state('A_[T666]-{P}'))
         cont2 = Contingency('A_ppi_B', 'K+', get_state('A_[T777]-{P}'))
-        ComplexApplicator(self.rcont, []).apply_complexes() 
+        #ComplexApplicator(self.rcont, []).apply_complexes()
+        reaction_container = self.rxn.reaction_pool["A_ppi_B"]
+        self.rxn.apply_contingencies(reaction_container, [])
         cap = ContingencyApplicator()
         cap.apply_on_container(self.rcont, cont)
         # Applying first contingency:
@@ -41,9 +43,11 @@ class ContingencyApplicatorTests(TestCase):
 
     def test_applying_on_homo(self):
         """"""
-        reactions = Rxncon('Ste20_[KD]_ppi_Ste20_[CRIB]').reaction_pool['Ste20_[KD]_ppi_Ste20_[CRIB]']
-        ComplexApplicator(reactions, []).apply_complexes() 
-        reaction = reactions[0]
+        rxncon = Rxncon('Ste20_[KD]_ppi_Ste20_[CRIB]')#.reaction_pool['Ste20_[KD]_ppi_Ste20_[CRIB]']
+        rxncon.apply_contingencies(rxncon.reaction_pool['Ste20_[KD]_ppi_Ste20_[CRIB]'], [])
+        #ComplexApplicator(reactions, []).apply_complexes()
+        #reactions.apply_contingencies
+        reaction = rxncon.reaction_pool['Ste20_[KD]_ppi_Ste20_[CRIB]'][0]
         lmol = reaction.substrat_complexes[0].molecules[0]
         rmol = reaction.substrat_complexes[1].molecules[0]
         cont = Contingency('Ste20_[KD]_ppi_Ste20_[CRIB]', 'x', get_state('Cdc42_[ED]--Ste20_[CRIB]'))

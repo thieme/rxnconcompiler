@@ -55,7 +55,6 @@ class ContingencyApplicator():
         indicates which domain is used.
         """
         if (cont.state.type == 'Association' or cont.state.type == "Intraprotein") and cont.ctype == 'x':
-            #mol.binding_sites.append(cont.state)
             mol.add_binding_site(cont.state, side)
         elif cont.state.type == 'Covalent Modification' and cont.ctype == '!':
             mol.add_modification(cont.state)
@@ -79,7 +78,10 @@ class ContingencyApplicator():
         """
         #print 'add_molecule_to_complex'
         #print mols, cont, component, compl
-        # check whether contingency state in not equal to product state 
+        # check whether contingency state in not equal to product state
+        homodimer_consideration = False
+        if len(mols) == 2 and mols[0] == mols[1]:
+            homodimer_consideration = True
         add_partner = True
         for state in mols[0].binding_sites:
             if state == cont.state:
@@ -99,7 +101,7 @@ class ContingencyApplicator():
         new_mols = []
         for mol in mols:
             occupied_doms = mol.get_domains('binding', True)
-            if component.domain not in occupied_doms:
+            if component.domain not in occupied_doms:  # if the domain is not occupied the partner can be added
                 new_mols.append(mol)
         mols = new_mols
         if not mols:
@@ -109,9 +111,20 @@ class ContingencyApplicator():
 
         if add_partner:
             mols[0].binding_partners.append(cont.state)
-            mol_ob = Molecule(component.name)
-            mol_ob.binding_partners.append(cont.state)
-            compl.molecules.append(mol_ob) 
+            if homodimer_consideration:
+                # TODO: is this needed?
+                for state in mols[1].binding_partners:
+                    if state not in mols[0].binding_partners:
+                        mols[0].binding_partners.append(state)
+                mols[1].binding_partners = []
+                mols[1].binding_partners.append(cont.state)
+            else:
+                partner_comp = cont.state.get_partner(cont.state.get_component(mol.name))
+                mol_ob = Molecule(partner_comp.name)
+                mol_ob.mid = partner_comp.cid
+                mol_ob.binding_partners.append(cont.state)
+
+                compl.molecules.append(mol_ob)
 
     def apply_positive_intraprotein(self, reaction, cont):
         """
@@ -135,7 +148,6 @@ class ContingencyApplicator():
             if new_mols:
                 mol[0].binding_partners.append(cont.state)
 
-
     def apply_positive_association(self, reaction, cont):
         """
         it requires either
@@ -152,8 +164,6 @@ class ContingencyApplicator():
         right = reaction.get_substrate_complex('R')
         left_right = reaction.get_substrate_complex('LR')
 
-
-        
         if left_right:
             mols1 = left_right.get_molecules(component1.name, component1.cid)
             mols2 = left_right.get_molecules(component2.name, component2.cid)
@@ -164,41 +174,81 @@ class ContingencyApplicator():
                 #print "PROBLEM", mols1, mols2
                 pass
             if mols1:
-                self.add_molecule_to_complex(mols1, cont, component2, left_right, reaction)
+                self.add_molecule_to_complex(mols1, cont, component1, left_right, reaction)
 
             elif mols2:
-                self.add_molecule_to_complex(mols2, cont, component1, left_right, reaction)
+                self.add_molecule_to_complex(mols2, cont, component2, left_right, reaction)
 
         elif left and right:
 
             # TODO: Refactor make a function to check this condition.
             # A--B, A and B present in substrates
             if ((left.has_molecule(component1.name) and right.has_molecule(component2.name))\
-                or (left.has_molecule(component2.name) and right.has_molecule(component1.name)))\
+                or (left.has_molecule(component2.name) and right.has_molecule(component1.name))\
+                or (left.has_molecule(component1.name, component1.cid) and right.has_molecule(component2.name))\
+                or (left.has_molecule(component1.name) and right.has_molecule(component2.name, component2.cid))\
+                or (left.has_molecule(component2.name, component2.cid) and right.has_molecule(component1.name))
+                or (left.has_molecule(component2.name) and right.has_molecule(component1.name, component1.cid)))\
                 and not cont.state == reaction.to_change: 
                 
-                if component1.name in [reaction.left_reactant.name, reaction.right_reactant.name] \
-                    and component2.name in [reaction.left_reactant.name, reaction.right_reactant.name]:
+                #if component1.name in [reaction.left_reactant.name, reaction.right_reactant.name] \
+                #    and component2.name in [reaction.left_reactant.name, reaction.right_reactant.name]:
                 # if A--B, A and B present in substrates but if reaction creates A and B
                 # we don't join. We want then A
                     reaction.join_substrate_complexes(cont.state)
-
+                    pass
                 # here one of mols from contingency is present in both complexes
                 # but it was added because of previously applayed contingency so we dont want to join.
-                else:
-                    if component1.name == reaction.left_reactant.name \
-                        or component2.name == reaction.left_reactant.name:
-                        self._add_components_to_complex(left, component1, component2, cont, reaction)
-                    else: 
-                        self._add_components_to_complex(right, component1, component2, cont, reaction)
+                #else:
+
+#                     if component1.name == reaction.left_reactant.name \
+#                         or component2.name == reaction.left_reactant.name:
+#                         self._add_components_to_complex(left, component1, component2, cont, reaction)
+#                     elif component1.name == reaction.right_reactant.name \
+#                         or component2.name == reaction.right_reactant.name:
+#                         self._add_components_to_complex(right, component1, component2, cont, reaction)
+#                     else:
+#
+#
+#                         #self._add_components_to_complex(right, component1, component2, cont, reaction)
+#                         joined_complex = left.complex_addition(right)
+#                         joined_complex.side = 'LR'
+#                         reaction.substrat_complexes = [joined_complex]
+#                         mols1 = joined_complex.get_molecules(component1.name, component1.cid)
+#                         mols2 = joined_complex.get_molecules(component2.name, component2.cid)
+#                         if mols1 and mols2:
+#                             # what to do when two molecules are already in?
+#                             # e.g. A.B + C ! A--B
+#                             #print "PROBLEM", mols1, mols2
+#                             pass
+#                         if mols1:
+#                             self.add_molecule_to_complex(mols1, cont, component2, joined_complex, reaction)
+#
+#                         elif mols2:
+#                             self.add_molecule_to_complex(mols2, cont, component1, joined_complex, reaction)
+#
+# #                        self._add_components_to_complex(joined_complex, component1, component2, cont, reaction)
+#
+#                         #reaction.substrat_complexes = [joined_complex]
+#                         #reaction.add_substrate_complex(left)
+#                         pass
+
 
         # a molecule needs to be added to complexes 
         # or complexes are already joined:
+            elif ((left.has_molecule(component1.name, component1.cid) and right.has_molecule(component2.name, component2.cid))\
+                or (left.has_molecule(component2.name, component2.cid) and right.has_molecule(component1.name, component1.cid)))\
+                and not cont.state == reaction.to_change:
+
+                #if component1.name in [reaction.left_reactant.name, reaction.right_reactant.name] \
+                #    and component2.name in [reaction.left_reactant.name, reaction.right_reactant.name]:
+                # if A--B, A and B present in substrates but if reaction creates A and B
+                # we don't join. We want then A
+                    reaction.join_substrate_complexes(cont.state, keep_both=True)
             else:
                 for compl in reaction.substrat_complexes:
                     self._add_components_to_complex(compl, component1, component2, cont, reaction)
-
-                        
+    
     def _add_components_to_complex(self, compl, component1, component2, cont, reaction):
         """
         Helper function.
@@ -215,11 +265,10 @@ class ContingencyApplicator():
             pass
 
         if mols1:
-            self.add_molecule_to_complex(mols1, cont, component2, compl, reaction)
+            self.add_molecule_to_complex(mols1, cont, component1, compl, reaction)
 
         elif mols2:
-            self.add_molecule_to_complex(mols2, cont, component1, compl, reaction)
-                
+            self.add_molecule_to_complex(mols2, cont, component2, compl, reaction)
 
     def apply_on_complex(self, compl, cont):
         """
@@ -289,6 +338,26 @@ class ContingencyApplicator():
             for reaction in container:
                 reaction.rate.update_function(cont, True, num1, num2)
 
+    def apply_input_on_reaction(self, container, reaction, cont):
+
+        highest_subrate = container.highest_subrate  # int
+        if highest_subrate == 0:
+            num1 = '%s_1' % container.rid
+            num2 = '%s_2' % container.rid
+        else:
+            num1 = '%s_%s' % (container.rid, str(highest_subrate + 1))
+            num2 = '%s_%s' % (container.rid, str(highest_subrate + 2))
+        if cont.ctype in ['x', '!']:
+            if reaction.definition['Reversibility'] == 'reversible':
+                # we will have two rates here (because of reverse reaction).
+                reaction.rate.update_function(cont, False, num1, num2)
+            else:
+                # just multiply old rate by input rate.
+                # We don't need new rate numbers here.
+                # Because it is still one rate.
+                rate_id = reaction.rate.get_ids()[0]
+                reaction.rate.update_function(cont, False, rate_id, None)
+
     def get_rate_ids(self, reaction, container, subrate, keep_old=False):
         """
         When applying K+/K- contingency rates need to be updated.
@@ -322,6 +391,14 @@ class ContingencyApplicator():
                 else:
                     return [single_id(container, old_ids[0], subrate), single_id(container, old_ids[1], subrate)]
 
+    def apply_simple_cont_on_reaction(self, reaction, cont):
+        if cont.state.type == 'Association' and cont.ctype == '!':
+            self.apply_positive_association(reaction, cont)
+        elif cont.state.type == "Intraprotein" and cont.ctype == '!':
+            self.apply_positive_intraprotein(reaction,cont)
+        else:
+            self.apply_on_reaction(reaction, cont)
+
     def apply_on_container(self, container, cont):
         """
         Applys a contingency on a container.
@@ -353,12 +430,7 @@ class ContingencyApplicator():
 
         elif cont.ctype in ['x', '!']:
             for reaction in container:
-                if cont.state.type == 'Association' and cont.ctype == '!':
-                    self.apply_positive_association(reaction, cont)
-                elif cont.state.type == "Intraprotein" and cont.ctype == '!':
-                    self.apply_positive_intraprotein(reaction,cont)
-                else:
-                    self.apply_on_reaction(reaction, cont)
+                self.apply_simple_cont_on_reaction(reaction, cont)
           
         elif 'k' in cont.ctype:
             #rate_dict = self.prepare_rates_dict()

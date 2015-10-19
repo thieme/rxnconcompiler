@@ -20,8 +20,7 @@ from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 # X_P+_A
 from unittest import main, TestCase
 from rxnconcompiler.rxncon import Rxncon
-from rxnconcompiler.parser.rxncon_parser import parse_rxncon
-from rxnconcompiler.sbtab import test
+
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.molecule.state import get_state
@@ -35,7 +34,8 @@ import copy
 class x_exclamation_mark_Tests(TestCase):
 
     """
-    Unit tests for Rxncon clas
+    Unit tests for Rxncon class.
+
     Tests top rxncon objects.
     """
 
@@ -49,129 +49,338 @@ class x_exclamation_mark_Tests(TestCase):
         input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
 
 
-
-        # rxncon = Rxncon("""
-        #                 Kss1_[dockingSite]_ppi_Sst2_[MAPKSite]; ! <Kss1phos>; x <Sst2mod>
-        #                 <Kss1phos>; OR  Kss1_[(T183)]-{P}; OR  Kss1_[(Y185)]-{P}
-        #                 <Sst2mod>; AND Ste2_[Sst2Site]--Sst2_[Ste2Site]; AND Sst2_[(S539)]-{P}
-        #                 Kss1_P+_Sst2_[(S539)]; ! Kss1_[dockingSite]--Sst2_[MAPKSite]
-        #                 Kss1_P+_Sst2_[(S539)]; ! <Kss1phos>
-        #                 """)
-
-        #rxncon = Rxncon("""
-        #               A_ppi_B; ! <AorC>
-        #               <AorC>; AND A--C; AND A--D
-        #               """)  # works
-
-        # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <complAB>
-        #                 <complAB>; OR <complA>
-        #                 <complAB>; OR <complB>
-        #                 <complA>; AND A--E
-        #                 <complA>; AND A--F
-        #                 <complB>; OR A--C
-        #                 <complB>; OR A--D
-        #                 """)
-
-        # rxncon = Rxncon("""
-        #                  A_ppi_B; ! <complAB>
-        #                  <complAB>; OR <complA>
-        #                  <complA>; OR A--D
-        #                  <complA>; OR B--C
-        #                  <complA>; OR <complB>
-        #                  <complA>; OR <complC>
-        #                  <complB>; AND B--E
-        #                  <complB>; AND B--F
-        #                  <complC>; OR B--G
-                         
-        #                 """)
-        #rxncon = Rxncon("""A_ppi_B""")
-        # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <AorC> 
-        #                 <AorC>; OR A_[x]-{P}
-        #                 <AorC>; OR B--C
-        #                 <AorC>; OR A--D
-        #                 <AorC>; OR B_[y]-{P}
-        #                 """)
-        # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <III>
-        #                 <III>; AND <II>
-        #                 <III>; AND <I>
-        #                 <I>; OR A--C
-        #                 <I>; OR A--F
-        #                 <II>; OR A--D
-        #                 <II>; OR A--E
-        #                 """)
-        rxncon = Rxncon("""
-                        A_ppi_B; ! <I>
-                        <I>; AND A--C
-                        <I>; AND A--D
-                        A_ppi_B; ! <II>
-                        <II>; AND A--D
-                        """)
-        #a = parse_rxncon("A_ppi_B; ! A--C")
-        #test.hello()
-        #pass
-        # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <AorC> 
-        #                 <AorC>; OR <complA>
-        #                 <complA>; AND A_[x]-{P}
-        #                 <complA>; AND A--D
-        #                 <AorC>; OR <complB>
-        #                 <complB>; AND B_[y]-{P}
-        #                 <complB>; AND B--C
-        #                 """)
+#######################################   Presentation ########################################
+        # rxncon = Rxncon("""A_ppi_B; ! <comp1>
+        #                  <comp1>; OR <comp1C1>
+        #                  <comp1>; OR <comp2C1>
+        #                  <comp2C1>; AND A--C [A1]
+        #                  <comp2C1>; AND B--E [A2]
+        #                  <comp1C1>; AND A--C [B1]
+        #                  <comp1C1>; AND C--D [B2]""")
 
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <comp>
-        #                 <comp>; or A-{P}
-        #                 <comp>; or B-{P}
-        #                 <comp>; or <compA>
-        #                 <compA>; and A--C
-        #                 <compA>; and A--D
-        #                 <comp>; or <compB>
-        #                 <compB>; and B--E
-        #                 <compB>; and B--F
+        #                 <comp>; AND <c1>
+        #                 <comp>; AND <c2>
+        #                 <c1>; OR A--C
+        #                 <c1>; OR A--D
+        #                 <c2>; OR A--E
+        #                 <c2>; OR A--F""")
+
+
+# genauer anschauen
+#         rxncon = Rxncon("""
+#
+#                         A_ppi_B; ! <comp> \n <comp>; AND <c1> \n <comp>; AND <c2> \n <c2>; OR A--E \n <c2>; OR A--F \n <c1>; OR A--C \n <c1>; OR A--D
+#                         """)
+
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <comp1>
+        #                 <comp1>; OR <comp1C1>
+        #                 <comp1>; OR <comp1C2>
+        #                 <comp1C1>; AND A--A1
+        #                 <comp1C1>; AND A--A2
+        #                 <comp1C2>; AND B--B2
+        #                 <comp1C2>; AND B2--B1
+        #                 A_ppi_B; x <comp2>
+        #                 <comp2>; OR <comp2C1>
+        #                 <comp2>; OR <comp2C2>
+        #                 <comp2C1>; AND A--C1
+        #                 <comp2C1>; AND A--C2
+        #                 <comp2C2>; AND A--D1
+        #                 <comp2C2>; AND A--D2
+        #                 """)
+        # rxncon = Rxncon("""SCF_p+_Tec1; ! <bool>
+        #                     <bool>; and Cdc4_[SCF]--SCF_[Cdc4]
+        #                     <bool>; and Cdc4_[WD40]--Tec1_[CPD]
+        #                     """)
+
+
+
+        # rxncon = Rxncon("""SCF_p+_Tec1; ! Cdc4_[SCF]--SCF_[Cdc4]
+        #                     SCF_p+_Tec1; ! Cdc4_[WD40]--Tec1_[CPD]
+        #                      """)
+# have to check
+#         rxncon = Rxncon("""SCF_PT_Tec1; ! <bool>
+#                             <bool>; and Cdc4_[SCF]--SCF_[Cdc4]
+#                             <bool>; and Cdc4_[WD40]--Tec1_[CPD]
+#                             """)
+##### ordered bool ####
+ #        rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
+ # <Comp>; OR <C1>; OR <C2>
+ # <C1>; 1--2 Ste7--Ste11
+ # <C2>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]
+ #         """)
+#### adding normal contingency to bool complex ###############
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; k+ A--F
+        #                 A_ppi_B; ! <comp1>
+        #                     <comp1>; OR <comp1C1>
+        #                     <comp1>; OR <comp2C1>
+        #                     <comp1C1>; AND A--C
+        #                     <comp1C1>; AND C--D
+        #                     <comp2C1>; AND A--C
+        #                     <comp2C1>; AND B--E
+        #
+        #                  """)
+
+        ##### connected by contingency ###############
+#         rxncon = Rxncon("""
+#                         Sho1_ppi_Ste11; x Ste5_[MEKK]--Ste11; k+ Hkr1--Sho1; k+ Msb2--Sho1; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
+# <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+# <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
+#                         """)
+
+
+        # rxncon = Rxncon("""
+        #                   A_ppi_B; ! <comp1>
+        #                   <comp1>; OR <comp1C1>
+        #                   <comp1>; OR <comp2C1>
+        #                   <comp1C1>; AND A--C
+        #                   <comp1C1>; AND C--D
+        #                  <comp2C1>; AND A--C
+        #                  <comp2C1>; AND B--E
+        #
         #                 """)
 
-        # we don't tell that A D E cannot exist as long as F is not bound ?
-        # rxncon = Rxncon(""" A_ppi_B; ! <compA>
-        #                 <compA>; or <compA1>
-        #                 <compA>; or <compA2>
-        #                 <compA>; or <compB>
-        #                 <compB>; and B--T
-        #                 <compB>; and B--Z
-        #                 <compA1>; and A--C
-        #                 <compA1>; and A--D
-        #                 <compA2>; and A--E
-        #                 <compA2>; and A--F """) 
+
+        # rxncon = Rxncon("""A_ppi_B; ! <comp1>
+        #                 <comp1>; OR <comp1C1>
+        #                 <comp1>; OR <comp1C2>
+        #                 <comp1C1>; AND A--A1
+        #                 <comp1C1>; AND A--A2
+        #                 <comp1C2>; AND B--B1
+        #                 <comp1C2>; AND B--B2""")
+
+########################## !x combination one is fully connected ###########
 
 
+        # rxncon = Rxncon(""" A_ppi_B; ! <comp1>
+        #                 <comp1>; OR <comp1C1>
+        #                 <comp1>; OR <comp1C2>
+        #                 <comp1C1>; AND A--A1
+        #                 <comp1C1>; AND A--A2
+        #                 <comp1C2>; AND B--B1
+        #                 <comp1C2>; AND B--B2
+        #
+        #                 A_ppi_B; x <comp2>
+        #                 <comp2>; OR <comp2C1>
+        #                 <comp2>; OR <comp2C2>
+        #                 <comp2C1>; AND A--C1
+        #                 <comp2C1>; AND A--C2
+        #                 <comp2C2>; AND A--D1
+        #                 <comp2C2>; AND A--D2""")
 
-
-       
-        #rxncon = Rxncon('A_ppi_B; ! A-{P} \n A_ppi_B; x A-{P}; ! B-{P}')
+######### complete OR ###############
+        # rxncon = Rxncon("""
+        #                 A_ppi_B; ! <AorC>
+        #                 <AorC>; OR A_[x]-{P}
+        #                 <AorC>; OR B_[y]-{P}
+        #                 <AorC>; OR A--C
+        #                 <AorC>; OR B--D
+        #                 <AorC>; OR B_[z]-{P}""")
 
         # rxncon = Rxncon("""
-        #                 A_ppi_B; ! <MM> 
-        #                 <MM>; AND B--E
-        #                 <MM>; AND <MM2>
-        #                 <MM2>; OR B_[x]-{P}
-        #                 <MM2>; OR B_[y]-{P}""")  # Prob
+        #                 C_p+_A_[x]
+        #                 C_p+_A_[y]
+        #                 C_p+_A_[z]
+        #                 A_ppi_B; ! A-{P}
+        #                 A_ppi_B; ! A_[z]-{P}
+        #                 """)
 
-        # rxncon = Rxncon("""
-        #                A_ppi_B; ! <MM> 
-        #                <MM>; AND B--E
-        #                <MM>; AND <MM2>
-        #                <MM2>; OR A--C
-        #                <MM2>; OR A--D""")  # Prob
 
-#                      #<AorC>; AND A_[x]-{P}; AND A_[y]-{P} 
-        # rxncon = Rxncon("""
-        #                A_ppi_B; ! <MM>
-        #                <MM>; OR A--C
-        #                <MM>; OR A--D
-        #                """)
+        # rxncon = Rxncon(""" Sho1_ppi_Ste11; x Ste5_[MEKK]--Ste11; k+ Hkr1--Sho1; k+ Msb2--Sho1; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
+        #                 <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+        #                 <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]""")
+
+######## k+ #################
+#         rxncon = Rxncon(""" A_ppi_C; K+ <bool>
+# <bool>; AND A--D; AND A--E; AND [START]""")
+
+########  k+ ! x combination ####
+        # rxncon = Rxncon("""A_ppi_B; k+ <bool>
+        #                 <bool>; AND A--Db; AND A--Eb
+        #                 A_ppi_B; x <bool2>
+        #                 <bool2>; AND B--Fb2; AND B--Gb2
+        #                 A_ppi_B; ! <bool3>
+        #                 <bool3>; AND B--Hb3; AND B--Ib3
+        #                 """)
+
+
+
+        #rxncon = Rxncon("""A_ppi_B; k+ A--C""")
+        # rxncon = Rxncon("""  A_ppi_B; k+ A--F [C1]
+        #                 A_ppi_B; ! <comp1>
+        #                     <comp1>; OR <comp1C1>
+        #                     <comp1>; OR <comp2C1>
+        #                     <comp1C1>; AND A--C
+        #                     <comp1C1>; AND C--D
+        #                     <comp2C1>; AND A--C
+        #                     <comp2C1>; AND B--E""")
+
+
+
+# conflicting example ################################
+
+#! Cdc24_[AssocFar1]--Far1_[c], ! Ste4_[AssocSte18]--Ste18_[AssocSte4], ! Far1_[nRING-H2]--Ste4_[AssocFar1], ! Cdc24_[AssocSte4]--Ste4_[AssocCdc24], x Ste4_[AssocSte18]--Ste18_[AssocSte4]
+
+        # rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
+        #         <Cdc24^{M}>; or <Cdc24^{M/4}>
+        #         <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+        #         <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #         <Cdc24^{M}>; or <Cdc24^{M/F}>
+        #         <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+        #         <Cdc24^{M/F}>; and <Far1^{M}>
+        #         <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+        # ''')
+        #rxncon = Rxncon("""A_p+_B""")
+#         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
+# <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
+# <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
+#                         A_Ub+_B""")
+        rxncon = Rxncon(""" A_ppi_B \n C_p+_B \n D_ub+_B_[x] \n  Y_trsl_B""")
+        rxncon = Rxncon({"asd": 1})
+        # rxncon = Rxncon("""A_ppi_E; ! <comp>
+        #                     <comp>; 11 B_[x]-{P}
+        #                     <comp>; 7 B_[y]-{P}
+        #                     <comp>; 5--25 A--B
+        #                     <comp>; 25--7 B--B
+        #                     <comp>; 7--8 B--C
+        #                     <comp>; 25--9 B--D
+        #                     <comp>; 5--10 A--F
+        #                     <comp>; 10--11 F--B
+        #                     <comp>; 11--12 B--G
+        #
+        #                     """)
+
+
+        # rxncon = Rxncon("""A_ppi_E; ! <comp>
+        #                     <comp>; 5--25 A--B
+        #                     <comp>; 25--7 B--B
+        #                     <comp>; 7--8 B--C
+        #                     <comp>; 25--9 B--D
+        #                     <comp>; 5--10 A--F
+        #                     <comp>; 10--11 F--B
+        #                     <comp>; 11--12 B--G
+        #                     A_ppi_E; ! <comp2>
+        #                     <comp2>; 36--37 A--B
+        #                     <comp2>; 37--38 B--C
+        #                     <comp2>; 37--39 B--B
+        #                     <comp2>; 39--40 B--G
+        #
+        #                     """)
+        # rxncon = Rxncon("""A_ppi_E; ! <comp>
+        #                     <comp>; 5--6 A--B
+        #                     <comp>; 6--7 B--B
+        #                     <comp>; 7--8 B--C
+        #                     <comp>; 6--9 B--D
+        #                     <comp>; 5--10 A--F
+        #                     <comp>; 10--11 F--B
+        #                     <comp>; 11--12 B--G
+        #                     A_ppi_E; ! <comp2>
+        #                     <comp2>; 1--2 A--B
+        #                     <comp2>; 2--3 B--C
+        #                     <comp2>; 2--4 B--B
+        #                     <comp2>; 4--5 B--G
+        #
+        #                     """)
+# # # example for [! Cdc24_[AssocFar1]--Far1_[c], ! Ste4_[AssocSte18]--Ste18_[AssocSte4], ! Far1_[nRING-H2]--Ste4_[AssocFar1], x Cdc24_[AssocSte4]--Ste4_[AssocCdc24]]
+#         rxncon = Rxncon("""Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <comp>
+#                             <comp>; AND Cdc24_[AssocFar1]--Far1_[c]
+#                             <comp>; AND Far1_[nRING-H2]--Ste4_[AssocFar1]
+#                             <comp>; AND Ste4_[AssocSte18]--Ste18_[AssocSte4]
+#                         Cdc24_[GEF]_GEF_Cdc42_[GnP]; x <comp1>
+#                         <comp1>; AND Cdc24_[AssocSte4]--Ste4_[AssocCdc24]""")
+
+
+#error example
+ #        rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
+ #                <Cdc24^{M}>; or <Cdc24^{M/4}>
+ #                <Cdc24^{M/4}>; 1--5 Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+ #                <Cdc24^{M/4}>; 5--6 Ste4_[AssocSte18]--Ste18_[AssocSte4]
+ #                <Cdc24^{M}>; or <Cdc24^{M/F}>
+ #                <Cdc24^{M/F}>; 1--2 Cdc24_[AssocFar1]--Far1_[c]
+ #                <Cdc24^{M/F}>; 3--4 Ste4_[AssocSte18]--Ste18_[AssocSte4]
+ #                <Cdc24^{M/F}>; 2--3 Far1_[nRING-H2]--Ste4_[AssocFar1]
+ #
+ #
+ # ''')
+
+
+        # rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
+        #         <Cdc24^{M}>; or <Cdc24^{M/4}>
+        #         <Cdc24^{M/4}>; AND Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+        #         <Cdc24^{M/4}>; AND Ste4_[AssocSteTEST]--Ste18_[AssocTEST2]
+        #         <Cdc24^{M}>; or <Cdc24^{M/F}>
+        #         <Cdc24^{M/F}>; AND Cdc24_[AssocFar1]--Far1_[c]
+        #         <Cdc24^{M/F}>; AND Far1_[nRING-H2]--Ste4_[AssocFar1]
+        #         <Cdc24^{M/F}>; AND Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #         Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Comp>
+        #         <Comp>; AND Cdc24_[AssocSte4_1]--Ste4_[AssocCdc24_2]
+        #         <Comp>; AND Ste4--SteTest
+        #
+        # ''')
+
+        #rxncon = Rxncon('''Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}> \n <Cdc24^{M}>; or <Cdc24^{M/4}> \n <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24] \n <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4] \n <Cdc24^{M}>; or <Cdc24^{M/F}> \n <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c] \n <Cdc24^{M/F}>; and <Far1^{M}> \n <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1] \n <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+        #''')
+
+
+        #rxncon = Rxncon(""" A_SymExtCyt_B,C,D,E""")
+        #rxncon = Rxncon(""" A_SymCytVac_B,C,D,E""")
+        #rxncon = Rxncon(""" A_APCytVac_B,C""")
+        #rxncon = Rxncon(""" A_APCytMit_B,C""")
+
+
+####### xOR ###########################
+        # rxncon = Rxncon(""" A_ppi_B; ! <comp>
+        #                     <comp>; OR <comp1>
+        #                     <comp>; OR <comp2>
+        #                     <comp1>; AND A--C
+        #                     <comp1>; AND <NOT1>
+        #                     <NOT1>; NOT A--D
+        #                     <comp2>; AND A--D
+        #                     <comp2>; AND <NOT2>
+        #                     <NOT2>; NOT A--C""")
+
+        # rxncon = Rxncon(""" A_ppi_B; ! <comp>
+        #                     <comp>; OR <comp1>
+        #                     <comp>; OR <comp2>
+        #                     <comp1>; 1--2 A--C
+        #                     <comp1>; AND <NOT1>
+        #                     <NOT1>; NOT A--D
+        #                     <comp2>; 1--3 A--D
+        #                     <comp2>; AND <NOT2>
+        #                     <NOT2>; NOT A--C""")
+
+#    [! A--C, x A--D][! A--D, x A--C]
+
+#    [! A--C, x A--D, x A--C], [! A--D, x A--C]
+
+        #print rxncon
+        #pass
+
+# wrong definition
+        # Ste20_[KD]_P+_Ste11_[CBD(S302)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>; k+ <FIL-signal>
+        # Ste20_[KD]_P+_Ste11_[CBD(S302)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
+        #
+        # <FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
+        # <FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]
+
+
+#         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
+# <Comp>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]
+#         """)
+#         rxncon = Rxncon("""
+#                    Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste7-5-5-11>
+#                   <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
+#                        """)
+###### genauer beobachten #####
+#         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
+# <Comp>; OR <C1>; OR <C2>
+# <C1>; AND Ste7--Ste11
+# <C2>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]""")
+
 #####################################################################################################################################
         #simple chain
         #rxncon = Rxncon('X_p-_A \n A_ppi_B; ! A_[X]-{P} \n B_ppi_C; x A--B \n C_ppi_D; ! B--C')
@@ -218,12 +427,46 @@ class x_exclamation_mark_Tests(TestCase):
         #rxncon = Rxncon('Cdc42_ppi_Ste20_[CRIB2]; ! Cdc42_[GnP]-{P}; x Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]')
 
 
+        ##### print test #########
+
+#         rxncon = Rxncon("""
+#         Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11
+# Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; ! <Ste11^{M/50}>
+# Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; K+ Hkr1_[TMD]--Sho1_[TMD]
+# Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; K+ Msb2_[TMD]--Sho1_[TMD]
+# Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; K+ Msb2_[CyT]--Sho1_[CyT]
+# <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+# <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]
+
+
+
+# A_ppi_C; K+ <bool>
+#         <bool>; AND A--D; AND A--E
+#         A_ppi_C; K+ <bool2>
+#         <bool2>; AND B--F; AND B--G
+
+
+#         Cdc24_[GEF]_GEF_Cdc42_[GnP]; ! <Cdc24^{M}>
+
+#  <Cdc24^{M}>; or <Cdc24^{M/4}>
+#  <Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+#  <Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+#  <Cdc24^{M}>; or <Cdc24^{M/F}>
+#  <Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+#  <Cdc24^{M/F}>; and <Far1^{M}>
+#  <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+#  <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]""")
+
+
         #rxncon = Rxncon(input_data)
-        rxncon.run_process()  # uebersetzen von source zu product
-        #erstellen des rule based models
+        #print rxncon
+        ###################################################################################
+        rxncon.run_process()
+        #print rxncon.complex_pool
         self.bngl_src = Bngl(
             rxncon.reaction_pool, rxncon.molecule_pool, rxncon.contingency_pool)
-        # print bngl_src.get_src() # rueckgabe rule based model
+        # print bngl_src.get_src()
+
 
     def test_change(self):
         """

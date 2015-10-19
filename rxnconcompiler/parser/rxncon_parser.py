@@ -22,13 +22,17 @@ import json
 import xlrd
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION
+from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE
 
 
 def parse_rxncon(rxncon_input):
     """Recognizes input and uses text or xls parser. Returns xls_tables (dict)."""
     # already parsed:
     if type(rxncon_input) == dict:
-        return rxncon_input
+        if "reaction_list" in rxncon_input and "contingency_list" in rxncon_input and "reaction_definition" in rxncon_input:
+            return rxncon_input
+        else:
+            raise Exception("Input dictionary is not correctly defined.")
 
     # xls
     elif rxncon_input[-4:] in ['.ods', '.xls', '.xlsx']:
@@ -47,7 +51,8 @@ def parse_rxncon(rxncon_input):
         if 'reaction_list' in rxncon_input:
             return parse_json(rxncon_input)
         return parse_text(rxncon_input)
-        
+   
+
 def parse_json(rxncon_input):
     """
     Gets string.
@@ -55,15 +60,21 @@ def parse_json(rxncon_input):
     """
     return json.loads(rxncon_input)
 
+
 def parse_text(rxncon_text):
     """Parses quick format and returns xls_tables dict."""
     reaction_definition = DEFAULT_DEFINITION #pickle.load(open(reaction_definition_filename, 'r'))
-    reaction2def = dict([(row['Reaction'].lower(), row) for row in reaction_definition])
+    reaction_template = REACTION_TEMPLATE
+    reaction2def = dict([(row['UID:Reaction'].lower(), row) for row in reaction_definition])
+    reactionTypeID2def = dict([(row['ReactionType:ID'], row) for row in reaction_template])
+    used_reaction_definition = []
+
     lines = rxncon_text.split("\n")
     reaction_list = []
     contingency_list = []
     contingency_id = 0
     reaction_id = 0
+    # go over lines of quick rules
     for line in lines:
         line = line.strip()
         if line.startswith('#') or not line:
@@ -71,7 +82,7 @@ def parse_text(rxncon_text):
         split_line = line.split(';')
 
         try:
-            if line[0] in '!xk':
+            if line[0] in '!xk':  # Why?
                 for cont in split_line:
                     cont = cont.strip()
                     split_cont = cont.split()
@@ -98,28 +109,75 @@ def parse_text(rxncon_text):
             if not reaction_full[0] in '<[{':
                 raise RxnconParserError('unknown reaction type in %s' % reaction_full)
 
+        
+         # consider only definitions we are really using
         if r_def:
-            start = reaction_full.lower().find('_%s_' % r_def['Reaction'].lower())
-            reaction_components = reaction_full.split(reaction_full[start:start + len(r_def['Reaction']) + 2])
+            r_def.update(reactionTypeID2def[r_def["ReactionType:ID"]]) # get the respective template information
+            used_reaction_definition.append(r_def)
+            start = reaction_full.lower().find('_%s_' % r_def['UID:Reaction'].lower())
+            reaction_components = reaction_full.split(reaction_full[start:start + len(r_def['UID:Reaction']) + 2])
             comp_name2index = dict(ComponentA=0, ComponentB=1)
             source_state = 'N/A'
+            #if r_def['SourceState[Component]'] != 'N/A':
+
+            # check the template what the Property of the respective ReactionTypeID is
             if r_def['SourceState[Component]'] != 'N/A':
                 components = [c.strip() for c in r_def['SourceState[Component]'].split(',')]
-                modificats = [c.strip() for c in r_def['SourceState[Modification]'].split(',')]
+
+                #modificats = [c.strip() for c in r_def['SourceState[Modification]'].split(',')]
+                modificats = []
+                modi = r_def['ModifierBoundary'].split(",")
+                if len(modi) == 2:
+                    for component in range(len(components)):
+                        if modi[1].strip() not in  ["N/A",""]:
+                            modificats.append("-{%s}"%modi[1].strip())
+                        else:
+                            modificats.append("%s"%modi[1].strip())
+
+                elif len(modi) == 1:
+                    if modi[0].strip() not in  ["N/A",""]:
+                        modificats.append("-{%s}"%modi[0].strip())
+                    else:
+                         modificats.append("%s"%modi[0].strip())
+                elif len(modi) > 2:
+                    raise ("more than 2 Modification are NOT IMPLEMENTED See rxncon_parser line 138")
+
                 for index in range(len(components)):
                     if modificats[index] != 'N/A':  # avoid adding N/A to the state name
                         source_state = reaction_components[comp_name2index[components[index]]] + modificats[index]
                     else:
                         source_state = reaction_components[comp_name2index[components[index]]]
             product_state = 'N/A'
+            #if r_def['ProductState[Component]'] != 'N/A':
             if r_def['ProductState[Component]'] != 'N/A':
                 components = [c.strip() for c in r_def['ProductState[Component]'].split(',')]
                 modificats = []
-                modificats = [c.strip() for c in r_def['ProductState[Modification]'].split(',')]
+                #modificats = [c.strip() for c in r_def['ProductState[Modification]'].split(',')]
+
+                #First part
+                modi = r_def['ModifierBoundary'].split(",")
+                if len(modi) == 2:
+                    for component in range(len(components)):
+                        if modi[1].strip() not in  ["N/A",""]:
+                            modificats.append("-{%s}"%modi[1].strip())
+                        else:
+                            modificats.append("%s"%modi[1].strip())
+
+                elif len(modi) == 1:
+                    if modi[0].strip() not in  ["N/A",""]:
+                        modificats.append("-{%s}"%modi[0].strip())
+                    else:
+                         modificats.append("%s"%modi[0].strip())
+                elif len(modi) > 2:
+                    raise ("more than 2 Modification are NOT IMPLEMENTED See rxncon_parser line 138")
+
+                #TODO can we merge this with the first part?
                 for index in range(len(components)):
                     if modificats[index] != 'N/A':  # avoid adding N/A to the state name
-                        modification = modificats[index] if '--Component' not in modificats[index] \
-                                                         else '--' + reaction_components[1]
+                        modification = modificats[index] #if '--Component' not in modificats[index] \
+                                                         #else '--' + reaction_components[1]
+                    elif r_def['ReactionType:ID'].split(".")[0] == "2":
+                        modification = '--' + reaction_components[1]
                     else:
                         modification = ''
                     if 'mRNA' in components[index]:
@@ -146,10 +204,12 @@ def parse_text(rxncon_text):
             dsrB = reaction_components[1].split('_')[1][1:-1] if '_' in reaction_components[1] else ''
             matchB = re.match('(\w*)/?(\w*)\(?(\w*)\)?',dsrB)
             # here we have inconsistency in xls we have separate keys for Domain, Subdomain and Residue
+
             reaction_list.append({
                 'ReactionID': reaction_id,
-                'ReactionType': r_def['Reaction'].lower(),
-                'Reaction': r_def['Reaction'].lower(),
+                'ReactionType:ID': r_def['ReactionType:ID'],
+                #'ReactionType': r_def['!ReactionID'].lower(),
+                'UID:Reaction': r_def['UID:Reaction'].lower(), # former Reaction
                 'Reaction[Full]': reaction_full,
                 'SourceState': source_state,
                 'ProductState': product_state,
@@ -179,7 +239,7 @@ def parse_text(rxncon_text):
                     contingency_id += 1
         except:
             raise RxnconParserError('Error in line:<br/>\n%s<br/>\n%s' % (line, sys.exc_info()[1]))
-    return dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition)
+    return dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=used_reaction_definition)
 
 
 def parse_xls(file_path):
@@ -201,7 +261,6 @@ def parse_xls(file_path):
                 reaction_definition = list(xl.getiter(sheetnames[2])),
                 )
     return xls_talbes
-
 
 
 class readexcel(object):
@@ -274,6 +333,7 @@ class readexcel(object):
             self.__sheets__.setdefault(i,{}).__setitem__('cols',sheet.ncols)
             self.__sheets__.setdefault(i,{}).__setitem__('firstrow',firstrow)
             self.__sheets__.setdefault(i,{}).__setitem__('variables',uniquevars[:])
+
     def getiter(self, sheetname, returnlist=False, returntupledate=False):
         """ Return an generator object which yields the lines of a worksheet;
         Default returns a dictionary, specifing returnlist=True causes lists
@@ -287,19 +347,24 @@ class readexcel(object):
             return __iterlist__(self, sheetname, returntupledate)
         else:
             return __iterdict__(self, sheetname, returntupledate)
+
     def worksheets(self):
         """ Returns a list of the Worksheets in the Excel File """
         return self.__sheetnames__
+
     def nrows(self, worksheet):
         """ Return the number of rows in a worksheet """
         return self.__sheets__[worksheet]['rows']
+
     def ncols(self, worksheet):
         """ Return the number of columns in a worksheet """
         return self.__sheets__[worksheet]['cols']
+
     def variables(self,worksheet):
         """ Returns a list of Column Names in the file,
             assuming a tabular format of course. """
         return self.__sheets__[worksheet]['variables']
+
     def __formatrow__(self, types, values, wanttupledate):
         """ Internal function used to clean up the incoming excel data """
         ##  Data Type Codes:
@@ -335,12 +400,14 @@ class readexcel(object):
             returnrow.append(value)
         return returnrow
 
+
 def __iterlist__(excel, sheetname, tupledate):
     """ Function Used To create the List Iterator """
     sheet = excel.__book__.sheet_by_name(sheetname)
     for row in range(excel.__sheets__[sheetname]['rows']):
         types,values = sheet.row_types(row),sheet.row_values(row)
         yield excel.__formatrow__(types, values, tupledate)
+
 
 def __iterdict__(excel, sheetname, tupledate):
     """ Function Used To create the Dictionary Iterator """
