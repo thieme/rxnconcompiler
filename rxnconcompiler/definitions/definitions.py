@@ -21,7 +21,7 @@ class ReactionDefinitions(dict):
     def get_reaction_defintions_template_dict(self, template_list):
         def_template = {}
         for template in template_list:
-            def_template[template['ReactionTypeID']] = template
+            def_template[template['ReactionType:ID']] = template
         return def_template
 
     def get_reaction_definitions_dict(self):
@@ -30,7 +30,7 @@ class ReactionDefinitions(dict):
             if 'UID:Reaction' in rrow:
                 self[rrow['UID:Reaction'].lower()] = rrow
 
-                self[rrow['UID:Reaction'].lower()].update(self.def_template[rrow['ReactionTypeID']])
+                self[rrow['UID:Reaction'].lower()].update(self.def_template[rrow['ReactionType:ID']])
             else:
                 self[rrow['Reaction'].lower()] = rrow
 
@@ -41,7 +41,7 @@ class ReactionDefinitions(dict):
         """
         localization_modifications = {}
         for row in self.xls_tables['reaction_definition']:
-            if row['ReactionTypeID'] and (int(row['ReactionTypeID'].split(".")[0]) == 4):
+            if row['ReactionType:ID'] and (int(row['ReactionType:ID'].split(".")[0]) == 4):
 
                 mod_list = row['SourceState[Modification]'].split(',')
                 mod_list += row['ProductState[Modification]'].split(',')

@@ -25,12 +25,14 @@ from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE
 
 
-
 def parse_rxncon(rxncon_input):
     """Recognizes input and uses text or xls parser. Returns xls_tables (dict)."""
     # already parsed:
     if type(rxncon_input) == dict:
-        return rxncon_input
+        if "reaction_list" in rxncon_input and "contingency_list" in rxncon_input and "reaction_definition" in rxncon_input:
+            return rxncon_input
+        else:
+            raise Exception("Input dictionary is not correctly defined.")
 
     # xls
     elif rxncon_input[-4:] in ['.ods', '.xls', '.xlsx']:
@@ -49,7 +51,8 @@ def parse_rxncon(rxncon_input):
         if 'reaction_list' in rxncon_input:
             return parse_json(rxncon_input)
         return parse_text(rxncon_input)
-        
+   
+
 def parse_json(rxncon_input):
     """
     Gets string.
@@ -57,12 +60,13 @@ def parse_json(rxncon_input):
     """
     return json.loads(rxncon_input)
 
+
 def parse_text(rxncon_text):
     """Parses quick format and returns xls_tables dict."""
     reaction_definition = DEFAULT_DEFINITION #pickle.load(open(reaction_definition_filename, 'r'))
     reaction_template = REACTION_TEMPLATE
     reaction2def = dict([(row['UID:Reaction'].lower(), row) for row in reaction_definition])
-    reactionTypeID2def = dict([(row['ReactionTypeID'], row) for row in reaction_template])
+    reactionTypeID2def = dict([(row['ReactionType:ID'], row) for row in reaction_template])
     used_reaction_definition = []
 
     lines = rxncon_text.split("\n")
@@ -108,7 +112,7 @@ def parse_text(rxncon_text):
         
          # consider only definitions we are really using
         if r_def:
-            r_def.update(reactionTypeID2def[r_def["ReactionTypeID"]]) # get the respective template information
+            r_def.update(reactionTypeID2def[r_def["ReactionType:ID"]]) # get the respective template information
             used_reaction_definition.append(r_def)
             start = reaction_full.lower().find('_%s_' % r_def['UID:Reaction'].lower())
             reaction_components = reaction_full.split(reaction_full[start:start + len(r_def['UID:Reaction']) + 2])
@@ -172,7 +176,7 @@ def parse_text(rxncon_text):
                     if modificats[index] != 'N/A':  # avoid adding N/A to the state name
                         modification = modificats[index] #if '--Component' not in modificats[index] \
                                                          #else '--' + reaction_components[1]
-                    elif r_def['ReactionTypeID'].split(".")[0] == "2":
+                    elif r_def['ReactionType:ID'].split(".")[0] == "2":
                         modification = '--' + reaction_components[1]
                     else:
                         modification = ''
@@ -203,7 +207,7 @@ def parse_text(rxncon_text):
 
             reaction_list.append({
                 'ReactionID': reaction_id,
-                'ReactionTypeID': r_def['ReactionTypeID'],
+                'ReactionType:ID': r_def['ReactionType:ID'],
                 #'ReactionType': r_def['!ReactionID'].lower(),
                 'UID:Reaction': r_def['UID:Reaction'].lower(), # former Reaction
                 'Reaction[Full]': reaction_full,
@@ -257,7 +261,6 @@ def parse_xls(file_path):
                 reaction_definition = list(xl.getiter(sheetnames[2])),
                 )
     return xls_talbes
-
 
 
 class readexcel(object):
@@ -330,6 +333,7 @@ class readexcel(object):
             self.__sheets__.setdefault(i,{}).__setitem__('cols',sheet.ncols)
             self.__sheets__.setdefault(i,{}).__setitem__('firstrow',firstrow)
             self.__sheets__.setdefault(i,{}).__setitem__('variables',uniquevars[:])
+
     def getiter(self, sheetname, returnlist=False, returntupledate=False):
         """ Return an generator object which yields the lines of a worksheet;
         Default returns a dictionary, specifing returnlist=True causes lists
@@ -343,19 +347,24 @@ class readexcel(object):
             return __iterlist__(self, sheetname, returntupledate)
         else:
             return __iterdict__(self, sheetname, returntupledate)
+
     def worksheets(self):
         """ Returns a list of the Worksheets in the Excel File """
         return self.__sheetnames__
+
     def nrows(self, worksheet):
         """ Return the number of rows in a worksheet """
         return self.__sheets__[worksheet]['rows']
+
     def ncols(self, worksheet):
         """ Return the number of columns in a worksheet """
         return self.__sheets__[worksheet]['cols']
+
     def variables(self,worksheet):
         """ Returns a list of Column Names in the file,
             assuming a tabular format of course. """
         return self.__sheets__[worksheet]['variables']
+
     def __formatrow__(self, types, values, wanttupledate):
         """ Internal function used to clean up the incoming excel data """
         ##  Data Type Codes:
@@ -391,12 +400,14 @@ class readexcel(object):
             returnrow.append(value)
         return returnrow
 
+
 def __iterlist__(excel, sheetname, tupledate):
     """ Function Used To create the List Iterator """
     sheet = excel.__book__.sheet_by_name(sheetname)
     for row in range(excel.__sheets__[sheetname]['rows']):
         types,values = sheet.row_types(row),sheet.row_values(row)
         yield excel.__formatrow__(types, values, tupledate)
+
 
 def __iterdict__(excel, sheetname, tupledate):
     """ Function Used To create the Dictionary Iterator """

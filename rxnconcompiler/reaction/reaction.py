@@ -398,24 +398,24 @@ class SyntDeg(Reaction):
         A substrate complex is returned.
         (it is the same as product but has different _id)    
         """
-        if self.rtype in ['trsc', 'deg'] or self.rtype in ["3,1", "3,4"]:
+        if self.rtype in ['trsc', 'deg'] or self.rtype in ["3.1.2", "3.2.1"]:
             lcompl = self.get_substrate_complex('L')
             if lcompl:
                 return [lcompl]
-        elif self.rtype == 'trsl' or self.rtype == "3,2":
+        elif self.rtype == 'trsl' or self.rtype == "3.1.3":
             return self.substrat_complexes
         return []
 
     def run_reaction(self):
         """"""
-        if self.rtype == 'trsc' or self.rtype == "3,1":
+        if self.rtype == 'trsc' or self.rtype == "3.1.2":
             rcomp = self.get_substrate_complex('R')
             self.substrat_complexes.remove(rcomp)
             rcomp.molecules[0].name += 'mRNA' 
             rcomp.side = 'Z'
             self.product_complexes += self.substrat_complexes
             self.product_complexes.append(rcomp)
-        elif self.rtype == 'trsl' or self.rtype == "3,2":
+        elif self.rtype == 'trsl' or self.rtype == "3.1.3":
             self.product_complexes += self.substrat_complexes
             rcomp = self.get_substrate_complex('R')
             self.substrat_complexes.remove(rcomp)
@@ -424,19 +424,19 @@ class SyntDeg(Reaction):
             rcomp.side = 'Z'
             self.substrat_complexes.append(new_comp)
             self.product_complexes.append(new_comp) 
-        elif self.rtype == 'deg' or self.rtype == "3,4":
+        elif self.rtype == 'deg' or self.rtype == "3.2.1":
             lcomp = self.get_substrate_complex('L')
             self.product_complexes.append(lcomp) 
             rcomp = self.get_substrate_complex('R').clone()
             rcomp.remove_molecule(self.right_reactant)
             if rcomp.molecules:
                 self.product_complexes.append(rcomp) 
-        elif self.rtype == 'produce' or self.rtype == "3,3":
+        elif self.rtype == 'produce' or self.rtype == "3.1.1":
             rcomp = self.get_substrate_complex('R')
             self.substrat_complexes.remove(rcomp)
             self.product_complexes += self.substrat_complexes
             self.product_complexes.append(rcomp)
-        elif self.rtype == 'consume' or self.rtype == "3,5":
+        elif self.rtype == 'consume' or self.rtype == "3.2.2":
             lcomp = self.get_substrate_complex('L')
             self.product_complexes.append(lcomp)
 

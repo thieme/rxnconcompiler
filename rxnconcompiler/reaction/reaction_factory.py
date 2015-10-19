@@ -47,7 +47,7 @@ class ReactionFactoryFromDict:
             if "Reaction" in row:
                 container.rtype = row['ReactionType']
             else:
-                container.rtype = row['ReactionTypeID']
+                container.rtype = row['ReactionType:ID']
                 container.rtypeID = row['UID:Reaction']
 
             reaction = self.get_reaction_object(row) 
@@ -88,7 +88,7 @@ class ReactionFactoryFromDict:
             r_type = row['ReactionType'].lower()
             r_typeID = r_type
         else:
-            r_type = row['ReactionTypeID']
+            r_type = row['ReactionType:ID']
             r_typeID = row['UID:Reaction'].lower()
 
         categories_dict = self.definitions.categories_dict
@@ -96,9 +96,9 @@ class ReactionFactoryFromDict:
             reaction = Modification()
         elif ('Association' in categories_dict and r_type in categories_dict['Association']) or  r_type.split(".")[0] == "2":
             reaction = Interaction()
-        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(",")[0] == "3":
+        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(".")[0] == "3":
             reaction = SyntDeg()
-        elif ("Relocalisation" in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(",")[0] == "4":
+        elif ("Relocalisation" in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(".")[0] == "4":
             reaction = Relocalisation()
 
         
@@ -123,7 +123,7 @@ class ReactionFactoryFromDict:
             r_type = row['ReactionType'].lower()
             r_typeID = r_type
         else:
-            r_type = row['ReactionTypeID']
+            r_type = row['ReactionType:ID']
             r_typeID = row['UID:Reaction']
 
         categories_dict = self.definitions.categories_dict
@@ -157,10 +157,10 @@ class ReactionFactoryFromDict:
                 reaction.right_reactant.add_binding_site(state)
                 reaction.to_change = state
 
-        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(",")[0] == "3":
+        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(".")[0] == "3":
             pass
 
-        elif ('Relocalisation' in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(",")[0] == "4":
+        elif ('Relocalisation' in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(".")[0] == "4":
             state = get_state(row, reaction, 'Relocalisation')
             reaction.to_change = state
             reaction.right_reactant.localisation = state

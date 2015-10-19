@@ -1,6 +1,6 @@
 REACTION_TEMPLATE = [{
 #### P+, ub+, gef
-    'ReactionTypeID': u'1.1.1.1',
+    'ReactionType:ID': u'1.1.1.1',
     'Category': u'Covalent Modification',
 
     'ProductState[Component]': u'ComponentB',
@@ -15,8 +15,8 @@ REACTION_TEMPLATE = [{
 
 {
 #### P-, gap,
-    'ReactionTypeID': u'1.1.2.1',
-    #'ReactionTypeID': 'p-',
+    'ReactionType:ID': u'1.1.2.1',
+    #'ReactionType:ID': 'p-',
     'Category': u'Covalent Modification',
 
     'ProductState[Component]': u'N/A',
@@ -31,7 +31,7 @@ REACTION_TEMPLATE = [{
 
 {
 #### AP
-    'ReactionTypeID': u'1.1.1.2',
+    'ReactionType:ID': u'1.1.1.2',
     'Category': u'Covalent Modification',
 
     'ProductState[Component]': u'ComponentB',
@@ -48,14 +48,14 @@ REACTION_TEMPLATE = [{
 
 {
 #### PT
-'ReactionTypeID': u'1.1.3.1',
+'ReactionType:ID': u'1.1.3.1',
 'Category': u'Covalent Modification',
 
  'ProductState[Component]': u'ComponentB',
 'SourceState[Component]': u'ComponentA',
 
  'Reversibility': u'reversible',
- 'Directionality': u'bidirectional'
+ 'Directionality': u'unidirectional'
  #'ProductState[Modification]': u'-{P}',
 
  #'SourceState[Modification]': u'-{P}'
@@ -64,7 +64,7 @@ REACTION_TEMPLATE = [{
 
 {
 #### CUT
- 'ReactionTypeID': "1.2.1.1",
+ 'ReactionType:ID': "1.2.1.1",
  'Category': u'Covalent Modification',
 
  'ProductState[Component]': u'ComponentB',
@@ -79,14 +79,14 @@ REACTION_TEMPLATE = [{
 ######## Association Reactions #####
 {
 #### ppi, i, bind
-'ReactionTypeID': u'2.1.1.1',
+'ReactionType:ID': u'2.1.1.1',
 'Category': u'Association',
 
 'ProductState[Component]': u'ComponentA',
 'SourceState[Component]': u'N/A',
 
 'Reversibility': u'reversible',
-'Directionality': u'nondirectional',
+'Directionality': u'bidirectional',
 
 
  #'ProductState[Modification]': u'--ComponentB',
@@ -96,21 +96,21 @@ REACTION_TEMPLATE = [{
 
 {
 #### ipi
-'ReactionTypeID': u'2.1.1.2',
+'ReactionType:ID': u'2.1.1.2',
 'Category': u'Association',
 
 'ProductState[Component]': u'ComponentA',
 'SourceState[Component]': u'N/A',
 
 'Reversibility': u'reversible',
-'Directionality': u'nondirectional',
+'Directionality': u'bidirectional',
  #'ProductState[Modification]': u'--ComponentB',
  #'SourceState[Modification]': u'N/A'},
 
 },
 {
 #### Transcription
-    'ReactionTypeID': "3,1",
+    'ReactionType:ID': "3.1.2",
     'Category': u'Synthesis/Degradation',
 
     'ProductState[Component]': u'ComponentB-mRNA',
@@ -118,13 +118,12 @@ REACTION_TEMPLATE = [{
 
     'Reversibility': u'irreversible',
     'Directionality': u'unidirectional',
-
 # 'ProductState[Modification]': u'N/A',
 #'SourceState[Modification]': u'N/A'
 },
     {
 #### Translation
- 'ReactionTypeID': "3,2",
+ 'ReactionType:ID': "3.1.3",
  'Category': u'Synthesis/Degradation',
 
  'ProductState[Component]': u'ComponentB',
@@ -132,13 +131,10 @@ REACTION_TEMPLATE = [{
 
  'Reversibility': u'irreversible',
  'Directionality': u'unidirectional',
-# 'ProductState[Modification]': u'N/A',
- #'SourceState[Modification]': u'N/A'},
-
     },
 {
-#### Degredation
-'ReactionTypeID': "3,4",
+#### Degradation
+'ReactionType:ID': "3.2.1",
 'Category': u'Synthesis/Degradation',
 
  'ProductState[Component]': u'N/A',
@@ -146,26 +142,12 @@ REACTION_TEMPLATE = [{
 
  'Reversibility': u'irreversible',
  'Directionality': u'unidirectional',
- #'ProductState[Modification]': u'N/A',
-# 'SourceState[Modification]': u'N/A'
+
 },
 
 {
-#has to be changed
-    'ReactionTypeID': "3,5",
-'Category': u'Synthesis/Degradation',
-
- 'ProductState[Component]': u'N/A',
-'SourceState[Component]': u'ComponentB',
-
- 'Reversibility': u'irreversible',
-'Directionality': u'unidirectional',
- #'ProductState[Modification]': u'N/A',
- # 'SourceState[Modification]': u'N/A'
-},
-    {
-#has to be changed
- 'ReactionTypeID': "3,3",
+#production
+ 'ReactionType:ID': "3.1.1",
  'Category': u'Synthesis/Degradation',
 
  'ProductState[Component]': u'ComponentB',
@@ -173,14 +155,19 @@ REACTION_TEMPLATE = [{
 
  'Reversibility': u'irreversible',
  'Directionality': u'unidirectional',
-
-
-# 'ProductState[Modification]': u'N/A',
-
-
- #'SourceState[Modification]': u'N/A'
     },
+{
+####
+'ReactionType:ID': "3.2.2",
+'Category': u'Synthesis/Degradation',
 
+ 'ProductState[Component]': u'N/A',
+'SourceState[Component]': u'ComponentB',
+
+ 'Reversibility': u'irreversible',
+ 'Directionality': u'unidirectional',
+
+},
 
 ]
 

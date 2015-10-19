@@ -123,10 +123,13 @@ class Rxncon():
         """
         self.war = RxnconWarnings()
         self.df = DomainFactory()
+
         if not parsed_xls:
+            # hier SBtab einbinden
             self.xls_tables = parse_rxncon(xls_tables)
         else:
             self.xls_tables = xls_tables
+
         reaction_factory = ReactionFactory(self.xls_tables)
         self.molecule_pool = reaction_factory.molecule_pool
         self.reaction_pool = reaction_factory.reaction_pool
@@ -360,14 +363,12 @@ class Rxncon():
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name) #1
-                if complexes:
-                    builder = ComplexBuilder()
-                    builder.structure_complex(complexes, react_container)
-
             if add_contingencies:
                 complexes = self.apply_contingencies(react_container, complexes)
 
             if complexes:
+                builder = ComplexBuilder()
+                builder.structure_complex(complexes, react_container)
                 ComplexApplicator(react_container, copy.deepcopy(complexes)).apply_complexes() #2
             #self.apply_rules(react_container, rules)
             # after applying complexes we may have more reactions in a single container.
@@ -378,7 +379,7 @@ class Rxncon():
             self.update_reactions() #4
             for reaction in react_container: # 5
                 reaction.run_reaction()
-            if react_container.rtype in ["trsl", "3,2"]:
+            if react_container.rtype in ["trsl", "3.1.3"]:
                 trsl_reaction.append(react_container)
         if trsl_reaction:
             self.update_trsl_reaction(trsl_reaction)

@@ -41,16 +41,8 @@ class ReactionDefinitionTests(TestCase):
 
     def test_template_information(self):
         for key, value in self.definitions3.iteritems():
-            if key == "deg":
-                self.assertEqual(value['Category'], 'Synthesis/Degradation')
-                self.assertEqual(value['Directionality'], 'unidirectional')
-                self.assertEqual(value['ReactionTypeID'], '3,4')
-                self.assertEqual(value['Reversibility'], 'irreversible')
-                self.assertEqual(value['SourceState[Component]'], 'ComponentB')
-                self.assertEqual(value['ProductState[Component]'], 'N/A')
-
-            elif key == "p+":
-                self.assertEqual(value['ReactionTypeID'], u'1.1.1.1',)
+            if key == "p+":
+                self.assertEqual(value['ReactionType:ID'], u'1.1.1.1',)
                 self.assertEqual(value['Category'], u'Covalent Modification')
 
                 self.assertEqual(value['ProductState[Component]'], u'ComponentB',)
@@ -60,7 +52,7 @@ class ReactionDefinitionTests(TestCase):
                 self.assertEqual(value['Directionality'], u'unidirectional')
 
             elif key == "p-":
-                self.assertEqual(value['ReactionTypeID'], u'1.1.2.1',)
+                self.assertEqual(value['ReactionType:ID'], u'1.1.2.1',)
                 self.assertEqual(value['Category'], u'Covalent Modification',)
 
                 self.assertEqual(value['ProductState[Component]'], u'N/A')
@@ -71,7 +63,7 @@ class ReactionDefinitionTests(TestCase):
 
             elif key == "ap":
                 #### AP
-                self.assertEqual(value['ReactionTypeID'], u'1.1.1.2')
+                self.assertEqual(value['ReactionType:ID'], u'1.1.1.2')
                 self.assertEqual(value['Category'], u'Covalent Modification')
 
                 self.assertEqual(value['ProductState[Component]'], u'ComponentB')
@@ -82,18 +74,18 @@ class ReactionDefinitionTests(TestCase):
 
             elif key == "pt":
                 #### PT
-                self.assertEqual(value['ReactionTypeID'], u'1.1.3.1')
+                self.assertEqual(value['ReactionType:ID'], u'1.1.3.1')
                 self.assertEqual(value['Category'], u'Covalent Modification')
 
                 self.assertEqual(value['ProductState[Component]'], u'ComponentB')
                 self.assertEqual(value['SourceState[Component]'], u'ComponentA')
 
                 self.assertEqual(value['Reversibility'], u'reversible')
-                self.assertEqual(value['Directionality'], u'bidirectional')
+                self.assertEqual(value['Directionality'], u'unidirectional')
 
             elif key == "cut":
                 #### CUT
-                self.assertEqual(value['ReactionTypeID'], "1.2.1.1")
+                self.assertEqual(value['ReactionType:ID'], "1.2.1.1")
                 self.assertEqual(value['Category'], u'Covalent Modification')
 
                 self.assertEqual(value['ProductState[Component]'], u'ComponentB')
@@ -104,30 +96,30 @@ class ReactionDefinitionTests(TestCase):
 ######## Association Reactions #####
             elif key == "ppi":
                 #### ppi, i, bind
-                self.assertEqual(value['ReactionTypeID'], u'2.1.1.1')
+                self.assertEqual(value['ReactionType:ID'], u'2.1.1.1')
                 self.assertEqual(value['Category'], u'Association')
 
                 self.assertEqual(value['ProductState[Component]'], u'ComponentA')
                 self.assertEqual(value['SourceState[Component]'], u'N/A')
 
                 self.assertEqual(value['Reversibility'], u'reversible')
-                self.assertEqual(value['Directionality'], u'nondirectional')
+                self.assertEqual(value['Directionality'], u'bidirectional')
 
             elif key == "ipi":
 
                 #### ipi
-                self.assertEqual(value['ReactionTypeID'], u'2.1.1.2')
+                self.assertEqual(value['ReactionType:ID'], u'2.1.1.2')
                 self.assertEqual(value['Category'], u'Association')
 
                 self.assertEqual(value['ProductState[Component]'], u'ComponentA')
                 self.assertEqual(value['SourceState[Component]'], u'N/A')
 
                 self.assertEqual(value['Reversibility'], u'reversible')
-                self.assertEqual(value['Directionality'], u'nondirectional')
+                self.assertEqual(value['Directionality'], u'bidirectional')
 
             elif key == "trsc":
                 #### Transcription
-                self.assertEqual(value['ReactionTypeID'], "3,1")
+                self.assertEqual(value['ReactionType:ID'], "3.1.2")
                 self.assertEqual(value['Category'], u'Synthesis/Degradation')
 
                 self.assertEqual(value['ProductState[Component]'], u'ComponentB-mRNA')
@@ -138,7 +130,7 @@ class ReactionDefinitionTests(TestCase):
 
             elif key == "trsl":
                 #### Translation
-                 self.assertEqual(value['ReactionTypeID'], "3,2")
+                 self.assertEqual(value['ReactionType:ID'], "3.1.3")
                  self.assertEqual(value['Category'], u'Synthesis/Degradation')
 
                  self.assertEqual(value['ProductState[Component]'], u'ComponentB')
@@ -149,7 +141,7 @@ class ReactionDefinitionTests(TestCase):
 
             elif key == "deg":
                 #### Degredation
-                self.assertEqual(value['ReactionTypeID'], "3,4")
+                self.assertEqual(value['ReactionType:ID'], "3.2.1")
                 self.assertEqual(value['Category'], u'Synthesis/Degradation')
 
                 self.assertEqual(value['ProductState[Component]'], u'N/A')
@@ -159,7 +151,7 @@ class ReactionDefinitionTests(TestCase):
                 self.assertEqual(value['Directionality'], u'unidirectional')
 
             elif key == "consume":
-                self.assertEqual(value['ReactionTypeID'], "3,5")
+                self.assertEqual(value['ReactionType:ID'], "3.2.2")
                 self.assertEqual(value['Category'], u'Synthesis/Degradation')
 
                 self.assertEqual(value['ProductState[Component]'], u'N/A')
@@ -169,7 +161,7 @@ class ReactionDefinitionTests(TestCase):
                 self.assertEqual(value['Directionality'], u'unidirectional')
 
             elif key == "produce":
-                 self.assertEqual(value['ReactionTypeID'], "3,3")
+                 self.assertEqual(value['ReactionType:ID'], "3.1.1")
                  self.assertEqual(value['Category'], u'Synthesis/Degradation')
 
                  self.assertEqual(value['ProductState[Component]'], u'ComponentB')
