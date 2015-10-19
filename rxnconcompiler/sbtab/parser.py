@@ -32,13 +32,21 @@ def get_files(inputdir):
 
 def build_SBtab_object(inputdir, filename):
         '''
-        Gets input directory and filename of SBtab formatted File and creates Object from this using SBtab Library
+        Gets input directory and filename of SBtab formatted File and creates Object from this using SBtab Library.
+        If file contents multiple sheets, multiple objects get returned
         '''
         table_file = open(inputdir+'/'+filename,'r')
         table = table_file.read()
-        tablib_table = tablibIO.importSetNew(table,filename)
-        ob = SBtab.SBtabTable(tablib_table,filename)
-        return ob
+        if filename[-3:]=='xls':
+            tablib_table = tablibIO.haveXLS(table,True, False)
+            ob_list=[SBtab.SBtabTable(dataset,filename) for dataset in tablib_table._datasets]
+            return ob_list
+        else:
+            tablib_table = tablibIO.importSetNew(table,filename)
+            ob = SBtab.SBtabTable(tablib_table,filename)
+            return ob
+
+
 
 def build_rxncon_dict(inputdir, filename):
         d = parse_rxncon(inputdir+'/'+filename)
@@ -101,6 +109,7 @@ class Commandline(object):
         self.inputdir= ''
         self.inputfile=''
         self.outputformat='xls'
+        self.files=''
 
 
     def hello(self):
@@ -117,14 +126,15 @@ class Commandline(object):
         #       ' - .csv'
         print ''
         self.inputdir = raw_input('Please enter the path to the directory containing your network files: \n') # only works in python 2.x, for python3 would be input()
+        self.files=get_files(self.inputdir)
 
 
     def multiple_rxncon_files(self, counter, filelist):
         '''
-        If multiple rxncon files (old or sbtab format) were found in one directory, asks user which one to use
+        If multiple rxncon files (old or new sbtab format) were found in one directory, asks user which one to use
         :param counter: number of files in dir
         :param filelist: file names
-        :return:
+        :return: filename
         '''
         i=0
         print 'There were %i rxncon files found in the input directory: \n'%(counter+1)
@@ -137,16 +147,20 @@ class Commandline(object):
         #reactivate:
         #self.inputfile= raw_input('Please enter the index or filename of the rxncon file you want to parse. \n')
 
-        self.inputfile=0
+        ################################################################################################################
+        #self.inputfile=0 #first one
+        self.inputfile='rxncon_template_2_0.xls'
         print '!!!!!!!!!!!!!!!!!!!################!!!!!!!!!!!!!!'
         print 'Used testing shortcut in multiple_rxncon_files() to always pic first file'
         print '!!!!!!!!!!!!!!!!!!!################!!!!!!!!!!!!!!'
-
+        ###############################################################################################################
         if self.inputfile in filelist:
-            return self.inputfile
+            #return self.inputfile
+            self.files= self.inputfile
         else:
             try:
-                return filelist[int(self.inputfile)]
+                #return filelist[int(self.inputfile)]
+                self.files= filelist[int(self.inputfile)]
             except (TypeError, IndexError, ValueError):
                 print 'Error, either entered index is not in range or entered filename is not in this directory.'
 
@@ -158,7 +172,6 @@ class Commandline(object):
         if self.outputformat=='':
             self.outputformat='{0}'.format(default)
         else:
-            #self.outputformat = self.outputformat[-3:] # basti: nach dem letzten punkt mit split
             self.outputformat = self.outputformat.split('.')[-1]
 
     def read_outputformat(self, parsable_to):
@@ -166,7 +179,7 @@ class Commandline(object):
             self.outputformat_formating(["txt","xls"], "txt")
             # self.outputformat= raw_input('Please enter the output format. Possible are .txt & .xls (default= .txt):\n')
             # if self.outputformat=='':
-            #     self.outputformat='txt'https://www.fairphone.com/
+            #     self.outputformat='txt'
             # else:
             #     self.outputformat = self.outputformat[-3:]
 
@@ -243,8 +256,9 @@ class DirCheck(Commandline):
             if self.other_detected==True:
                 print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
             elif self.rxncon_sbtab_detected > 1:
-                target_filedir= self.multiple_rxncon_files(self.rxncon_sbtab_detected, files)
-                self.look_for_SBtab_files(self.inputdir+'/'+target_filedir)
+                #target_filedir= self.multiple_rxncon_files(self.rxncon_sbtab_detected, files)
+                self.multiple_rxncon_files(self.rxncon_sbtab_detected, files)
+                self.look_for_rxnconSBtab_files(self.inputdir+'/'+self.inputfile)
             else:
                 print 'Directory of SBtab files detected. Starting parser.'
                 self.look_for_SBtab_files(self.inputdir)
@@ -364,28 +378,61 @@ class DirCheck(Commandline):
 
         files, inputdir= self.file_or_dir(input)
 
-
         found_table_types=[]
 
         for filename in files:
             #print 'Filename: ', filename
-            ob= build_SBtab_object(inputdir, filename)
-            found_table_types.append(ob.table_type)
+            ob_list = build_SBtab_object(inputdir, filename)
+            found_table_types= [found_table_types.append(ob.table_type) for ob in ob_list]
 
         if 'ReactionID' in found_table_types and'ContingencyID' in found_table_types:
             self.parsable_to='rxncon'
             self.target_format= 'txt'
 
-        if 'ReactionList' in found_table_types:
+        if 'ReactionList' in found_table_types: #reaction definition
             self.target_format= 'xls'
 
         else:
-            print 'Error: In order to translate the SBtab format to rxncon, you need tables with following TableTypes:' \
-                  ' - ReactionID' \
-                  ' - ContingencyID' \
-                  'Only needed for export to xls format: ' \
-                  '     - Gene (only for export to xls)' \
+            print 'Error: In order to translate the SBtab format to rxncon, you need tables with following TableTypes: \n' \
+                  ' - ReactionID \n' \
+                  ' - ContingencyID \n \n' \
+                  'Only needed for export to xls format:\n ' \
                   '     - ReactionList(only for export to xls)'
+            print 'Only the follwing TableTypes were found:'
+            print found_table_types
+            self.parsable_to=''
+
+    def look_for_rxnconSBtab_files(self, input):
+        '''
+        Checks whether all needed tables are inside given new format rxncon file
+        - rxnconReactionList
+        - rxnconContingencyList
+        - rxnconReactionDefinition
+        -
+        '''
+
+        files, inputdir= self.file_or_dir(input)
+
+        found_table_types=[]
+
+        for filename in files:
+            ob_list = build_SBtab_object(inputdir, filename)
+            found_table_types= [ob.table_type for ob in ob_list]
+
+        if 'rxnconReactionList' in found_table_types and 'rxnconContingencyList' in found_table_types:
+            self.parsable_to='rxncon'
+            self.target_format= 'txt'
+
+        if 'rxnconReactionDefinition' in found_table_types:
+            self.target_format= 'xls'
+
+        else:
+            print 'Error: In order to translate the new rxncon format to the old one, you need tables with following TableTypes:\n' \
+                  ' - rxnconReactionList \n' \
+                  ' - rxnconContingencyList \n \n' \
+                  'Only needed for export to xls format: \n' \
+                  '- rxnconReactionDefinition'
+
             print 'Only the follwing TableTypes were found:'
             print found_table_types
             self.parsable_to=''
@@ -422,11 +469,13 @@ class DirCheck(Commandline):
 
 class Parser(Commandline):
 
-    def __init__(self, parsable_to, inputdir, target_format):
+    def __init__(self, inputdir):
         super(Parser, self).__init__()
-        self.parsable_to=parsable_to
+        self.d=DirCheck(inputdir)
+        self.d.check_directory_type()
+        self.parsable_to=self.d.parsable_to
         self.inputdir=inputdir
-        self.target_format = target_format
+        self.target_format = self.d.target_format
         self.gene_list=None
 
     def get_info(ob):
@@ -462,22 +511,26 @@ class Parser(Commandline):
 
     def parse_SBtab2rxncon(self):
         '''
-        Main function for parsing SBtab --> rxncon Format. Creates rxncon object
+        Main function for translating SBtab --> rxncon Format. Creates rxncon object
         '''
-        files = get_files(self.inputdir)
-        self.read_outputformat(self.parsable_to) #reactivate
+        #files = get_files(self.inputdir)
+        #print files, '\n Achtung! Wenn es ein multi rxncon dir war, werden hier zu viele objekte erzeugt! parse_sbtab2rxncon'
+        #self.read_outputformat(self.parsable_to) #reactivate
         print self.outputformat
         if self.outputformat!='txt' and self.outputformat!='xls':
             print 'Error, the format ',self.outputformat,' is not supported.'
 
-        self.ob_list=[] # List of dictionaries
+        #self.ob_list=[] # List of dictionaries
         reaction_def_found=False
-        for filename in files:
-            ob= build_SBtab_object(self.inputdir, filename)
-            self.ob_list.append({'object':ob, 'type':ob.table_type, 'filename':filename })
-            if ob.table_type=='ReactionList' and ob.table_name=='Reaction definitions':
-                reaction_def_found=True
-                print 'Custom reaction definition file detected in: ' + filename
+        #for filename in files:
+        for filename in self.files:
+            obs= build_SBtab_object(self.inputdir, filename)
+            #self.ob_list.append({'object':ob, 'type':ob.table_type, 'filename':filename })
+            self.ob_list= [{'object':ob, 'type':ob.table_type, 'filename':filename } for ob in obs]
+            for ob in self.ob_list:
+                if ob.table_type=='ReactionList' and ob.table_name=='Reaction definitions':
+                    reaction_def_found=True
+                    print 'Custom reaction definition file detected in: ' + filename
 
         if not reaction_def_found:
             print 'No reaction definition file found. Using default.'
@@ -485,8 +538,8 @@ class Parser(Commandline):
         else:
             reaction_definition=self.build_reaction_definition(self.ob_list)
 
-        if self.outputformat=='xls' and self.target_format=='xls':
-            self.gene_list=self.build_gene_list(self.ob_list)
+        # if self.outputformat=='xls' and self.target_format=='xls':
+        #     self.gene_list=self.build_gene_list(self.ob_list)
 
         self.rxncon = self.build_rxncon(self.ob_list, reaction_definition) #rxncon object
 
@@ -642,26 +695,49 @@ class Parser(Commandline):
         '''
         for ob in ob_list:
             if ob['type']=='ReactionList':
-                indexes_dict={
-                    'r': ob['object'].columns.index('!Reaction'),
-                    'ct': ob['object'].columns.index('!Category:Type'),
-                    'c': ob['object'].columns.index('!Category'),
-                    'si': ob['object'].columns.index('!SubclassID'),
-                    's': ob['object'].columns.index('!Subclass'),
-                    'm': ob['object'].columns.index('!ModifierOrBoundary'),
-                    'rti': ob['object'].columns.index('!ReactionType:ID'),
-                    'rt': ob['object'].columns.index('!ReactionType'),
-                    'rn': ob['object'].columns.index('!Reaction:Name'),
-                    'rev': ob['object'].columns.index('!Reversibility'),
-                    'd': ob['object'].columns.index('!Directionality'),
-                    'ssc': ob['object'].columns.index('!SourceState:Component'),
-                    'ssm': ob['object'].columns.index('!SourceState:Modification'),
-                    'psc': ob['object'].columns.index('!ProductState:Component'),
-                    'psm': ob['object'].columns.index('!ProductState:Modification'),
-                    'cs': ob['object'].columns.index('!coSubstrates'),
-                    'cp': ob['object'].columns.index('!coProducts'),
-                    'co': ob['object'].columns.index('!Comment')
-                    }
+                if self.d.rxncon_sbtab_detected ==0:
+                    indexes_dict={
+                        'r': ob['object'].columns.index('!Reaction'),
+                        'ct': ob['object'].columns.index('!Category:Type'),
+                        'c': ob['object'].columns.index('!Category'),
+                        'si': ob['object'].columns.index('!SubclassID'),
+                        's': ob['object'].columns.index('!Subclass'),
+                        'm': ob['object'].columns.index('!ModifierOrBoundary'),
+                        'rti': ob['object'].columns.index('!ReactionType:ID'),
+                        'rt': ob['object'].columns.index('!ReactionType'),
+                        'rn': ob['object'].columns.index('!Reaction:Name'),
+                        'rev': ob['object'].columns.index('!Reversibility'),
+                        'd': ob['object'].columns.index('!Directionality'),
+                        'ssc': ob['object'].columns.index('!SourceState:Component'),
+                        'ssm': ob['object'].columns.index('!SourceState:Modification'),
+                        'psc': ob['object'].columns.index('!ProductState:Component'),
+                        'psm': ob['object'].columns.index('!ProductState:Modification'),
+                        'cs': ob['object'].columns.index('!coSubstrates'),
+                        'cp': ob['object'].columns.index('!coProducts'),
+                        'co': ob['object'].columns.index('!Comment')
+                        }
+                elif self.d.rxncon_sbtab_detected>0:
+                    indexes_dict={
+                        'r': ob['object'].columns.index('!Reaction'),
+                        'ct': ob['object'].columns.index('!Category:Type'),
+                        'c': ob['object'].columns.index('!Category'),
+                        'si': ob['object'].columns.index('!SubclassID'),
+                        's': ob['object'].columns.index('!Subclass'),
+                        'm': ob['object'].columns.index('!ModifierOrBoundary'),
+                        'rti': ob['object'].columns.index('!ReactionType:ID'),
+                        'rt': ob['object'].columns.index('!ReactionType'),
+                        'rn': ob['object'].columns.index('!Reaction:Name'),
+                        'rev': ob['object'].columns.index('!Reversibility'),
+                        'd': ob['object'].columns.index('!Directionality'),
+                        'ssc': ob['object'].columns.index('!SourceState:Component'),
+                        'ssm': ob['object'].columns.index('!SourceState:Modification'),
+                        'psc': ob['object'].columns.index('!ProductState:Component'),
+                        'psm': ob['object'].columns.index('!ProductState:Modification'),
+                        'cs': ob['object'].columns.index('!coSubstrates'),
+                        'cp': ob['object'].columns.index('!coProducts'),
+                        'co': ob['object'].columns.index('!Comment')
+                        }
+
                 reaction_definition_list=[{}]
                 for row in ob['object'].getRows():
                 # reaction_list.pop(0)
@@ -1056,16 +1132,14 @@ if __name__=="__main__":
     c=Commandline()
     #c.hello()
     #c.inputdir='rxncon_files/rxncon_xls/sps_cut'   # sbtab file export, old rxncon
-    c.inputdir ='rxncon_files/rxncon_xls/multi'   # multiple old rxncon
+    #c.inputdir ='rxncon_files/rxncon_xls/multi'   # multiple old rxncon
     #c.inputdir='rxncon_sbtab_files'   # new rxncon input format
     #c.inputdir='rxncon_sbtab_files/noCompa'   # new rxncon input format without compartment
+    c.inputdir='rxncon_sbtab_files/' # 19.10.15 new rxncon input
     #c.inputdir='sbtab_files/tiger_files_csv_cut'
 
-    d=DirCheck(c.inputdir)
-    d.check_directory_type()
 
-
-    p=Parser(d.parsable_to, d.inputdir, d.target_format)
+    p=Parser(c.inputdir)
 
     print p.target_format
 
