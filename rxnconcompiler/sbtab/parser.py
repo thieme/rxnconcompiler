@@ -45,7 +45,7 @@ def build_SBtab_object(inputdir, filename):
         else:
             tablib_table = tablibIO.importSetNew(table,filename)
             ob = SBtab.SBtabTable(tablib_table,filename)
-            return ob
+            return [ob]
 
 
 
@@ -556,84 +556,127 @@ class Parser(Commandline):
         # if self.outputformat=='xls' and self.target_format=='xls':
         #     self.gene_list=self.build_gene_list(self.ob_list)
 
-        self.rxncon = self.build_rxncon(self.ob_list, reaction_definition) #rxncon object
+        self.rxncon = Rxncon(self.build_rxncon(self.ob_list, reaction_definition)) #rxncon object
+
 
     def build_rxncon(self, ob_list, reaction_definition):
         '''
         Creates rxncon object from given SBtab files
         '''
         for ob in ob_list:
-            if ob['type']=='ContingencyID':
-            # Find column indexes for !Target, !Contingency and !Modifier columns
-                targ_col_index= ob['object'].columns.index('!Target')
-                cont_col_index= ob['object'].columns.index('!Contingency')
-                modi_col_index= ob['object'].columns.index('!Modifier')
+            if ob['type'] in['ContingencyID','rxnconContingencyList']:
+                # nearly same in both old rxncon input and new rxncon SBtab hybrid input
+                # Find column indexes for !Target, !Contingency and !Modifier columns
+                    targ_col_index= ob['object'].columns.index('!Target')
+                    cont_col_index= ob['object'].columns.index('!Contingency')
+                    modi_col_index= ob['object'].columns.index('!Modifier')
+                    if '!UID:Contingency' in ob['object'].columns_dict:
+                        # new rxncon inout
+                        id_col_index= ob['object'].columns.index('!UID:Contingency')
+                    else:
+                        # standart sbtab
+                        id_col_index= ob['object'].columns.index('!ContingencyID')
 
-                # Save the data of these three columns to lists
-                contingency_id=0
-                contingency_list=[{}]
-                for row in ob['object'].getRows():
-                    contingency_list.append({
-                        'ContingencyID': contingency_id,
-                        'Target': row[targ_col_index],
-                        'Contingency': row[cont_col_index],
-                        'Modifier': row[modi_col_index]
-                    })
-                    contingency_id += 1
-                contingency_list.pop(0)
 
-            elif ob['type']=='ReactionID':
-                # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
-                indexes_dict={
-                    'can': ob['object'].columns.index('!ComponentA:Name'),
-                    'cad': ob['object'].columns.index('!ComponentA:Domain'),
-                    'cas': ob['object'].columns.index('!ComponentA:Subdomain'),
-                    'car': ob['object'].columns.index('!ComponentA:Residue'),
+                    # Save the data of these three columns to lists
+                    contingency_list=[{}]
+                    for row in ob['object'].getRows():
+                        if row[id_col_index]!='':
+                            contingency_list.append({
+                                'ContingencyID': row[id_col_index],
+                                'Target': row[targ_col_index],
+                                'Contingency': row[cont_col_index],
+                                'Modifier': row[modi_col_index]
+                            })
+                    contingency_list.pop(0)
 
-                    'rea': ob['object'].columns.index('!Reaction'),
-                    'cbn': ob['object'].columns.index('!ComponentB:Name'),
-                    'cbd': ob['object'].columns.index('!ComponentB:Domain'),
-                    'cbs': ob['object'].columns.index('!ComponentB:Subdomain'),
-                    'cbr': ob['object'].columns.index('!ComponentB:Residue')
-                }
+            if self.d.rxncon_sbtab_detected==0:
+                # standart sbtab format
+                if ob['type']=='ReactionID':
+                    # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
+                    indexes_dict={
+                        'can': ob['object'].columns.index('!ComponentA:Name'),
+                        'cad': ob['object'].columns.index('!ComponentA:Domain'),
+                        'cas': ob['object'].columns.index('!ComponentA:Subdomain'),
+                        'car': ob['object'].columns.index('!ComponentA:Residue'),
 
-                # Save the data of these three columns to list of dictionaries
-                reaction_list=[{}]
-                for row in ob['object'].getRows():
-                #     if check_full_rxns(build_full(row,indexes_dict),contingency_list):
-                #
-                #         reaction_list.append({
-                #             'ReactionType': row[indexes_dict['rea']],
-                #             'ComponentA[Name]': row[indexes_dict['can']],
-                #             'ComponentA[Domain]': row[indexes_dict['cad']],
-                #             'ComponentA[Subdomain]': row[indexes_dict['cas']],
-                #             'ComponentA[Residue]': row[indexes_dict['car']],
-                #             'ComponentB[Name]': row[indexes_dict['cbn']],
-                #             'ComponentB[Domain]': row[indexes_dict['cbd']],
-                #             'ComponentB[Subdomain]': row[indexes_dict['cbs']],
-                #             'ComponentB[Residue]': row[indexes_dict['cbr']],
-                #             'Reaction[Full]': build_full(row,indexes_dict)
-                #         })
-                #     else:
-                #         print 'Was not able to parse the following input row correctly:'
-                #         print row
-                #         exit()
-                # reaction_list.pop(0)
-                    reaction_list.append({
-                            'ReactionType': row[indexes_dict['rea']],
-                            'ComponentA[Name]': row[indexes_dict['can']],
-                            'ComponentA[Domain]': row[indexes_dict['cad']],
-                            'ComponentA[Subdomain]': row[indexes_dict['cas']],
-                            'ComponentA[Residue]': row[indexes_dict['car']],
-                            'ComponentB[Name]': row[indexes_dict['cbn']],
-                            'ComponentB[Domain]': row[indexes_dict['cbd']],
-                            'ComponentB[Subdomain]': row[indexes_dict['cbs']],
-                            'ComponentB[Residue]': row[indexes_dict['cbr']],
-                            'Reaction[Full]': self.build_full(row,indexes_dict)
-                        })
-                reaction_list.pop(0)
+                        'rea': ob['object'].columns.index('!Reaction'),
+                        'cbn': ob['object'].columns.index('!ComponentB:Name'),
+                        'cbd': ob['object'].columns.index('!ComponentB:Domain'),
+                        'cbs': ob['object'].columns.index('!ComponentB:Subdomain'),
+                        'cbr': ob['object'].columns.index('!ComponentB:Residue')
+                    }
 
-        return Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
+                    # Save the data of these three columns to list of dictionaries
+                    reaction_list=[{}]
+                    for row in ob['object'].getRows():
+                        reaction_list.append({
+                                'ReactionType': row[indexes_dict['rea']],
+                                'ComponentA[Name]': row[indexes_dict['can']],
+                                'ComponentA[Domain]': row[indexes_dict['cad']],
+                                'ComponentA[Subdomain]': row[indexes_dict['cas']],
+                                'ComponentA[Residue]': row[indexes_dict['car']],
+                                'ComponentB[Name]': row[indexes_dict['cbn']],
+                                'ComponentB[Domain]': row[indexes_dict['cbd']],
+                                'ComponentB[Subdomain]': row[indexes_dict['cbs']],
+                                'ComponentB[Residue]': row[indexes_dict['cbr']],
+                                'Reaction[Full]': self.build_full(row,indexes_dict)
+                            })
+                    reaction_list.pop(0)
+            else:
+                # new rxncon format
+                if ob['type']=='rxnconReactionList':
+                    # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
+                    indexes_dict={
+                        'uid': ob['object'].columns.index('!UID:Reaction'),
+                        'ss' : ob['object'].columns.index('!SourceState'),
+                        'ps' : ob['object'].columns.index('!ProductState'),
+
+                        'can': ob['object'].columns.index('!ComponentA:Name'),
+                        'cad': ob['object'].columns.index('!ComponentA:Domain'),
+                        'cas': ob['object'].columns.index('!ComponentA:Subdomain'),
+                        'car': ob['object'].columns.index('!ComponentA:Residue'),
+
+                        'rea': ob['object'].columns.index('!Reaction'),
+                        'cbn': ob['object'].columns.index('!ComponentB:Name'),
+                        'cbd': ob['object'].columns.index('!ComponentB:Domain'),
+                        'cbs': ob['object'].columns.index('!ComponentB:Subdomain'),
+                        'cbr': ob['object'].columns.index('!ComponentB:Residue')
+                    }
+
+                    # Save the data of these three columns to list of dictionaries
+                    reaction_list=[{}]
+                    for i,row in enumerate(ob['object'].getRows()):
+                        r_def= [reaction for reaction in reaction_definition if row[indexes_dict['rea']].lower() == reaction['UID:Reaction'].lower()][0]
+                        # using reaction as foreign key on reaction definition UID:Reaction to get the ReactionTypeID
+                        reaction_list.append({
+                                'ReactionID' : i+1,
+                                'UID:Reaction' : r_def['UID:Reaction'].lower(),
+                                'ReactionType:ID' : r_def['ReactionType:ID'],
+
+                                'SourceState' : row[indexes_dict['ss']],
+                                'ProductState' : row[indexes_dict['ps']],
+
+                                'ComponentA[Name]': row[indexes_dict['can']],
+                                'ComponentA[Domain]': row[indexes_dict['cad']],
+                                'ComponentA[Subdomain]': row[indexes_dict['cas']],
+                                'ComponentA[Residue]': row[indexes_dict['car']],
+                                'ComponentA[DSR]': '{0}/{1}({2})'.format(row[indexes_dict['cad']],row[indexes_dict['cas']],row[indexes_dict['car']]),
+
+                                'ComponentB[Name]': row[indexes_dict['cbn']],
+                                'ComponentB[Domain]': row[indexes_dict['cbd']],
+                                'ComponentB[Subdomain]': row[indexes_dict['cbs']],
+                                'ComponentB[Residue]': row[indexes_dict['cbr']],
+                                'ComponentB[DSR]': '{0}/{1}({2})'.format(row[indexes_dict['cbd']],row[indexes_dict['cbs']],row[indexes_dict['cbr']]),
+
+                                'Reaction[Full]': self.build_full(row,indexes_dict)
+                            })
+                    reaction_list.pop(0)
+
+
+        #return Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
+        return dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition) #build rxncon dict
+
 
     def build_full(self, row,d):
         '''
@@ -653,7 +696,7 @@ class Parser(Commandline):
                     out+='('+row[d['c%sr'%comp]]+')'
                 out+=']'
             elif row[d['c%ss'%comp]]:
-                out+='_['+row[d['c%ss'%comp]]  # if no dom%sin but only subdom%sin is given, the subdom%sin becomes dom%sin. is th%st correct?
+                out+='_['+row[d['c%ss'%comp]]
                 if row[d['c%sr'%comp]]:
                     out+='('+row[d['c%sr'%comp]]+')'
                 out+=']'
@@ -708,10 +751,11 @@ class Parser(Commandline):
         '''
         Creates Reaction definition dictionary, from given table
         '''
+
         for ob in ob_list:
             if ob['type'] == 'ReactionList':
                 if self.d.rxncon_sbtab_detected ==0:
-                # old rxncon format
+                # standart sbtab format
                     indexes_dict={
                         'r': ob['object'].columns.index('!Reaction'),
                         'ct': ob['object'].columns.index('!Category:Type'),
@@ -760,6 +804,7 @@ class Parser(Commandline):
 
             elif ob['type']== 'rxnconReactionDefinition':
                 # new rxncon sbtab hybrid format
+                    reactionTypeID2def = dict([(row['ReactionType:ID'], row) for row in REACTION_TEMPLATE])
                     indexes_dict={
                         'r': ob['object'].columns.index('!UID:Reaction'),
                         #'ct': ob['object'].columns.index('!Category:Type'),
@@ -767,8 +812,8 @@ class Parser(Commandline):
                         #'si': ob['object'].columns.index('!SubclassID'),
                         #'s': ob['object'].columns.index('!Subclass'),
                         'm': ob['object'].columns.index('!ModifierBoundary'),
-                        'rti': ob['object'].columns.index('!ReactionType:Name'),
-                        'rt': ob['object'].columns.index('!ReactionType:ID'),
+                        'rtn': ob['object'].columns.index('!ReactionType:Name'),
+                        'rti': ob['object'].columns.index('!ReactionType:ID'),
                         'rn': ob['object'].columns.index('!Reaction:Name'),
                         #'rev': ob['object'].columns.index('!Reversibility'),
                         #'d': ob['object'].columns.index('!Directionality'),
@@ -785,15 +830,16 @@ class Parser(Commandline):
                     for row in ob['object'].getRows():
                     # reaction_list.pop(0)
                         reaction_definition_list.append({
-                            'Reaction' : unicode(row[indexes_dict['r']]),
+                            'UID:Reaction' : unicode(row[indexes_dict['r']]),
                             # 'CategoryType' : unicode(row[indexes_dict['ct']]),
                             # 'Category' : unicode(row[indexes_dict['c']]),
                             # 'SubclassID' : unicode(row[indexes_dict['si']]),
                             # 'Subclass' : unicode(row[indexes_dict['s']]),
-                            'Modifier or Boundary' : unicode(row[indexes_dict['m']]),
-                            'ReactionTypeID' : unicode(row[indexes_dict['rti']]),
-                            'ReactionType' : unicode(row[indexes_dict['rt']]),
-                            'ReactionName' : unicode(row[indexes_dict['rn']]),
+                            'ModifierBoundary' : unicode(row[indexes_dict['m']]),
+                            'ReactionType:ID' : unicode(row[indexes_dict['rti']]),
+                            #'ReactionType' : unicode(row[indexes_dict['rt']]),
+                            'ReactionType:Name' : unicode(row[indexes_dict['rtn']]),
+                            'Reaction:Name' : unicode(row[indexes_dict['rn']]),
                             # 'Reversibility' : unicode(row[indexes_dict['rev']]),
                             # 'Directionality' : unicode(row[indexes_dict['d']]),
                             # 'SourceState[Component]' : unicode(row[indexes_dict['ssc']]),
@@ -802,8 +848,9 @@ class Parser(Commandline):
                             # 'ProductState[Modification]' : unicode(row[indexes_dict['psm']]),
                             'coSubstrate(s)' : unicode(row[indexes_dict['cs']]),
                             'coProduct(s)' : unicode(row[indexes_dict['cp']]),
-                            'Comments' : unicode(row[indexes_dict['co']])
+                            'Comment' : unicode(row[indexes_dict['co']])
                             })
+                        reaction_definition_list[-1].update(reactionTypeID2def[row[indexes_dict['rti']]])
                     reaction_definition_list.pop(0)
 
 
