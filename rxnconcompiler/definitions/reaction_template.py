@@ -57,7 +57,6 @@ REACTION_TEMPLATE = [{
  'Reversibility': u'reversible',
  'Directionality': u'unidirectional'
  #'ProductState[Modification]': u'-{P}',
-
  #'SourceState[Modification]': u'-{P}'
 },
 

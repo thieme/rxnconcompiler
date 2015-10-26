@@ -239,8 +239,8 @@ class x_exclamation_mark_Tests(TestCase):
 # <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
 # <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
 #                         A_Ub+_B""")
-        rxncon = Rxncon(""" A_ppi_B \n C_p+_B \n D_ub+_B_[x] \n  Y_trsl_B""")
-        rxncon = Rxncon({"asd": 1})
+        #rxncon = Rxncon(""" A_ppi_B \n C_p+_B \n D_ub+_B_[x] \n  Y_trsl_B""")
+        rxncon = Rxncon("""A_ppi_B; ! B-{P} """)
         # rxncon = Rxncon("""A_ppi_E; ! <comp>
         #                     <comp>; 11 B_[x]-{P}
         #                     <comp>; 7 B_[y]-{P}

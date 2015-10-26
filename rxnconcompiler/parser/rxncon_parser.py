@@ -23,6 +23,7 @@ import xlrd
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE
+from rxnconcompiler.parser.check_parsing import CheckContingencies
 
 
 def parse_rxncon(rxncon_input):
@@ -51,15 +52,13 @@ def parse_rxncon(rxncon_input):
         if 'reaction_list' in rxncon_input:
             return parse_json(rxncon_input)
         return parse_text(rxncon_input)
-   
-
+        
 def parse_json(rxncon_input):
     """
     Gets string.
     Returns rxncon dictionary.
     """
     return json.loads(rxncon_input)
-
 
 def parse_text(rxncon_text):
     """Parses quick format and returns xls_tables dict."""
@@ -148,7 +147,6 @@ def parse_text(rxncon_text):
                     else:
                         source_state = reaction_components[comp_name2index[components[index]]]
             product_state = 'N/A'
-            #if r_def['ProductState[Component]'] != 'N/A':
             if r_def['ProductState[Component]'] != 'N/A':
                 components = [c.strip() for c in r_def['ProductState[Component]'].split(',')]
                 modificats = []
@@ -204,7 +202,6 @@ def parse_text(rxncon_text):
             dsrB = reaction_components[1].split('_')[1][1:-1] if '_' in reaction_components[1] else ''
             matchB = re.match('(\w*)/?(\w*)\(?(\w*)\)?',dsrB)
             # here we have inconsistency in xls we have separate keys for Domain, Subdomain and Residue
-
             reaction_list.append({
                 'ReactionID': reaction_id,
                 'ReactionType:ID': r_def['ReactionType:ID'],
@@ -239,7 +236,10 @@ def parse_text(rxncon_text):
                     contingency_id += 1
         except:
             raise RxnconParserError('Error in line:<br/>\n%s<br/>\n%s' % (line, sys.exc_info()[1]))
-    return dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=used_reaction_definition)
+    parsed_information = dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=used_reaction_definition)
+    checker = CheckContingencies(parsed_information)
+    checker.test_contingency_sign()
+    return parsed_information
 
 
 def parse_xls(file_path):
@@ -261,6 +261,7 @@ def parse_xls(file_path):
                 reaction_definition = list(xl.getiter(sheetnames[2])),
                 )
     return xls_talbes
+
 
 
 class readexcel(object):
@@ -333,7 +334,6 @@ class readexcel(object):
             self.__sheets__.setdefault(i,{}).__setitem__('cols',sheet.ncols)
             self.__sheets__.setdefault(i,{}).__setitem__('firstrow',firstrow)
             self.__sheets__.setdefault(i,{}).__setitem__('variables',uniquevars[:])
-
     def getiter(self, sheetname, returnlist=False, returntupledate=False):
         """ Return an generator object which yields the lines of a worksheet;
         Default returns a dictionary, specifing returnlist=True causes lists
@@ -347,24 +347,19 @@ class readexcel(object):
             return __iterlist__(self, sheetname, returntupledate)
         else:
             return __iterdict__(self, sheetname, returntupledate)
-
     def worksheets(self):
         """ Returns a list of the Worksheets in the Excel File """
         return self.__sheetnames__
-
     def nrows(self, worksheet):
         """ Return the number of rows in a worksheet """
         return self.__sheets__[worksheet]['rows']
-
     def ncols(self, worksheet):
         """ Return the number of columns in a worksheet """
         return self.__sheets__[worksheet]['cols']
-
     def variables(self,worksheet):
         """ Returns a list of Column Names in the file,
             assuming a tabular format of course. """
         return self.__sheets__[worksheet]['variables']
-
     def __formatrow__(self, types, values, wanttupledate):
         """ Internal function used to clean up the incoming excel data """
         ##  Data Type Codes:
@@ -400,14 +395,12 @@ class readexcel(object):
             returnrow.append(value)
         return returnrow
 
-
 def __iterlist__(excel, sheetname, tupledate):
     """ Function Used To create the List Iterator """
     sheet = excel.__book__.sheet_by_name(sheetname)
     for row in range(excel.__sheets__[sheetname]['rows']):
         types,values = sheet.row_types(row),sheet.row_values(row)
         yield excel.__formatrow__(types, values, tupledate)
-
 
 def __iterdict__(excel, sheetname, tupledate):
     """ Function Used To create the Dictionary Iterator """
