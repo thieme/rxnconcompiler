@@ -71,8 +71,8 @@ def parse_text(rxncon_text):
     lines = rxncon_text.split("\n")
     reaction_list = []
     contingency_list = []
-    contingency_id = 0
-    reaction_id = 0
+    contingency_id = 1
+    reaction_id = 1
     # go over lines of quick rules
     for line in lines:
         line = line.strip()
@@ -221,7 +221,7 @@ def parse_text(rxncon_text):
                 'ComponentB[Subdomain]': matchB.group(2),
                 'ComponentB[Residue]': matchB.group(3),
                 })
-            reaction_id += 0
+            reaction_id += 1
         try:
             if len(split_line) > 1:  # contingencies present
                 for cont in split_line[1:]:
@@ -237,8 +237,9 @@ def parse_text(rxncon_text):
         except:
             raise RxnconParserError('Error in line:<br/>\n%s<br/>\n%s' % (line, sys.exc_info()[1]))
     parsed_information = dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=used_reaction_definition)
-    checker = CheckContingencies(parsed_information)
-    checker.test_contingency_sign()
+    #checker = CheckContingencies(parsed_information)
+    #checker.testContingencySign()
+    #checker.testContingencyModifier()
     return parsed_information
 
 

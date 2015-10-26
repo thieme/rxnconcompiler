@@ -50,6 +50,7 @@ from rxnconcompiler.molecule.molecule import Molecule
 from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.util.util import product
 from rxnconcompiler.molecule.state import get_state
+from rxnconcompiler.util.rxncon_errors import RxnconBooleanError
 import itertools
 import copy
 import re
@@ -569,9 +570,9 @@ class ComplexBuilder:
         reference_child_ctype = children[0].ctype
         for child in children[1:]:
             if (("--" in reference_child_ctype or re.search("^[1-9]*$", reference_child_ctype)) and not ("--" in child.ctype or re.search("^[1-9]*$", child.ctype))):
-                raise Exception('Boolean not properly defined mix of {0} and {1}'.format(reference_child_ctype, child.ctype))
+                raise RxnconBooleanError('Boolean not proper defined mix of {0} and {1}'.format(reference_child_ctype, child.ctype))
             elif (not ("--" in reference_child_ctype or re.search("^[1-9]*$", reference_child_ctype)) and reference_child_ctype != child.ctype):
-                raise Exception('Boolean not properly defined mix of {0} and {1}'.format(reference_child_ctype, child.ctype))
+                raise RxnconBooleanError('Boolean not proper defined mix of {0} and {1}'.format(reference_child_ctype, child.ctype))
         return True
 
     def get_states(self, node_list):
