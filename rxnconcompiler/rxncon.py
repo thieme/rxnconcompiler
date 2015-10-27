@@ -82,6 +82,7 @@ from contingency.contingency_applicator import ContingencyApplicator
 from contingency.contingency_factory import ContingencyFactory
 from reaction.reaction_factory import ReactionFactory
 from parser.rxncon_parser import parse_rxncon
+import rxnconcompiler.parser.parsing_controller as parsing_controller
 import copy
 import re
 
@@ -124,11 +125,9 @@ class Rxncon():
         self.war = RxnconWarnings()
         self.df = DomainFactory()
 
-        if not parsed_xls:
-            # hier SBtab einbinden
-            self.xls_tables = parse_rxncon(xls_tables)
-        else:
-            self.xls_tables = xls_tables
+        d = parsing_controller.DirCheck(xls_tables)
+        self.xls_tables = d.controller()
+
 
         reaction_factory = ReactionFactory(self.xls_tables)
         self.molecule_pool = reaction_factory.molecule_pool

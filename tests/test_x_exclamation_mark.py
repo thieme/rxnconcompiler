@@ -19,7 +19,8 @@ from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 # A_ppi_B; x A-{P}
 # X_P+_A
 from unittest import main, TestCase
-from rxnconcompiler.rxncon import Rxncon
+#from rxnconcompiler.rxncon import Rxncon
+import rxnconcompiler.rxncon as rxncon_mod
 
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
 from rxnconcompiler.contingency.contingency import Contingency
@@ -48,7 +49,8 @@ class x_exclamation_mark_Tests(TestCase):
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Example_Reactions.xls"
-
+        input = "/home/wajnberg/rxncon/source/rxnconcompiler/sbtab/rxncon_sbtab_files/rxncon_template_2_0.xls"
+        rxncon = rxncon_mod.Rxncon(input)
 #######################################   Presentation ########################################
         # rxncon = Rxncon("""A_ppi_B; ! <comp1>
         #                  <comp1>; OR <comp1C1>
@@ -235,7 +237,7 @@ class x_exclamation_mark_Tests(TestCase):
         #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
         # ''')
         #rxncon = Rxncon("""A_ipi_A_[d/s(r)]""")
-        rxncon = Rxncon('A_ppi_B\nA_ppi_C; ! A--B ')
+        #rxncon = Rxncon('A_ppi_B\nA_ppi_C; ! A--B ')
 #         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
 # <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
 # <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]

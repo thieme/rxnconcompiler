@@ -7,51 +7,18 @@ import SBtab
 import os
 import tablibIO
 import tablib
-import xlrd
 import xlsxwriter
-import sys
 import re
 from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 from rxnconcompiler.parser.rxncon_parser import parse_xls
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE # default def for new format
-from rxnconcompiler.rxncon import Rxncon
+#from rxnconcompiler.rxncon import Rxncon
+#import rxnconcompiler.rxncon as rxncon_mod
+import rxnconcompiler.rxncon
+import sbtab_utils
 #from SBtabTools import createDataset
-import csv
 
-def get_files(inputdir):
-        """
-        Returns list of files (and only files) inside given input directory
-        """
-        if os.path.isdir(inputdir):
-            files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) and not f.startswith('.') ]
-        #                                               is no directory                          is no libre office temp file
-            return files
-        else:
-            print 'Error, can not open input directory(\''+inputdir+'\').'
-            exit()
-
-def build_SBtab_object(inputdir, filename):
-        '''
-        Gets input directory and filename of SBtab formatted File and creates Object from this using SBtab Library.
-        If file contents multiple sheets, multiple objects get returned
-        '''
-        table_file = open(inputdir+'/'+filename,'r')
-        table = table_file.read()
-        if filename[-3:]=='xls':
-            tablib_table = tablibIO.haveXLS(table,True, False)
-            ob_list=[SBtab.SBtabTable(dataset,filename) for dataset in tablib_table._datasets]
-            return ob_list
-        else:
-            tablib_table = tablibIO.importSetNew(table,filename)
-            ob = SBtab.SBtabTable(tablib_table,filename)
-            return [ob]
-
-
-
-def build_rxncon_dict(inputdir, filename):
-        d = parse_rxncon(inputdir+'/'+filename)
-        return d
 
 class Mapper(object):
     def __init__(self):
@@ -192,288 +159,17 @@ class Commandline(object):
             # else:
             #     self.outputformat = self.outputformat[-3:]
 
-class DirCheck(Commandline):
-    def __init__(self, inputdir):
-        self.inputdir = inputdir
-        self.rxncon_detected = 0
-        self.sbtab_detected = False
-        self.rxncon_sbtab_detected = 0
-        self.other_detected = False
-        self.target_format=''
-        self.parsable_to=''
-
-    def check_directory_type(self):
-        '''
-        Checks whether input directory consists of SBtab, rxncon, both or other files
-        '''
-        print self.inputdir , '      delete this print in the end, check_directory_type()'
-
-        files=get_files(self.inputdir)
-
-        for filename in files:
-            filedir= self.inputdir+'/'+filename
-
-            if filename.startswith('.'): # filename[0]
-                #skips temp files
-                continue
-
-            if filename.endswith('.txt'):# basti: nach dem letzten punkt mit split
-                self.check_txt_File(filedir)
-
-            elif filename.endswith('.xls'):# basti: nach dem letzten punkt mit split
-                # Read Excel Document
-                self.check_xls_File(filedir)
-
-            elif filename.endswith('.ods'):# basti: nach dem letzten punkt mit split
-                # Read Open / Libre Office Document
-                print 'Found File(s) in .ods format. This format ist not supported. ' \
-                      '\nPlease export to .xls or .txt format (Open/Libre Office and Excel can do this).\n' \
-                      'If you want to translate from SBtab to rxncon you can also use .csv format.'
-                #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
-
-            elif filename.endswith('.csv'):# basti: nach dem letzten punkt mit split
-                # Read csv Table
-                self.check_csv_File(filedir)
-                if self.rxncon_detected>0:
-                    sys.exit('Found rxncon file in .csv Format. This is not supported, please export zu .xls or Quick Format in .txt')
-
-            else:
-                self.other_detected=True
-
-        if self.rxncon_detected>0:
-            if self.sbtab_detected==True:
-                print 'Error, both SBtab and rxncon files detected in input directory! Please clean up the directory!'
-            elif self.other_detected==True:
-                print 'Error, files of unknown format (neither SBtab nor rxncon) detected!' # basti: fkt da doppelt spaeter
-            else:
-                if self.rxncon_detected>1:
-                    target_filedir= self.multiple_rxncon_files(self.rxncon_detected, files)
-                    self.look_for_rxncon_files(self.inputdir+'/'+target_filedir)
-                else:
-                    print 'Rxncon file detected. Starting parser.'
-                    self.look_for_rxncon_files(self.inputdir)
-
-        elif self.sbtab_detected==True:
-            if self.other_detected==True:
-                print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
-            elif self.rxncon_sbtab_detected > 1:
-                #target_filedir= self.multiple_rxncon_files(self.rxncon_sbtab_detected, files)
-                self.multiple_rxncon_files(self.rxncon_sbtab_detected, files)
-                self.look_for_rxnconSBtab_files(self.inputdir+'/'+self.inputfile)
-            else:
-                print 'Directory of SBtab files detected. Starting parser.'
-                self.look_for_SBtab_files(self.inputdir)
-                if self.target_format:
-                    if self.target_format=='txt':
-                        print "Warning: You can export the files in current directory only to rxncon quick format (.txt)." \
-                              "         Not all needed Files for xls export are found." \
-                              "         If you still choose xls export, the program will crash."
-
-
-    def check_txt_File(self, filedir):
-        '''
-        Checks whether txt file is rxncon, SBtab or other file type
-        '''
-        with open(filedir, 'r') as f:
-            first_line= f.readline().strip()
-            if 'SBtab' in first_line:
-                self.sbtab_detected=True
-            elif 'rxncon' in first_line:
-                # sollte im rxncon header fuer txt files vorkommen, gibt es bisher nicht
-                self.rxncon_detected+=1
-            else:
-                self.other_detected=True
-
-
-
-    def check_xls_File(self, filedir):
-        '''
-        Checks whether xls file is rxncon, SBtab or other file type
-        '''
-
-        sheet_number=0 #sheet we use to check the format
-        xlsreader = xlrd.open_workbook(filedir)
-        xls_sheet_names = xlsreader.sheet_names()
-
-        for s in range(0,len(xls_sheet_names)):
-            # if the first sheet has no content, try the first line of the next sheet
-            try:
-                sheet = xlsreader.sheet_by_index(sheet_number)
-                first_line = sheet.row(0)
-                break
-            except IndexError:
-                sheet_number+=1
-
-        for cell in first_line:
-            if '!!SBtab' in str(cell):
-                self.sbtab_detected=True
-                if 'rxncon' in str(cell):
-                    self.rxncon_sbtab_detected+=1
-
-        for sheet_name in xls_sheet_names:
-            if ('(III) Contingency list' in sheet_name
-            or 'Contingency List' in sheet_name
-            or 'contingency list' in sheet_name) \
-            and not 'ContingencyID' in sheet_name\
-            and self.rxncon_sbtab_detected==0:
-                self.rxncon_detected+=1
-
-        if self.sbtab_detected==False and self.rxncon_detected==0 and self.rxncon_sbtab_detected==0:
-            self.other_detected=True
-
-
-    def check_ods_File(self, filedir):
-        '''
-        Checks whether ods file is rxncon, SBtab or other file type
-        NOT SUPPORTED YET
-        '''
-        #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
-        #return sbtab_detected, rxncon_detected, other_detected
-
-        pass
-
-    def check_csv_File(self, filedir):
-        '''
-        Checks whether csv file is rxncon, SBtab or other file type
-        '''
-        # cant be rxncon file then
-        with open(filedir, 'rb') as csvfile:
-            csvreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
-            try:
-                first_line = csvfile.readline().strip()
-                if 'SBtab' in first_line:
-                    self.sbtab_detected=True
-                else:
-                    self.other_detected=True
-
-            #error catching
-            except csv.Error as e:
-                sys.exit('file %s, line %d: %s' % (filedir, csvreader.line_num, e))
-
-    def file_or_dir(self, input):
-        '''
-        Checks whether inputstring is a directory or a file. Returns list of either the filename or all filenames
-        :param input: Path
-        :return: List of filename(s), path to file(s)
-        '''
-        if os.path.isfile(input):
-            slash_index= [i for i, letter in enumerate(input) if letter == '/'] #find the occurences of the slash
-            inputdir= input[0:max(slash_index)] # the string until the last slash is the inputdirectory
-            inputfile = input[max(slash_index)+1:]
-            files=[inputfile]
-        elif os.path.isdir(input):
-            files = get_files(input)
-            inputdir= input
-
-        return (files, inputdir)
-
-
-    def look_for_SBtab_files(self, input):
-        '''
-        Checks whether all needed SBtab tables are inside given directory/document
-        - ReactionList
-        - ReactionID
-        - ContingencyID
-        - rxncon_Definition
-        '''
-
-        files, inputdir= self.file_or_dir(input)
-
-        found_table_types=[]
-
-        for filename in files:
-            #print 'Filename: ', filename
-            ob_list = build_SBtab_object(inputdir, filename)
-            found_table_types= [found_table_types.append(ob.table_type) for ob in ob_list]
-
-        if 'ReactionID' in found_table_types and'ContingencyID' in found_table_types:
-            self.parsable_to='rxncon'
-            self.target_format= 'txt'
-
-        if 'ReactionList' in found_table_types: #reaction definition
-            self.target_format= 'xls'
-
-        else:
-            print 'Error: In order to translate the SBtab format to rxncon, you need tables with following TableTypes: \n' \
-                  ' - ReactionID \n' \
-                  ' - ContingencyID \n \n' \
-                  'Only needed for export to xls format:\n ' \
-                  '     - ReactionList(only for export to xls)'
-            print 'Only the follwing TableTypes were found:'
-            print found_table_types
-            self.parsable_to=''
-
-    def look_for_rxnconSBtab_files(self, input):
-        '''
-        Checks whether all needed tables are inside given new format rxncon file
-        - rxnconReactionList
-        - rxnconContingencyList
-        - rxnconReactionDefinition
-        -
-        '''
-
-        files, inputdir= self.file_or_dir(input)
-
-        found_table_types=[]
-
-        for filename in files:
-            ob_list = build_SBtab_object(inputdir, filename)
-            found_table_types= [ob.table_type for ob in ob_list]
-
-        if 'rxnconReactionList' in found_table_types and 'rxnconContingencyList' in found_table_types:
-            self.parsable_to='rxncon'
-            self.target_format= 'txt'
-
-        if 'rxnconReactionDefinition' in found_table_types:
-            self.target_format= 'xls'
-
-        else:
-            print 'Error: In order to translate the new rxncon format to the old one, you need tables with following TableTypes:\n' \
-                  ' - rxnconReactionList \n' \
-                  ' - rxnconContingencyList \n \n' \
-                  'Only needed for export to xls format: \n' \
-                  '- rxnconReactionDefinition'
-
-            print 'Only the follwing TableTypes were found:'
-            print found_table_types
-            self.parsable_to=''
-
-    def look_for_rxncon_files(self, input):
-        '''
-        Checks weather all needed rxncon files/sheets are given inside input directory:
-        - (I) Reaction List
-        - (III) Contingency List
-        - (IV) Reaction definition
-        '''
-
-        files, inputdir= self.file_or_dir(input)
-
-        found_tables=[]
-        # basti
-        #found_tables = [table for filename in files for table in build_rxncon_dict(self.inputdir, filename)]
-        for filename in files:
-            d= build_rxncon_dict(self.inputdir, filename)
-            #found_tables = [table for table in d]
-            for table in d.keys():
-                found_tables.append(table)
-
-        if 'reaction_definition' in found_tables and 'contingency_list' in found_tables and 'reaction_list' in found_tables:
-            self.parsable_to='sbtab'
-
-        else:
-            print 'Error: In order to translate the rxncon format to SBtab, you need the following tables:' \
-                  ' - reaction_definition' \
-                  ' - contingency_list' \
-                  ' - reaction_list' \
-                  'Only the following tables were found: '
-            print found_tables
 
 class Parser(Commandline):
 
-    def __init__(self, inputdir):
+    def __init__(self, inputdir, d=None):
         super(Parser, self).__init__()
-        self.d=DirCheck(inputdir)
-        self.d.check_directory_type()
+        if d==None:
+            import rxnconcompiler.parser.parsing_controller as controller
+            self.d=controller.DirCheck(inputdir)
+            self.d.check_directory_type()
+        else:
+            self.d=d
         self.parsable_to=self.d.parsable_to
         self.inputdir=inputdir
         self.target_format = self.d.target_format
@@ -510,7 +206,7 @@ class Parser(Commandline):
         #print ob.table
         print 'TableType:\t', ob.table_type
 
-    def parse_SBtab2rxncon(self):
+    def parse_SBtab2rxncon(self, output=''):
         '''
         Main function for translating SBtab --> rxncon Format. Creates rxncon object
         '''
@@ -525,7 +221,7 @@ class Parser(Commandline):
         reaction_def_found=False
         #for filename in files:
         for filename in self.d.files:
-            obs= build_SBtab_object(self.inputdir, filename)
+            obs= sbtab_utils.build_SBtab_object(self.inputdir, filename)
             #self.ob_list.append({'object':ob, 'type':ob.table_type, 'filename':filename })
             self.ob_list= [{'object':ob, 'type':ob.table_type, 'filename':filename } for ob in obs]
             if self.d.rxncon_sbtab_detected==0:
@@ -556,7 +252,10 @@ class Parser(Commandline):
         # if self.outputformat=='xls' and self.target_format=='xls':
         #     self.gene_list=self.build_gene_list(self.ob_list)
 
-        self.rxncon = Rxncon(self.build_rxncon(self.ob_list, reaction_definition)) #rxncon object
+        if output=='xls_tables':
+            self.rxncon = self.build_rxncon(self.ob_list, reaction_definition) #rxncon object
+        else:
+            self.rxncon = rxnconcompiler.rxncon.Rxncon(self.build_rxncon(self.ob_list, reaction_definition)) #rxncon object
 
 
     def build_rxncon(self, ob_list, reaction_definition):
