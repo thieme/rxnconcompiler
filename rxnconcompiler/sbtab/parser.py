@@ -7,7 +7,6 @@ import SBtab
 import os
 import tablibIO
 import tablib
-import csv
 import xlrd
 import xlsxwriter
 import sys
@@ -18,6 +17,7 @@ from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # d
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE # default def for new format
 from rxnconcompiler.rxncon import Rxncon
 #from SBtabTools import createDataset
+import csv
 
 def get_files(inputdir):
         """
