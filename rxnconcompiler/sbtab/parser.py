@@ -12,8 +12,8 @@ import xlrd
 import xlsxwriter
 import sys
 import re
-from rxnconcompiler.parser.rxncon_parser import parse_rxncon
-from rxnconcompiler.parser.rxncon_parser import parse_xls
+#from rxnconcompiler.parser.rxncon_parser import parse_rxncon
+#from rxnconcompiler.parser.rxncon_parser import parse_xls
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE # default def for new format
 from rxnconcompiler.rxncon import Rxncon
@@ -23,6 +23,8 @@ def get_files(inputdir):
         """
         Returns list of files (and only files) inside given input directory
         """
+        if os.path.isfile(inputdir):
+            return [os.path.split(inputdir)[-1]]
         if os.path.isdir(inputdir):
             files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) and not f.startswith('.') ]
         #                                               is no directory                          is no libre office temp file
@@ -202,36 +204,22 @@ class DirCheck(Commandline):
         self.target_format=''
         self.parsable_to=''
 
-    def check_directory_type(self):
-        '''
-        Checks whether input directory consists of SBtab, rxncon, both or other files
-        '''
-        print self.inputdir , '      delete this print in the end, check_directory_type()'
-
-        files=get_files(self.inputdir)
-
-        for filename in files:
-            filedir= self.inputdir+'/'+filename
-
-            if filename.startswith('.'): # filename[0]
-                #skips temp files
-                continue
-
-            if filename.endswith('.txt'):# basti: nach dem letzten punkt mit split
+    def execute_processing(self, filedir):
+            if filedir.endswith('.txt'):# basti: nach dem letzten punkt mit split
                 self.check_txt_File(filedir)
 
-            elif filename.endswith('.xls'):# basti: nach dem letzten punkt mit split
+            elif filedir.endswith('.xls'):# basti: nach dem letzten punkt mit split
                 # Read Excel Document
                 self.check_xls_File(filedir)
 
-            elif filename.endswith('.ods'):# basti: nach dem letzten punkt mit split
+            elif filedir.endswith('.ods'):# basti: nach dem letzten punkt mit split
                 # Read Open / Libre Office Document
                 print 'Found File(s) in .ods format. This format ist not supported. ' \
                       '\nPlease export to .xls or .txt format (Open/Libre Office and Excel can do this).\n' \
                       'If you want to translate from SBtab to rxncon you can also use .csv format.'
                 #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
-            elif filename.endswith('.csv'):# basti: nach dem letzten punkt mit split
+            elif filedir.endswith('.csv'):# basti: nach dem letzten punkt mit split
                 # Read csv Table
                 self.check_csv_File(filedir)
                 if self.rxncon_detected>0:
@@ -239,6 +227,31 @@ class DirCheck(Commandline):
 
             else:
                 self.other_detected=True
+
+    def check_directory_type(self):
+        '''
+        Checks whether input directory consists of SBtab, rxncon, both or other files
+        '''
+        print self.inputdir , '      delete this print in the end, check_directory_type()'
+
+        rxncon_input = self.inputdir
+        if type(rxncon_input) == dict:
+            if "reaction_list" in rxncon_input and "contingency_list" in rxncon_input and "reaction_definition" in rxncon_input:
+                return rxncon_input
+            else:
+                raise Exception("Input dictionary is not correctly defined.")
+
+        files=get_files(self.inputdir)
+
+        for filename in files:
+            if filename.startswith('.'): # filename[0]
+                #skips temp files
+                continue
+            if os.path.isfile(self.inputdir):
+                self.execute_processing(self.inputdir)
+            else:
+                self.execute_processing(self.inputdir+'/'+filename)
+
 
         if self.rxncon_detected>0:
             if self.sbtab_detected==True:
@@ -470,7 +483,7 @@ class DirCheck(Commandline):
 
 class Parser(Commandline):
 
-    def __init__(self, inputdir):
+    def __init__(self, inputdir, output=''):
         super(Parser, self).__init__()
         self.d=DirCheck(inputdir)
         self.d.check_directory_type()
@@ -478,6 +491,7 @@ class Parser(Commandline):
         self.inputdir=inputdir
         self.target_format = self.d.target_format
         self.gene_list=None
+        self.output=output
 
     def get_info(ob):
         '''
@@ -555,9 +569,10 @@ class Parser(Commandline):
 
         # if self.outputformat=='xls' and self.target_format=='xls':
         #     self.gene_list=self.build_gene_list(self.ob_list)
-
-        self.rxncon = Rxncon(self.build_rxncon(self.ob_list, reaction_definition)) #rxncon object
-
+        if (self.output =='xls_tables'):
+            self.rxncon = self.build_rxncon(self.ob_list, reaction_definition) # those 3 lists
+        else:
+            self.rxncon = Rxncon(self.build_rxncon(self.ob_list, reaction_definition)) #rxncon object
 
     def build_rxncon(self, ob_list, reaction_definition):
         '''
@@ -1217,10 +1232,19 @@ class RxnconWriter(object):
         print 'Successfully wrote rxncon xls format to '+inputdir+'/'+output_directory+'/'+outputname
 
 
+def main(rxncon_input):
+    #c = Commandline()
+    #c.inputdir= rxncon_input
+    p=Parser(rxncon_input, 'xls_tables')
+    p.parse_SBtab2rxncon()
+
+    return p.rxncon
+
 
 
 if __name__=="__main__":
 
+   # main('A_ppi_B')
     c=Commandline()
     #c.hello()
     #c.inputdir='rxncon_files/rxncon_xls/sps_cut'   # sbtab file export, old rxncon

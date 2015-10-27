@@ -23,8 +23,7 @@ import xlrd
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE
-
-
+from rxnconcompiler.sbtab.parser import DirCheck, Parser
 def parse_rxncon(rxncon_input):
     """Recognizes input and uses text or xls parser. Returns xls_tables (dict)."""
     # already parsed:
@@ -35,7 +34,17 @@ def parse_rxncon(rxncon_input):
             raise Exception("Input dictionary is not correctly defined.")
 
     # xls
-    elif rxncon_input[-4:] in ['.ods', '.xls', '.xlsx']:
+    elif rxncon_input[-4:] in ['.ods', '.xls', 'xlsx']:
+        if rxncon_input[-4:] == '.xls':
+            inputdir= os.path.dirname(rxncon_input)
+            d= DirCheck(inputdir)
+            d.check_xls_File(rxncon_input)
+            if d.rxncon_sbtab_detected:
+                p=Parser(rxncon_input, 'xls_tables')
+                p.parse_SBtab2rxncon()
+                return p.rxncon
+            else:
+                return parse_xls(rxncon_input)
         return parse_xls(rxncon_input)
 
     # quick from file or json from file

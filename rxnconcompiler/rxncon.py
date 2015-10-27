@@ -101,7 +101,7 @@ class Rxncon():
     @type xls_tables:  dictionary
     @param xls_tables: rxncon input data
     """
-    def __init__(self, xls_tables, parsed_xls=False):
+    def __init__(self, xls_tables):
         """
         Constructor creates basic objects with explicitly given information:
         - MoleculePool created by Reaction Factory  
@@ -123,12 +123,9 @@ class Rxncon():
         """
         self.war = RxnconWarnings()
         self.df = DomainFactory()
+       # p=Parser(c.inputdir)
 
-        if not parsed_xls:
-            # hier SBtab einbinden
-            self.xls_tables = parse_rxncon(xls_tables)
-        else:
-            self.xls_tables = xls_tables
+        self.xls_tables = parse_rxncon(xls_tables)
 
         reaction_factory = ReactionFactory(self.xls_tables)
         self.molecule_pool = reaction_factory.molecule_pool
