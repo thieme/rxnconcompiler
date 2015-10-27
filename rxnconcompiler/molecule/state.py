@@ -39,7 +39,15 @@ class State:
         self.__not_modifier = None #: valid only for covalent modification (always U) and Relocalisation (substrate localisation).
         self.__loc = False # only for localisation, distinguishes between products and substrates.
         self.__homodimer = False # only for asocciation, when A--A
+        self.__domain = None
 
+    @property
+    def domain(self):
+        return self.__domain
+
+    @domain.setter
+    def domain(self, value):
+        self.__domain = value
     @property
     def components(self):
         return self.__components
@@ -216,16 +224,22 @@ class StateFactory:
         'Vacuole', 'Mitochondria', 'Endosome', 'Extracellular']
         self.df = DomainFactory()
 
-    def get_dash_dash_state_from_string(self, state, state_str, state_id=None, loc_not_modifier=None):
+    def get_dash_dash_state_from_string(self, state, state_str, domain, state_id=None, loc_not_modifier=None):
         """
         Complete Association or Intraprotein state from str.
         Returns State object.
         """
         comp = state_str.split('--') 
         compA_name = comp[0].split('_')[0]
-        compA_domain = self.df.get_association_domain_from_str(state_str, 'A') 
         compB_name = comp[1].split('_')[0]
-        compB_domain = self.df.get_association_domain_from_str(state_str, 'B')
+
+        if domain != None:
+            compA_domain = self.df.get_association_domain_from_str(state_str, 'A', domain[0])
+            compB_domain = self.df.get_association_domain_from_str(state_str, 'B', domain[1])
+        else:
+            compA_domain = self.df.get_association_domain_from_str(state_str, 'A')
+            compB_domain = self.df.get_association_domain_from_str(state_str, 'B')
+
         if compB_name.startswith('['):
             state.type = 'Intraprotein' # A_[a]--[b]
             comp_object = Component(compA_name, compA_domain)
@@ -272,7 +286,7 @@ class StateFactory:
 
         return state
 
-    def get_state_from_string(self, state_str, state_id=None, loc_not_modifier=None):
+    def get_state_from_string(self, state_str, state_id=None, loc_not_modifier=None, domain=None):
         """
         Produces State object from given string.
         When given id (e.g. 1--2) assigns ids to interacting components.
@@ -283,12 +297,13 @@ class StateFactory:
         state = State()
         state.state_str = state_str
         state.sid = state_id
+        #state.domain = domain
         if state_str == '': # Empty state
             state.type = 'Null'
         elif state_str.startswith('<'):
             state.type = 'Boolean' 
         elif '--' in state_str: # Association | Intraprotein
-            state = self.get_dash_dash_state_from_string(state, state_str, state_id, loc_not_modifier)
+            state = self.get_dash_dash_state_from_string(state, state_str, domain, state_id, loc_not_modifier)
         elif '-' in state_str: # Covalent Modification | Relocalisation
             state = self.get_dash_state_from_string(state, state_str, state_id, loc_not_modifier)
         elif '*' in state_str: # Polymerisation
@@ -301,6 +316,15 @@ class StateFactory:
             state.components = [Component(state_str)]
             state.type = 'Component'
         return state
+
+    def set_dom_str(self, comp_dom):
+        if comp_dom[1] or comp_dom[2]:
+            comp_dom = "{0}/{1}{2}".format(comp_dom[0],comp_dom[1],comp_dom[2])
+            #state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom, state.modifier)
+        else:
+            comp_dom = comp_dom[0]
+        #    state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom[0], state.modifier)
+        return comp_dom
 
     def get_state_from_reaction(self, row, reaction, category):
         """
@@ -320,7 +344,8 @@ class StateFactory:
             comp_dom = self.df.get_modification_domain_from_dict(row, reaction)
             comp = Component(comp_name, comp_dom)
             state.components.append(comp)
-            state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom, state.modifier)
+            #self.set_state_str_modification(state, comp_name, comp_dom)
+            state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom.name, state.modifier)
 
         elif category == 'PT':
             # this is a special case
@@ -335,21 +360,30 @@ class StateFactory:
             comp_dom = self.df.get_modification_domain_from_dict(row, reaction, 'A')
             comp = Component(comp_name, comp_dom)
             state.components.append(comp)
-            state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom, state.modifier)
+            state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom.name, state.modifier)
 
         elif category == 'Intraprotein': 
             l_dsr = self.df.get_intraprotein_domain_from_dict(row, 'A')
             r_dsr = self.df.get_intraprotein_domain_from_dict(row, 'B')
             state_str = '%s_[%s]--[%s]' %(row['ComponentA[Name]'], \
-                l_dsr, r_dsr)
-            state = self.get_state_from_string(state_str)
+                l_dsr.name, r_dsr.name)
+            state = self.get_state_from_string(state_str, domain=[l_dsr,r_dsr])
 
         elif category == 'Association': 
             l_dsr = self.df.get_association_domain_from_dict(row, 'A')
-            r_dsr = self.df.get_association_domain_from_dict(row, 'B')        
+            # if l_dsr[1] or l_dsr[2]:
+            #     l_dsr = "{0}/{1}{2}".format(l_dsr[0],l_dsr[1],l_dsr[2])
+            # else:
+            #     l_dsr = l_dsr[0]
+
+            r_dsr = self.df.get_association_domain_from_dict(row, 'B')
+            # if r_dsr[1] or r_dsr[2]:
+            #     r_dsr = "{0}/{1}{2}".format(r_dsr[0],r_dsr[1],r_dsr[2])
+            # else:
+            #     r_dsr = r_dsr[0]
             state_str = '%s_[%s]--%s_[%s]' %(row['ComponentA[Name]'], \
-                l_dsr, row['ComponentB[Name]'], r_dsr) 
-            state = self.get_state_from_string(state_str)
+                l_dsr.name, row['ComponentB[Name]'], r_dsr.name)
+            state = self.get_state_from_string(state_str,domain=[l_dsr,r_dsr])
         
         elif category == 'Relocalisation':
             comp_name = row['ComponentB[Name]'].split('_')[0]

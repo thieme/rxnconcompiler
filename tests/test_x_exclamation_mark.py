@@ -46,8 +46,8 @@ class x_exclamation_mark_Tests(TestCase):
 
         # basic reaction with one contingency.
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
-        input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
-
+        #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
+        #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Example_Reactions.xls"
 
 #######################################   Presentation ########################################
         # rxncon = Rxncon("""A_ppi_B; ! <comp1>
@@ -234,13 +234,17 @@ class x_exclamation_mark_Tests(TestCase):
         #         <Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
         #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
         # ''')
-        #rxncon = Rxncon("""A_p+_B""")
+        #rxncon = Rxncon("""A_ipi_A_[d/s(r)]""")
+        rxncon = Rxncon('A_ppi_B\nA_ppi_C; ! A--B ')
 #         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
 # <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
 # <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
 #                         A_Ub+_B""")
-        rxncon = Rxncon(""" A_ppi_B \n C_p+_B \n D_ub+_B_[x] \n  Y_trsl_B""")
-        rxncon = Rxncon({"asd": 1})
+        #rxncon = Rxncon(""" A_ppi_B \n C_p+_B \n D_ub+_B_[x] \n  Y_trsl_B""")
+        #rxncon = Rxncon(""" A_ppi_B""")
+        #rxncon = Rxncon("""
+        #                    X_p+_B_[x]
+        #                    Y_p+_B_[y/s(r)]""")
         # rxncon = Rxncon("""A_ppi_E; ! <comp>
         #                     <comp>; 11 B_[x]-{P}
         #                     <comp>; 7 B_[y]-{P}
@@ -458,7 +462,7 @@ class x_exclamation_mark_Tests(TestCase):
 #  <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]""")
 
 
-        #rxncon = Rxncon(input_data)
+#        rxncon = Rxncon(input_data)
         #print rxncon
         ###################################################################################
         rxncon.run_process()

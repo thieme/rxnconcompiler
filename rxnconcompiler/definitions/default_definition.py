@@ -5,7 +5,7 @@ DEFAULT_DEFINITION = [
  'ReactionType:ID': u'1.1.1.1',
  'ReactionType:Name': 'Covalent_reversible_positive_trans',
  'ModifierBoundary': u'P',
- 'Comments': '',
+ 'Comment': '',
 
  },
 
@@ -18,7 +18,7 @@ DEFAULT_DEFINITION = [
  #'ReactionType:ID': 'p-',
 
  'ModifierBoundary': u'P',
- 'Comments': ''
+ 'Comment': ''
 },
 
 {
@@ -27,7 +27,7 @@ DEFAULT_DEFINITION = [
   'ReactionType:ID': u'1.1.1.2',
  'ReactionType:Name': 'Covalent_reversible_positive_cis',
   'ModifierBoundary': u'P',
-  'Comments': '',
+  'Comment': '',
 },
 
 {
@@ -36,7 +36,7 @@ DEFAULT_DEFINITION = [
  'ReactionType:ID': u'1.1.3.1',
  'ReactionType:Name': 'Covalent_reversible_transfer_trans',
  'ModifierBoundary': u'P',
- 'Comments': '',
+ 'Comment': '',
 },
 
 {
@@ -46,7 +46,7 @@ DEFAULT_DEFINITION = [
 'ReactionType:Name': 'Covalent_reversible_positive_trans',
 'ModifierBoundary': u'GTP',
 
- 'Comments': u'*G-proteins are assumed to bind GDP in their "basic" state. Exchange to GTP is denoted with the additional -{Pi}, which constitute the difference between the nucleotides.',
+ 'Comment': u'*G-proteins are assumed to bind GDP in their "basic" state. Exchange to GTP is denoted with the additional -{Pi}, which constitute the difference between the nucleotides.',
 },
 
 {
@@ -55,7 +55,7 @@ DEFAULT_DEFINITION = [
  'ReactionType:ID': u'1.1.2.1',
  'ReactionType:Name': 'Covalent_reversible_negative_trans',
  'ModifierBoundary': u'GTP',
- 'Comments': u'*G-proteins are assumed to bind GDP in their "basic" state. Exchange to GTP is denoted with the additional -{Pi}, which constitute the difference between the nucleotides.',
+ 'Comment': u'*G-proteins are assumed to bind GDP in their "basic" state. Exchange to GTP is denoted with the additional -{Pi}, which constitute the difference between the nucleotides.',
 
 },
 
@@ -65,7 +65,7 @@ DEFAULT_DEFINITION = [
  'ReactionType:ID': u'1.1.1.1',
   'ReactionType:Name': 'Covalent_reversible_positive_trans',
  'ModifierBoundary': u'Ub',
- 'Comments': '',
+ 'Comment': '',
 },
 {
  'UID:Reaction': u'Ub-',
@@ -76,7 +76,7 @@ DEFAULT_DEFINITION = [
  #'ReactionType:ID': 'p-',
 
  'ModifierBoundary': u'Ub',
- 'Comments': ''
+ 'Comment': ''
 },
 
 {
@@ -85,7 +85,7 @@ DEFAULT_DEFINITION = [
 'ReactionType:ID': "1.2.1.1",
  'ReactionType:Name': '',
  'ModifierBoundary': u'Truncated',
- 'Comments': ''
+ 'Comment': ''
 },
 
 #

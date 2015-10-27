@@ -111,7 +111,7 @@ class ContingencyPool(dict):
 
     def get_required_states(self):
         """
-        Allows to obtein states that need to be present in the system
+        Allows to obtain states that need to be present in the system
         to allow contingencies (the context) to be fulfilled.
         (States that should be produced be reactions).
 
