@@ -237,9 +237,9 @@ def parse_text(rxncon_text):
         except:
             raise RxnconParserError('Error in line:<br/>\n%s<br/>\n%s' % (line, sys.exc_info()[1]))
     parsed_information = dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=used_reaction_definition)
-    #checker = CheckContingencies(parsed_information)
-    #checker.testContingencySign()
-    #checker.testContingencyModifier()
+    checker = CheckContingencies(parsed_information)
+    checker.testContingencySign()
+    checker.testContingencyModifier()
     return parsed_information
 
 
