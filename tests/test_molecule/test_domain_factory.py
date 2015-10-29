@@ -63,7 +63,8 @@ class DomainFactoryTests(TestCase):
         """
         Should return loc.
         """
-        self.assertEqual(self.df.get_localisation_domain(), 'loc')
+        loc_dom = self.df.get_localisation_domain()
+        self.assertEqual(loc_dom.name, 'loc')
 
     def test_domain_object_dsr(self):
         dsr = "d/s(r)"

@@ -341,7 +341,7 @@ class StateFactory:
                 state.modifier = reaction.definition['Modifier or Boundary']
             state.not_modifier = 'U' # for Unmodified
             comp_name = row['ComponentB[Name]'].split('_')[0]
-            comp_dom = self.df.get_modification_domain_from_dict(row, reaction)
+            comp_dom = self.df.get_modification_domain_from_dict(row)
             comp = Component(comp_name, comp_dom)
             state.components.append(comp)
             #self.set_state_str_modification(state, comp_name, comp_dom)
@@ -357,7 +357,7 @@ class StateFactory:
                 state.modifier = reaction.definition['Modifier or Boundary'] # e.g. P, Ub, truncated
             state.not_modifier = 'U' # for Unmodified
             comp_name = row['ComponentA[Name]'].split('_')[0]
-            comp_dom = self.df.get_modification_domain_from_dict(row, reaction, 'A')
+            comp_dom = self.df.get_modification_domain_from_dict(row, 'A')
             comp = Component(comp_name, comp_dom)
             state.components.append(comp)
             state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom.name, state.modifier)

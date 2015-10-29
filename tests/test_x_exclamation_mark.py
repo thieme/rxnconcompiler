@@ -235,16 +235,38 @@ class x_exclamation_mark_Tests(TestCase):
         #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
         # ''')
         #rxncon = Rxncon("""A_ipi_A_[d/s(r)]""")
-        rxncon = Rxncon('''Z_p+_A
-                        Y_p+_A_[d]
-                        W_p+_A_[d/s]
-                        V_p+_A_[d/s(r)]
-                        H_p+_A_[d/(r)]
-                        G_p+_A_[(r)]
+        # rxncon = Rxncon('''Z_p+_A
+        #                 Y_p+_A_[d]
+        #                 W_p+_A_[d/s]
+        #                 V_p+_A_[d/s(r)]
+        #                 H_p+_A_[d/(r)]
+        #                 G_p+_A_[(r)]
+        #                 A_ppi_C; ! A-{P}
+        #                 A_ppi_D; ! A_[d]-{P}
+        #                 A_ppi_E; ! A_[d/s]-{P}
+        #                 A_ppi_F; ! A_[d/s(r)]-{P}
+        #                 A_ppi_I; ! A_[d/(r)]-{P}
+        #                 A_ppi_J; ! A_[(r)]-{P}''',lumpedModifier=True)
+
+####### TEST
+        rxncon = Rxncon("""Z_p+_A
+                        W_p+_A
                         A_ppi_C; ! A-{P}
-                        A_ppi_D; ! A_[d]-{P}
-                        A_ppi_E, ! A_[d/s]-{P}
-                        A_ppi_F; ! A_[d/s(r)]''')
+                        """, lumpedModifier=True)
+
+#delete contingency
+        # rxncon = Rxncon("""A_ppi_B; ! A-{P}
+        #                     A_ppi_E; ! A--B
+        #                     C_p+_D; ! A--C
+        #                     """)
+        # rxncon = Rxncon("""Z_p+_A
+        #                     A_ppi_C; ! A-{P}
+        #                     Y_p+_A_[d]
+        #                     W_p+_A_[d/s]
+        #                     V_p+_A_[d/s(r)]
+        #                     H_p+_A_[d/(r)]
+        #
+        # """)
 #         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
 # <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
 # <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]

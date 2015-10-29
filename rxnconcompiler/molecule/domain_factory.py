@@ -250,7 +250,7 @@ class DomainFactory:
         else:
             return Domain(comp_name_dom[1])
 
-    def get_modification_domain_from_dict(self, row, reaction, component='B'):
+    def get_modification_domain_from_dict(self, row, component='B'):
         """
         """
         if component == 'B':
