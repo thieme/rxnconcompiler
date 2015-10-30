@@ -302,7 +302,7 @@ class Molecule:
         elif mode == 'modification' and not occupied:
             to_search = self.modification_sites
         else:
-            raise 'Wrong domain search mode'
+            raise Exception('Wrong domain search mode')
 
         # looking for domains in proper list
         result = []
@@ -385,7 +385,7 @@ class Molecule:
             if empty_domain:
                 self.binding_sites.append(state)
 
-    def remove_binding_site(self):
+    def remove_binding_site(self,state):
         """"""
         if self.has_binding_site(state):
             self.binding_sites.remove(state)
@@ -419,7 +419,7 @@ class Molecule:
             self.modification_sites = temp
 
     def remove_modification_site(self, mod):
-        self.modifications_site.remove(mod)
+        self.modification_sites.remove(mod)
 
     def add_modification_site(self, mod):
         """"""

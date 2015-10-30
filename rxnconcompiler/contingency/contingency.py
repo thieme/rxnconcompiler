@@ -29,10 +29,6 @@ class Contingency:
         @ivar children: each contingency (complex or boolean)
                         may contain children - other contingencies.
         @type children: list
-        @ivar inharited_ctype: keeps normal ctype for contingencies 
-                               with boolean or complex ctype. It is 
-                               ctype of a parent.
-        @type inharited_ctype: string
         """
         self.target_reaction = target_reaction
         self.ctype = str(ctype).lower() if ctype else None
@@ -150,8 +146,8 @@ class Contingency:
         else:
             new_type = copy.deepcopy(self.ctype)
 
-        new_cont = Contingency(\
-            copy.deepcopy(self.target_reaction),\
+        new_cont = Contingency(
+            copy.deepcopy(self.target_reaction),
             new_type, copy.deepcopy(self.state))
 
         new_cont.inherited_ctype = copy.deepcopy(self.inherited_ctype)

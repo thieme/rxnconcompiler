@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#KR: code review 2013/12/29
+# KR: code review 2013/12/29
 # goals:
 # 1. general comments on architecture (OOP and other)
 # 2. question of complexes/negated complexes
@@ -73,11 +73,11 @@ Classes:
 - main:          defines CLI - Commend Line Interface.
 """
 
-from util.warnings import RxnconWarnings 
+from util.warnings import RxnconWarnings
 from molecule.domain_factory import DomainFactory
 from biological_complex.biological_complex import ComplexPool
 from biological_complex.complex_applicator import ComplexApplicator
-from biological_complex.complex_builder import ComplexBuilder 
+from biological_complex.complex_builder import ComplexBuilder
 from contingency.contingency_applicator import ContingencyApplicator
 from contingency.contingency_factory import ContingencyFactory
 from reaction.reaction_factory import ReactionFactory
@@ -85,6 +85,7 @@ from parser.rxncon_parser import parse_rxncon
 from rxnconcompiler.parser.check_parsing import ContingenciesManipulation, InputCheck
 import copy
 import re
+
 
 class Rxncon():
     """
@@ -102,7 +103,8 @@ class Rxncon():
     @type xls_tables:  dictionary
     @param xls_tables: rxncon input data
     """
-    def __init__(self, xls_tables,  checkInput=False, lumpedModifier=False):
+
+    def __init__(self, xls_tables, checkInput=False, lumpedModifier=False):
         """
         Constructor creates basic objects with explicitly given information:
         - MoleculePool created by Reaction Factory  
@@ -125,14 +127,13 @@ class Rxncon():
         self.war = RxnconWarnings()
         self.df = DomainFactory()
 
-
         self.xls_tables = parse_rxncon(xls_tables)
         if checkInput:
-           checker = InputCheck(self.xls_tables)
-           checker.testContingencySign()
+            checker = InputCheck(self.xls_tables)
+            checker.testContingencySign()
         if lumpedModifier:
-           manipulator = ContingenciesManipulation(self.xls_tables)
-           manipulator.LumpedContingencyModifier()
+            manipulator = ContingenciesManipulation(self.xls_tables)
+            manipulator.LumpedContingencyModifier()
         reaction_factory = ReactionFactory(self.xls_tables)
         self.molecule_pool = reaction_factory.molecule_pool
         self.reaction_pool = reaction_factory.reaction_pool
@@ -161,20 +162,21 @@ class Rxncon():
                         bool_root = self.contingency_pool[cont.state.state_str]
                         bool_def = bool_root.get_children()
                         for bool_cont in bool_def:
-                            if bool_cont.ctype in ['or', 'and', "not"] or '--' in bool_cont.ctype or re.match("^[0-9]*$", bool_cont.ctype):
+                            if bool_cont.ctype in ['or', 'and', "not"] or '--' in bool_cont.ctype or re.match(
+                                    "^[0-9]*$", bool_cont.ctype):
                                 later.append(bool_cont)
                     else:
                         result += '; %s' % str(cont)
                 for cont in later:
                     result += '\n%s; %s %s' % (cont.target_reaction, cont.ctype, str(cont.state))
-            result = result.strip() + '\n'       
+            result = result.strip() + '\n'
         return result
 
     def create_complexes(self):
         """
         Uses ComplexBuilder to create ComplexPool.
         """
-        #bools = self.contingency_pool.get_top_booleans()
+        # bools = self.contingency_pool.get_top_booleans()
         bools = self.contingency_pool.get_top_complex_booleans()
         for bool_cont in bools:
             builder = ComplexBuilder()
@@ -184,7 +186,7 @@ class Rxncon():
     def get_requirements_dict(self):
         """
         """
-        req_dict = {}
+        req_dict = { }
         for rname in self.reaction_pool.keys():
             req_dict[rname] = []
             for reaction in self.reaction_pool[rname]:
@@ -210,7 +212,7 @@ class Rxncon():
         for cont in cont_root.children:
             if cont.state.type == 'Boolean':  # if it is a boolean we should have build it and it should appear in self.complex_pool
                 if self.complex_pool.has_key(str(cont.state)):
-                    #return self.complex_pool[str(cont.state)]  # it directly returns the boolean contingency What happens if we have more than one?
+                    # return self.complex_pool[str(cont.state)]  # it directly returns the boolean contingency What happens if we have more than one?
                     complex_to_apply.append((cont.ctype, self.complex_pool[str(cont.state)]))
         return complex_to_apply
 
@@ -259,7 +261,7 @@ class Rxncon():
                         complex_tuple[1].append(to_add)
 
             else:
-                #cont_list[0].append(cont)
+                # cont_list[0].append(cont)
                 if run:
                     comp_applicator = ComplexApplicator(container, complexes)
                     for reaction in container:
@@ -270,7 +272,7 @@ class Rxncon():
         if not contingencies and not complexes:
             comp_applicator = ComplexApplicator(container, complexes)
             for reaction in container:
-                    comp_applicator.set_basic_substrate_complex(reaction)
+                comp_applicator.set_basic_substrate_complex(reaction)
 
         if complexes:
             return complexes
@@ -295,7 +297,7 @@ class Rxncon():
                         if state.has_bd_domain():
                             default_domain_present = True
                     if not default_domain_present:
-                        if len(available) > 1: 
+                        if len(available) > 1:
                             self.war.produced_in_more[cont] = available
                             cont.state = available[0]
                         elif len(available) == 1:
@@ -312,7 +314,7 @@ class Rxncon():
                         cont.state.not_modifier = available[0].not_modifier
                     else:
                         cont.state.not_modifier = available[0].modifier
-            
+
     def update_reactions(self):
         """
         TODO: To be implemented.
@@ -341,7 +343,8 @@ class Rxncon():
         # Add appropriate reaction_factory
         pass
 
-    def run_process(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True):
+    def run_process(self, add_translation=False, add_missing_reactions=False, add_complexes=True,
+                    add_contingencies=True):
         """
         Transforms table into objects.
         Groups the information that belong together.
@@ -352,7 +355,7 @@ class Rxncon():
         add_complexes: when True applys boolean contingencies.
         add_contingencies: when True applys non-boolean contingencies.
         """
-        #print 'Contingencies', self.contingency_pool['Ste11_[KD]_P+_Ste7_[AL(T363)]'].children[1].children
+        # print 'Contingencies', self.contingency_pool['Ste11_[KD]_P+_Ste7_[AL(T363)]'].children[1].children
         self.war.calculate_missing_states(self.reaction_pool, self.contingency_pool)
         if add_missing_reactions:
             self.add_missing_reactions(list(self.war.not_in_products))
@@ -364,22 +367,22 @@ class Rxncon():
             # (changes after running the process because of OR and K+/K-)
             complexes = []
             if add_complexes:
-                complexes = self.get_complexes(react_container.name) #1
+                complexes = self.get_complexes(react_container.name)  # 1
             if add_contingencies:
                 complexes = self.apply_contingencies(react_container, complexes)
 
             if complexes:
                 builder = ComplexBuilder()
                 builder.structure_complex(complexes, react_container)
-                ComplexApplicator(react_container, copy.deepcopy(complexes)).apply_complexes() #2
-            #self.apply_rules(react_container, rules)
+                ComplexApplicator(react_container, copy.deepcopy(complexes)).apply_complexes()  # 2
+            # self.apply_rules(react_container, rules)
             # after applying complexes we may have more reactions in a single container.
-            #if add_contingencies:
+            # if add_contingencies:
             #    self.apply_contingencies(react_container) #3
 
             # single contingency is applied for all reactions. If K+/K- reactions are dubbled.
-            self.update_reactions() #4
-            for reaction in react_container: # 5
+            self.update_reactions()  # 4
+            for reaction in react_container:  # 5
                 reaction.run_reaction()
             if react_container.rtype in ["trsl", "3.1.3"]:
                 trsl_reaction.append(react_container)

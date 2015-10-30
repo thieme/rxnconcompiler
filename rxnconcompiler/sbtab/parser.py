@@ -440,7 +440,7 @@ class SBtabParser(Commandline):
                         })
                 reaction_list.pop(0)
 
-        return Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
+        return Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition)) #build rxncon object
 
 
 
