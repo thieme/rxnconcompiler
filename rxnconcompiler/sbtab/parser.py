@@ -15,7 +15,7 @@ from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # d
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE # default def for new format
 #from rxnconcompiler.rxncon import Rxncon
 #import rxnconcompiler.rxncon as rxncon_mod
-import rxnconcompiler.rxncon
+#import rxnconcompiler.rxncon
 import sbtab_utils
 #from SBtabTools import createDataset
 
@@ -252,10 +252,12 @@ class Parser(Commandline):
         # if self.outputformat=='xls' and self.target_format=='xls':
         #     self.gene_list=self.build_gene_list(self.ob_list)
 
-        if output=='xls_tables':
-            self.rxncon = self.build_rxncon(self.ob_list, reaction_definition) #rxncon object
-        else:
-            self.rxncon = rxnconcompiler.rxncon.Rxncon(self.build_rxncon(self.ob_list, reaction_definition)) #rxncon object
+        #if output=='xls_tables':
+        self.rxncon = self.build_rxncon(self.ob_list, reaction_definition) #rxncon object
+        #else:
+        # rxncon object generation for writing must happen in seperate file (writer.py or so) because of cyclic imports
+        # parser MUST NOT import rxncon, because its importet into parsing controller and parsing controller is imported intp rxncon
+            #self.rxncon = rxnconcompiler.rxncon.Rxncon(self.build_rxncon(self.ob_list, reaction_definition)) #rxncon object
 
 
     def build_rxncon(self, ob_list, reaction_definition):

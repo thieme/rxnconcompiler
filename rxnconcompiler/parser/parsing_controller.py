@@ -7,6 +7,7 @@ from rxnconcompiler.util.rxncon_errors import RxnconParserError
 import rxnconcompiler.sbtab.sbtab_utils as sbtab_utils
 import rxnconcompiler.sbtab
 import rxnconcompiler.sbtab.parser as sbtab_parser
+import rxnconcompiler.parser.rxncon_parser as rxncon_parser
 
 
 def get_files(inputdir):
@@ -81,9 +82,9 @@ class DirCheck():
 
 
         if self.rxncon_detected>0:
-            if self.sbtab_detected==True:
+            if self.sbtab_detected:
                 print 'Error, both SBtab and rxncon files detected in input directory! Please clean up the directory!'
-            elif self.other_detected==True:
+            elif self.other_detected:
                 print 'Error, files of unknown format (neither SBtab nor rxncon) detected!' # basti: fkt da doppelt spaeter
             else:
                 if self.rxncon_detected>1:
@@ -93,8 +94,8 @@ class DirCheck():
                     print 'Rxncon file detected. Starting parser.'
                     self.look_for_rxncon_files(self.inputdir)
 
-        elif self.sbtab_detected==True:
-            if self.other_detected==True:
+        elif self.sbtab_detected:
+            if self.other_detected:
                 print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
             elif self.rxncon_sbtab_detected > 1:
                 raise RxnconParserError('Please specify path to single rxncon file')
@@ -293,7 +294,8 @@ class DirCheck():
         # basti
         #found_tables = [table for filename in files for table in build_rxncon_dict(self.inputdir, filename)]
         for filename in self.files:
-            d= sbtab_utils.build_rxncon_dict(self.inputdir, filename)
+            #d= sbtab_utils.build_rxncon_dict(self.inputdir, filename)
+            d = rxncon_parser.parse_rxncon(self.inputdir)
             #found_tables = [table for table in d]
             for table in d.keys():
                 found_tables.append(table)
@@ -310,15 +312,24 @@ class DirCheck():
             print found_tables
 
     def controller(self):
-        self.check_directory_type()
-        if self.rxncon_detected and self.rxncon_sbtab_detected == 0:
-            pass
-        elif self.rxncon_sbtab_detected > 0:
-            # self == d
-            nfp = sbtab_parser.Parser(self.inputdir, self)  # nfp = new format parser
-            if nfp.parsable_to=='sbtab':
-                nfp.parse_rxncon2SBtab()
+        if isinstance(self.inputdir, dict):
+            return self.inputdir # dict input
+        elif not os.path.isfile(self.inputdir) and not os.path.isdir(self.inputdir):
+            return rxncon_parser.parse_text(self.inputdir) #text input
+        else:
+            self.check_directory_type()
+            if self.rxncon_detected and self.rxncon_sbtab_detected == 0 and not self.sbtab_detected and not self.other_detected: # old rxncon format
+                return rxncon_parser.parse_rxncon(self.inputdir)
+            if self.sbtab_detected and not self.other_detected :  # some sbtab input
+                p= sbtab_parser.Parser(self.inputdir, self)
+                if self.rxncon_sbtab_detected>0: # new rxncon input
+                    if p.parsable_to=='sbtab':
+                        p.parse_rxncon2SBtab()
+                    elif p.parsable_to=='rxncon':
+                        p.parse_SBtab2rxncon('xls_tables') # we want xls_tables as return
+                        return p.rxncon
+                elif not self.rxncon_detected and not self.other_detected:
+                    p.parse_SBtab2rxncon('xls_tables') # standart sbtab format
+                    return p.rxncon
 
-            elif nfp.parsable_to=='rxncon':
-                nfp.parse_SBtab2rxncon('xls_tables')
-                return nfp.rxncon
+

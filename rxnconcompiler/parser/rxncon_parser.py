@@ -35,7 +35,7 @@ def parse_rxncon(rxncon_input):
             raise Exception("Input dictionary is not correctly defined.")
 
     # xls
-    elif rxncon_input[-4:] in ['.ods', '.xls', '.xlsx']:
+    elif rxncon_input[-4:] in ['.ods', '.xls', 'xlsx']:
         return parse_xls(rxncon_input)
 
     # quick from file or json from file
