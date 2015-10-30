@@ -7,6 +7,7 @@ import SBtab
 import os
 import tablibIO
 import tablib
+
 import xlsxwriter
 import re
 from rxnconcompiler.parser.rxncon_parser import parse_rxncon
@@ -75,9 +76,11 @@ class Mapper(object):
 class Commandline(object):
     def __init__(self):
         self.inputdir= ''
+
         self.inputfile=''
         self.outputformat='xls'
         self.files=[]
+
 
 
     def hello(self):
@@ -133,14 +136,13 @@ class Commandline(object):
                 print 'Error, either entered index is not in range or entered filename is not in this directory.'
 
 
-
-
     def outputformat_formating(self, possibilities, default):
         self.outputformat= raw_input('Please enter the output format. Possible are .{0} (default= .{1}):\n'.format(" & .".join(possibilities), default))
         if self.outputformat=='':
             self.outputformat='{0}'.format(default)
         else:
             self.outputformat = self.outputformat.split('.')[-1]
+
 
     def read_outputformat(self, parsable_to):
         if parsable_to=='rxncon':
@@ -450,7 +452,6 @@ class Parser(Commandline):
         '''
         Creates Reaction definition dictionary, from given table
         '''
-
         for ob in ob_list:
             if ob['type'] == 'ReactionList':
                 if self.d.rxncon_sbtab_detected ==0:
@@ -559,7 +560,6 @@ class Parser(Commandline):
         '''
         Main function for parsing rxncon--> SBtab Format
         '''
-
         def build_value_rows(tableType, columns, length):
             ''' Builds XXXX of XXX of values and maps it to the SBtab columns
             '''
@@ -584,7 +584,6 @@ class Parser(Commandline):
         #     self.outputformat = self.outputformat[-3:]
         # if self.outputformat!='csv' and self.outputformat!='xls' and self.outputformat!='txv' and self.outputformat!='ods':
         #     print 'Error, the format ',self.outputformat,' is not supported.'
-
         for file in files:
             filedir=self.inputdir+'/'+file
             #################################################
@@ -604,7 +603,6 @@ class Parser(Commandline):
 
                     columns= ['!ReactionID','!ComponentA:Name','!ComponentA:Domain','!ComponentA:Subdomain','!ComponentA:Residue','!Reaction','!ComponentB:Name','!ComponentB:Domain','!ComponentB:Subdomain','!ComponentB:Residue','!Quality','!PubMedIdentifiers','!Comment']
                     value_rows=build_value_rows(key, columns, len(self.d[key])) #each list item is a list with the values of a row for easier delimiter organisation
-
                 elif 'contingency_list' in key:
                     tableType='ContingencyID'
                     tableName='Contingency list'
@@ -945,31 +943,3 @@ if __name__=="__main__":
     #w.write()
 
 
-    #'to be' usage:
-    #inputdir= hello()
-    #check_directory_type(inputdir)
-
-
-    #check_directory_type('sbtab_files/example_files(sbtab)_csv')
-    #print '------------------------'
-    #check_directory_type('sbtab_files/example_files(sbtab)_ods')
-    #print '------------------------'
-    #check_directory_type('sbtab_files/example_files(sbtab)_xls')
-    #print '------------------------'
-    #check_directory_type('sbtab_files/tiger_files_csv_cut')
-    #print '------------------------'
-    #check_directory_type('sbtab_files/tiger_files_xls')
-    # print '------------------------'
-    # check_directory_type('rxncon_files/rxncon_xls')
-    # print '------------------------'
-    # check_directory_type('rxncon_files/rxncon_txt')
-
-    #read rxncon input:
-    #parse_rxncon2SBtab('rxncon_files/rxncon_xls/rxncon_simple_example-1.xls')
-    #check_directory_type('rxncon_files/rxncon_xls/sps')
-    #print '------------------------'#check_directory_type('rxncon_files/rxncon_xls/simple_xls')
-    #print '------------------------'
-    #check_directory_type('rxncon_files/rxncon_txt/test_txt')
-    #print '------------------------'
-    #check_directory_type('rxncon_files/rxncon_txt/tiger_own_output_txt')
-    #print '------------------------'

@@ -5,6 +5,7 @@ New:
          sth other: neede
          sth other other: optional
          - dazu notizen im Block (Sbtab kapitel) und oder Foto vom Whiteboard angucken (17.09)
+
       - far future: Script that automatically cecks and updates rxncon files and adds product state and so on with regexp
    Basti:
       - make clean todo list in gitlab using issues
@@ -16,6 +17,7 @@ New:
          - vielleicht mit dicts, vllt mit dicts von dicts, vllt andere objekte?
          - for schelife, die indexes_dict generation besser macht? (noch nötig, wenn der vorherige punk tumgesetzte ist?)
        - generell: nach dem wort 'Basti' im code suchen, da sind oft Vorschläge von ihm genannt
+
 
 
 
