@@ -64,7 +64,7 @@ import re
 
 ASSOCIATION_PRE = 'Assoc'
 
-class Domain():
+class Domain:
     """domain onject"""
 
     def __init__(self,dsr):
@@ -111,7 +111,7 @@ class DomainFactory:
     def get_localisation_domain(self):
         """
         """
-        return 'loc'
+        return Domain('loc')
 
     def get_dsr(self, row, ab='A', with_delimiters=False):
         """
@@ -176,7 +176,7 @@ class DomainFactory:
         elif side == 'B':
             if '_' in comp[1]:
                 # domain provided by the user.
-                if domain != None:
+                if domain is not None:
                     return domain
                 else:
                     domain = Domain(comp[1].split('_')[1])
@@ -250,7 +250,7 @@ class DomainFactory:
         else:
             return Domain(comp_name_dom[1])
 
-    def get_modification_domain_from_dict(self, row, reaction, component='B'):
+    def get_modification_domain_from_dict(self, row, component='B'):
         """
         """
         if component == 'B':

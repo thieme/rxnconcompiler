@@ -23,7 +23,6 @@ import xlrd
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE
-from rxnconcompiler.parser.check_parsing import CheckContingencies
 
 
 def parse_rxncon(rxncon_input):
@@ -112,7 +111,8 @@ def parse_text(rxncon_text):
          # consider only definitions we are really using
         if r_def:
             r_def.update(reactionTypeID2def[r_def["ReactionType:ID"]]) # get the respective template information
-            used_reaction_definition.append(r_def)
+            if r_def not in used_reaction_definition:
+                used_reaction_definition.append(r_def)
             start = reaction_full.lower().find('_%s_' % r_def['UID:Reaction'].lower())
             reaction_components = reaction_full.split(reaction_full[start:start + len(r_def['UID:Reaction']) + 2])
             comp_name2index = dict(ComponentA=0, ComponentB=1)
@@ -237,11 +237,7 @@ def parse_text(rxncon_text):
         except:
             raise RxnconParserError('Error in line:<br/>\n%s<br/>\n%s' % (line, sys.exc_info()[1]))
     parsed_information = dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=used_reaction_definition)
-    #checker = CheckContingencies(parsed_information)
-    #checker.testContingencySign()
-    #checker.testContingencyModifier()
     return parsed_information
-
 
 def parse_xls(file_path):
     try:
@@ -342,7 +338,7 @@ class readexcel(object):
         as tuples of (Year, Month, Day, Hour, Min, Second) instead of as a
         string """
         if sheetname not in self.__sheets__.keys():
-            raise NameError, "%s is not present in %s" % (sheetname,\
+            raise NameError, "%s is not present in %s" % (sheetname,
                                                           self.__filename__)
         if returnlist:
             return __iterlist__(self, sheetname, returntupledate)
@@ -406,12 +402,12 @@ def __iterlist__(excel, sheetname, tupledate):
 def __iterdict__(excel, sheetname, tupledate):
     """ Function Used To create the Dictionary Iterator """
     sheet = excel.__book__.sheet_by_name(sheetname)
-    for row in range(excel.__sheets__[sheetname]['firstrow'],\
+    for row in range(excel.__sheets__[sheetname]['firstrow'],
                      excel.__sheets__[sheetname]['rows']):
         types,values = sheet.row_types(row),sheet.row_values(row)
         formattedrow = excel.__formatrow__(types, values, tupledate)
         # Pad a Short Row With Blanks if Needed
-        for i in range(len(formattedrow),\
+        for i in range(len(formattedrow),
                        len(excel.__sheets__[sheetname]['variables'])):
             formattedrow.append('')
         yield dict(zip(excel.__sheets__[sheetname]['variables'],formattedrow))

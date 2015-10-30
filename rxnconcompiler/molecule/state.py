@@ -220,8 +220,8 @@ class StateFactory:
     StateFactory object producess State object based on a string.
     """
     def __init__(self):
-        self.loc = ['Cytoplasm', 'Nucleus', \
-        'Vacuole', 'Mitochondria', 'Endosome', 'Extracellular']
+        self.loc = ['Cytoplasm', 'Nucleus',
+                    'Vacuole', 'Mitochondria', 'Endosome', 'Extracellular']
         self.df = DomainFactory()
 
     def get_dash_dash_state_from_string(self, state, state_str, domain, state_id=None, loc_not_modifier=None):
@@ -341,7 +341,7 @@ class StateFactory:
                 state.modifier = reaction.definition['Modifier or Boundary']
             state.not_modifier = 'U' # for Unmodified
             comp_name = row['ComponentB[Name]'].split('_')[0]
-            comp_dom = self.df.get_modification_domain_from_dict(row, reaction)
+            comp_dom = self.df.get_modification_domain_from_dict(row)
             comp = Component(comp_name, comp_dom)
             state.components.append(comp)
             #self.set_state_str_modification(state, comp_name, comp_dom)
@@ -357,7 +357,7 @@ class StateFactory:
                 state.modifier = reaction.definition['Modifier or Boundary'] # e.g. P, Ub, truncated
             state.not_modifier = 'U' # for Unmodified
             comp_name = row['ComponentA[Name]'].split('_')[0]
-            comp_dom = self.df.get_modification_domain_from_dict(row, reaction, 'A')
+            comp_dom = self.df.get_modification_domain_from_dict(row, 'A')
             comp = Component(comp_name, comp_dom)
             state.components.append(comp)
             state.state_str = '%s_[%s]-{%s}' % (comp_name, comp_dom.name, state.modifier)
@@ -365,8 +365,8 @@ class StateFactory:
         elif category == 'Intraprotein': 
             l_dsr = self.df.get_intraprotein_domain_from_dict(row, 'A')
             r_dsr = self.df.get_intraprotein_domain_from_dict(row, 'B')
-            state_str = '%s_[%s]--[%s]' %(row['ComponentA[Name]'], \
-                l_dsr.name, r_dsr.name)
+            state_str = '%s_[%s]--[%s]' %(row['ComponentA[Name]'],
+                                          l_dsr.name, r_dsr.name)
             state = self.get_state_from_string(state_str, domain=[l_dsr,r_dsr])
 
         elif category == 'Association': 
@@ -381,8 +381,8 @@ class StateFactory:
             #     r_dsr = "{0}/{1}{2}".format(r_dsr[0],r_dsr[1],r_dsr[2])
             # else:
             #     r_dsr = r_dsr[0]
-            state_str = '%s_[%s]--%s_[%s]' %(row['ComponentA[Name]'], \
-                l_dsr.name, row['ComponentB[Name]'], r_dsr.name)
+            state_str = '%s_[%s]--%s_[%s]' %(row['ComponentA[Name]'],
+                                             l_dsr.name, row['ComponentB[Name]'], r_dsr.name)
             state = self.get_state_from_string(state_str,domain=[l_dsr,r_dsr])
         
         elif category == 'Relocalisation':

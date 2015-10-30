@@ -117,8 +117,8 @@ def get_bngl_reactions(inp, reaction_ids=None):
     rxncon = Rxncon(xls_tables)
     rxncon.run_process(True, True, True, True)
     # Bngl
-    bngl = Bngl(rxncon.reaction_pool, \
-            rxncon.molecule_pool, rxncon.contingency_pool, rxncon.war)
+    bngl = Bngl(rxncon.reaction_pool,
+                rxncon.molecule_pool, rxncon.contingency_pool, rxncon.war)
     # BnglOutput
     output = BnglOutput(bngl.rule_pool, bngl.molecule_pool, bngl.warnings)
     output.create_sections_txt()
@@ -133,18 +133,18 @@ def main():
     #KR: cool, in particular that you dont need BioNetGen.
     #    do you have tests for main()?
     parser = argparse.ArgumentParser()
-    parser.add_argument("rxncon_input", \
-        help="Rxncon language input as xls file, json, txt, or string.")
-    parser.add_argument("-o", "--output", \
-        help="path to the output file")
-    parser.add_argument("-s", "--max_stoich", default='4',\
-        help="Value of max stoich variable in bngl.")
-    parser.add_argument('--json', dest='mode', action='store_const', \
-        const='json', default='bngl', \
-        help='Indicate the output type as json (default: bngl).')
-    parser.add_argument('--rxncon', dest='mode', action='store_const', \
-        const='rxncon', default='bngl', \
-        help='Indicate the output type as rxncon (default: bngl).')
+    parser.add_argument("rxncon_input",
+                        help="Rxncon language input as xls file, json, txt, or string.")
+    parser.add_argument("-o", "--output",
+                        help="path to the output file")
+    parser.add_argument("-s", "--max_stoich", default='4',
+                        help="Value of max stoich variable in bngl.")
+    parser.add_argument('--json', dest='mode', action='store_const',
+                        const='json', default='bngl',
+                        help='Indicate the output type as json (default: bngl).')
+    parser.add_argument('--rxncon', dest='mode', action='store_const',
+                        const='rxncon', default='bngl',
+                        help='Indicate the output type as rxncon (default: bngl).')
     args = parser.parse_args()
 
     if args.rxncon_input:

@@ -43,17 +43,12 @@ How contingencies with Input states inside boolean are treated?
 (- later in the flow when applying complexes on reaction it will change reaction rate.) 
 """
 
-
-from biological_complex import BiologicalComplex, \
-        AlternativeComplexes
-from rxnconcompiler.molecule.molecule import Molecule
-from rxnconcompiler.contingency.contingency import Contingency
-from rxnconcompiler.util.util import product
-from rxnconcompiler.molecule.state import get_state
-from rxnconcompiler.util.rxncon_errors import RxnconBooleanError
 import itertools
 import copy
 import re
+
+from rxnconcompiler.molecule.state import get_state
+from rxnconcompiler.util.rxncon_errors import RxnconBooleanError
 
 (_ADD, _DELETE, _INSERT) = range(3)
 (_ROOT, _DEPTH, _WIDTH) = range(3)
@@ -145,7 +140,7 @@ class Tree(object):
         add a node in a tree
         """
         #if not self.contains(identifier):
-        if cid == None:
+        if cid is None:
             cid = self.get_highest_cid()
             cid += 1
         node = Node(name=name, cid= cid, old_cid=old_cid)
@@ -164,9 +159,6 @@ class Tree(object):
         """
         for children_cid in children:
             child_node = self.get_node(cid=children_cid)
-            new_child = copy.copy(child_node)
-            children_of_new_child = self.get_children(new_child.cid)
-
             # we have to instances to manipulate
             # 1) the list of nodes in the tree
             # 2) the treeTracker information
@@ -220,7 +212,7 @@ class Tree(object):
         if parent is None:
             return
         else:
-            if parent_cid == None:
+            if parent_cid is None:
                 self[parent].update_children(cid, mode)
                 return self[parent]
             else:
@@ -228,7 +220,7 @@ class Tree(object):
                 parent.update_children(cid, mode)
                 return parent
 
-    def get_index(self, idx):
+    def get_index(self, name):
         """
         get the index of identifier
         """
@@ -284,11 +276,11 @@ class Tree(object):
 
     def get_node(self, cid=None, name=None, parent_cid=None):
         for node in self.nodes:
-            if cid != None and node.cid == cid:
+            if cid is not None and node.cid == cid:
                 return node
-            elif (name != None and parent_cid != None) and (node.name == name and node.parent[1] == parent_cid):
+            elif (name != None and parent_cid is not None) and (node.name == name and node.parent[1] == parent_cid):
                 return node
-            elif name != None and parent_cid == None and node.name == name: # we have a root node
+            elif name is not None and parent_cid is None and node.name == name: # we have a root node
                 return node
 
     def __getitem__(self, idx):
@@ -446,7 +438,7 @@ class ComplexBuilder:
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
                 root.update_children(child.cid, _ADD)
-                if root_node.old_cid == None:
+                if root_node.old_cid is None:
                     old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
                     if old_root is not None:
                         root_node.old_cid = old_root.cid
@@ -595,7 +587,7 @@ class ComplexBuilder:
                 if child.ctype == 'and' or '--' in child.ctype or re.match("^[1-9]*$", child.ctype):
                     to_add.extend(node.children)
                 elif child.ctype == 'or':
-                    if node.ctype!= None and (node.ctype == "and" or '--' in node.ctype or re.match("^[1-9]*$", node.ctype)):
+                    if node.ctype is not None and (node.ctype == "and" or '--' in node.ctype or re.match("^[1-9]*$", node.ctype)):
                         to_clone.append(node.children) # [[AND A--C, AND A--E], [AND A--F, AND A--D]]
                     else:
                         to_clone.extend(node.children) # [AND A--C, AND A--E , AND A--F, AND A--D]
