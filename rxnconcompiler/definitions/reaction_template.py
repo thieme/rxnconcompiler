@@ -183,6 +183,43 @@ REACTION_TEMPLATE = [{
  'Directionality': u'unidirectional',
 
 },
+    {
+####
+'ReactionType:ID': "4.1",
+'Category': u'Relocalisation',
+
+ 'ProductState[Component]': '',
+'SourceState[Component]': '',
+
+ 'Reversibility': u'irreversible',
+ 'Directionality': u'unidirectional',
+
+},
+
+{
+####
+'ReactionType:ID': "4.2",
+'Category': u'Relocalisation',
+
+ 'ProductState[Component]': '',
+'SourceState[Component]': '',
+
+ 'Reversibility': u'irreversible',
+ 'Directionality': u'unidirectional',
+
+},
+{
+####
+'ReactionType:ID': "4.3",
+'Category': u'Relocalisation',
+
+ 'ProductState[Component]': '',
+'SourceState[Component]': '',
+
+ 'Reversibility': u'irreversible',
+ 'Directionality': u'unidirectional',
+
+},
 
 {
 ####

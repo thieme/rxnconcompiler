@@ -111,7 +111,7 @@ class DomainFactory:
     def get_localisation_domain(self):
         """
         """
-        return 'loc'
+        return Domain('loc')
 
     def get_dsr(self, row, ab='A', with_delimiters=False):
         """
@@ -250,7 +250,7 @@ class DomainFactory:
         else:
             return Domain(comp_name_dom[1])
 
-    def get_modification_domain_from_dict(self, row, reaction, component='B'):
+    def get_modification_domain_from_dict(self, row, component='B'):
         """
         """
         if component == 'B':

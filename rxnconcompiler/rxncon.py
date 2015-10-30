@@ -83,6 +83,7 @@ from contingency.contingency_factory import ContingencyFactory
 from reaction.reaction_factory import ReactionFactory
 from parser.rxncon_parser import parse_rxncon
 import rxnconcompiler.parser.parsing_controller as parsing_controller
+from rxnconcompiler.parser.check_parsing import ContingenciesManipulation, InputCheck
 import copy
 import re
 
@@ -102,7 +103,7 @@ class Rxncon():
     @type xls_tables:  dictionary
     @param xls_tables: rxncon input data
     """
-    def __init__(self, xls_tables, parsed_xls=False):
+    def __init__(self, xls_tables,  checkInput=False, lumpedModifier=False):
         """
         Constructor creates basic objects with explicitly given information:
         - MoleculePool created by Reaction Factory  
@@ -127,8 +128,12 @@ class Rxncon():
 
         d = parsing_controller.DirCheck(xls_tables)
         self.xls_tables = d.controller()
-
-
+        if checkInput:
+           checker = InputCheck(self.xls_tables)
+           checker.testContingencySign()
+        if lumpedModifier:
+           manipulator = ContingenciesManipulation(self.xls_tables)
+           manipulator.LumpedContingencyModifier()
         reaction_factory = ReactionFactory(self.xls_tables)
         self.molecule_pool = reaction_factory.molecule_pool
         self.reaction_pool = reaction_factory.reaction_pool
@@ -137,7 +142,6 @@ class Rxncon():
         self.complex_pool = ComplexPool()
         self.create_complexes()
         self.update_contingencies()
-
 
     def __repr__(self):
         """
