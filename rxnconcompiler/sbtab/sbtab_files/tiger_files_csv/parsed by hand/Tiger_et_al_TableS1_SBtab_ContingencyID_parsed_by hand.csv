@@ -1,3 +1,0 @@
-!!SBtab TableType='ContingencyID' TableName='Contingency list'						
-!ContingencyID	!Target	!Contingency	!Modifier	!PubMedIdentifiers	!Quality	!Comment
-ID1	Slt2_[KD]_P+_Fus3_[(S539)]	!	Fus3_[CD]—Cdc1_[n]	10805732	in vitro kinase assay	Hog1 activation by constitutive active Pbs2 needed.
