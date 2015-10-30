@@ -28,23 +28,23 @@ REACTION_TEMPLATE = [{
     #'SourceState[Modification]': u'-{P}',
      },
 
+    {
+        #### AP
+        'ReactionType:ID': u'1.1.1.2',
+        'Category': u'Covalent Modification',
 
-{
-#### AP
-    'ReactionType:ID': u'1.1.1.2',
-    'Category': u'Covalent Modification',
+        'ProductState[Component]':  u'ComponentB',
+        'SourceState[Component]': u'N/A',
 
-    'ProductState[Component]': u'ComponentB',
-    'SourceState[Component]': u'N/A',
+        'Reversibility': u'irreversible',
+        'Directionality': u'unidirectional'
 
-    'Reversibility': u'irreversible',
-    'Directionality': u'unidirectional'
-
-# 'ProductState[Modification]': u'-{P}',
+        # 'ProductState[Modification]': u'-{P}',
 
 
- #'SourceState[Modification]': u'N/A'
- },
+        # 'SourceState[Modification]': u'N/A'
+    },
+
 
 {
 #### AP
@@ -69,6 +69,7 @@ REACTION_TEMPLATE = [{
 
  'ProductState[Component]': u'ComponentB',
 'SourceState[Component]': u'ComponentA',
+
 
  'Reversibility': u'reversible',
  'Directionality': u'unidirectional'
@@ -183,6 +184,7 @@ REACTION_TEMPLATE = [{
  'Directionality': u'unidirectional',
 
 },
+
 
 {
 ####
