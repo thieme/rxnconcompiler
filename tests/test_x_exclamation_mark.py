@@ -254,10 +254,10 @@ class x_exclamation_mark_Tests(TestCase):
         #                 A_ppi_J; ! A_[(r)]-{P}''',lumpedModifier=True)
 
 ####### TEST
-        rxncon = Rxncon("""Z_p+_A
-                        W_p+_A
-                        A_ppi_C; ! A-{P}
-                        """, lumpedModifier=True)
+        # rxncon = Rxncon("""Z_p+_A
+        #                 W_p+_A
+        #                 A_ppi_C; ! A-{P}
+        #                 """, lumpedModifier=True)
 
 #delete contingency
         # rxncon = Rxncon("""A_ppi_B; ! A-{P}

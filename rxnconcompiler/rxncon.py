@@ -82,11 +82,8 @@ from contingency.contingency_applicator import ContingencyApplicator
 from contingency.contingency_factory import ContingencyFactory
 from reaction.reaction_factory import ReactionFactory
 from parser.rxncon_parser import parse_rxncon
-<<<<<<< HEAD
 import rxnconcompiler.parser.parsing_controller as parsing_controller
-=======
 from rxnconcompiler.parser.check_parsing import ContingenciesManipulation, InputCheck
->>>>>>> new_definition
 import copy
 import re
 

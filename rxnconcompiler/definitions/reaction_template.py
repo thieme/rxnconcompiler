@@ -45,6 +45,23 @@ REACTION_TEMPLATE = [{
         # 'SourceState[Modification]': u'N/A'
     },
 
+     {
+        #### AP
+        'ReactionType:ID': u'1.1.2.2',
+        'Category': u'Covalent Modification',
+
+        'ProductState[Component]': u'N/A',
+        'SourceState[Component]': u'ComponentB',
+
+        'Reversibility': u'irreversible',
+        'Directionality': u'unidirectional'
+
+        # 'ProductState[Modification]': u'-{P}',
+
+
+        # 'SourceState[Modification]': u'N/A'
+    },
+
     {
         #### PT
         'ReactionType:ID': u'1.1.3.1',
@@ -59,27 +76,6 @@ REACTION_TEMPLATE = [{
         # 'SourceState[Modification]': u'-{P}'
     },
 
-
-{
-#### AP
-    'ReactionType:ID': u'1.1.2.2',
-    'Category': u'Covalent Modification',
-
-    'ProductState[Component]': u'N/A',
-    'SourceState[Component]': u'ComponentB',
-
-    'Reversibility': u'irreversible',
-    'Directionality': u'unidirectional'
-
-# 'ProductState[Modification]': u'-{P}',
-
-
- #'SourceState[Modification]': u'N/A'
- },
-{
-#### PT
-'ReactionType:ID': u'1.1.3.1',
-'Category': u'Covalent Modification',
 
     {
         #### CUT
@@ -210,45 +206,6 @@ REACTION_TEMPLATE = [{
         'Reversibility': u'irreversible',
         'Directionality': u'unidirectional',
 
-
-{
-####
-'ReactionType:ID': "4.1",
-'Category': u'Relocalisation',
-
- 'ProductState[Component]': '',
-'SourceState[Component]': '',
-
- 'Reversibility': u'irreversible',
- 'Directionality': u'unidirectional',
-
-},
-
-{
-####
-'ReactionType:ID': "4.2",
-'Category': u'Relocalisation',
-
- 'ProductState[Component]': '',
-'SourceState[Component]': '',
-
- 'Reversibility': u'irreversible',
- 'Directionality': u'unidirectional',
-
-},
-{
-####
-'ReactionType:ID': "4.3",
-'Category': u'Relocalisation',
-
- 'ProductState[Component]': '',
-'SourceState[Component]': '',
-
- 'Reversibility': u'irreversible',
- 'Directionality': u'unidirectional',
-
-},
-]
 
     },
     {
