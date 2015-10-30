@@ -5,8 +5,12 @@ import sys
 import os
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
 import rxnconcompiler.sbtab.sbtab_utils as sbtab_utils
+import rxnconcompiler.sbtab.parser
+parser= rxnconcompiler.sbtab.parser
+del rxnconcompiler.sbtab.parser
+
 import rxnconcompiler.sbtab
-import rxnconcompiler.sbtab.parser as sbtab_parser
+import rxnconcompiler.sbtab.parser
 
 
 def get_files(inputdir):
@@ -315,7 +319,7 @@ class DirCheck():
             pass
         elif self.rxncon_sbtab_detected > 0:
             # self == d
-            nfp = sbtab_parser.Parser(self.inputdir, self)  # nfp = new format parser
+            nfp = parser.Parser(self.inputdir, self)  # nfp = new format parser
             if nfp.parsable_to=='sbtab':
                 nfp.parse_rxncon2SBtab()
 
