@@ -32,8 +32,8 @@ class Compiler:
         """
         rxncon = Rxncon(self.xls_tables)
         rxncon.run_process(add_translation, add_missing_reactions, add_complexes, add_contingencies)
-        bngl = Bngl(rxncon.reaction_pool,
-                    rxncon.molecule_pool, rxncon.contingency_pool, rxncon.war)
+        bngl = Bngl(rxncon.reaction_pool, \
+            rxncon.molecule_pool, rxncon.contingency_pool, rxncon.war)
         bngl_src = bngl.get_src()
         return bngl_src
 

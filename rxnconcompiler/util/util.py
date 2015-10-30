@@ -2,7 +2,7 @@
 
 """
 Collection of functions mostly for combiatorial operations.
-get_dsr                 - creates DSR string (D - domain, S - subdomain, R - residue)
+get_dsr                 - creates DSR string (D - doamin, S - subdomain, R - residue)
 create_all_combinations - creates all combinations of elements from a given list.
 product                 - multiplication of matrices.
 flatten                 - flatten a list of any depth.

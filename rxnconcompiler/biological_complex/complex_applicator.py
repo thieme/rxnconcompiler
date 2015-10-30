@@ -29,10 +29,13 @@ if AlternativeComplexes > 1 BiologicalComplex
 import copy
 import itertools
 import re
-
-from biological_complex import BiologicalComplex
+from biological_complex import BiologicalComplex, AlternativeComplexes
+from complex_builder import ComplexBuilder
+from rxnconcompiler.util.util import product
+from rxnconcompiler.contingency.contingency import Contingency
 from rxnconcompiler.contingency.contingency_applicator import ContingencyApplicator
-
+from rxnconcompiler.molecule.molecule import Molecule
+from rxnconcompiler.molecule.state import get_state
 
 class Association(list):
     def __init__(self, complex, relation, k = False):
@@ -644,6 +647,7 @@ class ComplexApplicator:
     def apply_rules(self, complex_rules):
         """
         The non-overlapping rules prepared in building_rules() will be applied here to the respective reaction_container
+        @param reaction_container: rxncon object containing the reaction information and the substrate complex
         @param complex_rules: non-overlapping rules
         @return:
         """
@@ -709,8 +713,8 @@ class ComplexApplicator:
             is_switch = False
             if self.k_plus:
                 is_switch = True
-            reaction.rate.update_function(input_list[0], is_switch,
-                                          '%s_1' % reaction.main_id, '%s_2' % reaction.main_id)
+            reaction.rate.update_function(input_list[0], is_switch, \
+                '%s_1' % reaction.main_id, '%s_2' % reaction.main_id)
 
     def check_root(self, root, complex):
         """
@@ -770,9 +774,9 @@ class ComplexApplicator:
             verify = []
             for ref_cont in rule:
                 check = self.conflict_check(ref_cont, complex_copy)
-                if not check and check is not None:
+                if not check and check != None:
                     verify.append(ref_cont)
-                elif check and check is not None:
+                elif check and check != None:
                     verify = []
                     break
 
@@ -859,7 +863,7 @@ class ComplexApplicator:
                 if root_found and new_root and str(complex_copy) not in known_complexes:
                     known_complexes.append(str(complex))
                     complex_copy, not_in_complex = self.adapt_complex(rules, complex_copy, root)
-                    if not_in_complex:
+                    if not_in_complex != []:
                         rules = self.verify_rules(rules, complex_copy, not_in_complex, complex_tree)
                     else:
                         rules.append(complex_copy)

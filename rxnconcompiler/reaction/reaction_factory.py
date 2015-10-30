@@ -110,7 +110,7 @@ class ReactionFactoryFromDict:
         if self.definitions.has_key(r_typeID):
             reaction.definition = self.definitions[r_typeID]
         else: 
-            raise TypeError('No reaction typeName %s.' % r_typeID)
+            raise TypeError('No reaction typeName %s.') % r_typeID
 
         self.add_reactants(reaction,row)
         return reaction
@@ -265,7 +265,7 @@ class ReactionFactoryFromList:
         if self.definitions.has_key(reaction.rtype):
             reaction.definition = self.definitions[reaction.rtype]
         else: 
-            raise TypeError('No reactio type %s.' % reaction.rtype)
+            raise TypeError('No reactio type %s.') % reaction.rtype
         self.add_reactants(reaction, state)
         return reaction
 
