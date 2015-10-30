@@ -338,7 +338,7 @@ class readexcel(object):
         as tuples of (Year, Month, Day, Hour, Min, Second) instead of as a
         string """
         if sheetname not in self.__sheets__.keys():
-            raise NameError, "%s is not present in %s" % (sheetname,\
+            raise NameError, "%s is not present in %s" % (sheetname,
                                                           self.__filename__)
         if returnlist:
             return __iterlist__(self, sheetname, returntupledate)
@@ -402,12 +402,12 @@ def __iterlist__(excel, sheetname, tupledate):
 def __iterdict__(excel, sheetname, tupledate):
     """ Function Used To create the Dictionary Iterator """
     sheet = excel.__book__.sheet_by_name(sheetname)
-    for row in range(excel.__sheets__[sheetname]['firstrow'],\
+    for row in range(excel.__sheets__[sheetname]['firstrow'],
                      excel.__sheets__[sheetname]['rows']):
         types,values = sheet.row_types(row),sheet.row_values(row)
         formattedrow = excel.__formatrow__(types, values, tupledate)
         # Pad a Short Row With Blanks if Needed
-        for i in range(len(formattedrow),\
+        for i in range(len(formattedrow),
                        len(excel.__sheets__[sheetname]['variables'])):
             formattedrow.append('')
         yield dict(zip(excel.__sheets__[sheetname]['variables'],formattedrow))

@@ -361,7 +361,6 @@ class Parser(Commandline):
                                 'ComponentA[Subdomain]': row[indexes_dict['cas']],
                                 'ComponentA[Residue]': row[indexes_dict['car']],
                                 'ComponentA[DSR]': '{0}/{1}({2})'.format(row[indexes_dict['cad']],row[indexes_dict['cas']],row[indexes_dict['car']]),
-
                                 'ComponentB[Name]': row[indexes_dict['cbn']],
                                 'ComponentB[Domain]': row[indexes_dict['cbd']],
                                 'ComponentB[Subdomain]': row[indexes_dict['cbs']],

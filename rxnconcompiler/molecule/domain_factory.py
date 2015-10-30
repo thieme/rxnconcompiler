@@ -64,7 +64,7 @@ import re
 
 ASSOCIATION_PRE = 'Assoc'
 
-class Domain():
+class Domain:
     """domain onject"""
 
     def __init__(self,dsr):
@@ -176,7 +176,7 @@ class DomainFactory:
         elif side == 'B':
             if '_' in comp[1]:
                 # domain provided by the user.
-                if domain != None:
+                if domain is not None:
                     return domain
                 else:
                     domain = Domain(comp[1].split('_')[1])
