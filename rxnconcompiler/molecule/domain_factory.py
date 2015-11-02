@@ -111,7 +111,7 @@ class DomainFactory:
     def get_localisation_domain(self):
         """
         """
-        return Domain('loc')
+        return Domain('loc') # loc domain object
 
     def get_dsr(self, row, ab='A', with_delimiters=False):
         """
