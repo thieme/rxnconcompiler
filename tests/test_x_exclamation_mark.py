@@ -50,7 +50,7 @@ class x_exclamation_mark_Tests(TestCase):
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Example_Reactions.xls"
         #input = "/home/wajnberg/rxncon/source/rxnconcompiler/sbtab/rxncon_sbtab_files/rxncon_template_2_0.xls"
-        input = "/home/wajnberg/rxncon/source/tests/test_data/xls_files/Example_Reactions.xls"
+        input = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Example_Reactions.xls"
         rxncon = rxncon_mod.Rxncon(input)
         #rxncon = Rxncon("""A_ppi_B""")
 #######################################   Presentation ########################################

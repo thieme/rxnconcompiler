@@ -25,10 +25,12 @@ See specification for further informations.
 import re
 import copy
 import sys
-#sys.path.insert(0, './SBtab')
+import os
+import misc
+path = os.path.dirname(misc.__file__) #  Since misc is imported properly I used this for getting the path to the sbtab folder
+sys.path.append(path) # here I get the file path to the sbtab module folder to the sys path
 import tablib
 import tablibIO
-import misc
 
 tables_without_name = []
 
