@@ -314,6 +314,8 @@ class DirCheck():
     def controller(self):
         if isinstance(self.inputdir, dict):
             return self.inputdir # dict input
+        elif os.path.exists(self.inputdir) and self.inputdir[-4:] == "json":
+            return rxncon_parser.parse_rxncon(self.inputdir)
         elif not os.path.isfile(self.inputdir) and not os.path.isdir(self.inputdir):
             return rxncon_parser.parse_text(self.inputdir) #text input
         else:

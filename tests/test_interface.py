@@ -182,7 +182,7 @@ class CliTests(TestCase):
         self.assertTrue(os.path.exists('test.json'))
         f = open('test.json') 
         cont = f.read()
-        self.assertIn('A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <->', cont) 
+        self.assertIn('A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <->', cont)
 
     def test_json2rxncon(self):
         """
