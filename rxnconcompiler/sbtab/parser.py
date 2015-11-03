@@ -218,7 +218,7 @@ class Parser(Commandline):
         for filename in self.d.files:
             ob= sbtab_utils.build_SBtab_object(self.inputdir, filename)
             self.ob_list.append({'object':ob[0], 'type':ob[0].table_type, 'filename':filename })
-            # über sheets iterieren
+            # ueber sheets iterieren
         #self.ob_list= [{'object':ob, 'type':ob.table_type, 'filename':filename } for ob in obs]
 
         #for filename in self.d.files:
