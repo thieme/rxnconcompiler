@@ -87,12 +87,9 @@ class DirCheck():
             elif self.other_detected:
                 print 'Error, files of unknown format (neither SBtab nor rxncon) detected!' # basti: fkt da doppelt spaeter
             else:
-                if self.rxncon_detected>1:
+                if self.rxncon_detected>1: # if >0 and not >1 --> ==1
                     raise RxnconParserError('Please specify path to single rxncon file')
                     #TODO: framework filepicker
-                else:
-                    print 'Rxncon file detected. Starting parser.'
-                    self.look_for_rxncon_files(self.inputdir)
 
         elif self.sbtab_detected:
             if self.other_detected:
@@ -280,36 +277,6 @@ class DirCheck():
             print found_table_types
             self.parsable_to=''
 
-    def look_for_rxncon_files(self, input):
-        '''
-        Checks weather all needed rxncon files/sheets are given inside input directory:
-        - (I) Reaction List
-        - (III) Contingency List
-        - (IV) Reaction definition
-        '''
-
-        self.files, inputdir= self.file_or_dir(input)
-
-        found_tables=[]
-        # basti
-        #found_tables = [table for filename in files for table in build_rxncon_dict(self.inputdir, filename)]
-        for filename in self.files:
-            #d= sbtab_utils.build_rxncon_dict(self.inputdir, filename)
-            d = rxncon_parser.parse_rxncon(self.inputdir)
-            #found_tables = [table for table in d]
-            for table in d.keys():
-                found_tables.append(table)
-
-        if 'reaction_definition' in found_tables and 'contingency_list' in found_tables and 'reaction_list' in found_tables:
-            self.parsable_to='sbtab'
-
-        else:
-            print 'Error: In order to translate the rxncon format to SBtab, you need the following tables:' \
-                  ' - reaction_definition' \
-                  ' - contingency_list' \
-                  ' - reaction_list' \
-                  'Only the following tables were found: '
-            print found_tables
 
     def controller(self):
         if isinstance(self.inputdir, dict):
@@ -325,9 +292,7 @@ class DirCheck():
             if self.sbtab_detected and not self.other_detected :  # some sbtab input
                 p= sbtab_parser.Parser(self.inputdir, self)
                 if self.rxncon_sbtab_detected>0: # new rxncon input
-                    if p.parsable_to=='sbtab':
-                        p.parse_rxncon2SBtab()
-                    elif p.parsable_to=='rxncon':
+                    if p.parsable_to=='rxncon':
                         p.parse_SBtab2rxncon('xls_tables') # we want xls_tables as return
                         return p.rxncon
                 elif not self.rxncon_detected and not self.other_detected:
