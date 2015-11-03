@@ -21,6 +21,7 @@ import sbtab_utils
 
 
 class Mapper(object):
+    #Basti: wird das immernoch gebraucht?
     def __init__(self):
         self.mapping_dict={
                             #left : SBtab, right: rxncon
@@ -169,7 +170,8 @@ class Parser(Commandline):
         self.gene_list=None
         self.ob_list=[]
 
-    def get_info(ob):
+    def get_info(ob)
+        #Basti: Die Funktion find ich gut bau sie noch etwas aus um auf einem Blick alle wichtigen Informationen zu bekommen
         '''
         Function that gives some Information about given Object and current working enviroment
         '''
@@ -190,6 +192,7 @@ class Parser(Commandline):
         print ''
 
     def get_SBtab_info(ob):
+        #Basti: das gehört eigendlich in das SBtab module wueder ich hier rausmachen und/oder in der get_info mit beruecksichtigen
         '''
         Uses SBtab methods to print out some Information about input SBtabTable instance
         '''
@@ -201,6 +204,8 @@ class Parser(Commandline):
         print 'TableType:\t', ob.table_type
 
     def parse_SBtab2rxncon(self, output=''):
+        #Basti: alles auskommentieres rausschmeissen
+
         '''
         Main function for translating SBtab --> rxncon Format. Creates rxncon object
         '''
@@ -209,19 +214,21 @@ class Parser(Commandline):
         #self.read_outputformat(self.parsable_to) #reactivate
         print self.outputformat
         if self.outputformat!='txt' and self.outputformat!='xls':
-            print 'Error, the format ',self.outputformat,' is not supported.'
+            print 'Error, the format ',self.outputformat,' is not supported.'  # Basti: richtigen Error setzen
 
         #self.ob_list=[] # List of dictionaries
         reaction_def_found=False
 
-        #Basti: new def
+        #Basti: Funktion draus machen
         for filename in self.d.files:
             ob= sbtab_utils.build_SBtab_object(self.inputdir, filename)
             self.ob_list.append({'object':ob[0], 'type':ob[0].table_type, 'filename':filename })
+        ########
             # ueber sheets iterieren
         #self.ob_list= [{'object':ob, 'type':ob.table_type, 'filename':filename } for ob in obs]
 
         #for filename in self.d.files:
+        #Basti: versuch das etwas auf zu spalten du hast in der if und elif doppelten code
         if self.d.rxncon_sbtab_detected==0:
             for ob_ele in self.ob_list:
                 if ob_ele["type"]=='ReactionList' and ob_ele['object'].table_name=='Reaction definitions':
@@ -239,9 +246,10 @@ class Parser(Commandline):
                     reaction_def_found=True
                     print 'Custom reaction definition file detected in: ' + ob_ele["filename"]
             if not reaction_def_found:
+                # Basti: bau eine richtige reaction_definition
                 print 'No reaction definition file found. Using default.'
                 reaction_definition = DEFAULT_DEFINITION
-                reaction_template = REACTION_TEMPLATE
+                reaction_template = REACTION_TEMPLATE  # das muss in reaction_definition noch reingeupdated werden
             else:
                 reaction_definition=self.build_reaction_definition()
 
@@ -278,6 +286,7 @@ class Parser(Commandline):
 
 
                     # Save the data of these three columns to lists
+                    #Basti: extra Funktion
                     contingency_list=[{}]
                     for row in ob['object'].getRows():
                         if row[id_col_index]!='':
@@ -290,6 +299,9 @@ class Parser(Commandline):
                     contingency_list.pop(0)
 
             if self.d.rxncon_sbtab_detected==0:
+                #Basti: Versuch den inhalt hier und den im else Fall ein bisschen mehr zusammen zu fuehren. Wenn ich das
+                #Basti: richtig sehe ist der einzige unterschied im indexes_dict das im else case noch weitere Spalten sind
+                #Basti: das kann manabfangen in dem meine eine Funktion drum baut
                 # standart sbtab format
                 if ob['type']=='ReactionID':
                     # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
@@ -307,6 +319,7 @@ class Parser(Commandline):
                     }
 
                     # Save the data of these three columns to list of dictionaries
+                    #Basti: extra Funktion
                     reaction_list=[{}]
                     for row in ob['object'].getRows():
                         reaction_list.append({
@@ -344,6 +357,7 @@ class Parser(Commandline):
                     }
 
                     # Save the data of these three columns to list of dictionaries
+                    #Basti: extra Funktion
                     reaction_list=[{}]
                     for i,row in enumerate(ob['object'].getRows()):
                         r_def= [reaction for reaction in reaction_definition if row[indexes_dict['rea']].lower() == reaction['UID:Reaction'].lower()][0]
@@ -426,6 +440,7 @@ class Parser(Commandline):
         return out
 
     def build_gene_list(self, ob_list):
+        #Basti: brauchst du die hier noch?
         '''
         Creates gene list from given SBtab file
         '''
