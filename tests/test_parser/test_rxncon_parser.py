@@ -82,6 +82,7 @@ class RxnconParserTests(TestCase):
         self.assertEqual(len(new_tables['contingency_list']), 1)
 
 class RxnconParserConingencyManipulationTests(TestCase):
+
     def setUp(self):
         complete_overlap_test = """ Z_p+_A
                                         Y_p+_A_[d]

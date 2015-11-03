@@ -167,6 +167,7 @@ class Parser(Commandline):
         self.inputdir=inputdir
         self.target_format = self.d.target_format
         self.gene_list=None
+        self.ob_list=[]
 
     def get_info(ob):
         '''
@@ -212,33 +213,37 @@ class Parser(Commandline):
 
         #self.ob_list=[] # List of dictionaries
         reaction_def_found=False
-        #for filename in files:
-        for filename in self.d.files:
-            obs= sbtab_utils.build_SBtab_object(self.inputdir, filename)
-            #self.ob_list.append({'object':ob, 'type':ob.table_type, 'filename':filename })
-            self.ob_list= [{'object':ob, 'type':ob.table_type, 'filename':filename } for ob in obs]
-            if self.d.rxncon_sbtab_detected==0:
-                for ob_ele in self.ob_list:
-                    if ob_ele["object"].table_type=='ReactionList' and ob_ele['object'].table_name=='Reaction definitions':
-                        reaction_def_found=True
-                        print 'Custom reaction definition file detected in: ' + filename
-                if not reaction_def_found:
-                    print 'No reaction definition file found. Using default.'
-                    reaction_definition = DEFAULT_DEFINITION
-                else:
-                    reaction_definition=self.build_reaction_definition(self.ob_list)
 
-            elif self.d.rxncon_sbtab_detected>0:
-                for ob_ele in self.ob_list:
-                    if ob_ele["object"].table_type=='rxnconReactionDefinition':
-                        reaction_def_found=True
-                        print 'Custom reaction definition file detected in: ' + filename
-                if not reaction_def_found:
-                    print 'No reaction definition file found. Using default.'
-                    reaction_definition = DEFAULT_DEFINITION
-                    reaction_template = REACTION_TEMPLATE
-                else:
-                    reaction_definition=self.build_reaction_definition(self.ob_list)
+        #Basti: new def
+        for filename in self.d.files:
+            ob= sbtab_utils.build_SBtab_object(self.inputdir, filename)
+            self.ob_list.append({'object':ob[0], 'type':ob[0].table_type, 'filename':filename })
+            # über sheets iterieren
+        #self.ob_list= [{'object':ob, 'type':ob.table_type, 'filename':filename } for ob in obs]
+
+        #for filename in self.d.files:
+        if self.d.rxncon_sbtab_detected==0:
+            for ob_ele in self.ob_list:
+                if ob_ele["type"]=='ReactionList' and ob_ele['object'].table_name=='Reaction definitions':
+                    reaction_def_found=True
+                    print 'Custom reaction definition file detected in: ' + ob_ele["filename"]
+            if not reaction_def_found:
+                print 'No reaction definition file found. Using default.'
+                reaction_definition = DEFAULT_DEFINITION
+            else:
+                reaction_definition=self.build_reaction_definition()
+
+        elif self.d.rxncon_sbtab_detected>0:
+            for ob_ele in self.ob_list:
+                if ob_ele["type"]=='rxnconReactionDefinition':
+                    reaction_def_found=True
+                    print 'Custom reaction definition file detected in: ' + ob_ele["filename"]
+            if not reaction_def_found:
+                print 'No reaction definition file found. Using default.'
+                reaction_definition = DEFAULT_DEFINITION
+                reaction_template = REACTION_TEMPLATE
+            else:
+                reaction_definition=self.build_reaction_definition()
 
 
 
@@ -440,12 +445,13 @@ class Parser(Commandline):
 
         return gene_list
 
-    def build_reaction_definition(self, ob_list):
+    def build_reaction_definition(self):
         '''
         Creates Reaction definition dictionary, from given table
         '''
 
-        for ob in ob_list:
+        for ob in self.ob_list:
+            reaction_definition_list=[]
             if ob['type'] == 'ReactionList':
                 if self.d.rxncon_sbtab_detected ==0:
                 # standart sbtab format
@@ -470,7 +476,6 @@ class Parser(Commandline):
                         'co': ob['object'].columns.index('!Comment')
                         }
 
-                    reaction_definition_list=[{}]
                     for row in ob['object'].getRows():
                     # reaction_list.pop(0)
                         reaction_definition_list.append({
@@ -493,7 +498,7 @@ class Parser(Commandline):
                             'coProduct(s)' : unicode(row[indexes_dict['cp']]),
                             'Comments' : unicode(row[indexes_dict['co']])
                             })
-                    reaction_definition_list.pop(0)
+                    return reaction_definition_list
 
             elif ob['type']== 'rxnconReactionDefinition':
                 # new rxncon sbtab hybrid format
@@ -519,7 +524,6 @@ class Parser(Commandline):
                         'co': ob['object'].columns.index('!Comment')
                         }
 
-                    reaction_definition_list=[{}]
                     for row in ob['object'].getRows():
                     # reaction_list.pop(0)
                         reaction_definition_list.append({
@@ -544,10 +548,9 @@ class Parser(Commandline):
                             'Comment' : unicode(row[indexes_dict['co']])
                             })
                         reaction_definition_list[-1].update(reactionTypeID2def[row[indexes_dict['rti']]])
-                    reaction_definition_list.pop(0)
 
 
-        return reaction_definition_list
+                    return reaction_definition_list
 
 
 if __name__=="__main__":

@@ -199,12 +199,12 @@ class DirCheck():
             slash_index= [i for i, letter in enumerate(input) if letter == '/'] #find the occurences of the slash
             inputdir= input[0:max(slash_index)] # the string until the last slash is the inputdirectory
             inputfile = input[max(slash_index)+1:]
-            files=[inputfile]
+            self.files=[inputfile]
         elif os.path.isdir(input):
             self.files = get_files(input)
             inputdir= input
 
-        return (files, inputdir)
+        return (inputdir)
 
 
     def look_for_SBtab_files(self, input):
@@ -216,14 +216,15 @@ class DirCheck():
         - rxncon_Definition
         '''
 
-        self.files, inputdir= self.file_or_dir(input)
+        inputdir= self.file_or_dir(input)
 
         found_table_types=[]
-
+        ob_list=[]
         for filename in self.files:
             #print 'Filename: ', filename
-            ob_list = sbtab_utils.build_SBtab_object(inputdir, filename)
-            found_table_types= [found_table_types.append(ob.table_type) for ob in ob_list]
+            ob_list.extend(sbtab_utils.build_SBtab_object(inputdir, filename))
+        #ob_list.pop(0)
+        found_table_types= [ob.table_type for ob in ob_list]
 
         if 'ReactionID' in found_table_types and'ContingencyID' in found_table_types:
             self.parsable_to='rxncon'
@@ -251,7 +252,7 @@ class DirCheck():
         -
         '''
 
-        self.files, inputdir= self.file_or_dir(input)
+        inputdir= self.file_or_dir(input)
 
         found_table_types=[]
 
@@ -276,7 +277,6 @@ class DirCheck():
             print 'Only the follwing TableTypes were found:'
             print found_table_types
             self.parsable_to=''
-
 
     def controller(self):
         if isinstance(self.inputdir, dict):
