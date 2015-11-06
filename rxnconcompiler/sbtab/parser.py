@@ -1,6 +1,7 @@
 # File parser to convert from rxncon format to sbtab format and vice
 # versa
 # Mathias Wajnberg July 2015
+__author__ = 'Mathias Wajnberg'
 
 
 import SBtab

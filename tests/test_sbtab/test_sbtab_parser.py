@@ -1,4 +1,4 @@
-__author__ = 'wajnberg'
+__author__ = 'Mathias Wajnberg'
 
 from unittest import TestCase, main
 import os
@@ -20,6 +20,8 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.other_detected)
         self.assertFalse(d.sbtab_detected)
 
+        print "#################",__name__, 'successful.##################'
+
 
     def test_rxncon_sbtab_detection(self):
         path=os.path.join(SBTAB_FILES,"rxncon_new/rxncon_template_2_0.xls")
@@ -31,6 +33,8 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.other_detected)
         self.assertTrue(d.sbtab_detected)
 
+        print "#################",__name__, 'successful.##################'
+
     def test_sbtab_detection(self):
         path=os.path.join(SBTAB_FILES,"sbtab")
         d= DirCheck(path)
@@ -41,12 +45,16 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.other_detected)
         self.assertTrue(d.sbtab_detected)
 
+        print "#################",__name__, 'successful.##################'
+
     def test_other_detection(self):
         path=SBTAB_FILES
         d= DirCheck(path)
         d.check_directory_type()
 
         self.assertTrue(d.other_detected)
+
+        print "#################",__name__, 'successful.##################'
 
 class ParserTest(TestCase):
 
@@ -63,7 +71,8 @@ class ParserTest(TestCase):
         for dictionary in xls_tables["reaction_list"]:
             self.assertEqual(dictionary.keys().sort(), rxns_exp_keys.sort())
 
-    def test_rxncon_sbtab_parsing(self):
+
+    def test_rxncon_sbtab_parsing_xls(self):
         path=os.path.join(SBTAB_FILES,"rxncon_new/rxncon_template_2_0.xls")
         d= DirCheck(path)
         xls_tables=d.controller()
@@ -79,17 +88,51 @@ class ParserTest(TestCase):
         self.xls_tables_keys_test(xls_tables)
 
 
-    def test_sbtab_parsing(self):
+
+    def test_sbtab_parsing_csv(self):
         #works
-        path=os.path.join(SBTAB_FILES,"sbtab")
+        path=os.path.join(SBTAB_FILES,"sbtab/tiger_files_csv_cut") #csv
+        d= DirCheck(path)
+        xls_tables=d.controller()
+
+        self.assertEqual(len(xls_tables["reaction_definition"]), 43)
+        self.assertEqual(len(xls_tables["contingency_list"]), 10)
+        self.assertEqual(len(xls_tables["reaction_list"]), 6)
+
+        self.xls_tables_keys_test(xls_tables)
+
+        print "#################",__name__, 'successful.##################'
+
+    def test_sbtab_parsing_xls(self):
+        #works
+        path=os.path.join(SBTAB_FILES,"sbtab/tiger_files_xls") #xls
         d= DirCheck(path)
         xls_tables=d.controller()
 
         self.assertEqual(len(xls_tables["reaction_definition"]), 43)
         self.assertEqual(len(xls_tables["contingency_list"]), 313)
-        self.assertEqual(len(xls_tables["reaction_list"]), 109)
+        self.assertEqual(len(xls_tables["reaction_list"]), 222)
 
         self.xls_tables_keys_test(xls_tables)
+
+        print "#################",__name__, 'successful.##################'
+
+    def test_other(self):
+        path = SBTAB_FILES
+
+        print "#################",__name__, 'successful.##################'
+
+    def test_bngl_output(self):
+        '''
+        Function opens mini example networks in the 3 formats, that has been parsed by hand. This generates
+        3 rxncon objects from which bngl output gets generated. Then, this output gets compared.
+        '''
+
+        paths=[]
+
+        for path in paths:
+            d = DirCheck(path)
+
 
 
 if __name__ == '__main__':
