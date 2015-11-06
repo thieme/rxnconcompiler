@@ -1,9 +1,19 @@
 __author__ = 'Mathias Wajnberg'
 
+'''
+Skript tests checking function of directories and parsing of sbtab files.
+Parsing of rxncon files is not tested here, as this is done elsewhere by Basti.
+Done parsing tests:
+    - xls files
+        - new rxncon and standard SBtab (Tiger files)
+    - csv
+        - tiger files minimized version
+'''
+
 from unittest import TestCase, main
 import os
 from rxnconcompiler.parser.parsing_controller import DirCheck
-
+import rxnconcompiler.rxncon as rxncon
 import test_data
 
 SBTAB_FILES = os.path.join(test_data.__path__[0], "sbtab_files")
@@ -87,8 +97,6 @@ class ParserTest(TestCase):
 
         self.xls_tables_keys_test(xls_tables)
 
-
-
     def test_sbtab_parsing_csv(self):
         #works
         path=os.path.join(SBTAB_FILES,"sbtab/tiger_files_csv_cut") #csv
@@ -117,23 +125,28 @@ class ParserTest(TestCase):
 
         print "#################",__name__, 'successful.##################'
 
-    def test_other(self):
-        path = SBTAB_FILES
 
-        print "#################",__name__, 'successful.##################'
+class DataManipulationTest(TestCase):
 
     def test_bngl_output(self):
         '''
-        Function opens mini example networks in the 3 formats, that has been parsed by hand. This generates
-        3 rxncon objects from which bngl output gets generated. Then, this output gets compared.
+        Function opens mini example networks in the all formats, that has been parsed by hand. This generates
+        4 rxncon objects from which bngl output gets generated. Then, this output gets compared.
         '''
-
-        paths=[]
+        paths=[os.path.join(SBTAB_FILES,"sbtab/tiger_files_csv_cut"), #sbtab_csv
+              os.path.join(SBTAB_FILES,"sbtab/tiger_files_xls_cut"), #sbtab_xls
+              os.path.join(SBTAB_FILES,"rxncon_old/tiger_files_old_rxncon_cut.xls") , # rxncon old
+              os.path.join(SBTAB_FILES,"rxncon_new/tiger_files_new_rxncon_cut.xls") # rxncon new
+              ]
+              # rxncon new
 
         for path in paths:
             d = DirCheck(path)
+            xls_tables=d.controller()
 
+            r= rxncon.Rxncon(xls_tables)
 
+        print "#################",__name__, 'successful.##################'
 
 if __name__ == '__main__':
     main()
