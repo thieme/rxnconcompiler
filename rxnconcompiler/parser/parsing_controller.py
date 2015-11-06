@@ -36,6 +36,8 @@ class DirCheck():
         self.target_format=''
         self.parsable_to=''
 
+        print 'd initialised. inputdir= ', self.inputdir," delete in the end"
+
     def processing(self, filedir):
         if filedir.endswith('.txt'):# basti: nach dem letzten punkt mit split
             self.check_txt_File(filedir)
@@ -64,8 +66,9 @@ class DirCheck():
         '''
         Checks whether input directory consists of SBtab, rxncon, both or other files
         '''
-        print self.inputdir , '      delete this print in the end, check_directory_type()'
 
+
+        # TODO: wird bei sbtab inputdir ueberprueft, ob jeder tabletype auch nur ein mal gefunden wurde? koennte man eventuell testen, nachdem ob_list erzeugt wurde
         self.files=get_files(self.inputdir)
 
         for filename in self.files:
@@ -143,6 +146,7 @@ class DirCheck():
             except IndexError:
                 sheet_number+=1
 
+        # TODO: Raise error is first line is not readable
         for cell in first_line:
             if '!!SBtab' in str(cell):
                 self.sbtab_detected=True

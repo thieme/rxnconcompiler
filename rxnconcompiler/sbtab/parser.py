@@ -8,6 +8,7 @@ import os
 import tablibIO
 import tablib
 import xlsxwriter
+import xlrd
 import re
 from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 from rxnconcompiler.parser.rxncon_parser import parse_xls
@@ -78,7 +79,7 @@ class Commandline(object):
         self.inputdir= ''
         self.inputfile=''
         self.outputformat='xls'
-        self.files=[]
+        self.files=[] # needed ?
 
 
     def hello(self):
@@ -167,7 +168,7 @@ class Parser(Commandline):
         self.parsable_to=self.d.parsable_to
         self.inputdir=inputdir
         self.target_format = self.d.target_format
-        self.gene_list=None
+        # self.gene_list=None
         self.ob_list=[]
 
     def get_info(ob):
@@ -221,10 +222,15 @@ class Parser(Commandline):
 
         #Basti: Funktion draus machen
         for filename in self.d.files:
-            ob= sbtab_utils.build_SBtab_object(self.inputdir, filename)
-            self.ob_list.append({'object':ob[0], 'type':ob[0].table_type, 'filename':filename })
-        ########
-            # ueber sheets iterieren
+            ob= sbtab_utils.build_SBtab_object(self.inputdir, filename) # if file has multiple
+            # sheets, ob already is the ob list. and this for loop only has one step. This is why
+            #  the following nested for loop does not have to much bad influence on the runtime
+            if type(ob)==list:
+                for index in range(0,len(ob)):
+                    self.ob_list.append({'object':ob[index], 'type':ob[index].table_type,
+                                         'filename':filename })
+            else:
+                self.ob_list.append({'object':ob[0], 'type':ob[0].table_type, 'filename':filename })
         #self.ob_list= [{'object':ob, 'type':ob.table_type, 'filename':filename } for ob in obs]
 
         #for filename in self.d.files:
@@ -304,6 +310,8 @@ class Parser(Commandline):
                 #Basti: das kann manabfangen in dem meine eine Funktion drum baut
                 # standart sbtab format
                 if ob['type']=='ReactionID':
+                # standard SBtab Format, the reaction_list here is called
+                # ReactionID, as Reaction List was allready picked in SBtab
                     # Find column indexes for !ComponentA:Name, !ComponentA:Domain, !ComponentA:Subdomain, !ComponentA:Residue, !Reaction, !ComponentB:Name, !ComponentB:Domain, !ComponentB:Subdomain, !ComponentB:Residue
                     indexes_dict={
                         'can': ob['object'].columns.index('!ComponentA:Name'),
@@ -384,7 +392,7 @@ class Parser(Commandline):
                                 'Reaction[Full]': self.build_full(row,indexes_dict)
                             })
                     reaction_list.pop(0)
-
+        # for ob in ob_list loop ends
 
         #return Rxncon(dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition), parsed_xls=True) #build rxncon object
         return dict(reaction_list=reaction_list, contingency_list=contingency_list, reaction_definition=reaction_definition) #build rxncon dict

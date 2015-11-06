@@ -52,6 +52,7 @@ class ParserTest(TestCase):
 
     def xls_tables_keys_test(self, xls_tables):
         # test keys of each of the three lists
+        # gets called in other funcitons
         cont_exp_keys=['Contingency','ContingencyID','Modifier','Target']
         def_exp_keys= ['Category','Comment', 'Directionality','ModifierBoundary','ProductState[Component]','Reaction:Name','ReactionType:ID','ReactionType:Name','Reversibility','SourceState[Component]' ,'UID:Reaction' ,'coProduct(s)','coSubstrate(s)']
         rxns_exp_keys=['ComponentA[DSR]','ComponentA[Domain]','ComponentA[Name]','ComponentA[Residue]','ComponentA[Subdomain]','ComponentB[DSR]','ComponentB[Domain]','ComponentB[Name]','ComponentB[Residue]','ComponentB[Subdomain]','ProductState','ReactionID','ReactionType:ID','Reaction[Full]','SourceState','UID:Reaction']
@@ -79,6 +80,7 @@ class ParserTest(TestCase):
 
 
     def test_sbtab_parsing(self):
+        #works
         path=os.path.join(SBTAB_FILES,"sbtab")
         d= DirCheck(path)
         xls_tables=d.controller()
