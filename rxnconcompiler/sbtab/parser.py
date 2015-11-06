@@ -170,7 +170,7 @@ class Parser(Commandline):
         self.gene_list=None
         self.ob_list=[]
 
-    def get_info(ob)
+    def get_info(ob):
         #Basti: Die Funktion find ich gut bau sie noch etwas aus um auf einem Blick alle wichtigen Informationen zu bekommen
         '''
         Function that gives some Information about given Object and current working enviroment
@@ -192,7 +192,7 @@ class Parser(Commandline):
         print ''
 
     def get_SBtab_info(ob):
-        #Basti: das gehört eigendlich in das SBtab module wueder ich hier rausmachen und/oder in der get_info mit beruecksichtigen
+        #Basti: das gehoert eigendlich in das SBtab module wueder ich hier rausmachen und/oder in der get_info mit beruecksichtigen
         '''
         Uses SBtab methods to print out some Information about input SBtabTable instance
         '''
