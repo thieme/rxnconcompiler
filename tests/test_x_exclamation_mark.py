@@ -49,6 +49,28 @@ class x_exclamation_mark_Tests(TestCase):
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Example_Reactions.xls"
 
+
+
+        # rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
+        # <Comp>; OR <C1>; OR <C2>
+        # <C1>; 1--2 Ste7--Ste11
+        # <C2>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]""")
+####### TEST
+        # rxncon = Rxncon("""Z_p+_A
+        #                 W_p+_A
+        #                 A_ppi_C; ! A-{P}
+        #                 """, lumpedModifier=True)
+        #rxncon = Rxncon("""A_p+_B; ! <cis>
+        #                    <cis>; 1--2 B--B
+        #                    <cis>; 1--3 B--A""")
+        #rxncon = Rxncon("""A_p+_B; ! <trans>
+        #                    <trans>; 1--2 B--B
+        #                   <trans>; 2--3 B--A""")
+
+        rxncon = Rxncon("""A_p+_B; ! <c>
+                        <c>; 2--3 B--A
+                        <c>; 1--4 B--C
+                        <c>; 4--2 C_[b]--B""")
 #######################################   Presentation ########################################
         # rxncon = Rxncon("""A_ppi_B; ! <comp1>
         #                  <comp1>; OR <comp1C1>
@@ -248,11 +270,7 @@ class x_exclamation_mark_Tests(TestCase):
         #                 A_ppi_I; ! A_[d/(r)]-{P}
         #                 A_ppi_J; ! A_[(r)]-{P}''',lumpedModifier=True)
 
-####### TEST
-        rxncon = Rxncon("""Z_p+_A
-                        W_p+_A
-                        A_ppi_C; ! A-{P}
-                        """, lumpedModifier=True)
+
 
 #delete contingency
         # rxncon = Rxncon("""A_ppi_B; ! A-{P}

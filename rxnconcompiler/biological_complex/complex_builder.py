@@ -250,8 +250,6 @@ class Tree(object):
         gets identifier type str
         return list of identifier type str
         """
-        #leafes = [node for node in self.expand_tree(position) if self.get_children(node) == []]
-        leafes = []
         leafes = [node for node in self.expand_tree(position) if self.get_children(node.name) == []]
         return leafes
 
@@ -376,7 +374,7 @@ class ComplexBuilder:
 
         self.tree = Tree()
 
-        for root in possible_roots:
+        for root in possible_roots[::-1]: # start with modified first
             self.tree.add_Node(root.name)
             root_node = self.tree.get_node(name=root.name)
             self.structured_complexes = self.check_for_structured_complex(complexes, root_node)
@@ -398,6 +396,26 @@ class ComplexBuilder:
                     return True
         return False
 
+    def get_cont_for_root(self, root, inner_list, structure, ):
+        root_cont = []
+        for cont in inner_list:
+                if structure:
+                    if self.check_cont_components(cont, root):
+                        root_cont.append(cont)
+                else:
+                    if cont.state.has_component(root):
+                        root_cont.append(cont)
+        return root_cont
+
+    def initialise_root_old_cid(self, root, root_cont):
+
+        for cont in root_cont:
+            for component in cont.state.components:
+                if component.name == root.name:
+                    if root.old_cid is None:
+                        root.old_cid = component.cid
+                    elif int(root.old_cid) > int(component.cid):
+                        root.old_cid = component.cid
 
     def get_structured_complex(self, inner_list, root, structure=False):
         """
@@ -431,10 +449,10 @@ class ComplexBuilder:
         def structured(new_root, root, bond):
             if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
                 self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid, old_cid=new_root.cid)
-                if root.old_cid == None:
-                    old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
-                    if old_root is not None:
-                        root.old_cid = old_root.cid
+                #if root.old_cid == None:
+                #    old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
+                #    if old_root is not None:
+                #       root.old_cid = old_root.cid
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
                 root.update_children(child.cid, _ADD)
@@ -448,15 +466,15 @@ class ComplexBuilder:
         already = self.tree.get_all_cont()
         new_roots = []
         for root in root_list:
-            root_cont = []
             root_node = self.tree.get_node(cid=root.cid)
-            for cont in inner_list:
-                if structure:
-                    if self.check_cont_components(cont, root):
-                        root_cont.append(cont)
-                else:
-                    if cont.state.has_component(root):
-                        root_cont.append(cont)
+            root_cont = self.get_cont_for_root(root, inner_list, structure)
+            # in this case we have to figure out what the correct Molecule is in case of multiple molecules with
+            # the same name within a structured complex
+            # in this case we take the molecule with the lowest index number as the the root
+            if structure and root.old_cid is None:
+                self.initialise_root_old_cid(root, root_cont)
+                root_cont = self.get_cont_for_root(root, inner_list, structure)
+
             for bond in root_cont:
                 if bond not in already:  # to avoid double contingency recognistion A--B, root: A next root B
                     if bond.state.type == "Association":

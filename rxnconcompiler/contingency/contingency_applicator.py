@@ -195,7 +195,6 @@ class ContingencyApplicator():
                 # if A--B, A and B present in substrates but if reaction creates A and B
                 # we don't join. We want then A
                     reaction.join_substrate_complexes(cont.state)
-                    pass
                 # here one of mols from contingency is present in both complexes
                 # but it was added because of previously applayed contingency so we dont want to join.
                 #else:

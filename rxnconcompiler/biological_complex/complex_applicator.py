@@ -130,11 +130,12 @@ class ComplexApplicator:
     """
     Interface between AlternativeComplex objects and ReactionContainer object.
     """
-    def __init__(self, reaction_container, complexes):
+    def __init__(self, reaction_container, complexes, war):
         """"""
         self.reaction_container = reaction_container
         self.complexes = complexes
         self.possible_roots = reaction_container.get_reactants()
+        self.war = war
 
     def change_contingency_relation(self, inner_list, cont_sign):
         """
@@ -610,10 +611,20 @@ class ComplexApplicator:
         @param cap: ContingencyApplicator() object
         @return: if inputs like [START] are found they will be returned as list
         """
+
+        # ((left.has_molecule(component1.name) and right.has_molecule(component2.name))
+        #         or (left.has_molecule(component2.name) and right.has_molecule(component1.name))
+        #         or (left.has_molecule(component1.name, component1.cid) and right.has_molecule(component2.name))
+        #         or (left.has_molecule(component1.name) and right.has_molecule(component2.name, component2.cid))
+        #         or (left.has_molecule(component2.name, component2.cid) and right.has_molecule(component1.name))
+        #         or (left.has_molecule(component2.name) and right.has_molecule(component1.name, component1.cid))
+
         apply_later = []
         input_cont = []
         for cont in rule: # split rules
-            if cont.state.has_component(self.reaction_container[0].left_reactant) or cont.state.has_component(self.reaction_container[0].right_reactant):
+            left = reaction.left_reactant
+            right = reaction.right_reactant
+            if cont.state.has_component(left) or cont.state.has_component(right):
                 #self.apply_cont(reaction, cont, cap)
                 cap.apply_simple_cont_on_reaction(reaction, cont)
             else:
@@ -647,7 +658,7 @@ class ComplexApplicator:
         @param complex_rules: non-overlapping rules
         @return:
         """
-        cap = ContingencyApplicator()
+        cap = ContingencyApplicator(self.war)
         reaction_container_clone = self.reaction_container[0].clone()
         first_rule = True
         self.counter = 1
