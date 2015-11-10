@@ -314,7 +314,10 @@ class BiologicalComplex(object):
             if mol.name == name:
                 if not mid or not mol.mid or (mid and mid == mol.mid):
                     if not _id or (_id and _id == mol._id):
-                        result.append(mol)      
+                        result.append(mol)
+                elif mid and not mol.mid:
+                    result.append(mol)
+
         return result
 
     def get_molecules_on_state_condition(self, name, state=None, mid=None, _id=None):

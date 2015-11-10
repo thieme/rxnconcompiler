@@ -130,7 +130,7 @@ class ComplexApplicator:
     """
     Interface between AlternativeComplex objects and ReactionContainer object.
     """
-    def __init__(self, reaction_container, complexes, war):
+    def __init__(self, reaction_container, complexes, war=None):
         """"""
         self.reaction_container = reaction_container
         self.complexes = complexes
@@ -602,6 +602,25 @@ class ComplexApplicator:
                 missing.extend(range(cont_tracking[rank]+1, cont_tracking[rank+1]))
 
         return missing
+    def sort_rules_by_cid(self, rule):
+        #rule_dict = dict(((comp), cont) for cont.state.components in rule )
+        rule_dict = {}
+        for cont in rule:
+            #for component in cont.state.components:
+            components = cont.state.components
+            if len(components) > 1 and int(components[0].cid) <  int(components[1].cid):
+                rule_dict[(int(components[0].cid), int(components[1].cid))] = cont
+            elif len(components) > 1 and int(components[0].cid) >  int(components[1].cid):
+                rule_dict[(int(components[1].cid), int(components[0].cid))] = cont
+            else:
+                rule_dict[(int(components[0].cid))] = cont
+        cid_tuble = rule_dict.keys()
+        cid_tuble.sort()  # keys in a dict are not sorted
+        new_rule_order = []
+        for cid in cid_tuble:
+            new_rule_order.append(rule_dict[cid])
+
+        return new_rule_order
 
     def apply_rule(self, rule, reaction, cap):
         """
@@ -621,6 +640,7 @@ class ComplexApplicator:
 
         apply_later = []
         input_cont = []
+        rule = self.sort_rules_by_cid(rule)
         for cont in rule: # split rules
             left = reaction.left_reactant
             right = reaction.right_reactant

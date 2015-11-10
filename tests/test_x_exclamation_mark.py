@@ -67,10 +67,15 @@ class x_exclamation_mark_Tests(TestCase):
         #                    <trans>; 1--2 B--B
         #                   <trans>; 2--3 B--A""")
 
-        rxncon = Rxncon("""A_p+_B; ! <c>
-                        <c>; 2--3 B--A
-                        <c>; 1--4 B--C
-                        <c>; 4--2 C_[b]--B""")
+        # rxncon = Rxncon("""A_p+_B; ! <trans>
+        #                 <trans>; 2--3 B--A
+        #                 <trans>; 1--4 B--C
+        #                 <trans>; 4--2 C_[b]--B""")
+
+        rxncon = Rxncon("""A_p+_B; ! <cis>
+                        <cis>; 1--3 B--A
+                        <cis>; 1--4 B--C
+                        <cis>; 4--2 C_[b]--B""")
 #######################################   Presentation ########################################
         # rxncon = Rxncon("""A_ppi_B; ! <comp1>
         #                  <comp1>; OR <comp1C1>
