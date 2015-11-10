@@ -51,10 +51,12 @@ class x_exclamation_mark_Tests(TestCase):
 
 
 
-        # rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Comp>
-        # <Comp>; OR <C1>; OR <C2>
-        # <C1>; 1--2 Ste7--Ste11
-        # <C2>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]""")
+        rxncon = Rxncon('''Sho1_ppi_Ste11; x Ste5_[MEKK]--Ste11; k+ Hkr1--Sho1; k+ Msb2--Sho1; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
+                        <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+                        <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]''')
+
+
+
 ####### TEST
         # rxncon = Rxncon("""Z_p+_A
         #                 W_p+_A
@@ -71,11 +73,11 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <trans>; 2--3 B--A
         #                 <trans>; 1--4 B--C
         #                 <trans>; 4--2 C_[b]--B""")
-
-        rxncon = Rxncon("""A_p+_B; ! <cis>
-                        <cis>; 1--3 B--A
-                        <cis>; 1--4 B--C
-                        <cis>; 4--2 C_[b]--B""")
+        #
+        # rxncon = Rxncon("""A_p+_B; ! <cis>
+        #                 <cis>; 1--3 B--A
+        #                 <cis>; 1--4 B--C
+        #                 <cis>; 4--2 C_[b]--B""")
 #######################################   Presentation ########################################
         # rxncon = Rxncon("""A_ppi_B; ! <comp1>
         #                  <comp1>; OR <comp1C1>

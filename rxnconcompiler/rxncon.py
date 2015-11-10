@@ -299,7 +299,7 @@ class Rxncon():
                     if not default_domain_present:
                         if len(available) > 1:
                             self.war.produced_in_more[cont] = available
-                            cont.state = available[0]
+                            #cont.state = available[0]  # in this case we should warn not change
                         elif len(available) == 1:
                             cont.state = state
                         else:

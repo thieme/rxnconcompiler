@@ -605,8 +605,12 @@ class ComplexApplicator:
     def sort_rules_by_cid(self, rule):
         #rule_dict = dict(((comp), cont) for cont.state.components in rule )
         rule_dict = {}
+        input_cont = []
         for cont in rule:
             #for component in cont.state.components:
+            if cont.state.type == "Input":
+                input_cont.append(cont)
+                continue
             components = cont.state.components
             if len(components) > 1 and int(components[0].cid) <  int(components[1].cid):
                 rule_dict[(int(components[0].cid), int(components[1].cid))] = cont
@@ -619,7 +623,7 @@ class ComplexApplicator:
         new_rule_order = []
         for cid in cid_tuble:
             new_rule_order.append(rule_dict[cid])
-
+        new_rule_order.extend(input_cont)
         return new_rule_order
 
     def apply_rule(self, rule, reaction, cap):

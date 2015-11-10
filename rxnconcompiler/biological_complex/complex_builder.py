@@ -429,10 +429,11 @@ class ComplexBuilder:
                     if root.old_cid is not None:
                         self.tree.reset_old_cid()
                     break
+        already = []
         while stack:
-            stack = self._get_complex_layer(inner_list, stack, structure)
+            stack, already = self._get_complex_layer(inner_list, stack, structure, already)
 
-    def _get_complex_layer(self, inner_list, root_list, structure):
+    def _get_complex_layer(self, inner_list, root_list, structure, already = []):
         """
         Helper function for get_ordered_tree.
 
@@ -449,10 +450,7 @@ class ComplexBuilder:
         def structured(new_root, root, bond):
             if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
                 self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid, old_cid=new_root.cid)
-                #if root.old_cid == None:
-                #    old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
-                #    if old_root is not None:
-                #       root.old_cid = old_root.cid
+
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
                 root.update_children(child.cid, _ADD)
@@ -463,7 +461,7 @@ class ComplexBuilder:
                 if child.old_cid == None:
                     child.old_cid = new_root.cid
 
-        already = self.tree.get_all_cont()
+        #already = self.tree.get_all_cont()
         new_roots = []
         for root in root_list:
             root_node = self.tree.get_node(cid=root.cid)
@@ -477,6 +475,7 @@ class ComplexBuilder:
 
             for bond in root_cont:
                 if bond not in already:  # to avoid double contingency recognistion A--B, root: A next root B
+                    already.append(bond)
                     if bond.state.type == "Association":
                         new_root = bond.state.get_partner(bond.state.get_component(root.name))
                         if structure:
@@ -493,7 +492,7 @@ class ComplexBuilder:
                             non_structured(comp, root_node)
                         root_node.cont.append(bond)
                         new_roots = new_roots
-        return new_roots
+        return new_roots, already
 
     def process_structured_complex(self):
         """
