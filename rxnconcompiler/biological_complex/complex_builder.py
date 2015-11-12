@@ -375,15 +375,17 @@ class ComplexBuilder:
         self.tree = Tree()
 
         for root in possible_roots[::-1]: # start with modified first
-            self.tree.add_Node(root.name)
-            root_node = self.tree.get_node(name=root.name)
-            self.structured_complexes = self.check_for_structured_complex(complexes, root_node)
-            if self.structured_complexes:
-                self.get_structured_complex(self.structured_complexes, root_node, structure=True)
-            for complex_tuple in complexes:
-                for complex in complex_tuple[1]:
-                    if complex != self.structured_complexes:
-                        self.get_structured_complex(complex, self.tree.get_node(name=root.name))
+            if self.tree.get_node(name=root.name) is None:
+                self.tree.add_Node(root.name)
+                root_node = self.tree.get_node(name=root.name)
+                self.structured_complexes = self.check_for_structured_complex(complexes, root_node)
+                if self.structured_complexes:
+                    self.get_structured_complex(self.structured_complexes, root_node, structure=True)
+            #    already = self.tree.get_all_cont()
+                for complex_tuple in complexes:
+                    for complex in complex_tuple[1]:
+                        if complex != self.structured_complexes:
+                            self.get_structured_complex(complex, self.tree.get_node(name=root.name))  # TODO: root_node
 
         self.process_structured_complex()
 
@@ -460,6 +462,15 @@ class ComplexBuilder:
                         root_node.old_cid = old_root.cid
                 if child.old_cid == None:
                     child.old_cid = new_root.cid
+        def get_new_root(bond, root):
+            if structure and bond.state.homodimer:
+                # in case of a structured complex we want the component of a homodimer which differs from the root
+                for comp in bond.state.components:
+                    if comp.cid != root.old_cid:
+                        return comp
+            else:
+                # if it is an unstructured complex is does not matter which of both we get, because the name is important only
+                return bond.state.get_partner(bond.state.get_component(root.name))
 
         #already = self.tree.get_all_cont()
         new_roots = []
@@ -477,7 +488,9 @@ class ComplexBuilder:
                 if bond not in already:  # to avoid double contingency recognistion A--B, root: A next root B
                     already.append(bond)
                     if bond.state.type == "Association":
-                        new_root = bond.state.get_partner(bond.state.get_component(root.name))
+
+                        new_root = get_new_root(bond, root)
+
                         if structure:
                             structured(new_root, root_node, bond)
                         else:

@@ -617,7 +617,7 @@ class ComplexApplicator:
             elif len(components) > 1 and int(components[0].cid) >  int(components[1].cid):
                 rule_dict[(int(components[1].cid), int(components[0].cid))] = cont
             else:
-                rule_dict[(int(components[0].cid))] = cont
+                rule_dict[(int(components[0].cid), components[0].domain)] = cont
         cid_tuble = rule_dict.keys()
         cid_tuble.sort()  # keys in a dict are not sorted
         new_rule_order = []
