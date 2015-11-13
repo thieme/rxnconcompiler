@@ -18,7 +18,8 @@ def get_files(inputdir):
             return [os.path.split(inputdir)[-1]]
 
         if os.path.isdir(inputdir):
-            files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) and not f.startswith('.') ]
+            files = [ f for f in os.listdir(inputdir) if os.path.isfile(os.path.join(inputdir,f)) and not
+            f.startswith('.') and not f.startswith('#') ]
         #                                               is no directory                          is no libre office temp file
             return files
         else:
@@ -27,7 +28,7 @@ def get_files(inputdir):
 
 class DirCheck():
     def __init__(self, inputdir):
-        self.inputdir = inputdir
+        self.inputdir = inputdir # info: may be path to dir, path to file or also xls_tables dict list
         self.filedir=""
         self.rxncon_detected = 0
         self.sbtab_detected = False
@@ -84,7 +85,7 @@ class DirCheck():
 
 
 
-        if self.rxncon_detected>0:
+        if self.rxncon_detected==1:
             if self.sbtab_detected:
                 print 'Error, both SBtab and rxncon files detected in input directory! Please clean up the directory!'
             elif self.other_detected:
@@ -154,11 +155,7 @@ class DirCheck():
                     self.rxncon_sbtab_detected+=1
 
         for sheet_name in xls_sheet_names:
-            if ('(III) Contingency list' in sheet_name
-            or 'Contingency List' in sheet_name
-            or 'contingency list' in sheet_name) \
-            and not 'ContingencyID' in sheet_name\
-            and self.rxncon_sbtab_detected==0:
+            if '(III) Contingency list' in sheet_name and self.rxncon_sbtab_detected==0:
                 self.rxncon_detected+=1
 
         if self.sbtab_detected==False and self.rxncon_detected==0 and self.rxncon_sbtab_detected==0:
@@ -225,7 +222,7 @@ class DirCheck():
         found_table_types=[]
         ob_list=[]
         for filename in self.files:
-            #print 'Filename: ', filename
+            print 'Filename: ', filename, '            delete in look_for_SBtab_files()'
             ob_list.extend(sbtab_utils.build_SBtab_object(inputdir, filename))
         #ob_list.pop(0)
         found_table_types= [ob.table_type for ob in ob_list]

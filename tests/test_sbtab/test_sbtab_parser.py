@@ -15,6 +15,9 @@ import os
 from rxnconcompiler.parser.parsing_controller import DirCheck
 import rxnconcompiler.rxncon as rxncon
 import test_data
+import sys
+import itertools
+from rxnconcompiler.bngl.bngl import Bngl
 
 SBTAB_FILES = os.path.join(test_data.__path__[0], "sbtab_files")
 
@@ -30,7 +33,7 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.other_detected)
         self.assertFalse(d.sbtab_detected)
 
-        print "#################",__name__, 'successful.##################'
+        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
 
     def test_rxncon_sbtab_detection(self):
@@ -43,10 +46,10 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.other_detected)
         self.assertTrue(d.sbtab_detected)
 
-        print "#################",__name__, 'successful.##################'
+        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
     def test_sbtab_detection(self):
-        path=os.path.join(SBTAB_FILES,"sbtab")
+        path=os.path.join(SBTAB_FILES,"sbtab/tiger_files_xls")
         d= DirCheck(path)
         d.check_directory_type()
 
@@ -55,7 +58,7 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.other_detected)
         self.assertTrue(d.sbtab_detected)
 
-        print "#################",__name__, 'successful.##################'
+        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
     def test_other_detection(self):
         path=SBTAB_FILES
@@ -64,7 +67,7 @@ class DirCheckTest(TestCase):
 
         self.assertTrue(d.other_detected)
 
-        print "#################",__name__, 'successful.##################'
+        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
 class ParserTest(TestCase):
 
@@ -109,7 +112,7 @@ class ParserTest(TestCase):
 
         self.xls_tables_keys_test(xls_tables)
 
-        print "#################",__name__, 'successful.##################'
+        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
     def test_sbtab_parsing_xls(self):
         #works
@@ -123,30 +126,63 @@ class ParserTest(TestCase):
 
         self.xls_tables_keys_test(xls_tables)
 
-        print "#################",__name__, 'successful.##################'
+    #     print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+	#
+    # def test_xls_tables_creation(self):
+    #     '''
+    #     Function opens mini example networks in the all formats, that has been parsed by hand. This generates
+    #     4 rxncon objects from which bngl output gets generated. Then, this output gets compared.
+    #     '''
+    #     paths=[os.path.join(SBTAB_FILES,"sbtab/tiger_files_csv_cut"), #sbtab_csv
+    #           os.path.join(SBTAB_FILES,"sbtab/tiger_files_xls_cut"), #sbtab_xls
+    #           os.path.join(SBTAB_FILES,"rxncon_old/tiger_files_old_rxncon_cut.xls") , # rxncon old
+    #           os.path.join(SBTAB_FILES,"rxncon_new/tiger_files_new_rxncon_cut.xls") # rxncon new
+    #           ]
+    #           # rxncon new
+	#
+    #     #xls_tables_list = [DirCheck(path).controller() for path in paths]
+    #     xls_tables_list=[]
+    #     for path in paths:
+    #         xls_tables_list.append(DirCheck(path).controller())
+	#
+    #     for a, b in itertools.combinations(xls_tables_list, 2):
+    #         print xls_tables_list.index(a), xls_tables_list.index(b)
+    #         print a["reaction_definition"],b["reaction_definition"]
+    #         self.assertEqual(a["reaction_definition"], b["reaction_definition"])
+	#
+    #     print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+
 
 
 class DataManipulationTest(TestCase):
-
     def test_bngl_output(self):
         '''
         Function opens mini example networks in the all formats, that has been parsed by hand. This generates
         4 rxncon objects from which bngl output gets generated. Then, this output gets compared.
         '''
-        paths=[os.path.join(SBTAB_FILES,"sbtab/tiger_files_csv_cut"), #sbtab_csv
-              os.path.join(SBTAB_FILES,"sbtab/tiger_files_xls_cut"), #sbtab_xls
-              os.path.join(SBTAB_FILES,"rxncon_old/tiger_files_old_rxncon_cut.xls") , # rxncon old
-              os.path.join(SBTAB_FILES,"rxncon_new/tiger_files_new_rxncon_cut.xls") # rxncon new
-              ]
+        #paths=[os.path.join(SBTAB_FILES,"sbtab/tiger_files_csv_cut"), #sbtab_csv
+        #      os.path.join(SBTAB_FILES,"sbtab/tiger_files_xls_cut"), #sbtab_xls
+         #     os.path.join(SBTAB_FILES,"rxncon_old/tiger_files_old_rxncon_cut.xls") , # rxncon old
+          #    os.path.join(SBTAB_FILES,"rxncon_new/tiger_files_new_rxncon_cut.xls") # rxncon new
+           #   ]
+        paths=[os.path.join(SBTAB_FILES,"rxncon_new/tiger_files_new_rxncon_cut.xls"),
+               os.path.join(SBTAB_FILES,"rxncon_old/tiger_files_old_rxncon_cut.xls") ]
               # rxncon new
 
+        bngl_outputs=[]
         for path in paths:
-            d = DirCheck(path)
-            xls_tables=d.controller()
+            print 'test for loop entered. Parth: ', path
+            t = DirCheck(path)
+            xls_tables=t.controller()
 
             r= rxncon.Rxncon(xls_tables)
+            output=Bngl(r.reaction_pool,r.molecule_pool,r.contingency_pool)
+            bngl_outputs.append(output.get_src())
 
-        print "#################",__name__, 'successful.##################'
+        for a, b in itertools.combinations(bngl_outputs, 2):
+            self.assertEqual(a,b)
+
+        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
 if __name__ == '__main__':
     main()
