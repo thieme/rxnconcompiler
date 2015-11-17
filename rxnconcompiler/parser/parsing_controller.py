@@ -37,7 +37,7 @@ class DirCheck():
         self.target_format=''
         self.parsable_to=''
 
-        print 'd initialised. inputdir= ', self.inputdir," delete in the end"
+        #print 'd initialised. inputdir= ', self.inputdir," delete in the end"
 
     def processing(self, filedir):
         if filedir.endswith('.txt'):# basti: nach dem letzten punkt mit split
