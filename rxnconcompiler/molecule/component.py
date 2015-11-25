@@ -6,6 +6,7 @@ Class Component    - cleaps information about name, domain and id.
 
 from domain_factory import DomainFactory
 
+
 class Component:
     """
     Component object keeps informations about name, domain and id.
@@ -14,8 +15,9 @@ class Component:
     def __init__(self, name, domain=None, cid=None):
         self.name = name.strip()
         self.domain = domain
-        if self.domain:
-            self.domain = self.domain.strip()
+        if domain is not None:
+            self.domain = domain.name.strip()
+            self.domain_info = domain
         self.cid = cid
         self.second_domain = None  # for ipi states
 

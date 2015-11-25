@@ -1,0 +1,35 @@
+!!SBtab SBtabVersion="0.8" Document="CaCo_Metabolism" TableType="Reaction" TableName="CaCo_Metabolism_Reaction",,,,,,,,
+!Reaction,!Name,!SumFormula,!Location,!Regulator,!KineticLaw,!SBOTerm,!IsReversible,!Identifiers:ec-code
+GLUT2,GLUT2 glucose transporter,glc_ext <=> glc,,,,SBO:0000185,True,
+GLNTE,Glutamine transporter,gln_ext <=> gln,,,,SBO:0000185,True,
+HK,Hexokinase,glc + atp <=> glc6p + adp,cytosol,,,SBO:0000176,False,2.7.1.1
+G6PASE,D-Glucose-6-phosphate Phosphatase,glc6p + h2o <=> glc + phos,cytosol,,,SBO:0000176,False,3.1.3.9
+GPI,D-Glucose-6-phosphate Isomerase,glc6p <=> fru6p,cytosol,,,SBO:0000176,True,5.3.1.9
+PPASE,Pyrophosphate phosphohydrolase,pp + h2o <=> 2 phos,cytosol,,,SBO:0000176,False,3.6.1.1
+AK,ATP:AMP phosphotransferase (Adenylatkinase),atp + amp <=> 2 adp,cytosol,,,SBO:0000176,True,2.7.4.3
+PFK1,ATP:D-fructose-6-phosphate 1-phosphotransferase,fru6p + atp <=> fru16bp + adp,cytosol,,,SBO:0000176,False,2.7.1.11
+FBP1,D-Fructose-16-bisphosphate 1-phosphohydrolase,fru16bp + h2o <=> fru6p + phos,cytosol,,,SBO:0000176,False,3.1.3.11
+ALD,Aldolase,fru16bp <=> grap + dhap,cytosol,,,SBO:0000176,True,4.1.2.13
+TPI,Triosephosphate isomerase,dhap <=> grap,cytosol,,,SBO:0000176,True,5.3.1.1
+GAPDH,D-glyceraldehyde-3-phosphate:NAD+ oxidoreductase,grap + phos + nad <=> bpg13 + nadh + h,cytosol,,,SBO:0000176,True,1.2.1.12
+PGK,Phosphoglycerate kinase,adp + bpg13 <=> atp + pg3,cytosol,,,SBO:0000176,True,2.7.2.3
+PGM,2-phospho-D-glycerate 23-phosphomutase,pg3 <=> pg2,cytosol,,,SBO:0000176,True,5.4.2.1
+PGDHSer,Phosphoglycerate dehydrogenase,pg3 + nad <=> php + nadh + h,cytosol,,,SBO:0000176,False,1.1.1.95
+PSTA,Phosphoserine transaminase,php + glu <=> pSer + akg,cytosol,,,SBO:0000176,False,2.6.1.52
+PSP,Phosphoserine phosphatase,pSer + h2o <=> ser + phos,cytosol,,,SBO:0000176,False,3.1.3.3
+EN,2-phospho-D-glucerate hydrolyase (enolase),pg2 <=> pep,cytosol,,,SBO:0000176,True,4.2.1.11
+PK,Pyruvate kinase,pep + adp <=> pyr + atp,cytosol,,,SBO:0000176,False,2.7.1.40
+ATA,Alanine transaminase,ala + akg <=> pyr + glu,cytosol,,,SBO:0000176,True,2.6.1.2
+LDH,L-lactate dehydrogenase,pyr + nadh + h <=> lac + nad,cytosol,,,SBO:0000176,True,1.1.1.27
+PDH,Pyruvate dehydrogenase,pyr + coa + nad <=> acoa + co2 + nadh + h,cytosol,,,SBO:0000176,False,1.2.4.1
+PC,Pyruvate carboxylase,atp + pyr + co2 <=> oaa + adp + phos,cytosol,acoa,,SBO:0000176,False,6.4.1.1
+CS,Citrate synthase,acoa + oaa + h2o <=> cit + coa,cytosol,,,SBO:0000176,True,2.3.3.1
+AC,Aconitase,cit <=> isocit,cytosol,,,SBO:0000176,True,4.2.1.3
+ICDH,Isocitrate dehydrogenase,isocit + nad <=> akg + co2 + nadh + h,cytosol,,,SBO:0000176,False,1.1.1.41
+AKGDH,Alpha-ketoglutarate dehydrogenase,akg + coa + nad <=> succCoA + co2 + nadh + h,cytosol,,,SBO:0000176,True,1.2.4.2
+SCS,Succinyl-CoA synthetase,succCoA + phos + adp <=> succ + coa + atp,cytosol,,,SBO:0000176,True,6.2.1.5
+SDH,Succinate dehydrogenase,succ + fad <=> fum + fadh2,cytosol,,,SBO:0000176,False,1.3.5.1
+FMH,Fumarate hydratase,fum + h2o <=> mal,cytosol,,,SBO:0000176,True,4.2.1.2
+MDH,Malate dehydrogenase,mal + nad <=> oaa + nadh + h,cytosol,,,SBO:0000176,True,1.1.1.37
+GDH,Glutamate dehydrogenase,glu + h2o + nad <=> akg + nh3 + nadh + h,cytosol,,,SBO:0000176,True,1.4.1.3
+GLMN,Glutaminase,gln + h2o <=> glu + nh3,cytosol,,,SBO:0000176,False,3.5.1.2

@@ -15,7 +15,6 @@ Ste11 = """Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
 <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
 <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]"""
 
-
 class BiologicalComplexTests(TestCase):
     """
     Unit Tests for BiologicalComplex Class.
@@ -24,9 +23,9 @@ class BiologicalComplexTests(TestCase):
         """Prepares data for tests."""
         rxncon = Rxncon(Ste11)
         rxncon.run_process()
-        rections = rxncon.reaction_pool['Ste11_[KD]_P+_Ste7_[(ALS359)]']
-        self.compl1 = rections[0].product_complexes[0]
-        self.compl2 = rections[1].product_complexes[0]
+        reactions = rxncon.reaction_pool['Ste11_[KD]_P+_Ste7_[(ALS359)]']
+        self.compl1 = reactions[0].product_complexes[0]
+        self.compl2 = reactions[1].product_complexes[0]
 
         self.comp = BiologicalComplex()
         state_strings = ['A--B', 'A--C', 'A--D', 'B--E', 'B--F', \
@@ -34,12 +33,16 @@ class BiologicalComplexTests(TestCase):
         state_objects = [get_state(state) for state in state_strings]
         for state in state_objects:
             self.comp.add_state(state)
-        self.comp.cid = '1' 
-        
+        self.comp.cid = '1'
+
+
     def test_get_contingencies(self):
         """"""
         cont = self.compl1.get_contingencies()
         expected = '[! Ste7_[ALS359]-{P}, ! Ste7_[AssocSte11]--Ste11_[AssocSte7]]'
+        self.assertEqual(expected, str(cont))
+        cont = self.compl2.get_contingencies()
+        expected = '[! Ste5_[MEK]--Ste7_[AssocSte5], ! Ste7_[ALS359]-{P}, x Ste7_[AssocSte11]--Ste11_[AssocSte7], ! Ste5_[BDSte5]--Ste5_[BDSte5], ! Ste5_[MEKK]--Ste11_[AssocSte5]]'
         self.assertEqual(expected, str(cont))
 
     def test_remove_molecule(self):

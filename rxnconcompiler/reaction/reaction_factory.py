@@ -15,6 +15,7 @@ from reaction_container import ReactionContainer, ReactionPool
 from rate import Rate 
 from rxnconcompiler.definitions.definitions import ReactionDefinitions
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION
+
 from rxnconcompiler.molecule.molecule import Molecule, MoleculePool
 from rxnconcompiler.molecule.state import get_state
 
@@ -43,7 +44,11 @@ class ReactionFactoryFromDict:
             container = ReactionContainer()
             container.name = row['Reaction[Full]']
             container.rid = row_id + 1
-            container.rtype = row['ReactionType']
+            if "Reaction" in row:
+                container.rtype = row['ReactionType']
+            else:
+                container.rtype = row['ReactionType:ID']
+                container.rtypeID = row['UID:Reaction']
 
             reaction = self.get_reaction_object(row) 
             reaction.rid = row_id + 1
@@ -59,7 +64,7 @@ class ReactionFactoryFromDict:
         Adds left and right reactant as Molecule objects. 
         For ipi there is only single object as left and right reactant.
         """
-        if reaction.rtype == 'ipi':
+        if reaction.rtype == 'ipi' or reaction.rtype == "2.1.1.2":
             mol = Molecule(row['ComponentA[Name]'])
             mol.is_reactant = True
             reaction.left_reactant = mol
@@ -79,25 +84,33 @@ class ReactionFactoryFromDict:
         @param row: row from xls_tables['reaction_list']
         @rtype: specific Reaction object
         """
-        r_type = row['ReactionType'].lower()
+        if 'ReactionType' in row:
+            r_type = row['ReactionType'].lower()
+            r_typeID = r_type
+        else:
+            r_type = row['ReactionType:ID']
+            r_typeID = row['UID:Reaction'].lower()
 
         categories_dict = self.definitions.categories_dict
-        if r_type in categories_dict['Covalent Modification']:
+        if ('Covalent Modification' in categories_dict and r_type in categories_dict['Covalent Modification']) or  r_type.split(".")[0] == "1":
             reaction = Modification()
-        elif r_type in categories_dict['Association']:
+        elif ('Association' in categories_dict and r_type in categories_dict['Association']) or  r_type.split(".")[0] == "2":
             reaction = Interaction()
-        elif r_type in categories_dict['Synthesis/Degradation']:
+        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(".")[0] == "3":
             reaction = SyntDeg()
-        elif r_type in categories_dict['Relocalisation']:
+        elif ("Relocalisation" in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(".")[0] == "4":
             reaction = Relocalisation()
+
         
 
         reaction.rtype = r_type
         reaction.name = row['Reaction[Full]']
-        if self.definitions.has_key(r_type):
-            reaction.definition = self.definitions[r_type]
+        if r_typeID is not None:
+            reaction.rtypeID = r_typeID
+        if self.definitions.has_key(r_typeID):
+            reaction.definition = self.definitions[r_typeID]
         else: 
-            raise TypeError('No reactio type %s.') % r_type
+            raise TypeError('No reaction typeName %s.' % r_typeID)
 
         self.add_reactants(reaction,row)
         return reaction
@@ -106,28 +119,34 @@ class ReactionFactoryFromDict:
         """
         Takes a row and returns reaction object.
         """
-        r_type = row['ReactionType'].lower()
+        if 'ReactionType' in row:
+            r_type = row['ReactionType'].lower()
+            r_typeID = r_type
+        else:
+            r_type = row['ReactionType:ID']
+            r_typeID = row['UID:Reaction']
+
         categories_dict = self.definitions.categories_dict
         reaction = self.get_preliminary_reaction(row)
 
-        if r_type in categories_dict['Covalent Modification']:
+        if ('Covalent Modification' in categories_dict and r_type in categories_dict['Covalent Modification']) or  r_type.split(".")[0] == "1" :
             state = get_state(row, reaction, 'Covalent Modification')
-            if r_type == 'pt': # if subtype == Trnas
+            if r_type == 'pt' or r_type == "1.1.3.1": # if subtype == Trnas
                 # second state changes in the reaction PT
                 state_pt = get_state(row, reaction, 'PT')
                 reaction.right_reactant.add_modification_site(state)
                 reaction.left_reactant.add_modification(state_pt)
                 reaction.to_change_pt = state_pt
-            elif '-' in r_type or r_type in ['gap']:
+            elif ('-' in r_type or r_type in ['gap']) or (len(r_type.split(".")) == 4 and r_type.split(".")[2] == "2" ): # 1.1.2.1 the third position defines negative or positive
                 reaction.right_reactant.add_modification(state)
             else:
                 reaction.right_reactant.add_modification_site(state)
             reaction.to_change = state
 
-        elif r_type in categories_dict['Association']:
+        elif ('Association' in categories_dict and r_type in categories_dict['Association']) or  r_type.split(".")[0] == "2":
             # ipi is destinctive state: it is A_[a]--[b]
             # where both domains are in the same protein.
-            if r_type == 'ipi':
+            if r_type == 'ipi' or r_type == "2.1.1.2":
                 state = get_state(row, reaction, 'Intraprotein')
                 reaction.left_reactant.add_binding_site(state)
                 reaction.to_change = state
@@ -138,22 +157,24 @@ class ReactionFactoryFromDict:
                 reaction.right_reactant.add_binding_site(state)
                 reaction.to_change = state
 
-        elif r_type in categories_dict['Synthesis/Degradation']:
+        elif ('Synthesis/Degradation' in categories_dict and r_type in categories_dict['Synthesis/Degradation']) or  r_type.split(".")[0] == "3":
             pass
 
-        elif r_type in categories_dict['Relocalisation']:
+        elif ('Relocalisation' in categories_dict and r_type in categories_dict['Relocalisation']) or  r_type.split(".")[0] == "4":
             state = get_state(row, reaction, 'Relocalisation')
             reaction.to_change = state
             reaction.right_reactant.localisation = state
         else:
             reaction = Reaction()
 
-        reaction.definition = self.definitions[r_type]
+        reaction.definition = self.definitions[r_typeID]
         return reaction
 
 
 class ReactionFactoryFromList:
-    """Builds ReactionPool and MoleculePool from a list of states."""
+    """
+    USAGE?
+    Builds ReactionPool and MoleculePool from a list of states."""
     def __init__(self, states_list):
         self.definitions = ReactionDefinitions({'reaction_definition': DEFAULT_DEFINITION})
         self.reaction_pool = ReactionPool()
@@ -162,6 +183,9 @@ class ReactionFactoryFromList:
 
     def get_reaction_type(self, state):
         """
+        NOT USED
+
+
         Returns string that describes reaction type.
         E.g. 'ppi', 'p+'
         """
@@ -241,7 +265,7 @@ class ReactionFactoryFromList:
         if self.definitions.has_key(reaction.rtype):
             reaction.definition = self.definitions[reaction.rtype]
         else: 
-            raise TypeError('No reactio type %s.') % reaction.rtype
+            raise TypeError('No reactio type %s.' % reaction.rtype)
         self.add_reactants(reaction, state)
         return reaction
 

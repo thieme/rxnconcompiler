@@ -101,9 +101,17 @@ class Molecule:
     def __repr__(self):
         return self.name
 
+    def __getitem__(self, idx):
+        return self[idx]
+
     def __eq__(self, other):
         if not self.name == other.name:
             return False
+        if isinstance(other, Component):
+            if self.mid and other.cid and self.mid != other.cid:
+                return False
+            else:
+                return True
         if self.mid and other.mid and self.mid != other.mid:
             return False
         return True
@@ -273,7 +281,7 @@ class Molecule:
 
     def get_empty_binding_domains_states_dict(self, side = 'L'):
         """
-        Goes throughmolecule.binding_sites and
+        Goes through molecule.binding_sites and
         returns {'a': A_[a]--B_[b], ...}
         """
         result = {}
@@ -285,7 +293,7 @@ class Molecule:
         """
         Returns a list of domains.
         mode and occupied indicate which domains are we looking for:
-        binding or covlent or binding, occupied or free.
+        binding or covalent or binding, occupied or free.
 
         Side indicates which domain to pick in case of homodimers.
         """
@@ -299,7 +307,7 @@ class Molecule:
         elif mode == 'modification' and not occupied:
             to_search = self.modification_sites
         else:
-            raise 'Wrong domain search mode'
+            raise Exception('Wrong domain search mode')
 
         # looking for domains in proper list
         result = []
@@ -328,6 +336,15 @@ class Molecule:
         doms += self.get_domains('modification', False, side)
         return list(set(doms))
 
+    def get_all_involved_states(self):
+        to_search = []
+        to_search.extend(self.binding_partners)
+        to_search.extend(self.binding_sites)
+        to_search.extend(self.modifications)
+        to_search.extend(self.modification_sites)
+
+        return to_search
+
     def domain_is_present(self, domain, side = 'L'):        
         """
         Checks whether domain name is present already.
@@ -337,8 +354,19 @@ class Molecule:
             return True
         return False
 
+    def set_site(self, state, side='L'):
+        """
+        set the domain by considering the state type
+        """
 
-    def add_binding_site(self, state, side = 'L'):
+        if state.type == "Covalent Modification":
+            if state not in self.modification_sites:
+                self.add_modification_site(state)
+        elif state.type == "Association":
+            if state not in self.binding_sites:
+                self.add_binding_site(state, side)
+
+    def add_binding_site(self, state, side='L'):
         """
         side indicates in case of homodimers which 
         component (domain) should be taken into account.
@@ -362,7 +390,7 @@ class Molecule:
             if empty_domain:
                 self.binding_sites.append(state)
 
-    def remove_binding_site(self):
+    def remove_binding_site(self,state):
         """"""
         if self.has_binding_site(state):
             self.binding_sites.remove(state)
@@ -380,7 +408,6 @@ class Molecule:
             if mod_site == mod and \
             mod_site.components[0].domain == mod.components[0].domain:
                 to_remove = mod_site
-        #if to_remove:
 
         if to_remove:
             temp = []
@@ -396,6 +423,8 @@ class Molecule:
                 # Possible we have bug there
             self.modification_sites = temp
 
+    def remove_modification_site(self, mod):
+        self.modification_sites.remove(mod)
 
     def add_modification_site(self, mod):
         """"""

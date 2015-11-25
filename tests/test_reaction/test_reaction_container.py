@@ -48,7 +48,7 @@ class ReactionContainerTests(TestCase):
 
     def test_highest_subrate(self):
         """
-        Test whether corect int value is found.
+        Test whether correct int value is found.
         """
         self.assertEqual(self.bool.highest_subrate, 2)
         self.assertEqual(self.interaction.highest_subrate, 0)

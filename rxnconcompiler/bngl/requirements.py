@@ -44,9 +44,9 @@ class RequirementNode:
              /       \
          OR A-{P}    OR B-{P}
 
-        P1 = [[!A-{P}]]    
-        P2 = [[!B-{P}]]    
-        P  = [[!A-{P}] + [!B-{P}] = [[!A-{P}], [!B-{P}]] 
+        P1 = [[!A-{P}]]
+        P2 = [[!B-{P}]]
+        P  = [[!A-{P}] + [!B-{P}] = [[!A-{P}], [!B-{P}]]
         """
         result = []
         for node in nodes:
@@ -70,10 +70,10 @@ class RequirementNode:
         all_pos = [node.positive for node in nodes]
         result = reduce(product, all_pos)
         self.positive = [flatten(x) for x in result]
-        
+
     def get_leaf(self, node):
         """
-        Asignes requirements to contingencies 
+        Assign requirements to contingencies
         with no children and which are not K+ and not K-.
         """
         if node.ctype == '!' or node.inherited_ctype == '!':
@@ -84,18 +84,38 @@ class RequirementNode:
 
 class RequirementsGenerator:
     """
-    The RequirementsGenerator object goes through all contingencies 
+    The RequirementsGenerator object goes through all contingencies
     using a tree traversal algorithm
-    and generates requirements with only x and ! signs. 
+    and generates requirements with only x and ! signs.
 
     Input: contingency root node
     Deals with !, x, boolean contingencies, ignores K+, K-, 0, ?
     """
-    def __init__(self, root_node):
-        self.root = root_node       
+    def __init__(self, contingency_pool, root_node):
+        if root_node in contingency_pool:
+            self.root = contingency_pool[root_node]
+        else:
+            self.root = root_node
+        self.contingency_pool = contingency_pool
+        self.set_structure()
+
         self.requirements = []
         self.nodes_dict = {}
         self._create_node_dict(self.root)
+
+    def child_assignment(self, children, ctype):
+        for child in children:
+            child.inherited_ctype = ctype
+            if child.has_children:
+                self.child_assignment(child.children, ctype)
+
+    def set_structure(self):
+        for child in self.root.children:
+            if child.state.state_str.startswith("<") and child.target_reaction == self.root.target_reaction:
+                child.children = self.contingency_pool[child.state.state_str].children
+                self.child_assignment(child.children, child.ctype)
+                #or assigned_child in child.children:
+                #    assigned_child.inherited_ctype = child.ctype
 
     def __str__(self):
         """
@@ -111,20 +131,20 @@ class RequirementsGenerator:
     def _get_str(self, node=None):
         """
         Produces a string with all contingencies from the given node.
-        Traverse contingencies downstream from the given node. 
+        Traverse contingencies downstream from the given node.
         When given root node creates complete string.
         """
         result = ''
-        if not node: 
+        if not node:
             return result
         elif not node.has_children:
-            if node.ctype == 'none' or not node.ctype: return '' 
+            if node.ctype == 'none' or not node.ctype: return ''
             result += ' ' + str(node)
             if node.ctype in ['k+', 'k-', '!', '0', 'x', '?']:
                 result += ', '
         elif node.has_children:
             children_str = ''
-            for child in node.children: 
+            for child in node.children:
                 children_str += self._get_str(child)
             if node.ctype and node.ctype != 'none':
                 result += ' %s (%s)' % (node.ctype, children_str)
@@ -145,7 +165,7 @@ class RequirementsGenerator:
         if node.has_children:
             for child in node.children:
                 self._create_node_dict(child)
-        
+
     def requirements2nodes(self, cont):
         """
         Recursively assigns requirements to given contingency.
@@ -155,19 +175,19 @@ class RequirementsGenerator:
         if not cont.has_children: # and cont.ctype not in ['0', '?', 'k+', 'k-', 'x']:
             req_node.get_leaf(cont)
 
-        elif cont.has_children: #and  cont.ctype not in ['0', '?', 'k+', 'k-', 'x']: 
+        elif cont.has_children: #and  cont.ctype not in ['0', '?', 'k+', 'k-', 'x']:
             for child in cont.children:
                 self.requirements2nodes(child)
 
             child_nodes = [self.nodes_dict[child] for child in cont.children]
-            
+
             if cont.children[0].ctype == 'or':
                 req_node.get_or_positive(child_nodes)
-            
+
             elif cont.children[0].ctype == 'and' \
                 or cont.ctype == 'none' or not cont.ctype:
                 req_node.get_and_positive(child_nodes)
-        
+
     def get_requirements(self):
         """
         Creates the final list of requirements.
@@ -182,7 +202,7 @@ class RequirementsGenerator:
             self.requirements.append(temp)
         return self.requirements
 
-        
+
 class RequirementsFactory:
     """
     Produces dictionary with requirements for all reactions.
@@ -198,7 +218,7 @@ class RequirementsFactory:
         """
         reqs = RequirementsPool()
         for reaction in self.contingencies.keys():
-            req_gen = RequirementsGenerator(self.contingencies[reaction])
+            req_gen = RequirementsGenerator(self.contingencies, reaction)
             reqs[reaction] = req_gen.get_requirements()
         return reqs
 
@@ -212,11 +232,11 @@ class RequirementsFactory:
         A_ppi_B; ! <Bool>
         <Bool>; OR A-{P}; OR B-{P}
 
-        'A_ppi_B': [['x A--C', '! A-{P}'], ['x A--C', '! B-{P}']] 
+        'A_ppi_B': [['x A--C', '! A-{P}'], ['x A--C', '! B-{P}']]
         """
         result = {}
         for reaction in self.requirements.keys():
-            result[reaction] = []                
+            result[reaction] = []
             for req_list in self.requirements[reaction]:
                 temp = [str(req) for req in req_list]
                 result[reaction].append(temp)

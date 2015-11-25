@@ -27,10 +27,10 @@ from test_data.bngl_rules.rules_pheromon_data import DATA as PHEROMON
 DATA_SETS = {
     # name: [data_set1, data_set2, ...]
     'Basic Data Set': BASIC,
-    'MAPK Data Set': MAPK,
+    #'MAPK Data Set': MAPK,
     #'Input (e.g. Start) Data Set': INPUT,
-    #'Complex Geometry Data Set': GEOMETRY,
-    'Difficault Cases Data Set': DIFFICULT,
+    'Complex Geometry Data Set': GEOMETRY,
+    'Difficult Cases Data Set': DIFFICULT,
     #'Pheromon Pathway Data Set': PHEROMON
 
 }
@@ -89,7 +89,7 @@ class RuleAcceptanceTests(TestCase):
 
     def assertSystemAsReactions(self, data_dict, system_name="Test set"):
         """
-        Tests reactions forom a single rxncon system (data set).
+        Tests reactions form a single rxncon system (data set).
         One system == one dictionary from test_data 
 
         Gets each rxncon reaction (+ its contingencies) separately 
@@ -100,7 +100,6 @@ class RuleAcceptanceTests(TestCase):
         n_reactions = 0
         n_rules = 0
         for reaction in data_dict:
-            #print reaction
             bngl = Compiler(reaction).translate()
             reaction_passed = True
             for rule in data_dict[reaction]['Rules']:

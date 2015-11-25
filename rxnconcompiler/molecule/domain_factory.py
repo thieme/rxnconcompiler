@@ -64,6 +64,44 @@ import re
 
 ASSOCIATION_PRE = 'Assoc'
 
+class Domain:
+    """domain onject"""
+
+    def __init__(self,dsr):
+        """Constructor for Domain"""
+        self.main = ""
+        self.sub = ""
+        self.residue = ""
+        self.get_domain_subdomain_residue(dsr)
+        self.raw_name = dsr
+        self.name = re.sub('[\(\)\]\[:/]', '',dsr)
+
+    def __repr__(self):
+        return self.raw_name
+
+    def set_domain_info(self, main, sub, residue):
+        dsr = ""
+        if main:
+            dsr += main
+            if sub:
+                dsr += "/%s"%sub
+            if residue:
+                dsr += "(%s)"%residue
+        elif residue:
+            dsr += "(%s)"%residue
+
+        self.get_domain_subdomain_residue(dsr)
+        self.raw_name = dsr
+        self.name = re.sub('[\(\)\]\[:/]', '',dsr)
+
+    def get_domain_subdomain_residue(self, dsr):
+        domain = re.sub('\[|\]', "", dsr)
+        domain = re.match('(\w*)/?(\w*)\(?(\w*)\)?',domain)
+        self.main = domain.group(1)
+        self.sub = domain.group(2)
+        self.residue = domain.group(3)
+
+
 class DomainFactory:
     """
     """
@@ -73,34 +111,36 @@ class DomainFactory:
     def get_localisation_domain(self):
         """
         """
-        return 'loc'
+        return Domain('loc')
 
     def get_dsr(self, row, ab='A', with_delimiters=False):
+        """
+        get the domain information from parsed row and translated this information in an domain object
+        @param row: dictionary of the current information row
+        @param ab: Compartment A or B
+        @param with_delimiters:
+        @return: Domain object
+        """
         cmpnt = 'Component%s%%s' % ab
         if not with_delimiters:
             if row.has_key(cmpnt % '[DSR]'):
-                return re.sub('[/\(\)]', '', row[cmpnt % '[DSR]']) if row[cmpnt % '[DSR]'] else None
-            dsr = "%s%s%s" % (
-                    "%s" % row[cmpnt%'[Domain]'] if row[cmpnt%'[Domain]'] else '',
-                    "%s" % row[cmpnt%'[Subdomain]'] if row[cmpnt%'[Subdomain]'] else '',
-                    "%s" % row[cmpnt%'[Residue]'] if row[cmpnt%'[Residue]'] else '',
-                )
-            if not dsr:
-                #dsr = 'bd0'+row['Component%s[Name]'%('A' if ab=='B' else 'B')]
-                dsr = None
-            if dsr:
-                dsr = re.sub('\W', '', dsr)
+                domain = Domain(row[cmpnt % '[DSR]'])
+                if domain:
+                    return domain
+
+            dsr = Domain("")
+            dsr.set_domain_info(row[cmpnt%'[Domain]'], row[cmpnt%'[Subdomain]'], row[cmpnt%'[Residue]'])
+
+            if dsr.name:
+                dsr.name = re.sub('\W', '', dsr.name)
         elif row.has_key(cmpnt%'[DSR]'):
-                return row[cmpnt%'[DSR]']
+                return Domain(row[cmpnt%'[DSR]'])
         else:
-            dsr = "%s%s%s"%(
-                    "%s"%row[cmpnt%'[Domain]'] if row[cmpnt%'[Domain]'] else '',
-                    "/%s"%row[cmpnt%'[Subdomain]'] if row[cmpnt%'[Subdomain]'] else '',
-                    "(%s)"%row[cmpnt%'[Residue]'] if row[cmpnt%'[Residue]'] else '',
-                )
+            dsr = Domain("")
+            dsr.set_domain_info(row[cmpnt%'[Domain]'], row[cmpnt%'[Subdomain]'], row[cmpnt%'[Residue]'])
         return dsr
 
-    def get_association_domain_from_str(self, state_str, side='A'):
+    def get_association_domain_from_str(self, state_str, side='A', domain=None):
         """
         Produces domain string for associations.
         It gets state string as an input.
@@ -118,20 +158,36 @@ class DomainFactory:
         comp = state_str.split('--')
         if side == 'A':
             if '_' in comp[0]:
-                # domain provided by the user.
-                return re.sub('[\(\)\]\[:/]', '', comp[0].split('_')[1])
+            # domain provided by the user.
+                if domain != None:
+                    domain = domain
+                else:
+                    domain = Domain(comp[0].split('_')[1])
+
+                return domain
+
             else:
                 # default domain: name of the partner. 
-                partner_name = re.sub('[\(\)\]\[:/]', '', comp[1].split('_')[0])
-                return '%s%s' % (ASSOCIATION_PRE, partner_name)
+                partner_name = re.sub('[\(\)\]\[:/]', '', comp[1].split('_')[0])  # In case of Intraprotein interaction there is a [ in the partner
+                default_domain = '%s%s' % (ASSOCIATION_PRE, partner_name)
+                domain = Domain(default_domain)
+
+                return domain
         elif side == 'B':
             if '_' in comp[1]:
                 # domain provided by the user.
-                return re.sub('[\(\)\]\[:/]', '', comp[1].split('_')[1])
+                if domain is not None:
+                    return domain
+                else:
+                    domain = Domain(comp[1].split('_')[1])
+                return domain
             else:
                 # default domain: name of the partner. 
                 partner_name = re.sub('[\(\)\]\[:/]', '', comp[0].split('_')[0])
-                return '%s%s' % (ASSOCIATION_PRE, partner_name)
+                default_domain = '%s%s' % (ASSOCIATION_PRE, partner_name)
+                domain = Domain(default_domain)
+
+                return domain
 
     def get_association_domain_from_dict(self, row, side='A'):
         """
@@ -142,18 +198,21 @@ class DomainFactory:
         (by defult name of partner - right reactant)
         """
         if side == 'A':
-            if row.has_key('ComponentA[DSR]'):
-                a_dsr = row['ComponentA[DSR]']
+
+            a_dsr = self.get_dsr(row, 'A')
+            if a_dsr.name:
+                return a_dsr
             else:
-                a_dsr = self.get_dsr(row, 'A')
-            return a_dsr or ('%s%s' % (ASSOCIATION_PRE, row['ComponentB[Name]']))
+                return Domain('%s%s' % (ASSOCIATION_PRE, row['ComponentB[Name]']))
 
         elif side == 'B':
-            if row.has_key('ComponentB[DSR]'):
-                b_dsr = row['ComponentB[DSR]']
+
+            b_dsr = self.get_dsr(row, 'B')
+
+            if b_dsr.name:
+                return b_dsr
             else:
-                b_dsr = self.get_dsr(row, 'B')
-            return b_dsr or ('%s%s' % (ASSOCIATION_PRE, row['ComponentA[Name]']))
+                return Domain('%s%s' % (ASSOCIATION_PRE, row['ComponentA[Name]']))
          
     def get_intraprotein_domain_from_dict(self, row, side='A'):
         """
@@ -164,50 +223,52 @@ class DomainFactory:
         (by defult name of partner - right reactant)
         """
         if side == 'A':
-            if row.has_key('ComponentA[DSR]'):
-                a_dsr = row['ComponentA[DSR]']
+
+            a_dsr = self.get_dsr(row, 'A')
+
+            if a_dsr.name:
+                return a_dsr
             else:
-                a_dsr = self.get_dsr(row, 'A')
-            return a_dsr or ('%s%s%i' % (ASSOCIATION_PRE, row['ComponentB[Name]'], 1))
+                return Domain('%s%s%i' % (ASSOCIATION_PRE, row['ComponentB[Name]'], 1))
 
         elif side == 'B':
-            if row.has_key('ComponentB[DSR]'):
-                b_dsr = row['ComponentB[DSR]']
+
+            b_dsr = self.get_dsr(row, 'B')
+            if b_dsr.name:
+                return b_dsr
             else:
-                b_dsr = self.get_dsr(row, 'B')
-            return b_dsr or ('%s%s%i' % (ASSOCIATION_PRE, row['ComponentA[Name]'], 2))
+                return Domain('%s%s%i' % (ASSOCIATION_PRE, row['ComponentA[Name]'], 2))
+
 
     def get_modification_domain_from_str(self, state_str):
         """ 
-        It is used in ...
+
         """
         comp_name_dom = state_str.split('-{')[0].split('_')
         if len(comp_name_dom) == 1:
-            return 'bd'
+            return Domain('bd')
         else:
-            return re.sub('\(|\)|\[|\]', '', comp_name_dom[1])
+            return Domain(comp_name_dom[1])
 
-    def get_modification_domain_from_dict(self, row, reaction, component='B'):
+    def get_modification_domain_from_dict(self, row, component='B'):
         """
         """
         if component == 'B':
-            if row.has_key('ComponentB[DSR]'):
-                b_dsr = row['ComponentB[DSR]']
+
+            b_dsr = self.get_dsr(row, 'B')
+
+            if b_dsr.name:
+                return b_dsr
             else:
-                b_dsr = self.get_dsr(row, 'B')
-            if b_dsr:
-                return re.sub('\(|\)|\[|\]', '', b_dsr)
-      
-            domain = row['ComponentA[Name]'] 
-            return re.sub('\(|\)|\[|\]', '', domain)  
+                domain = row['ComponentA[Name]']  # modification default domain
+                return Domain(re.sub('\(|\)|\[|\]', '', domain))
             
         elif component == 'A':
-            if row.has_key('ComponentA[DSR]'):
-                b_dsr = row['ComponentA[DSR]']
+
+            a_dsr = self.get_dsr(row, 'A')
+
+            if a_dsr.name:
+                return a_dsr
             else:
-                b_dsr = self.get_dsr(row, 'A')
-            if b_dsr:
-                return re.sub('\(|\)|\[|\]', '', b_dsr)
-      
-            domain = row['ComponentB[Name]'] 
-            return re.sub('\(|\)|\[|\]', '', domain) 
+                domain = row['ComponentB[Name]'] # default domain for modification
+                return Domain(re.sub('\(|\)|\[|\]', '', domain))

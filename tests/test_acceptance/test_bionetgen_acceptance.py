@@ -48,7 +48,7 @@ DATA_SETS = {
     'MAPK Data Set': MAPK,
     #'Input (e.g. Start) Data Set': INPUT,
     #'Complex Geometry Data Set': GEOMETRY,
-    #'Difficault Cases Data Set': DIFFICULT,
+    #'Difficult Cases Data Set': DIFFICULT,
     #'Pheromon Pathway Data Set': PHEROMON
 }
 
