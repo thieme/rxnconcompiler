@@ -62,7 +62,7 @@ class Tree(object):
         self.nodes = []
 
     def get_highest_id(self):
-        max_cid = 0
+        max_id = 0
         for node in self.nodes:
             if node.id > max_id:
                 max_id = node.id
@@ -73,9 +73,9 @@ class Tree(object):
         add a node in a tree
         """
         #if not self.contains(identifier):
-        if cid is None:
-            cid = self.get_highest_cid()
-            cid += 1
+        if id is None:
+            id = self.get_highest_id()
+            id += 1
         node = Node(name=name, id= id)
         self.nodes.append(node)
         parent_node = self.update_children(parent, node.id, _ADD, parent_cid)
