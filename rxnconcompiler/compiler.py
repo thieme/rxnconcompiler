@@ -8,6 +8,7 @@ Class Compiler: translates any rxncon language input
 from parser.rxncon_parser import parse_rxncon
 from rxncon import Rxncon
 from bngl.bngl import Bngl
+#import rxnconcompiler.parser.parsing_controller as parsing_controller
 
 class Compiler:
     """
@@ -24,6 +25,8 @@ class Compiler:
         Keeps single xls object.
         """
         self.xls_tables = parse_rxncon(input_data)
+        #d = parsing_controller.DirCheck(input_data)
+        #self.xls_tables = d.controller()
 
     def translate(self, add_translation=False, add_missing_reactions=False, add_complexes=True, add_contingencies=True):
         """

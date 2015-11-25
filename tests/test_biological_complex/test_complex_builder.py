@@ -8,7 +8,8 @@ from unittest import main, TestCase
 import copy
 
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
-from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder, Tree
+from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder
+from rxnconcompiler.tree import ComplexTree
 from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.molecule.molecule import Molecule
 from rxnconcompiler.rxncon import Rxncon
@@ -97,7 +98,7 @@ class BiologicalComplexBuilderTests(TestCase):
             self.comp.add_state(state)
         self.comp.cid = '1'
 
-        self.expected_Cdc24_tree = Tree()
+        self.expected_Cdc24_tree = ComplexTree()
         self.expected_Cdc24_tree.add_Node("Cdc42")
         self.expected_Cdc24_tree.add_Node("Cdc24")
         self.expected_Cdc24_tree.add_Node("Far1",parent="Cdc24", parent_cid=2)
@@ -107,7 +108,7 @@ class BiologicalComplexBuilderTests(TestCase):
         self.expected_Cdc24_tree.add_Node("Ste18", parent="Ste4", parent_cid=6)
         #self.expected_Cdc24_tree.add_Node("Cdc42")
 
-        basic_tree = Tree()
+        basic_tree = ComplexTree()
         basic_tree.add_Node("E")
         basic_tree.add_Node("A", old_cid="5")
         basic_tree.add_Node("B",parent="A", parent_cid=2, old_cid="25")
