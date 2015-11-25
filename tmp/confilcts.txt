@@ -1,0 +1,177 @@
+29 Conflicts
+##############
+product_contingency.target_reaction:  Msg5_[PD]_P-_Slt2_[(T190)]
+conflicted state:  Slt2_[DB]--Swi4_[c]
+conflicted reaction:  Slt2_[DB]_ppi_Swi4_[c]
+conflict product_contingency:  x Slt2_[T190]-{P}  required_cont:  ! Slt2_[T190]-{P}
+conflict chain:  [Slt2_[DB]--Swi4_[c], Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4]]
+##############
+product_contingency.target_reaction:  Msg5_[PD]_P-_Slt2_[(Y192)]
+conflicted state:  Slt2_[DB]--Swi4_[c]
+conflicted reaction:  Slt2_[DB]_ppi_Swi4_[c]
+conflict product_contingency:  x Slt2_[Y192]-{P}  required_cont:  ! Slt2_[Y192]-{P}
+conflict chain:  [Slt2_[DB]--Swi4_[c], Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4]]
+##############
+product_contingency.target_reaction:  Rom2_[DH]_GEF_Rho1_[GnP]
+conflicted state:  Pkc1_[C1]--Rho1_[ED]
+conflicted reaction:  Pkc1_[C1]_ppi_Rho1_[ED]
+conflict product_contingency:  x Rho1_[GnP]-{P}  required_cont:  ! Rho1_[GnP]-{P}
+conflict chain:  [Pkc1_[C1]--Rho1_[ED]]
+##############
+product_contingency.target_reaction:  Sdp1_[PD]_P-_Slt2_[(T190)]
+conflicted state:  Slt2_[DB]--Swi4_[c]
+conflicted reaction:  Slt2_[DB]_ppi_Swi4_[c]
+conflict product_contingency:  x Slt2_[T190]-{P}  required_cont:  ! Slt2_[T190]-{P}
+conflict chain:  [Slt2_[DB]--Swi4_[c], Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4]]
+##############
+product_contingency.target_reaction:  Sdp1_[PD]_P-_Slt2_[(Y192)]
+conflicted state:  Slt2_[DB]--Swi4_[c]
+conflicted reaction:  Slt2_[DB]_ppi_Swi4_[c]
+conflict product_contingency:  x Slt2_[Y192]-{P}  required_cont:  ! Slt2_[Y192]-{P}
+conflict chain:  [Slt2_[DB]--Swi4_[c], Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4]]
+##############
+product_contingency.target_reaction:  Slt2_[DB]_ppi_Swi4_[c]
+conflicted state:  Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4]
+conflicted reaction:  Swi4_BIND_SCBG1
+conflict product_contingency:  ! Slt2_[DB]--Swi4_[c]  required_cont:  x Slt2_[DB]--Swi4_[c]
+conflict chain:  [Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4]]
+##############
+product_contingency.target_reaction:  Slt2_[DB]_ppi_Swi4_[c]
+conflicted state:  Swi4_[n]--[c]
+conflicted reaction:  Swi4_[n]_ipi_Swi4_[c]
+conflict product_contingency:  ! Slt2_[DB]--Swi4_[c]  required_cont:  x Slt2_[DB]--Swi4_[c]
+conflict chain:  [Swi4_[n]--[c]]
+
+
+##############
+product_contingency.target_reaction:  Swi4_[c]_ppi_Swi6_[c]
+conflicted state:  Swi4_[n]--[c]
+conflicted reaction:  Swi4_[n]_ipi_Swi4_[c]
+conflict product_contingency:  ! Swi4_[c]--Swi6_[c]  required_cont:  x Swi4_[c]--Swi6_[c]
+conflict chain:  [Swi4_[n]--[c]]
+##############
+product_contingency.target_reaction:  Tus1_[DH]_GEF_Rho1_[GnP]
+conflicted state:  Pkc1_[C1]--Rho1_[ED]
+conflicted reaction:  Pkc1_[C1]_ppi_Rho1_[ED]
+conflict product_contingency:  x Rho1_[GnP]-{P}  required_cont:  ! Rho1_[GnP]-{P}
+conflict chain:  [Pkc1_[C1]--Rho1_[ED]]
+##############
+product_contingency.target_reaction:  Cdc24_[GEF]_GEF_Cdc42_[GnP]
+conflicted state:  Cdc42_[ED]--Ste20_[CRIB]
+conflicted reaction:  Cdc42_[ED]_ppi_Ste20_[CRIB]
+conflict product_contingency:  x Cdc42_[GnP]-{P}  required_cont:  ! Cdc42_[GnP]-{P}
+conflict chain:  [Cdc42_[ED]--Ste20_[CRIB]]
+##############
+product_contingency.target_reaction:  Cdc42_[ED]_ppi_Ste20_[CRIB]
+conflicted state:  Ste20_[KD]--Ste20_[CRIB]
+conflicted reaction:  Ste20_[KD]_ppi_Ste20_[CRIB]
+conflict product_contingency:  ! Cdc42_[ED]--Ste20_[CRIB]  required_cont:  x Cdc42_[ED]--Ste20_[CRIB]
+conflict chain:  [Ste20_[KD]--Ste20_[CRIB]]
+##############
+product_contingency.target_reaction:  Ptc1_[PD]_P-_Hog1_[(T174)]
+conflicted state:  Hog1_[n]--Hot1_[m]
+conflicted reaction:  Hog1_[n]_ppi_Hot1_[m]
+conflict product_contingency:  x Hog1_[T174]-{P}  required_cont:  ! Hog1_[T174]-{P}
+conflict chain:  [Hog1_[n]--Hot1_[m]]
+##############
+product_contingency.target_reaction:  Ptc2_[PD]_P-_Hog1_[(T174)]
+conflicted state:  Hog1_[n]--Hot1_[m]
+conflicted reaction:  Hog1_[n]_ppi_Hot1_[m]
+conflict product_contingency:  x Hog1_[T174]-{P}  required_cont:  ! Hog1_[T174]-{P}
+conflict chain:  [Hog1_[n]--Hot1_[m]]
+##############
+product_contingency.target_reaction:  Sho1_[CyT]_ppi_Ste11_[BD:Sho1]
+conflicted state:  Ste5_[MEKK]--Ste11_[AssocSte5]
+conflicted reaction:  Ste5_[MEKK]_ppi_Ste11
+conflict product_contingency:  ! Sho1_[CyT]--Ste11_[BDSho1]  required_cont:  x Sho1_[CyT]--Ste11_[BDSho1]
+conflict chain:  [Ste5_[MEKK]--Ste11_[AssocSte5]]
+##############
+product_contingency.target_reaction:  Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]
+conflicted state:  Ssk1_[RR]--Ssk2_[BDSsk1]
+conflicted reaction:  Ssk1_[RR]_ppi_Ssk2_[BD:Ssk1]
+conflict product_contingency:  ! Ssk1_[RRD544]-{P}  required_cont:  x Ssk1_[RRD544]-{P}
+conflict chain:  [Ssk1_[RR]--Ssk2_[BDSsk1]]
+##############
+product_contingency.target_reaction:  Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]
+conflicted state:  Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1]
+conflicted reaction:  Ssk1_ppi_Ssk22
+conflict product_contingency:  ! Ssk1_[RRD544]-{P}  required_cont:  x Ssk1_[RRD544]-{P}
+conflict chain:  [Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1]]
+##############
+product_contingency.target_reaction:  Dig2_ppi_Ste12_[n/DBD]
+conflicted state:  Ste12_[nDB]--Tec1_[AssocSte12]
+conflicted reaction:  Ste12_[n/DB]_ppi_Tec1
+conflict product_contingency:  ! Dig2_[AssocSte12]--Ste12_[nDBD]  required_cont:  x Dig2_[AssocSte12]--Ste12_[nDBD]
+conflict chain:  [Ste12_[nDB]--Tec1_[AssocSte12]]
+##############
+product_contingency.target_reaction:  Gpa1_ppi_Ste4_[BD:Gpa1]
+conflicted state:  Ste4_[BDSte5]--Ste5_[nRINGH2]
+conflicted reaction:  Ste4_[BD:Ste5]_ppi_Ste5_[n/RING-H2]
+conflict product_contingency:  ! Gpa1_[AssocSte4]--Ste4_[BDGpa1]  required_cont:  x Gpa1_[AssocSte4]--Ste4_[BDGpa1]
+conflict chain:  [Ste4_[BDSte5]--Ste5_[nRINGH2]]
+##############
+product_contingency.target_reaction:  Gpa1_ppi_Ste4_[BD:Gpa1]
+conflicted state:  Ste4_[AssocSte20]--Ste20_[c]
+conflicted reaction:  Ste4_ppi_Ste20_[c]
+conflict product_contingency:  ! Gpa1_[AssocSte4]--Ste4_[BDGpa1]  required_cont:  x Gpa1_[AssocSte4]--Ste4_[BDGpa1]
+conflict chain:  [Ste4_[AssocSte20]--Ste20_[c]]
+##############
+product_contingency.target_reaction:  Gpa1_ppi_Ste4_[BD:Gpa1]
+conflicted state:  Far1_[nRINGH2]--Ste4_[AssocFar1]
+conflicted reaction:  Far1_[n/RING-H2]_ppi_Ste4
+conflict product_contingency:  ! Gpa1_[AssocSte4]--Ste4_[BDGpa1]  required_cont:  x Gpa1_[AssocSte4]--Ste4_[BDGpa1]
+conflict chain:  [Far1_[nRINGH2]--Ste4_[AssocFar1]]
+##############
+product_contingency.target_reaction:  Gpa1_ppi_Ste4_[BD:Gpa1]
+conflicted state:  Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+conflicted reaction:  Cdc24_ppi_Ste4
+conflict product_contingency:  ! Gpa1_[AssocSte4]--Ste4_[BDGpa1]  required_cont:  x Gpa1_[AssocSte4]--Ste4_[BDGpa1]
+conflict chain:  [Cdc24_[AssocSte4]--Ste4_[AssocCdc24]]
+##############
+product_contingency.target_reaction:  Sst2_[RGS]_GAP_Gpa1_[GnP]
+conflicted state:  Gpa1_[AssocSte4]--Ste4_[BDGpa1]
+conflicted reaction:  Gpa1_ppi_Ste4_[BD:Gpa1]
+conflict product_contingency:  ! Gpa1_[GnP]-{P}  required_cont:  x Gpa1_[GnP]-{P}
+conflict chain:  [Gpa1_[AssocSte4]--Ste4_[BDGpa1]]
+##############
+product_contingency.target_reaction:  Ste12_[n/DB]_ppi_Tec1
+conflicted state:  Dig2_[AssocSte12]--Ste12_[nDBD]
+conflicted reaction:  Dig2_ppi_Ste12_[n/DBD]
+conflict product_contingency:  ! Ste12_[nDB]--Tec1_[AssocSte12]  required_cont:  x Ste12_[nDB]--Tec1_[AssocSte12]
+conflict chain:  [Dig2_[AssocSte12]--Ste12_[nDBD]]
+##############
+product_contingency.target_reaction:  Ste5_[MEKK]_ppi_Ste11
+conflicted state:  Sho1_[CyT]--Ste11_[BDSho1]
+conflicted reaction:  Sho1_[CyT]_ppi_Ste11_[BD:Sho1]
+conflict product_contingency:  ! Ste5_[MEKK]--Ste11_[AssocSte5]  required_cont:  x Ste5_[MEKK]--Ste11_[AssocSte5]
+conflict chain:  [Sho1_[CyT]--Ste11_[BDSho1]]
+##############
+product_contingency.target_reaction:  Ptp2_[PD]_P-_Slt2_[(Y192)]
+conflicted state:  Slt2_[DB]--Swi4_[c]
+conflicted reaction:  Slt2_[DB]_ppi_Swi4_[c]
+conflict product_contingency:  x Slt2_[Y192]-{P}  required_cont:  ! Slt2_[Y192]-{P}
+conflict chain:  [Slt2_[DB]--Swi4_[c], Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4]]
+##############
+product_contingency.target_reaction:  Ptc3_[PD]_P-_Hog1_[(T174)]
+conflicted state:  Hog1_[n]--Hot1_[m]
+conflicted reaction:  Hog1_[n]_ppi_Hot1_[m]
+conflict product_contingency:  x Hog1_[T174]-{P}  required_cont:  ! Hog1_[T174]-{P}
+conflict chain:  [Hog1_[n]--Hot1_[m]]
+##############
+product_contingency.target_reaction:  Ptp2_[PD]_P-_Hog1_[(Y176)]
+conflicted state:  Hog1_[n]--Hot1_[m]
+conflicted reaction:  Hog1_[n]_ppi_Hot1_[m]
+conflict product_contingency:  x Hog1_[Y176]-{P}  required_cont:  ! Hog1_[Y176]-{P}
+conflict chain:  [Hog1_[n]--Hot1_[m]]
+##############
+product_contingency.target_reaction:  Ptp3_[PD]_P-_Hog1_[(Y176)]
+conflicted state:  Hog1_[n]--Hot1_[m]
+conflicted reaction:  Hog1_[n]_ppi_Hot1_[m]
+conflict product_contingency:  x Hog1_[Y176]-{P}  required_cont:  ! Hog1_[Y176]-{P}
+conflict chain:  [Hog1_[n]--Hot1_[m]]
+##############
+product_contingency.target_reaction:  Rom1_[DH]_GEF_Rho1_[GnP]
+conflicted state:  Pkc1_[C1]--Rho1_[ED]
+conflicted reaction:  Pkc1_[C1]_ppi_Rho1_[ED]
+conflict product_contingency:  x Rho1_[GnP]-{P}  required_cont:  ! Rho1_[GnP]-{P}
+conflict chain:  [Pkc1_[C1]--Rho1_[ED]]

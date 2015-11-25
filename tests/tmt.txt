@@ -1,0 +1,8 @@
+FAILED (failures=9, errors=4)
+FAILED (failures=6, errors=4)
+FAILED (failures=6, errors=1)
+FAILED (failures=5, errors=1)
+FAILED (failures=2, errors=1)
+
+'[None; ! Ste5_[MEK]--Ste7_[AssocSte5], None; ! Ste7_[ALS359]-{P}, None; x Ste7_[AssocSte11]--Ste11_[AssocSte7], None; ! Ste5_[BDSte5]--Ste5_[BDSte5], None; ! Ste5_[MEKK]--Ste11_[AssocSte5]]' !=
+'[None; ! Ste5_[BDSte5]--Ste5_[BDSte5], None; ! Ste7_[ALS359]-{P}, None; ! Ste5_[MEKK]--Ste11_[AssocSte5], None; x Ste7_[AssocSte11]--Ste11_[AssocSte7], None; ! Ste5_[MEK]--Ste7_[AssocSte5]]'

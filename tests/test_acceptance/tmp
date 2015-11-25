@@ -1,0 +1,60 @@
+
+old "Ste11(AssocSte7!1).Ste7(ALS359~U,AssocSte11!1) -> Ste11(AssocSte7!1).Ste7(ALS359~P,AssocSte11!1)    k1
+
+new Ste11(AssocSte7!1).Ste7(ALS359~U,AssocSte11!1) -> Ste11(AssocSte7!1).Ste7(ALS359~P,AssocSte11!1)    k1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: Ste5_[MEK]--Ste7_[AssocSte5] True, Ste7_[AssocSte11]--Ste11_[AssocSte7] False, Ste5_[BDSte5]--Ste5_[BDSte5] True, Ste5_[MEKK]--Ste11_[AssocSte5] True
+
+
+
+"""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
+<Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
+<Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]"""
+
+old "Ste11(AssocSte5!3,AssocSte7).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3,AssocSte7).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte11,AssocSte5!1)    k1\n
+new Ste11(AssocSte5!3)           .Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte11,AssocSte5!1)    k1
+
+
+
+0 = {str} 'Ste11(AssocSte7!1).Ste7(ALS359~U,AssocSte11!1) -> Ste11(AssocSte7!1).Ste7(ALS359~P,AssocSte11!1)'
+1 = {str} 'Ste11(AssocSte5!3).Ste5(BDSte5!2,MEKK!3).Ste5(BDSte5!2,MEK!1).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3).Ste5(BDSte5!2,MEKK!3).Ste5(BDSte5!2,MEK!1).Ste7(ALS359~P,AssocSte11,AssocSte5!1)'
+
+
+begin model
+begin parameters
+# input parameters
+# normal parameters
+k1 1
+end parameters
+
+begin molecule types
+Ste11
+Ste7(ALS359~U~P)
+end molecule types
+
+begin seed species
+Ste11                                                                                      100
+Ste7(ALS359~U)                                                                             100
+end seed species
+
+begin observables
+
+end observables
+
+begin reaction rules
+###########################  1####Ste11 p+ Ste7###
+# Contingencies: ! (( 1--5 Ste7_[AssocSte11]--Ste11_[AssocSte7]) or ( 3--4 Ste5_[MEKK]--Ste11_[AssocSte5] 2--1 Ste5_[MEK]--Ste7_[AssocSte5] 2--3 Ste5_[BDSte5]--Ste5_[BDSte5]))
+# Source states:  Ste7_[ALS359]-{P} False
+# Product states: Ste7_[ALS359]-{P} True
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: Ste7_[AssocSte11]--Ste11_[AssocSte7] True
+'Ste11(AssocSte7!1).Ste7(ALS359~U,AssocSte11!1) -> Ste11(AssocSte7!1).Ste7(ALS359~P,AssocSte11!1)'
+ Ste11(AssocSte7!1).Ste7(ALS359~U,AssocSte11!1) -> Ste11(AssocSte7!1).Ste7(ALS359~P,AssocSte11!1)    k1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: Ste5_[MEK]--Ste7_[AssocSte5] True, Ste7_[AssocSte11]--Ste11_[AssocSte7] False, Ste5_[BDSte5]--Ste5_[BDSte5] True, Ste5_[MEKK]--Ste11_[AssocSte5] True
+'Ste11(AssocSte5!3).Ste5(BDSte5!2,MEKK!3).Ste5(BDSte5!2,MEK!1).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3).Ste5(BDSte5!2,MEKK!3).Ste5(BDSte5!2,MEK!1).Ste7(ALS359~P,AssocSte11,AssocSte5!1)'
+ Ste11(AssocSte5!2).Ste5(BDSte5!3,MEK!1).Ste5(BDSte5!3,MEKK!2).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!2).Ste5(BDSte5!3,MEK!1).Ste5(BDSte5!3,MEKK!2).Ste7(ALS359~P,AssocSte11,AssocSte5!1)    k1
+end reaction rules
+end model
+
+generate_network({overwrite=>1,max_stoich=>{Ste11=>4,Ste7=>4}});

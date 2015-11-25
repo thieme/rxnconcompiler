@@ -1,0 +1,591 @@
+heromone_[Ste2Site]_ppi_Ste2_[PheromoneSite]
+Gpa1_[Ste2Site]_ppi_Ste2_[Gpa1Site]; k+ Gpa1_[Ste4Site]--Ste4_[Gpa1Site]
+Gpa1_[Ste4Site]_ppi_Ste4_[Gpa1Site]; k+ Gpa1_[Ste2Site]--Ste2_[Gpa1Site]; k+ Gpa1_[Enzyme2]-{P}; x Ste4_[Ste5Site]--Ste5_[Ste4Site]; x Ste4_[Ste20Site]--Ste20_[Ste4Site]
+Enzyme_GEF_Gpa1; k+ Gpa1_[Ste2Site]--Ste2_[Gpa1Site]
+Enzyme2_GAP_Gpa1; k+ Gpa1_[Ste2Site]--Ste2_[Gpa1Site]
+Ste2_[Sst2Site]_ppi_Sst2_[Ste2Site]; x <Sst2MAPKSite>; x Ste2_[AssocYck]--Yck_[AssocSte2]; x Ste2_[S338S339]-{P}
+<Sst2MAPKSite>; or Fus3_[dockingSite]--Sst2_[MAPKSite]
+<Sst2MAPKSite>; or Kss1_[dockingSite]--Sst2_[MAPKSite]
+Ste2_ppi_Yck; x Ste2_[Sst2Site]--Sst2_[Ste2Site]; x Ste2_[S338S339]-{P}
+Yck_P+_Ste2_[(S338S339)]; k+ Pheromone_[Ste2Site]--Ste2_[PheromoneSite]; ! Ste2_[AssocYck]--Yck_[AssocSte2]
+Fus3_[dockingSite]_ppi_Sst2_[MAPKSite]; ! <Fus3phos>; x <Sst2mod>
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Sst2mod>; and Ste2_[Sst2Site]--Sst2_[Ste2Site]
+<Sst2mod>; and Sst2_[S539]-{P}
+Kss1_[dockingSite]_ppi_Sst2_[MAPKSite]; ! <Kss1phos>; x <Sst2mod>
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Sst2mod>; and Ste2_[Sst2Site]--Sst2_[Ste2Site]
+<Sst2mod>; and Sst2_[S539]-{P}
+Fus3_P+_Sst2_[(S539)]; ! <Fus3phos>; ! Fus3_[dockingSite]--Sst2_[MAPKSite]
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Kss1_P+_Sst2_[(S539)]; ! <Kss1phos>; ! Kss1_[dockingSite]--Sst2_[MAPKSite]
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Ste5_[Ste5Site]_ppi_Ste5_[Ste5Site]; k+ Ste4_[Ste5Site]--Ste5_[Ste4Site]
+Ste4_[Ste5Site]_ppi_Ste5_[Ste4Site]; k+ Ste5_[Ste5Site]--Ste5_[Ste5Site]; k+ <Ste5-St5-Ste4>; x Gpa1_[Ste4Site]--Ste4_[Gpa1Site]
+<Ste5-St5-Ste4>; and Ste5_[Ste5Site]--Ste5_[Ste5Site]
+<Ste5-St5-Ste4>; and Ste4_[Ste5Site]--Ste5_[Ste4Site]
+Ste4_[Ste20Site]_ppi_Ste20_[Ste4Site]; x Gpa1_[Ste4Site]--Ste4_[Gpa1Site]
+Ste5_[Ste11Site]_ppi_Ste11_[Ste5Site]; x Fus3_[dockingSite]--Ste11_[MAPKSite]; x Kss1_[dockingSite]--Ste11_[MAPKSite]
+Ste5_[Ste7Site]_ppi_Ste7_[Ste5Site]; x Fus3_[dockingSite]--Ste7_[MAPKSite]; x Kss1_[dockingSite]--Ste7_[MAPKSite]
+Fus3_[dockingSite]_ppi_Ste5_[MAPKSite]
+Kss1_[dockingSite]_ppi_Ste5_[MAPKSite]
+Ste20_P+_Ste11_[(S302)]; ! <Ste20Ste4Ste5Ste11complex>
+<Ste20Ste4Ste5Ste11complex>; and Ste4_[Ste20Site]--Ste20_[Ste4Site]
+<Ste20Ste4Ste5Ste11complex>; and Ste4_[Ste5Site]--Ste5_[Ste4Site]
+<Ste20Ste4Ste5Ste11complex>; and Ste5_[Ste11Site]--Ste11_[Ste5Site]
+Ste20_P+_Ste11_[(S306)]; ! <Ste20Ste4Ste5Ste11complex>; ! Ste11_[S302]-{P}
+<Ste20Ste4Ste5Ste11complex>; and Ste4_[Ste20Site]--Ste20_[Ste4Site]
+<Ste20Ste4Ste5Ste11complex>; and Ste4_[Ste5Site]--Ste5_[Ste4Site]
+<Ste20Ste4Ste5Ste11complex>; and Ste5_[Ste11Site]--Ste11_[Ste5Site]
+Ste20_P+_Ste11_[(T307)]; ! <Ste20Ste4Ste5Ste11complex>; ! Ste11_[S306]-{P}; ! Ste11_[S302]-{P}
+<Ste20Ste4Ste5Ste11complex>; and Ste4_[Ste20Site]--Ste20_[Ste4Site]
+<Ste20Ste4Ste5Ste11complex>; and Ste4_[Ste5Site]--Ste5_[Ste4Site]
+<Ste20Ste4Ste5Ste11complex>; and Ste5_[Ste11Site]--Ste11_[Ste5Site]
+Ste11_P+_Ste7_[(S359)]; ! <Ste11Ste5Ste5Ste7>; ! Ste11_[S302]-{P}; k+ Ste11_[S306]-{P}; k+ <Ste11S306pT307p>
+<Ste11Ste5Ste5Ste7>; 1--2 Ste5_[Ste11Site]--Ste11_[Ste5Site]
+<Ste11Ste5Ste5Ste7>; 1--3 Ste5_[Ste5Site]--Ste5_[Ste5Site]
+<Ste11Ste5Ste5Ste7>; 3--4 Ste5_[Ste7Site]--Ste7_[Ste5Site]
+<Ste11S306pT307p>; and Ste11_[S306]-{P}
+<Ste11S306pT307p>; and Ste11_[T307]-{P}
+Ste11_P+_Ste7_[(T363)]; ! <Ste11Ste5Ste5Ste7>; ! Ste11_[S302]-{P}; k+ Ste11_[S306]-{P}; k+ <Ste11S306pT307p>; ! Ste7_[S359]-{P}
+<Ste11Ste5Ste5Ste7>; 1--2 Ste5_[Ste11Site]--Ste11_[Ste5Site]
+<Ste11Ste5Ste5Ste7>; 1--3 Ste5_[Ste5Site]--Ste5_[Ste5Site]
+<Ste11Ste5Ste5Ste7>; 3--4 Ste5_[Ste7Site]--Ste7_[Ste5Site]
+<Ste11S306pT307p>; and Ste11_[S306]-{P}
+<Ste11S306pT307p>; and Ste11_[T307]-{P}
+Ste7_P+_Fus3_[(T180)]; ! <Ste7Ste5Fus3complex>; ! Ste7_[S359]-{P}; k+ Ste7_[T363]-{P}; x Fus3_[dockingSite]--Ste7_[MAPKSite]; x Kss1_[dockingSite]--Ste7_[MAPKSite]; k+ Fus3_[Y182]-{P}
+<Ste7Ste5Fus3complex>; and Ste5_[Ste7Site]--Ste7_[Ste5Site]
+<Ste7Ste5Fus3complex>; and Fus3_[dockingSite]--Ste5_[MAPKSite]
+Ste7_P+_Fus3_[(Y182)]; ! <Ste7Ste5Fus3complex>; k+ Fus3_[T180]-{P}; ! Ste7_[S359]-{P}; k+ Ste7_[T363]-{P}; x Kss1_[dockingSite]--Ste7_[MAPKSite]; x Fus3_[dockingSite]--Ste7_[MAPKSite]
+<Ste7Ste5Fus3complex>; and Ste5_[Ste7Site]--Ste7_[Ste5Site]
+<Ste7Ste5Fus3complex>; and Fus3_[dockingSite]--Ste5_[MAPKSite]
+Ste7_P+_Kss1_[(T183)]; ! <Ste7complex>; ! Ste7_[S359]-{P}; k+ Ste7_[T363]-{P}; k+ Kss1_[Y185]-{P}
+<Ste7complex>; or Kss1_[dockingSite]--Ste7_[MAPKSite]
+<Ste7complex>; or <Ste7Ste5Kss1complex>
+<Ste7Ste5Kss1complex>; and Ste5_[Ste7Site]--Ste7_[Ste5Site]
+<Ste7Ste5Kss1complex>; and Kss1_[dockingSite]--Ste5_[MAPKSite]
+Ste7_P+_Kss1_[(Y185)]; ! <Ste7complex>; ! Ste7_[S359]-{P}; k+ Ste7_[T363]-{P}; k+ Kss1_[T183]-{P}
+<Ste7complex>; or Kss1_[dockingSite]--Ste7_[MAPKSite]
+<Ste7complex>; or <Ste7Ste5Kss1complex>
+<Ste7Ste5Kss1complex>; and Ste5_[Ste7Site]--Ste7_[Ste5Site]
+<Ste7Ste5Kss1complex>; and Kss1_[dockingSite]--Ste5_[MAPKSite]
+Fus3_[dockingSite]_ppi_Ptp_[MAPKSite]; ! Fus3_[Y182]-{P}
+Kss1_[dockingSite]_ppi_Ptp_[MAPKSite]; ! Kss1_[Y185]-{P}
+Ptp_P-_Fus3_[(Y182)]; ! Fus3_[dockingSite]--Ptp_[MAPKSite]
+Ptp_P-_Kss1_[(Y185)]; ! Kss1_[dockingSite]--Ptp_[MAPKSite]
+Fus3_[dockingSite]_ppi_Msg5_[MAPKSite]; ! <Fus3phos>
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Kss1_[dockingSite]_ppi_Msg5_[MAPKSite]; ! <Kss1phos>
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Msg5_P-_Fus3_[(Y182)]; ! Fus3_[dockingSite]--Msg5_[MAPKSite]
+Msg5_P-_Fus3_[(T180)]; ! Fus3_[dockingSite]--Msg5_[MAPKSite]; x Fus3_[Y182]-{P}
+Msg5_P-_Kss1_[(Y185)]; ! Kss1_[dockingSite]--Msg5_[MAPKSite]
+Msg5_P-_Kss1_[(T183)]; ! Kss1_[dockingSite]--Msg5_[MAPKSite]; x Kss1_[Y185]-{P}
+Fus3_[dockingSite]_ppi_Ste7_[MAPKSite]; x Ste5_[Ste7Site]--Ste7_[Ste5Site]
+Kss1_[dockingSite]_ppi_Ste7_[MAPKSite]; x Ste5_[Ste7Site]--Ste7_[Ste5Site]
+Fus3_[dockingSite]_ppi_Ste11_[MAPKSite]; x Ste5_[Ste11Site]--Ste11_[Ste5Site]; x Ste11_[FeedbackP04]-{P}; ! <Fus3phos>
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Kss1_[dockingSite]_ppi_Ste11_[MAPKSite]; ! <Kss1phos>; x Ste5_[Ste11Site]--Ste11_[Ste5Site]; x Ste11_[FeedbackP04]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Fus3_P+_Ste11_[(FeedbackP04)]; ! Fus3_[dockingSite]--Ste11_[MAPKSite]; x Ste5_[Ste11Site]--Ste11_[Ste5Site]; ! <Fus3phos>
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Kss1_P+_Ste11_[(FeedbackP04)]; ! Kss1_[dockingSite]--Ste11_[MAPKSite]; x Ste5_[Ste11Site]--Ste11_[Ste5Site]; ! <Kss1phos>
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Fus3_DEG_Ste7; x Ste5_[Ste7Site]--Ste7_[Ste5Site]; x Fus3_[dockingSite]--Ste7_[MAPKSite]; x Kss1_[dockingSite]--Ste7_[MAPKSite]; ! <Fus3phos>; x <Fus3dockingSite>
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ste5_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Msg5_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ste7_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ste11_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ptp_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Sst2_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+<Fus3dockingSite>; or Dig1_[MAPKSite]--Fus3_[dockingSite]
+<Fus3dockingSite>; or Dig2_[MAPKSite]--Fus3_[dockingSite]
+<Fus3dockingSite>; or Far1_[MAPKSite]--Fus3_[dockingSite]
+Dig1_[Ste12Site]_ppi_Ste12_[Dig1Site]; k+ Dig2_[Ste12Site]--Ste12_[Dig2Site]; k+ Kss1_[dockingSite]--Ste12_[MAPKSite]; k+ Fus3_[dockingSite]--Ste12_[MAPKSite]; k+ Dig1_[dockingSitePO4Site]-{P}
+Dig2_[Ste12Site]_ppi_Ste12_[Dig2Site]; k+ Dig2_[dockingSitePO4Site]-{P}; k+ Dig1_[Ste12Site]--Ste12_[Dig1Site]
+Kss1_[dockingSite]_ppi_Ste12_[MAPKSite]; k+ Dig1_[Ste12Site]--Ste12_[Dig1Site]; k+ Kss1_[T183]-{P}; k+ Kss1_[Y185]-{P}
+Fus3_[dockingSite]_ppi_Ste12_[MAPKSite]; k+ Dig1_[Ste12Site]--Ste12_[Dig1Site]; k+ Fus3_[T180]-{P}; k+ Fus3_[Y182]-{P}
+Dig1_[MAPKSite]_ppi_Fus3_[dockingSite]; ! <Fus3phos>; x Dig1_[dockingSitePO4Site]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Dig1_[MAPKSite]_ppi_Kss1_[dockingSite]; ! <Kss1phos>; x Dig1_[dockingSitePO4Site]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Fus3_P+_Dig1_[dockingSite(PO4Site)]; ! Dig1_[MAPKSite]--Fus3_[dockingSite]; k+ <Fus3phos>
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Kss1_P+_Dig1_[dockingSite(PO4Site)]; ! Dig1_[MAPKSite]--Kss1_[dockingSite]; k+ <Kss1phos>
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Dig2_[MAPKSite]_ppi_Fus3_[dockingSite]; ! <Fus3phos>; x Dig2_[dockingSitePO4Site]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Dig2_[MAPKSite]_ppi_Kss1_[dockingSite]; ! <Kss1phos>; x Dig2_[dockingSitePO4Site]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Fus3_P+_Dig2_[dockingSite(PO4Site)]; ! Dig2_[MAPKSite]--Fus3_[dockingSite]; k+ <Fus3phos>
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Kss1_P+_Dig2_[dockingSite(PO4Site)]; ! Dig2_[MAPKSite]--Kss1_[dockingSite]; k+ <Kss1phos>
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Ste12_TRSL_Dig2; x <Ste12nonmonomer>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+Ste12_TRSL_Far1; x <Ste12nonmonomer>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+Ste12_TRSL_Fus3; x <Ste12nonmonomer>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+Ste12_TRSL_Gpa1; x <Ste12nonmonomer>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+Ste12_TRSL_Msg5; x <Ste12nonmonomer>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+Ste12_TRSL_Ptp; x <Ste12nonmonomer>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+Ste12_TRSL_Sst2; x <Ste12nonmonomer>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+Ste12_TRSL_Ste2; x <Ste12nonmonomer>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+Ste12_TRSL_Ste12; x <Ste12nonmonomer>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+Fus3_DEG_Ste12; x <Ste12nonmonomer>; ! <Fus3phos>; x <Fus3dockingSite>
+<Ste12nonmonomer>; or Dig1_[Ste12Site]--Ste12_[Dig1Site]
+<Ste12nonmonomer>; or Dig2_[Ste12Site]--Ste12_[Dig2Site]
+<Ste12nonmonomer>; or Kss1_[dockingSite]--Ste12_[MAPKSite]
+<Ste12nonmonomer>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ste5_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Msg5_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ste7_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ste11_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ptp_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Sst2_[MAPKSite]
+<Fus3dockingSite>; or Fus3_[dockingSite]--Ste12_[MAPKSite]
+<Fus3dockingSite>; or Dig1_[MAPKSite]--Fus3_[dockingSite]
+<Fus3dockingSite>; or Dig2_[MAPKSite]--Fus3_[dockingSite]
+<Fus3dockingSite>; or Far1_[MAPKSite]--Fus3_[dockingSite]
+Far1_[MAPKSite]_ppi_Fus3_[dockingSite]; ! <Fus3phos>; x Far1_[T306]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Fus3_P+_Far1_[(T306)]; ! Far1_[MAPKSite]--Fus3_[dockingSite]; ! <Fus3phos>
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+<Fus3phos>; or Fus3_[T180]-{P}
+<Fus3phos>; or Fus3_[Y182]-{P}
+Far1_[MAPKSite]_ppi_Kss1_[dockingSite]; ! <Kss1phos>; x Far1_[T306]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Kss1_P+_Far1_[(T306)]; ! Far1_[MAPKSite]--Kss1_[dockingSite]; ! <Kss1phos>
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+<Kss1phos>; or Kss1_[T183]-{P}
+<Kss1phos>; or Kss1_[Y185]-{P}
+Phosphatase_P-_Dig1_[(PO4Site)]
+Phosphatase_P-_Dig2_[(PO4Site)]
+Phosphatase_P-_Far1_[(S87)]
+Phosphatase_P-_Far1_[(T306)]
+Phosphatase_P-_Fus3_[(T180)]
+Phosphatase_P-_Fus3_[(Y182)]
+Phosphatase_P-_Kss1_[(T183)]
+Phosphatase_P-_Kss1_[(Y185)]
+Phosphatase_P-_Sst2_[(S539)]
+Phosphatase_P-_Ste2_[(S338S339)]
+Phosphatase_P-_Ste7_[(T363)]; x Ste7_[S359]-{P}
+Phosphatase_P-_Ste7_[(S359)]; ! Ste7_[T363]-{P}
+Phosphatase_P-_Ste11_[(T307)]; ! Ste11_[S306]-{P}; ! Ste11_[S302]-{P}
+Phosphatase_P-_Ste11_[(S306)]; ! Ste11_[S302]-{P}; x Ste11_[T307]-{P}; ! Ste11_[S302]-{P}; x Ste11_[T307]-{P}
+Phosphatase_P-_Ste11_[(S302)]; x Ste11_[T307]-{P}; x Ste11_[S306]-{P}; x Ste11_[T307]-{P}; x Ste11_[S306]-{P}
+Cell_TRSL_Pheromone
+Cell_TRSL_Dig1
+Cell_TRSL_Dig2
+Cell_TRSL_Far1
+Cell_TRSL_Fus3
+Cell_TRSL_Gpa1
+Cell_TRSL_Kss1
+Cell_TRSL_Msg5
+Cell_TRSL_Ptp
+Cell_TRSL_Sst2
+Cell_TRSL_Ste2
+Cell_TRSL_Ste4
+Cell_TRSL_Ste5
+Cell_TRSL_Ste7
+Cell_TRSL_Ste11
+Cell_TRSL_Ste12
+Cell_TRSL_Ste20
+Cell_TRSL_Yck
+Cell_DEG_Pheromone
+Cell_DEG_Dig1
+Cell_DEG_Dig2
+Cell_DEG_Far1
+Cell_DEG_Fus3
+Cell_DEG_Gpa1
+Cell_DEG_Kss1
+Cell_DEG_Msg5
+Cell_DEG_Ptp
+Cell_DEG_Sst2; k+ Sst2_[S539]-{P}
+Cell_DEG_Ste2; ! Ste2_[S338S339]-{P}
+Cell_DEG_Ste4
+Cell_DEG_Ste5
+Cell_DEG_Ste7
+Cell_DEG_Ste11; k+ Ste11_[FeedbackP04]-{P}
+Cell_DEG_Ste12
+Cell_DEG_Ste20
+Cell_DEG_Yck
+
+
+master branch
+
+Fus3_[CD]_ppi_Msg5_[n]
+Fus3_[KD]_P+_Sst2_[(S539)]; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Fus3_[KD]_P+_Ste5; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+MFalpha_ppi_Ste2_[Receptor]; ! MFalpha
+Msg5_[PD]_P-_Fus3_[(T180)]; k+ Fus3_[CD]--Msg5_[n]
+Msg5_[PD]_P-_Fus3_[(Y182)]; k+ Fus3_[CD]--Msg5_[n]
+Bem2_GAP_Rho1_[GnP]
+Lrg1_[GAP]_GAP_Rho1_[GnP]
+Mid2_[CyT]_ppi_Rom2
+Mid2_[CyT]_ppi_Zeo1
+Mkk1_ppi_Pkc1
+Mkk2_[n]_ppi_Slt2_[n]
+Mlp1_ppi_Rlm1_[c]
+Msg5_[PD]_P-_Slt2_[(T190)]; ! Msg5_[n]--Slt2_[n]
+Msg5_[PD]_P-_Slt2_[(Y192)]; ! Msg5_[n]--Slt2_[n]
+Msg5_[n]_ppi_Slt2_[n]
+Pkc1_i_PS
+Pkc1_[HR1]_ppi_Rho1
+Pkh2_[KD]_P+_Pkc1_[AL(T983)]; k+ Pkh2_[AssocPHS]--PHS_[AssocPkh2]
+Pkc1_[C1]_ppi_Rho1_[ED]; ! Rho1_[GnP]-{P}
+Rho1_ppi_Ste4
+Rlm1_[c]_ppi_Slt2
+Rlm1_ppi_Smp1
+Rom2_[DH]_GEF_Rho1_[GnP]; k+ Rom2_[n]--Slg1_[CyT]; k+ Rom2_[AssocWsc2]--Wsc2_[AssocRom2]; k+ Mtl1_[AssocRom2]--Rom2_[AssocMtl1]; k+ Mid2_[CyT]--Rom2_[AssocMid2]
+Rom2_[n]_ppi_Slg1_[CyT]
+Rom2_ppi_Wsc2
+Sac7_[GAP]_GAP_Rho1_[GnP]
+Sdp1_[PD]_P-_Slt2_[(T190)]; ! Sdp1_[AssocSlt2]--Slt2_[AssocSdp1]
+Sdp1_[PD]_P-_Slt2_[(Y192)]; ! Sdp1_[AssocSlt2]--Slt2_[AssocSdp1]
+Sdp1_ppi_Slt2
+Slt2_[KD]_P+_Msg5; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Rlm1_[c(S427)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Rlm1_[c(T439)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Sir3_[(S275)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Swi4; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[DB]_ppi_Swi4_[c]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}; 0 Swi4_[c]--Swi6_[c]
+Slt2_[KD]_P+_Swi6_[(S238)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Swi4_[c]_ppi_Swi6_[c]; 0 Slt2_[DB]--Swi4_[c]
+Tus1_[DH]_GEF_Rho1_[GnP]
+Bem3_GAP_Cdc42_[GnP]
+Cdc24_[GEF]_GEF_Cdc42_[GnP]; k+ <Cdc24^{M}>
+<Cdc24^{M}>; or <Cdc24^{M/4}>
+<Cdc24^{M/4}>; and Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+<Cdc24^{M/4}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+<Cdc24^{M}>; or <Cdc24^{M/F}>
+<Cdc24^{M/F}>; and Cdc24_[AssocFar1]--Far1_[c]
+<Cdc24^{M/F}>; and <Far1^{M}>
+<Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
+<Far1^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+<Cdc24^{M}>; or [START]
+Cdc42_[ED]_ppi_Ste20_[CRIB]; ! Cdc42_[GnP]-{P}; k+ Ste20_[BR]--PIP2_[AssocSte20]
+Cdc42_ppi_Ste50_[RA]; 0 Cdc42_[GnP]-{P}
+Hog1_[n]_ppi_Hot1_[m]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[CD]_ppi_Pbs2_[HBD-1]
+Hog1_[PBD-2]_ppi_Pbs2_[HBD-1]; k+ Hog1_[CD]--Pbs2_[HBD-1]
+Hog1_[CD]_ppi_Ptp2; k+ Hog1_[Y176]-{P}
+Hog1_[CD]_ppi_Ptp3
+Hog1_[KD]_P+_Rck2_[c(S519)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[CD]_ppi_Rck2_[c]
+Hog1_[KD]_P+_Sic1_[(T173)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_ppi_Sic1
+Hog1_[KD]_P+_Sko1_[n(S108)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Sko1_[n(S113)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Sko1_[n(S126)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_ppi_Sko1_[n]
+Hog1_ppi_Smp1
+Nbp2_[SH3]_ppi_Pbs2_[SIM2]
+Nbp2_[n]_ppi_Ptc1
+Nbp2_[SH3]_ppi_Ste20_[PR]
+Opy2_[BD:Ste50]_ppi_Ste50_[RA]
+Pbs2_[KD]_P+_Hog1_[(T174)]; k+ Hog1_[CD]--Pbs2_[HBD-1]; k+ Hog1_[PBD-2]--Pbs2_[HBD-1]; ! Pbs2_[ALS514]-{P}; ! Pbs2_[ALT518]-{P}
+Pbs2_[KD]_P+_Hog1_[(Y176)]; k+ Hog1_[CD]--Pbs2_[HBD-1]; k+ Hog1_[PBD-2]--Pbs2_[HBD-1]; ! Pbs2_[ALS514]-{P}; ! Pbs2_[ALT518]-{P}
+Pbs2_[RSD2/PR]_ppi_Sho1_[CyT/SH3]; k+ Hkr1_[TMD]--Sho1_[TMD]; k+ Msb2_[TMD]--Sho1_[TMD]; k+ Msb2_[CyT]--Sho1_[CyT]
+Pbs2_[RSD1]_ppi_Ssk2_[KD]
+Pbs2_[KD]_ppi_Ssk2_[KD]
+Pbs2_[RSD1]_ppi_Ssk22_[KD]
+Pbs2_[RSD2]_ppi_Ste11_[n]
+Ptc1_[PD]_P-_Hog1_[(T174)]; k+ <Pbs2-Nbp2-Ptc1>
+<Pbs2-Nbp2-Ptc1>; and Nbp2_[SH3]--Pbs2_[SIM2]
+<Pbs2-Nbp2-Ptc1>; and Nbp2_[n]--Ptc1_[AssocNbp2]
+Ptc2_[PD]_P-_Hog1_[(T174)]
+Rck2_AP_Rck2_[Ser]; k+ Rck2_[cS519]-{P}
+Rga1_GAP_Cdc42_[GnP]
+Rga2_GAP_Cdc42_[GnP]
+Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5]; ! <Ste11^{M/50}>
+<Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+<Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]; k+ Hkr1_[TMD]--Sho1_[TMD]; k+ Msb2_[TMD]--Sho1_[TMD]; k+ Msb2_[CyT]--Sho1_[CyT]
+Sho1_[CyT]_ppi_Ste50_[m]
+Sln1_[HK]_P+_Sln1_[HK(H576)]; ! Sln1_[BDSln1]--Sln1_[BDSln1]; k+ [Turgor]
+Sln1_[BD:Sln1]_ppi_Sln1_[BD:Sln1]
+Sln1_[HK(H576)]_PT_Sln1_[RR(D1144)]
+Sln1_[RR]_ppi_Ypd1
+Sln1_[RR(D1144)]_PT_Ypd1_[(H64)]
+Ssk1_[RR]_ppi_Ssk2_[BD:Ssk1]; x Ssk1_[RRD544]-{P}
+Ssk1_ppi_Ssk22; x Ssk1_[RRD544]-{P}
+Ssk1_[RR]_ppi_Ypd1
+Ssk2_[KD]_P+_Pbs2_[AL(S514)]; ! Ssk2_[T1460]-{P}; ! Pbs2_[RSD1]--Ssk2_[KD]
+Ssk2_[KD]_P+_Pbs2_[AL(T518)]; ! Ssk2_[T1460]-{P}; ! Pbs2_[RSD1]--Ssk2_[KD]
+Ssk2_[KD]_AP_Ssk2_[(T1460)]; k+ <Ssk1Ssk2>
+<Ssk1Ssk2>; and Ssk1_[BDSsk1]--Ssk1_[BDSsk1]
+<Ssk1Ssk2>; and Ssk1_[RR]--Ssk2_[BDSsk1]
+Ssk22_[KD]_P+_Pbs2_[AL(S514)]; ! Pbs2_[RSD1]--Ssk22_[KD]; ! Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1]
+Ssk22_[KD]_P+_Pbs2_[AL(T518)]; ! Pbs2_[RSD1]--Ssk22_[KD]; ! Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1]
+Ste11_[KD]_P+_Pbs2_[AL(S514)]; x Ste11_[CBD]--Ste11_[KD]; ! Pbs2_[RSD2]--Ste11_[n]; ! Sho1_[CyT]--Ste11_[BDSho1]; ! Pbs2_[RSD2PR]--Sho1_[CyTSH3]
+Ste11_[KD]_P+_Pbs2_[AL(T518)]; x Ste11_[CBD]--Ste11_[KD]; ! Pbs2_[RSD2]--Ste11_[n]; ! Sho1_[CyT]--Ste11_[BDSho1]; ! Pbs2_[RSD2PR]--Sho1_[CyTSH3]
+Ste11_[CBD]_ppi_Ste11_[KD]; k- Ste11_[CBDS302]-{P}; k- Ste11_[CBDS306]-{P}; k- Ste11_[CBDT307]-{P}
+Ste11_[SAM]_ppi_Ste50_[SAM]
+Ste20_[KD]_P+_Ste11_[CBD(S302)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
+<Ste11^{M}>; or Sho1_[CyT]--Ste11_[BDSho1]
+<Ste11^{M}>; or <Ste11^{M/5}>
+<Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
+<Ste11^{M/5}>; and <Ste5^{M}>
+<Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
+<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]; k+ <FIL-signal>
+<FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
+<FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]
+Ste20_[KD]_P+_Ste11_[CBD(S306)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
+<Ste11^{M}>; or Sho1_[CyT]--Ste11_[BDSho1]
+<Ste11^{M}>; or <Ste11^{M/5}>
+<Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
+<Ste11^{M/5}>; and <Ste5^{M}>
+<Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
+<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]; k+ <FIL-signal>
+<FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
+<FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]
+Ste20_[KD]_P+_Ste11_[CBD(T307)]; k+ Ste20_[SerThr]-{P}; x Ste20_[KD]--Ste20_[CRIB]; ! <Ste11^{M}>
+<Ste11^{M}>; or Sho1_[CyT]--Ste11_[BDSho1]
+<Ste11^{M}>; or <Ste11^{M/5}>
+<Ste11^{M/5}>; and Ste5_[MEKK]--Ste11_[AssocSte5]
+<Ste11^{M/5}>; and <Ste5^{M}>
+<Ste5^{M}>; and Ste4_[BDSte5]--Ste5_[nRING-H2]
+<Ste5^{M}>; and Ste4_[AssocSte18]--Ste18_[AssocSte4]; k+ <FIL-signal>
+<FIL-signal>; and Cdc42_[AssocMsb2]--Msb2_[CyT]
+<FIL-signal>; and Msb2_[CyT]--Sho1_[CyT]
+Ypd1_[(H64)]_PT_Ssk1_[RR(D544)]; ! Ssk1_[RR]--Ypd1_[AssocSsk1]
+Hkr1_[TMD]_ppi_Sho1_[TMD]; k- [Turgor]
+Msb2_[TMD]_ppi_Sho1_[TMD]; k- [Turgor]
+Msb2_[CyT]_ppi_Sho1_[CyT]; k+ Msb2_[HMH/CD]-{Truncated}; k- [Turgor]
+Bar1_[PepD]_DEG_MFalpha_[(L6-K7)]
+Cdc24_ppi_Far1_[c]
+Cdc24_ppi_Ste4; x Gpa1_[AssocSte4]--Ste4_[BDGpa1]; 0 Far1_[nRING-H2]--Ste4_[AssocFar1]
+Cdc24_ppi_Ste5_[c]
+Cdc42_ppi_Msb2_[CyT]
+Dig1_[Dsite]_ppi_Fus3_[CD/7m]
+Dig1_[Dsite]_ppi_Kss1_[CD/7m]
+Dig1_ppi_Ste12_[c]; k- Dig1_[Kss1]-{P}; k+ Dig2_[AssocSte12]--Ste12_[nDBD]; k+ Kss1_[AssocSte12]--Ste12_[AssocKss1]; k+ Fus3_[AssocSte12]--Ste12_[AssocFus3]
+Dig2_[Dsite]_ppi_Fus3_[CD/7m]
+Dig2_[Dsite]_ppi_Kss1_[CD/7m]
+Dig2_ppi_Ste12_[n/DBD]; k- Dig2_[Fus3]-{P}; k+ Dig1_[AssocSte12]--Ste12_[c]; x Ste12_[nDB]--Tec1_[AssocSte12]
+Far1_[n/BD:Fus3]_ppi_Fus3_[CD]
+Far1_[n/RING-H2]_ppi_Ste4; x Gpa1_[AssocSte4]--Ste4_[BDGpa1]; 0 Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+Fus3_[KD]_P+_Dig1; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Fus3_[KD]_P+_Dig2; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Fus3_[KD]_P+_Far1_[(T306)]; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Fus3_[n]_ppi_Gpa1_[n]; k+ Gpa1_[GnP]-{P}; k+ Fus3_[T180]-{P}; k+ Fus3_[Y182]-{P}
+Fus3_[KD]_P+_Msg5; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Fus3_[CD]_ppi_Ptp3_[CH2]; 0 Fus3_[Y182]-{P}
+Fus3_[KD]_P+_Ste12; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Fus3_ppi_Ste12; k- Fus3_[T180]-{P}; k- Fus3_[Y182]-{P}; k+ Dig1_[AssocSte12]--Ste12_[c]
+Fus3_ppi_Ste5_[MAPK]
+Fus3_[KD]_P+_Ste7; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Fus3_[CD]_ppi_Ste7_[BD:MAPK]
+Fus3_[KD]_P+_Tec1_[(T273)]; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}
+Fus3_ppi_Tec1_[n]
+Gpa1_ppi_Ste4_[BD:Gpa1]; x Gpa1_[GnP]-{P}
+Kss1_[KD]_P+_Dig1; ! Kss1_[T183]-{P}; ! Kss1_[Y185]-{P}
+Kss1_[KD]_P+_Dig2; ! Kss1_[T183]-{P}; ! Kss1_[Y185]-{P}
+Kss1_[KD]_P+_Ste12; ! Kss1_[T183]-{P}; ! Kss1_[Y185]-{P}
+Kss1_ppi_Ste12; k- Kss1_[T183]-{P}; k- Kss1_[Y185]-{P}
+Kss1_[KD]_P+_Ste7; ! Kss1_[T183]-{P}; ! Kss1_[Y185]-{P}
+Kss1_[CD]_ppi_Ste7_[BD:MAPK]
+Kss1_ppi_Tec1_[c]
+Ptp3_[PD]_P-_Fus3_[(Y182)]; k+ Fus3_[CD]--Ptp3_[CH2]
+Sst2_[RGS]_GAP_Gpa1_[GnP]; k+ Gpa1_[BDRec]--Ste2_[CyT]; k+ Ste2_[CyT]--Sst2_[nDEP]
+Ste11_[KD]_P+_Ste7_[AL(S359)]; x Ste11_[CBD]--Ste11_[KD]; ! <STE11-7>
+<STE11-7>; or Ste7_[AssocSte11]--Ste11_[AssocSte7]
+<STE11-7>; or <Ste7-5-5-11>
+<Ste7-5-5-11>; and Ste5_[MEKK]--Ste11_[AssocSte5]
+<Ste7-5-5-11>; and Ste5_[MEK]--Ste7_[AssocSte5]
+<Ste7-5-5-11>; and Ste5_[BDSte5]--Ste5_[BDSte5]
+Ste11_[KD]_P+_Ste7_[AL(T363)]; x Ste11_[CBD]--Ste11_[KD]; ! <STE11-7>
+<STE11-7>; or Ste7_[AssocSte11]--Ste11_[AssocSte7]
+<STE11-7>; or <Ste7-5-5-11>
+<Ste7-5-5-11>; and Ste5_[MEKK]--Ste11_[AssocSte5]
+<Ste7-5-5-11>; and Ste5_[MEK]--Ste7_[AssocSte5]
+<Ste7-5-5-11>; and Ste5_[BDSte5]--Ste5_[BDSte5]
+Ste12_[n/DB]_ppi_Tec1; x Dig2_[AssocSte12]--Ste12_[nDBD]
+Ste2_[CyT]_ppi_Sst2_[n/DEP]
+Ste20_[KD]_AP_Ste20_[SerThr]
+Ste20_[KD]_ppi_Ste20_[CRIB]; x Cdc42_[ED]--Ste20_[CRIB]
+Ste4_ppi_Ste18
+Ste4_ppi_Ste20_[c]; x Gpa1_[AssocSte4]--Ste4_[BDGpa1]
+Ste4_[BD:Ste5]_ppi_Ste5_[n/RING-H2]; x Gpa1_[AssocSte4]--Ste4_[BDGpa1]
+Ste5_[MEKK]_ppi_Ste11; x Sho1_[CyT]--Ste11_[BDSho1]
+Ste5_ppi_Ste20
+Ste5_[BD:Ste5]_ppi_Ste5_[BD:Ste5]; ! Ste4_[BDSte5]--Ste5_[nRING-H2]
+Ste5_[MEK]_ppi_Ste7
+Ste7_[KD]_P+_Fus3_[(T180)]; ! Ste7_[ALS359]-{P}; ! Ste7_[ALT363]-{P}; ! Fus3_[AssocSte5]--Ste5_[Unlock]
+Ste7_[KD]_P+_Fus3_[(Y182)]; ! Ste7_[ALS359]-{P}; ! Ste7_[ALT363]-{P}; ! Fus3_[AssocSte5]--Ste5_[Unlock]
+Ste7_[KD]_P+_Kss1_[(T183)]; ! Ste7_[ALS359]-{P}; ! Ste7_[ALT363]-{P}; ! Kss1_[CD]--Ste7_[BDMAPK]
+Ste7_[KD]_P+_Kss1_[(Y185)]; ! Ste7_[ALS359]-{P}; ! Ste7_[ALT363]-{P}; ! Kss1_[CD]--Ste7_[BDMAPK]
+Bag7_GAP_Rho1_[GnP]
+Pkh1_i_PHS
+Pkh2_i_PHS
+Pkc1_[KD]_P+_Bck1_[(S939)]; k+ Pkc1_[C1]--Rho1_[ED]; k+ Pkc1_[AssocPS]--PS_[AssocPkc1]; k+ Pkc1_[ALT983]-{P}
+Pkh1_[KD]_P+_Pkc1_[AL(T983)]; k+ Pkh1_[AssocPHS]--PHS_[AssocPkh1]
+Ptp2_[PD]_P-_Slt2_[(Y192)]
+Kss1_ppi_Msg5_[n]
+Ssk1_[BD:Ssk1]_ppi_Ssk1_[BD:Ssk1]
+Hog1_[KD]_P+_Smp1_[(S348)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Smp1_[(S357)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Smp1_[(T365)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Smp1_[(S376)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Hot1_[(S30)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Hot1_[(S70)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Hot1_[(S153)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Hot1_[(S360)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Hog1_[KD]_P+_Hot1_[(S410)]; ! Hog1_[T174]-{P}; ! Hog1_[Y176]-{P}
+Gpa1_[BD:Rec]_ppi_Ste2_[CyT]
+Ste2_[TMD]_ppi_Ste2_[TMD]
+Slt2_[KD]_P+_Rom2; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Bck1_[n]_ppi_Bck1_[n]; k- Bck1_[S939]-{P}
+Bck1_ppi_Mkk1
+Bck1_ppi_Mkk2
+Mkk1_[n]_ppi_Slt2_[n]
+Swi4_[n]_ipi_Swi4_[c]; x Swi4_[c]--Swi6_[c]; x Slt2_[DB]--Swi4_[c]
+MFa_ppi_Ste3_[Receptor]; ! MFa
+Ste3_[CyT]_ppi_Sst2_[n/DEP]
+Gpa1_[BD:Rec]_ppi_Ste3_[CyT]
+Kss1_ppi_Ste5_[MAPK]
+Msg5_[PD]_P-_Kss1_[(T183)]
+Msg5_[PD]_P-_Kss1_[(Y185)]
+Ptc3_[PD]_P-_Hog1_[(T174)]
+Ptp2_[PD]_P-_Hog1_[(Y176)]; k+ Hog1_[CD]--Ptp2_[AssocHog1]
+Ptp3_[PD]_P-_Hog1_[(Y176)]; k+ Hog1_[CD]--Ptp3_[AssocHog1]
+Ptp2_[PD]_P-_Fus3_[(Y182)]
+Kss1_[KD]_P+_Sst2_[(S539)]; ! Kss1_[T183]-{P}; ! Kss1_[Y185]-{P}
+Kss1_[KD]_P+_Ste5; ! Kss1_[T183]-{P}; ! Kss1_[Y185]-{P}
+Ste2_GEF_Gpa1_[GnP]; k+ MFalpha_[AssocSte2]--Ste2_[Receptor]
+Ste3_GEF_Gpa1_[GnP]; k+ MFa_[AssocSte3]--Ste3_[Receptor]
+Rom1_[DH]_GEF_Rho1_[GnP]
+Mtl1_ppi_Rom2
+Bck1_[KD]_P+_Mkk1_[(S377)]; k+ Bck1_[AssocMkk1]--Mkk1_[AssocBck1]; x Bck1_[n]--Bck1_[n]
+Bck1_[KD]_P+_Mkk1_[(T381)]; k+ Bck1_[AssocMkk1]--Mkk1_[AssocBck1]; x Bck1_[n]--Bck1_[n]
+Bck1_[KD]_P+_Mkk2_[(S370)]; k+ Bck1_[AssocMkk2]--Mkk2_[AssocBck1]; x Bck1_[n]--Bck1_[n]
+Bck1_[KD]_P+_Mkk2_[(T374)]; k+ Bck1_[AssocMkk2]--Mkk2_[AssocBck1]; x Bck1_[n]--Bck1_[n]
+Mkk1_[KD]_P+_Slt2_[(T190)]; ! Mkk1_[S377]-{P}; ! Mkk1_[T381]-{P}; ! Mkk1_[n]--Slt2_[n]
+Mkk1_[KD]_P+_Slt2_[(Y192)]; ! Mkk1_[S377]-{P}; ! Mkk1_[T381]-{P}; ! Mkk1_[n]--Slt2_[n]
+Mkk2_[KD]_P+_Slt2_[(T190)]; ! Mkk2_[S370]-{P}; ! Mkk2_[T374]-{P}; ! Mkk2_[n]--Slt2_[n]
+Mkk2_[KD]_P+_Slt2_[(Y192)]; ! Mkk2_[S370]-{P}; ! Mkk2_[T374]-{P}; ! Mkk2_[n]--Slt2_[n]
+Ste7_ppi_Ste11
+Fus3_ppi_Ste5_[Unlock]; ! Ste5_[MEK]--Ste7_[AssocSte5]; ! Fus3_[CD]--Ste7_[BDMAPK]
+Slt2_[KD]_P+_Sir3_[(S282)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Sir3_[(S289)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Slt2_[KD]_P+_Sir3_[(S295)]; ! Slt2_[T190]-{P}; ! Slt2_[Y192]-{P}
+Ste20_[BR]_i_PIP2
+Yps1_CUT_Msb2_[HMH/CD]; k+ [NutrientDeprivation]
+Tec1_[n/TEA]_BIND_TCS
+SCF_Ub+_Tec1; ! Cdc4_[WD40]--Tec1_[CPD]; ! Cdc4_[AssocSCF]--SCF_[AssocCdc4]
+Sko1_[bZIP]_BIND_CRE
+Sko1_[n]_ppi_Tup1; k- Sko1_[nS108]-{P}; k- Sko1_[nS113]-{P}; k- Sko1_[nS126]-{P}
+Cyc8_[TPR1-3]_ppi_Tup1_[n]
+Hot1_BIND_Hot1Site
+Ste12_[n/HTH]_BIND_PRE
+Rlm1_BIND_Rlm1Site
+Smp1_BIND_Smp1Site
+Swi4_BIND_SCBG1; x Slt2_[DB]--Swi4_[c]; x Swi4_[n]--Swi4_[c]
+Swi4_BIND_SCBFKS2; ! Slt2_[DB]--Swi4_[c]; x Swi4_[n]--Swi4_[c]
+Cdc4_[WD40]_ppi_Tec1_[CPD]; ! Tec1_[T276]-{P}; ! Tec1_[T273]-{P}
+Fus3_[KD]_P+_Tec1_[(T276)]; ! Fus3_[T180]-{P}; ! Fus3_[Y182]-{P}

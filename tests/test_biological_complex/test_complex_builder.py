@@ -9,7 +9,7 @@ import copy
 
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
 from rxnconcompiler.biological_complex.complex_builder import ComplexBuilder
-from rxnconcompiler.tree import ComplexTree
+from rxnconcompiler.biological_complex.complex_tree import ComplexTree
 from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.molecule.molecule import Molecule
 from rxnconcompiler.rxncon import Rxncon
