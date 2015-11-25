@@ -78,7 +78,7 @@ class Tree(object):
             cid += 1
         node = Node(name=name, id= id)
         self.nodes.append(node)
-        parent_node = self.__update_children(parent, node.id, _ADD, parent_cid)
+        parent_node = self.update_children(parent, node.id, _ADD, parent_cid)
         if parent is None:
             node.parent = (None, None)
         else:
@@ -100,14 +100,14 @@ class Tree(object):
 
             old_node_idx =  self.nodes.index(child_node)
             old_node = self.nodes.pop(old_node_idx)  # remove the node by its index from nodes list
-            self.__update_children(child_node.parent, child_node.id, _DELETE)  # remove the respective entry in treeTracker
+            self.update_children(child_node.parent, child_node.id, _DELETE)  # remove the respective entry in treeTracker
 
             if levelup:
                 old_node.parent = node.parent  # change the parent of the old node
             else:
                 old_node.parent = node.id  # change the parent of the old node
             self.nodes.append(old_node)  # put the node back in the nodes list
-            self.__update_children(old_node.parent, old_node.id, _ADD)  # add the node again in the treeTracker
+            self.update_children(old_node.parent, old_node.id, _ADD)  # add the node again in the treeTracker
 
     def remove_Node(self, cid):
         """
@@ -117,7 +117,7 @@ class Tree(object):
             node = self.get_node(id=id)
             children = self.get_children(node.id)
             self.set_parent(node, children, levelup=True)
-            self.__update_children(node.parent, node.id, _DELETE)
+            self.update_children(node.parent, node.id, _DELETE)
             self.nodes.remove(node)
         else:
             raise("Node {0} not known!".format(id))
@@ -141,7 +141,7 @@ class Tree(object):
     def is_branch(self, position):
         return self[position].children
 
-    def __update_children(self, parent, id, mode, parent_id=None):
+    def update_children(self, parent, id, mode, parent_id=None):
         if parent is None:
             return
         else:
@@ -149,7 +149,7 @@ class Tree(object):
                 self[parent].update_children(id, mode)
                 return self[parent]
             else:
-                parent = self.get_node(id=parent_id)
+                parent = self.get_node(parent_id)
                 parent.update_children(id, mode)
                 return parent
 
@@ -243,13 +243,14 @@ class Tree(object):
         return result
 
 
-class ComplexNode(object, Node):
+class ComplexNode(Node):
     """"""
  
     def __init__(self, name, cid, old_cid = None, new_lvl=True):
         """Constructor for ComplexNode"""
-        super(ComplexNode, self).__init__(name, cid, new_lvl=new_lvl)
-        self.cid = cid
+        #super(ComplexNode, self).__init__(name, cid, new_lvl=new_lvl)
+        Node.__init__(self, name, cid, new_lvl=new_lvl)
+        self.cid = self.id
         self.old_cid = old_cid
 
     @property
@@ -268,9 +269,11 @@ class ComplexNode(object, Node):
     def id(self, value):
         self.__cid = value
 
-class ComplexTree(object, Tree):
+class ComplexTree(Tree):
     def __init__(self):
-        super(ComplexTree, self).__init__()
+        #super(ComplexTree, self).__init__()
+        Tree.__init__(self)
+        pass
         #self.nodes = []
 
     def get_highest_cid(self):
@@ -288,9 +291,9 @@ class ComplexTree(object, Tree):
         if cid is None:
             cid = self.get_highest_cid()
             cid += 1
-        node = Node(name=name, cid= cid, old_cid=old_cid)
+        node = ComplexNode(name=name, cid= cid, old_cid=old_cid)
         self.nodes.append(node)
-        parent_node = self.__update_children(parent, node.cid, _ADD, parent_cid)
+        parent_node = self.update_children(parent, node.cid, _ADD, parent_cid)
         if parent is None:
             node.parent = (None, None)
         else:
