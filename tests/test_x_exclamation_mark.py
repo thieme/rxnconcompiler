@@ -77,10 +77,11 @@ class x_exclamation_mark_Tests(TestCase):
         #                    <trans>; 1--2 B--B
         #                   <trans>; 2--3 B--A""")
 
-        rxncon = Rxncon("""A_p+_B; ! <trans>
-                        <trans>; 2--3 B--A
-                        <trans>; 1--2 B--B
-                        <trans>; 4--2 C--B""")
+        #rxncon = Rxncon(""" """)
+        #rxncon = Rxncon("""A_p+_B; ! <trans>
+        #                <trans>; 2--3 B--A
+        #                <trans>; 1--2 B--B
+        #                <trans>; 4--2 C--B""")
         #
         # rxncon = Rxncon("""A_p+_B; ! <cis>
         #                 <cis>; 1--3 B--A

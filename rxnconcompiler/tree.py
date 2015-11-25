@@ -268,7 +268,7 @@ class ComplexNode(object, Node):
     def id(self, value):
         self.__cid = value
 
-class ComplexTree(object, Tree):
+class ComplexTree(Tree):
     def __init__(self):
         super(ComplexTree, self).__init__()
         #self.nodes = []
