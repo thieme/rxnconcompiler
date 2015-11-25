@@ -1,0 +1,857 @@
+30,35c30,31
+< k14_1 1
+< k14_2 1
+< k14_3 1
+< k15_1 1
+< k15_2 1
+< k15_3 1
+---
+> k14 1
+> k15 1
+68,83d63
+< k24_17 1
+< k24_18 1
+< k24_19 1
+< k24_20 1
+< k24_21 1
+< k24_22 1
+< k24_23 1
+< k24_24 1
+< k24_25 1
+< k24_26 1
+< k24_27 1
+< k24_28 1
+< k24_29 1
+< k24_30 1
+< k24_31 1
+< k24_32 1
+89,94c69,70
+< k28_1 1
+< k28_2 1
+< k28_3 1
+< k29_1 1
+< k29_2 1
+< k29_3 1
+---
+> k28 1
+> k29 1
+102,106c78,79
+< k36_1 1
+< k36_2 1
+< k36_3 1
+< kf36_4 1
+< kr36_4 1
+---
+> kf36 1
+> kr36 1
+108,112c81,83
+< k38_1 1
+< kf38_2 1
+< kr38_2 1
+< k39_1 1
+< k39_2 1
+---
+> kf38 1
+> kr38 1
+> k39 1
+116,117d86
+< k41_3 1
+< k41_4 1
+122,125d90
+< kf42_3 1
+< kr42_3 1
+< kf42_4 1
+< kr42_4 1
+174a140,141
+> kf64_3 1
+> kr64_3 1
+180a148,149
+> kf64_7 1
+> kr64_7 1
+193,196c162
+< k69_3 1
+< k69_4 1
+< k70_1 1
+< k70_2 1
+---
+> k70 1
+201c167,168
+< k74_1 1
+---
+> kf74_1 1
+> kr74_1 1
+204c171,172
+< k74_3 1
+---
+> kf74_3 1
+> kr74_3 1
+207c175,180
+< k74_7 1
+---
+> kf74_5 1
+> kr74_5 1
+> kf74_6 1
+> kr74_6 1
+> kf74_7 1
+> kr74_7 1
+210,212d182
+< k74_11 1
+< kf74_12 1
+< kr74_12 1
+240a211,212
+> kf91_3 1
+> kr91_3 1
+244a217,218
+> kf91_6 1
+> kr91_6 1
+257,260c231
+< k96_1 1
+< k96_2 1
+< k96_3 1
+< k96_4 1
+---
+> k96 1
+322c293,294
+< k110_1 1
+---
+> kf110_1 1
+> kr110_1 1
+325c297,298
+< k110_3 1
+---
+> kf110_3 1
+> kr110_3 1
+328,333d300
+< k110_5 1
+< kf110_6 1
+< kr110_6 1
+< k110_7 1
+< kf110_8 1
+< kr110_8 1
+385,401c352,353
+< k126_1 1
+< k126_2 1
+< k126_3 1
+< k126_4 1
+< k126_5 1
+< k126_6 1
+< k126_7 1
+< k126_8 1
+< k126_9 1
+< k126_10 1
+< k126_11 1
+< k126_12 1
+< k126_13 1
+< k126_14 1
+< k126_15 1
+< kf126_16 1
+< kr126_16 1
+---
+> kf126 1
+> kr126 1
+408a361,362
+> kf130_3 1
+> kr130_3 1
+417a372
+> k135_1 1
+418a374
+> k135_3 1
+420,421d375
+< k135_6 1
+< k135_8 1
+424,426c378,379
+< k138_1 1
+< kf138_2 1
+< kr138_2 1
+---
+> kf138 1
+> kr138 1
+438,440c391,392
+< k145_1 1
+< kf145_2 1
+< kr145_2 1
+---
+> kf145 1
+> kr145 1
+466,468c418
+< k158_1 1
+< k158_2 1
+< k158_3 1
+---
+> k158 1
+509,510c459
+< k184_1 1
+< k184_2 1
+---
+> k184 1
+513,514d461
+< k185_3 1
+< k185_4 1
+517,518d463
+< k186_3 1
+< k186_4 1
+526,527c471
+< k192_1 1
+< k192_2 1
+---
+> k192 1
+565a510,511
+> kf212_5 1
+> kr212_5 1
+567a514,515
+> kf212_7 1
+> kr212_7 1
+862,870c810
+< #>>>>>>>>> Rule: 14_1
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] True, Slt2_[DB]--Swi4_[c] True
+< Msg5(n!3).SCBFKS2(AssocSwi4!1).Slt2(T190~P,DB!2,n!3).Swi4(AssocSCBFKS2!1,c!2) -> Msg5(n!1).Slt2(T190~U,DB,n!1) + Swi4(AssocSCBFKS2,c) + SCBFKS2(AssocSwi4)    k14_1
+< #>>>>>>>>> Rule: 14_2
+< # Optional requirements: Slt2_[DB]--Swi4_[c] False
+< Msg5(n!1).Slt2(T190~P,DB,n!1) -> Msg5(n!1).Slt2(T190~U,DB,n!1)    k14_2
+< #>>>>>>>>> Rule: 14_3
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] False, Slt2_[DB]--Swi4_[c] True
+< Msg5(n!2).Slt2(T190~P,DB!1,n!2).Swi4(AssocSCBFKS2,c!1) -> Msg5(n!1).Slt2(T190~U,DB,n!1) + Swi4(AssocSCBFKS2,c)    k14_3
+---
+> Msg5(n!1).Slt2(T190~P,n!1) -> Msg5(n!1).Slt2(T190~U,n!1)    k14
+876,884c816
+< #>>>>>>>>> Rule: 15_1
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] True, Slt2_[DB]--Swi4_[c] True
+< Msg5(n!3).SCBFKS2(AssocSwi4!1).Slt2(Y192~P,DB!2,n!3).Swi4(AssocSCBFKS2!1,c!2) -> Msg5(n!1).Slt2(Y192~U,DB,n!1) + Swi4(AssocSCBFKS2,c) + SCBFKS2(AssocSwi4)    k15_1
+< #>>>>>>>>> Rule: 15_2
+< # Optional requirements: Slt2_[DB]--Swi4_[c] False
+< Msg5(n!1).Slt2(Y192~P,DB,n!1) -> Msg5(n!1).Slt2(Y192~U,DB,n!1)    k15_2
+< #>>>>>>>>> Rule: 15_3
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] False, Slt2_[DB]--Swi4_[c] True
+< Msg5(n!2).Slt2(Y192~P,DB!1,n!2).Swi4(AssocSCBFKS2,c!1) -> Msg5(n!1).Slt2(Y192~U,DB,n!1) + Swi4(AssocSCBFKS2,c)    k15_3
+---
+> Msg5(n!1).Slt2(Y192~P,n!1) -> Msg5(n!1).Slt2(Y192~U,n!1)    k15
+930,931c862,863
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+< Mid2(CyT!3).Mtl1(AssocRom2!4).Rom2(AssocMid2!3,AssocMtl1!4,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mid2(CyT!3).Mtl1(AssocRom2!4).Rom2(AssocMid2!3,AssocMtl1!4,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_1
+---
+> # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+> Mid2(CyT!3).Mtl1(AssocRom2!4).Rom2(AssocMid2!3,AssocMtl1!4,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mid2(CyT!3).Mtl1(AssocRom2!4).Rom2(AssocMid2!3,AssocMtl1!4,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_1
+933,934c865,866
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+< Mid2(CyT!3).Mtl1(AssocRom2!4).Rom2(AssocMid2!3,AssocMtl1!4,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U,ED) -> Mid2(CyT!3).Mtl1(AssocRom2!4).Rom2(AssocMid2!3,AssocMtl1!4,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED)    k24_2
+---
+> # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_2
+936,937c868,869
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+< Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_3
+---
+> # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[n]--Slg1_[CyT] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U) -> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P)    k24_3
+939,940c871,872
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+< Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U,ED) -> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED)    k24_4
+---
+> # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+> Mid2(CyT!1).Mtl1(AssocRom2!2).Rom2(AssocMid2!1,AssocMtl1!2,AssocWsc2,n) + Rho1(GnP~U) -> Mid2(CyT!1).Mtl1(AssocRom2!2).Rom2(AssocMid2!1,AssocMtl1!2,AssocWsc2,n) + Rho1(GnP~P)    k24_4
+942,943c874,875
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False
+< Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2,n!1).Slg1(CyT!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_5
+---
+> # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True
+> Mid2(CyT!3).Rom2(AssocMid2!3,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mid2(CyT!3).Rom2(AssocMid2!3,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_5
+945,946c877,878
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Pkc1_[C1]--Rho1_[ED] False, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+< Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U,ED) -> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P,ED)    k24_6
+---
+> # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True
+> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_6
+948,949c880,881
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] True, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+< Mid2(CyT!1).Mtl1(AssocRom2!2).Rom2(AssocMid2!1,AssocMtl1!2,AssocWsc2,n) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mid2(CyT!1).Mtl1(AssocRom2!2).Rom2(AssocMid2!1,AssocMtl1!2,AssocWsc2,n) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_7
+---
+> # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False
+> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U) -> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P)    k24_7
+951,952c883,884
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+< Mid2(CyT!1).Mtl1(AssocRom2!2).Rom2(AssocMid2!1,AssocMtl1!2,AssocWsc2,n) + Rho1(GnP~U,ED) -> Mid2(CyT!1).Mtl1(AssocRom2!2).Rom2(AssocMid2!1,AssocMtl1!2,AssocWsc2,n) + Rho1(GnP~P,ED)    k24_8
+---
+> # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False
+> Mid2(CyT!1).Rom2(AssocMid2!1,AssocMtl1,AssocWsc2,n) + Rho1(GnP~U) -> Mid2(CyT!1).Rom2(AssocMid2!1,AssocMtl1,AssocWsc2,n) + Rho1(GnP~P)    k24_8
+954,955c886,887
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True
+< Mid2(CyT!3).Rom2(AssocMid2!3,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mid2(CyT!3).Rom2(AssocMid2!3,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_9
+---
+> # Optional requirements: Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+> Mtl1(AssocRom2!3).Rom2(AssocMid2,AssocMtl1!3,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mtl1(AssocRom2!3).Rom2(AssocMid2,AssocMtl1!3,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_9
+957,958c889,890
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Pkc1_[C1]--Rho1_[ED] False
+< Mid2(CyT!3).Rom2(AssocMid2!3,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U,ED) -> Mid2(CyT!3).Rom2(AssocMid2!3,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED)    k24_10
+---
+> # Optional requirements: Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_10
+960,961c892,893
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] False
+< Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_11
+---
+> # Optional requirements: Rom2_[n]--Slg1_[CyT] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U) -> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P)    k24_11
+963,964c895,896
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] False, Pkc1_[C1]--Rho1_[ED] False
+< Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U,ED) -> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED)    k24_12
+---
+> # Optional requirements: Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+> Mtl1(AssocRom2!1).Rom2(AssocMid2,AssocMtl1!1,AssocWsc2,n) + Rho1(GnP~U) -> Mtl1(AssocRom2!1).Rom2(AssocMid2,AssocMtl1!1,AssocWsc2,n) + Rho1(GnP~P)    k24_12
+966,967c898,899
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False
+< Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_13
+---
+> # Optional requirements: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_13
+969,970c901,902
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] True, Pkc1_[C1]--Rho1_[ED] False
+< Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U,ED) -> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P,ED)    k24_14
+---
+> # Optional requirements: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_14
+972,973c904,905
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Pkc1_[C1]--Rho1_[ED] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False
+< Mid2(CyT!1).Rom2(AssocMid2!1,AssocMtl1,AssocWsc2,n) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mid2(CyT!1).Rom2(AssocMid2!1,AssocMtl1,AssocWsc2,n) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_15
+---
+> # Optional requirements: Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P)    k24_15
+975,1024c907,908
+< # Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Pkc1_[C1]--Rho1_[ED] False
+< Mid2(CyT!1).Rom2(AssocMid2!1,AssocMtl1,AssocWsc2,n) + Rho1(GnP~U,ED) -> Mid2(CyT!1).Rom2(AssocMid2!1,AssocMtl1,AssocWsc2,n) + Rho1(GnP~P,ED)    k24_16
+< #>>>>>>>>> Rule: 24_17
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Mtl1(AssocRom2!3).Rom2(AssocMid2,AssocMtl1!3,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mtl1(AssocRom2!3).Rom2(AssocMid2,AssocMtl1!3,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_17
+< #>>>>>>>>> Rule: 24_18
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Mtl1(AssocRom2!3).Rom2(AssocMid2,AssocMtl1!3,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U,ED) -> Mtl1(AssocRom2!3).Rom2(AssocMid2,AssocMtl1!3,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED)    k24_18
+< #>>>>>>>>> Rule: 24_19
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_19
+< #>>>>>>>>> Rule: 24_20
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U,ED) -> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED)    k24_20
+< #>>>>>>>>> Rule: 24_21
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Rom2_[n]--Slg1_[CyT] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2,n!1).Slg1(CyT!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_21
+< #>>>>>>>>> Rule: 24_22
+< # Optional requirements: Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Pkc1_[C1]--Rho1_[ED] False, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U,ED) -> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P,ED)    k24_22
+< #>>>>>>>>> Rule: 24_23
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Mtl1(AssocRom2!1).Rom2(AssocMid2,AssocMtl1!1,AssocWsc2,n) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Mtl1(AssocRom2!1).Rom2(AssocMid2,AssocMtl1!1,AssocWsc2,n) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_23
+< #>>>>>>>>> Rule: 24_24
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Mtl1(AssocRom2!1).Rom2(AssocMid2,AssocMtl1!1,AssocWsc2,n) + Rho1(GnP~U,ED) -> Mtl1(AssocRom2!1).Rom2(AssocMid2,AssocMtl1!1,AssocWsc2,n) + Rho1(GnP~P,ED)    k24_24
+< #>>>>>>>>> Rule: 24_25
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_25
+< #>>>>>>>>> Rule: 24_26
+< # Optional requirements: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Pkc1_[C1]--Rho1_[ED] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U,ED) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED)    k24_26
+< #>>>>>>>>> Rule: 24_27
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_27
+< #>>>>>>>>> Rule: 24_28
+< # Optional requirements: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] False, Pkc1_[C1]--Rho1_[ED] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U,ED) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P,ED)    k24_28
+< #>>>>>>>>> Rule: 24_29
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Rom2(AssocMid2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_29
+< #>>>>>>>>> Rule: 24_30
+< # Optional requirements: Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] True, Pkc1_[C1]--Rho1_[ED] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Rom2(AssocMid2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U,ED) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P,ED)    k24_30
+< #>>>>>>>>> Rule: 24_31
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Rom2(AssocMid2,AssocMtl1,AssocWsc2,n) + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n) + Rho1(GnP~P,ED) + Pkc1(C1)    k24_31
+< #>>>>>>>>> Rule: 24_32
+< # Optional requirements: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Pkc1_[C1]--Rho1_[ED] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+< Rom2(AssocMid2,AssocMtl1,AssocWsc2,n) + Rho1(GnP~U,ED) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n) + Rho1(GnP~P,ED)    k24_32
+---
+> # Optional requirements: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n) + Rho1(GnP~U) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n) + Rho1(GnP~P)    k24_16
+1043,1051c927
+< #>>>>>>>>> Rule: 28_1
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] True, Slt2_[DB]--Swi4_[c] True
+< SCBFKS2(AssocSwi4!1).Sdp1(AssocSlt2!3).Slt2(T190~P,AssocSdp1!3,DB!2).Swi4(AssocSCBFKS2!1,c!2) -> Sdp1(AssocSlt2!1).Slt2(T190~U,AssocSdp1!1,DB) + Swi4(AssocSCBFKS2,c) + SCBFKS2(AssocSwi4)    k28_1
+< #>>>>>>>>> Rule: 28_2
+< # Optional requirements: Slt2_[DB]--Swi4_[c] False
+< Sdp1(AssocSlt2!1).Slt2(T190~P,AssocSdp1!1,DB) -> Sdp1(AssocSlt2!1).Slt2(T190~U,AssocSdp1!1,DB)    k28_2
+< #>>>>>>>>> Rule: 28_3
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] False, Slt2_[DB]--Swi4_[c] True
+< Sdp1(AssocSlt2!2).Slt2(T190~P,AssocSdp1!2,DB!1).Swi4(AssocSCBFKS2,c!1) -> Sdp1(AssocSlt2!1).Slt2(T190~U,AssocSdp1!1,DB) + Swi4(AssocSCBFKS2,c)    k28_3
+---
+> Sdp1(AssocSlt2!1).Slt2(T190~P,AssocSdp1!1) -> Sdp1(AssocSlt2!1).Slt2(T190~U,AssocSdp1!1)    k28
+1057,1065c933
+< #>>>>>>>>> Rule: 29_1
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] True, Slt2_[DB]--Swi4_[c] True
+< SCBFKS2(AssocSwi4!1).Sdp1(AssocSlt2!3).Slt2(Y192~P,AssocSdp1!3,DB!2).Swi4(AssocSCBFKS2!1,c!2) -> Sdp1(AssocSlt2!1).Slt2(Y192~U,AssocSdp1!1,DB) + Swi4(AssocSCBFKS2,c) + SCBFKS2(AssocSwi4)    k29_1
+< #>>>>>>>>> Rule: 29_2
+< # Optional requirements: Slt2_[DB]--Swi4_[c] False
+< Sdp1(AssocSlt2!1).Slt2(Y192~P,AssocSdp1!1,DB) -> Sdp1(AssocSlt2!1).Slt2(Y192~U,AssocSdp1!1,DB)    k29_2
+< #>>>>>>>>> Rule: 29_3
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] False, Slt2_[DB]--Swi4_[c] True
+< Sdp1(AssocSlt2!2).Slt2(Y192~P,AssocSdp1!2,DB!1).Swi4(AssocSCBFKS2,c!1) -> Sdp1(AssocSlt2!1).Slt2(Y192~U,AssocSdp1!1,DB) + Swi4(AssocSCBFKS2,c)    k29_3
+---
+> Sdp1(AssocSlt2!1).Slt2(Y192~P,AssocSdp1!1) -> Sdp1(AssocSlt2!1).Slt2(Y192~U,AssocSdp1!1)    k29
+1105,1116c973
+< #>>>>>>>>> Rule: 36_1
+< # Optional requirements: Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4] True, Swi4_[n]--[c] True
+< Slt2(T190~P,Y192~P,DB) + SCBG1(AssocSwi4!2).Swi4(AssocSCBG1!2,c!1,n!1) -> Slt2(T190~P,Y192~P,DB!1).Swi4(AssocSCBG1,c!1,n) + SCBG1(AssocSwi4)    k36_1
+< #>>>>>>>>> Rule: 36_2
+< # Optional requirements: Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4] False, Swi4_[n]--[c] True
+< Slt2(T190~P,Y192~P,DB) + Swi4(AssocSCBG1,c!1,n!1) -> Slt2(T190~P,Y192~P,DB!1).Swi4(AssocSCBG1,c!1,n)    k36_2
+< #>>>>>>>>> Rule: 36_3
+< # Optional requirements: Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4] True, Swi4_[n]--[c] False
+< Slt2(T190~P,Y192~P,DB) + SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n) -> Slt2(T190~P,Y192~P,DB!1).Swi4(AssocSCBG1,c!1,n) + SCBG1(AssocSwi4)    k36_3
+< #>>>>>>>>> Rule: 36_4
+< # Optional requirements: Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4] False, Swi4_[n]--[c] False
+< Slt2(T190~P,Y192~P,DB) + Swi4(AssocSCBG1,c,n) <-> Slt2(T190~P,Y192~P,DB!1).Swi4(AssocSCBG1,c!1,n)    kf36_4, kr36_4
+---
+> Slt2(T190~P,Y192~P,DB) + Swi4(c) <-> Slt2(T190~P,Y192~P,DB!1).Swi4(c!1)    kf36, kr36
+1127,1132c984
+< #>>>>>>>>> Rule: 38_1
+< # Optional requirements: Swi4_[n]--[c] True
+< Swi4(c!1,n!1) + Swi6(c) -> Swi4(c!1,n).Swi6(c!1)    k38_1
+< #>>>>>>>>> Rule: 38_2
+< # Optional requirements: Swi4_[n]--[c] False
+< Swi4(c,n) + Swi6(c) <-> Swi4(c!1,n).Swi6(c!1)    kf38_2, kr38_2
+---
+> Swi4(c) + Swi6(c) <-> Swi4(c!1).Swi6(c!1)    kf38, kr38
+1136,1141c988
+< #>>>>>>>>> Rule: 39_1
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True
+< Tus1 + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Tus1 + Rho1(GnP~P,ED) + Pkc1(C1)    k39_1
+< #>>>>>>>>> Rule: 39_2
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] False
+< Tus1 + Rho1(GnP~U,ED) -> Tus1 + Rho1(GnP~P,ED)    k39_2
+---
+> Tus1 + Rho1(GnP~U) -> Tus1 + Rho1(GnP~P)    k39
+1152,1153c999,1000
+< # Optional requirements: Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc42_[ED]--Ste20_[CRIB] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True
+< Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~U,ED!1).Ste20(CRIB!1) -> Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~P,ED) + Ste20(CRIB)    k41_1
+---
+> # Optional requirements: Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True
+> Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~U) -> Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~P)    k41_1
+1155,1156c1002,1003
+< # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc42_[ED]--Ste20_[CRIB] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocFar1]--Far1_[c] True
+< Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U,ED!1).Ste20(CRIB!1) -> Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P,ED) + Ste20(CRIB)    k41_1
+---
+> # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocFar1]--Far1_[c] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True
+> Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U) -> Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P)    k41_1
+1158,1159c1005,1006
+< # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocFar1]--Far1_[c] True, Cdc42_[ED]--Ste20_[CRIB] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+< Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U,ED!1).Ste20(CRIB!1) -> Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P,ED) + Ste20(CRIB)    k41_1
+---
+> # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocFar1]--Far1_[c] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+> Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U) -> Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P)    k41_1
+1161,1162c1008,1009
+< # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Cdc24_[AssocFar1]--Far1_[c] True, Cdc42_[ED]--Ste20_[CRIB] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False
+< Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U,ED!1).Ste20(CRIB!1) -> Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P,ED) + Ste20(CRIB)    k41_2*(1-k_START)+k41_1*k_START
+---
+> # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Cdc24_[AssocFar1]--Far1_[c] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False
+> Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P)    k41_2*(1-k_START)+k41_1*k_START
+1164,1165c1011,1012
+< # Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Cdc24_[AssocFar1]--Far1_[c] True, Cdc42_[ED]--Ste20_[CRIB] True, Far1_[nRING-H2]--Ste4_[AssocFar1] False, Ste4_[AssocSte18]--Ste18_[AssocSte4] False
+< Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U,ED!1).Ste20(CRIB!1) -> Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P,ED) + Ste20(CRIB)    k41_1
+---
+> # Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Cdc24_[AssocFar1]--Far1_[c] True, Far1_[nRING-H2]--Ste4_[AssocFar1] False, Ste4_[AssocSte18]--Ste18_[AssocSte4] False
+> Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P)    k41_1
+1167,1168c1014,1015
+< # Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc42_[ED]--Ste20_[CRIB] True, Cdc24_[AssocFar1]--Far1_[c] False
+< Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U,ED!1).Ste20(CRIB!1) -> Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P,ED) + Ste20(CRIB)    k41_1
+---
+> # Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc24_[AssocFar1]--Far1_[c] False
+> Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P)    k41_1
+1170,1171c1017,1018
+< # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc24_[AssocFar1]--Far1_[c] True, Cdc42_[ED]--Ste20_[CRIB] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Ste4_[AssocSte18]--Ste18_[AssocSte4] False
+< Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U,ED!1).Ste20(CRIB!1) -> Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P,ED) + Ste20(CRIB)    k41_1
+---
+> # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc24_[AssocFar1]--Far1_[c] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+> Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P)    k41_1
+1173,1174c1020,1021
+< # Optional requirements: Cdc24_[AssocFar1]--Far1_[c] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Far1_[nRING-H2]--Ste4_[AssocFar1] False, Cdc42_[ED]--Ste20_[CRIB] True
+< Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~U,ED!1).Ste20(CRIB!1) -> Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~P,ED) + Ste20(CRIB)    k41_1
+---
+> # Optional requirements: Cdc24_[AssocFar1]--Far1_[c] True, Far1_[nRING-H2]--Ste4_[AssocFar1] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+> Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~U) -> Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~P)    k41_1
+1176,1204c1023,1024
+< # Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Cdc42_[ED]--Ste20_[CRIB] True, Cdc24_[AssocFar1]--Far1_[c] False
+< Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~U,ED!1).Ste20(CRIB!1) -> Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~P,ED) + Ste20(CRIB)    k41_1
+< #>>>>>>>>> Rule: 41_10
+< # Optional requirements: Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc42_[ED]--Ste20_[CRIB] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True
+< Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~U,ED) -> Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~P,ED)    k41_3
+< #>>>>>>>>> Rule: 41_11
+< # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc42_[ED]--Ste20_[CRIB] False, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocFar1]--Far1_[c] True
+< Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U,ED) -> Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P,ED)    k41_3
+< #>>>>>>>>> Rule: 41_12
+< # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocFar1]--Far1_[c] True, Cdc42_[ED]--Ste20_[CRIB] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+< Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U,ED) -> Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P,ED)    k41_3
+< #>>>>>>>>> Rule: 41_13
+< # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Cdc24_[AssocFar1]--Far1_[c] True, Cdc42_[ED]--Ste20_[CRIB] False, Ste4_[AssocSte18]--Ste18_[AssocSte4] False
+< Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U,ED) -> Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P,ED)    k41_4*(1-k_START)+k41_3*k_START
+< #>>>>>>>>> Rule: 41_14
+< # Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Cdc24_[AssocFar1]--Far1_[c] True, Far1_[nRING-H2]--Ste4_[AssocFar1] False, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc42_[ED]--Ste20_[CRIB] False
+< Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U,ED) -> Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P,ED)    k41_3
+< #>>>>>>>>> Rule: 41_15
+< # Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Cdc42_[ED]--Ste20_[CRIB] False, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc24_[AssocFar1]--Far1_[c] False
+< Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U,ED) -> Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P,ED)    k41_3
+< #>>>>>>>>> Rule: 41_16
+< # Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc24_[AssocFar1]--Far1_[c] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc42_[ED]--Ste20_[CRIB] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+< Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U,ED) -> Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P,ED)    k41_3
+< #>>>>>>>>> Rule: 41_17
+< # Optional requirements: Cdc24_[AssocFar1]--Far1_[c] True, Far1_[nRING-H2]--Ste4_[AssocFar1] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Cdc42_[ED]--Ste20_[CRIB] False
+< Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~U,ED) -> Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~P,ED)    k41_3
+< #>>>>>>>>> Rule: 41_18
+< # Optional requirements: Cdc42_[ED]--Ste20_[CRIB] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Cdc24_[AssocFar1]--Far1_[c] False
+< Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~U,ED) -> Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~P,ED)    k41_3
+---
+> # Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Cdc24_[AssocFar1]--Far1_[c] False
+> Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~U) -> Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~P)    k41_1
+1214,1216d1033
+< # Optional requirements: Ste20_[BR]--PIP2_[AssocSte20] True, Ste20_[KD]--Ste20_[CRIB] False
+< Cdc42(GnP~P,ED) + PIP2(AssocSte20!1).Ste20(BR!1,CRIB) <-> Cdc42(GnP~P,ED!1).PIP2(AssocSte20!2).Ste20(BR!2,CRIB!1,KD)    kf42_2, kr42_2
+< #>>>>>>>>> Rule: 42_3
+1218,1221c1035
+< Cdc42(GnP~P,ED) + Ste20(BR,CRIB) <-> Cdc42(GnP~P,ED!1).Ste20(BR,CRIB!1)    kf42_3, kr42_3
+< #>>>>>>>>> Rule: 42_4
+< # Optional requirements: Ste20_[KD]--Ste20_[CRIB] False, Ste20_[BR]--PIP2_[AssocSte20] False
+< Cdc42(GnP~P,ED) + Ste20(BR,CRIB) <-> Cdc42(GnP~P,ED!1).Ste20(BR,CRIB!1,KD)    kf42_4, kr42_4
+---
+> Cdc42(GnP~P,ED) + Ste20(BR,CRIB) <-> Cdc42(GnP~P,ED!1).Ste20(BR,CRIB!1)    kf42_2, kr42_2
+1366a1181,1183
+> #>>>>>>>>> Rule: 64_3
+> # Optional requirements: Msb2_[CyT]--Sho1_[CyT] True, Hkr1_[TMD]--Sho1_[TMD] True
+> Pbs2(RSD2PR) + Hkr1(TMD!2).Msb2(CyT!1).Sho1(CyT!1,CyTSH3,TMD!2) <-> Hkr1(TMD!3).Msb2(CyT!2).Pbs2(RSD2PR!1).Sho1(CyT!2,CyTSH3!1,TMD!3)    kf64_3, kr64_3
+1375a1193,1195
+> #>>>>>>>>> Rule: 64_7
+> # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True, Msb2_[CyT]--Sho1_[CyT] False
+> Pbs2(RSD2PR) + Hkr1(TMD!1).Sho1(CyT,CyTSH3,TMD!1) <-> Hkr1(TMD!2).Pbs2(RSD2PR!1).Sho1(CyT,CyTSH3!1,TMD!2)    kf64_7, kr64_7
+1401,1402c1221,1222
+< # Optional requirements: Nbp2_[SH3]--Pbs2_[SIM2] True, Nbp2_[n]--Ptc1_[AssocNbp2] True, Hog1_[n]--Hot1_[m] True
+< Nbp2(SH3!2,n!1).Pbs2(SIM2!2).Ptc1(AssocNbp2!1) + Hog1(T174~P,n!1).Hot1(m!1) -> Nbp2(SH3!2,n!1).Pbs2(SIM2!2).Ptc1(AssocNbp2!1) + Hog1(T174~U,n) + Hot1(m)    k69_1
+---
+> # Optional requirements: Nbp2_[SH3]--Pbs2_[SIM2] True, Nbp2_[n]--Ptc1_[AssocNbp2] True
+> Nbp2(SH3!2,n!1).Pbs2(SIM2!2).Ptc1(AssocNbp2!1) + Hog1(T174~P) -> Nbp2(SH3!2,n!1).Pbs2(SIM2!2).Ptc1(AssocNbp2!1) + Hog1(T174~U)    k69_1
+1404,1405c1224,1225
+< # Optional requirements: Nbp2_[SH3]--Pbs2_[SIM2] False, Nbp2_[n]--Ptc1_[AssocNbp2] True, Hog1_[n]--Hot1_[m] True
+< Nbp2(SH3,n!1).Ptc1(AssocNbp2!1) + Hog1(T174~P,n!1).Hot1(m!1) -> Nbp2(SH3,n!1).Ptc1(AssocNbp2!1) + Hog1(T174~U,n) + Hot1(m)    k69_2
+---
+> # Optional requirements: Nbp2_[SH3]--Pbs2_[SIM2] False, Nbp2_[n]--Ptc1_[AssocNbp2] True
+> Nbp2(SH3,n!1).Ptc1(AssocNbp2!1) + Hog1(T174~P) -> Nbp2(SH3,n!1).Ptc1(AssocNbp2!1) + Hog1(T174~U)    k69_2
+1407,1417c1227,1228
+< # Optional requirements: Nbp2_[n]--Ptc1_[AssocNbp2] False, Hog1_[n]--Hot1_[m] True
+< Ptc1(AssocNbp2) + Hog1(T174~P,n!1).Hot1(m!1) -> Ptc1(AssocNbp2) + Hog1(T174~U,n) + Hot1(m)    k69_2
+< #>>>>>>>>> Rule: 69_4
+< # Optional requirements: Nbp2_[SH3]--Pbs2_[SIM2] True, Nbp2_[n]--Ptc1_[AssocNbp2] True, Hog1_[n]--Hot1_[m] False
+< Nbp2(SH3!2,n!1).Pbs2(SIM2!2).Ptc1(AssocNbp2!1) + Hog1(T174~P,n) -> Nbp2(SH3!2,n!1).Pbs2(SIM2!2).Ptc1(AssocNbp2!1) + Hog1(T174~U,n)    k69_3
+< #>>>>>>>>> Rule: 69_5
+< # Optional requirements: Nbp2_[SH3]--Pbs2_[SIM2] False, Nbp2_[n]--Ptc1_[AssocNbp2] True, Hog1_[n]--Hot1_[m] False
+< Nbp2(SH3,n!1).Ptc1(AssocNbp2!1) + Hog1(T174~P,n) -> Nbp2(SH3,n!1).Ptc1(AssocNbp2!1) + Hog1(T174~U,n)    k69_4
+< #>>>>>>>>> Rule: 69_6
+< # Optional requirements: Nbp2_[n]--Ptc1_[AssocNbp2] False, Hog1_[n]--Hot1_[m] False
+< Ptc1(AssocNbp2) + Hog1(T174~P,n) -> Ptc1(AssocNbp2) + Hog1(T174~U,n)    k69_4
+---
+> # Optional requirements: Nbp2_[n]--Ptc1_[AssocNbp2] False
+> Ptc1(AssocNbp2) + Hog1(T174~P) -> Ptc1(AssocNbp2) + Hog1(T174~U)    k69_2
+1422,1427c1233
+< #>>>>>>>>> Rule: 70_1
+< # Optional requirements: Hog1_[n]--Hot1_[m] True
+< Ptc2 + Hog1(T174~P,n!1).Hot1(m!1) -> Ptc2 + Hog1(T174~U,n) + Hot1(m)    k70_1
+< #>>>>>>>>> Rule: 70_2
+< # Optional requirements: Hog1_[n]--Hot1_[m] False
+< Ptc2 + Hog1(T174~P,n) -> Ptc2 + Hog1(T174~U,n)    k70_2
+---
+> Ptc2 + Hog1(T174~P) -> Ptc2 + Hog1(T174~U)    k70
+1450c1256
+< # Absolute requirements: Opy2_[BDSte50]--Ste50_[RA] True, Ste11_[SAM]--Ste50_[SAM] True
+---
+> # Absolute requirements: Opy2_[BDSte50]--Ste50_[RA] True, Ste5_[MEKK]--Ste11_[AssocSte5] False, Ste11_[SAM]--Ste50_[SAM] True
+1454,1455c1260,1261
+< # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True, Ste5_[MEKK]--Ste11_[AssocSte5] True
+< Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5!3,BDSho1,SAM!2).Ste5(MEKK!3).Ste50(RA!1,SAM!2) -> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2) + Ste5(MEKK)    k74_1
+---
+> # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True
+> Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_1, kr74_1
+1457,1458c1263,1264
+< # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True, Ste5_[MEKK]--Ste11_[AssocSte5] False
+< Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_2, kr74_2
+---
+> # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True
+> Msb2(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Msb2(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_2, kr74_2
+1460,1461c1266,1267
+< # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True, Ste5_[MEKK]--Ste11_[AssocSte5] True
+< Msb2(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5!3,BDSho1,SAM!2).Ste5(MEKK!3).Ste50(RA!1,SAM!2) -> Msb2(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2) + Ste5(MEKK)    k74_3
+---
+> # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True
+> Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_3, kr74_3
+1463,1464c1269,1276
+< # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True, Ste5_[MEKK]--Ste11_[AssocSte5] False
+< Msb2(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Msb2(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_4, kr74_4
+---
+> # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False
+> Sho1(CyT,TMD) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Opy2(BDSte50!1).Sho1(CyT!3,TMD).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_4, kr74_4
+> #>>>>>>>>> Rule: 74_5
+> # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True
+> Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_5, kr74_5
+> #>>>>>>>>> Rule: 74_6
+> # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True, Msb2_[CyT]--Sho1_[CyT] False
+> Msb2(CyT,TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Msb2(CyT,TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_6, kr74_6
+1466,1467c1278,1279
+< # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Ste5_[MEKK]--Ste11_[AssocSte5] True
+< Sho1(CyT,TMD) + Opy2(BDSte50!1).Ste11(AssocSte5!3,BDSho1,SAM!2).Ste5(MEKK!3).Ste50(RA!1,SAM!2) -> Opy2(BDSte50!1).Sho1(CyT!3,TMD).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2) + Ste5(MEKK)    k74_7
+---
+> # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True
+> Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_7, kr74_7
+1469c1281
+< # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Ste5_[MEKK]--Ste11_[AssocSte5] False
+---
+> # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False
+1471,1476d1282
+< #>>>>>>>>> Rule: 74_11
+< # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True, Ste5_[MEKK]--Ste11_[AssocSte5] True, Msb2_[CyT]--Sho1_[CyT] False
+< Msb2(CyT,TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5!3,BDSho1,SAM!2).Ste5(MEKK!3).Ste50(RA!1,SAM!2) -> Msb2(CyT,TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2) + Ste5(MEKK)    k74_11
+< #>>>>>>>>> Rule: 74_12
+< # Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True, Ste5_[MEKK]--Ste11_[AssocSte5] False, Msb2_[CyT]--Sho1_[CyT] False
+< Msb2(CyT,TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Msb2(CyT,TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_12, kr74_12
+1579a1386,1388
+> #>>>>>>>>> Rule: 91_3
+> # Optional requirements: Ste11_[CBDT307]-{P} False, Ste11_[CBDS302]-{P} False, Ste11_[CBDS306]-{P} True
+> Ste11(CBDS302~U,CBDS306~P,CBDT307~U,CBD) + Ste11(CBDS302~U,CBDS306~P,CBDT307~U,KD) <-> Ste11(CBDS302~U,CBDS306~P,CBDT307~U,CBD!1).Ste11(CBDS302~U,CBDS306~P,CBDT307~U,KD!1)    kf91_3, kr91_3
+1585a1395,1397
+> #>>>>>>>>> Rule: 91_6
+> # Optional requirements: Ste11_[CBDS306]-{P} False, Ste11_[CBDS302]-{P} True, Ste11_[CBDT307]-{P} True
+> Ste11(CBDS302~P,CBDS306~U,CBDT307~P,CBD) + Ste11(CBDS302~P,CBDS306~U,CBDT307~P,KD) <-> Ste11(CBDS302~P,CBDS306~U,CBDT307~P,CBD!1).Ste11(CBDS302~P,CBDS306~U,CBDT307~P,KD!1)    kf91_6, kr91_6
+1652,1663c1464
+< #>>>>>>>>> Rule: 96_1
+< # Optional requirements: Ssk1_[RR]--Ssk2_[BDSsk1] True, Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1] True
+< Ssk1(RRD544~U,AssocSsk22!2,RR!3).Ssk2(BDSsk1!3).Ssk22(AssocSsk1!2).Ypd1(H64~P,AssocSsk1!1) -> Ssk1(RRD544~P,AssocSsk22,RR!1).Ypd1(H64~U,AssocSsk1!1) + Ssk22(AssocSsk1) + Ssk2(BDSsk1)    k96_1
+< #>>>>>>>>> Rule: 96_2
+< # Optional requirements: Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1] True, Ssk1_[RR]--Ssk2_[BDSsk1] False
+< Ssk1(RRD544~U,AssocSsk22!2,RR!1).Ssk22(AssocSsk1!2).Ypd1(H64~P,AssocSsk1!1) -> Ssk1(RRD544~P,AssocSsk22,RR!1).Ypd1(H64~U,AssocSsk1!1) + Ssk22(AssocSsk1)    k96_2
+< #>>>>>>>>> Rule: 96_3
+< # Optional requirements: Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1] False, Ssk1_[RR]--Ssk2_[BDSsk1] True
+< Ssk1(RRD544~U,AssocSsk22,RR!2).Ssk2(BDSsk1!2).Ypd1(H64~P,AssocSsk1!1) -> Ssk1(RRD544~P,AssocSsk22,RR!1).Ypd1(H64~U,AssocSsk1!1) + Ssk2(BDSsk1)    k96_3
+< #>>>>>>>>> Rule: 96_4
+< # Optional requirements: Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1] False, Ssk1_[RR]--Ssk2_[BDSsk1] False
+< Ssk1(RRD544~U,AssocSsk22,RR!1).Ypd1(H64~P,AssocSsk1!1) -> Ssk1(RRD544~P,AssocSsk22,RR!1).Ypd1(H64~U,AssocSsk1!1)    k96_4
+---
+> Ssk1(RRD544~U,RR!1).Ypd1(H64~P,AssocSsk1!1) -> Ssk1(RRD544~P,RR!1).Ypd1(H64~U,AssocSsk1!1)    k96
+1775a1577
+> # Absolute requirements: Ste12_[nDB]--Tec1_[AssocSte12] False
+1779,1780c1581,1582
+< # Optional requirements: Dig2_[Fus3]-{P} False, Dig1_[AssocSte12]--Ste12_[c] True, Ste12_[nDB]--Tec1_[AssocSte12] True
+< Dig2(Fus3~U,AssocSte12) + Dig1(AssocSte12!2).Ste12(c!2,nDB!1,nDBD).Tec1(AssocSte12!1) -> Dig1(AssocSte12!2).Dig2(Fus3~U,AssocSte12!1).Ste12(c!2,nDB,nDBD!1) + Tec1(AssocSte12)    k110_1
+---
+> # Optional requirements: Dig2_[Fus3]-{P} False, Dig1_[AssocSte12]--Ste12_[c] True
+> Dig2(Fus3~U,AssocSte12) + Dig1(AssocSte12!1).Ste12(c!1,nDB,nDBD) <-> Dig1(AssocSte12!2).Dig2(Fus3~U,AssocSte12!1).Ste12(c!2,nDB,nDBD!1)    kf110_1, kr110_1
+1782,1783c1584,1585
+< # Optional requirements: Dig2_[Fus3]-{P} False, Dig1_[AssocSte12]--Ste12_[c] True, Ste12_[nDB]--Tec1_[AssocSte12] False
+< Dig2(Fus3~U,AssocSte12) + Dig1(AssocSte12!1).Ste12(c!1,nDB,nDBD) <-> Dig1(AssocSte12!2).Dig2(Fus3~U,AssocSte12!1).Ste12(c!2,nDB,nDBD!1)    kf110_2, kr110_2
+---
+> # Optional requirements: Dig1_[AssocSte12]--Ste12_[c] True, Dig2_[Fus3]-{P} True
+> Dig2(Fus3~P,AssocSte12) + Dig1(AssocSte12!1).Ste12(c!1,nDB,nDBD) <-> Dig1(AssocSte12!2).Dig2(Fus3~P,AssocSte12!1).Ste12(c!2,nDB,nDBD!1)    kf110_2, kr110_2
+1785,1786c1587,1588
+< # Optional requirements: Dig1_[AssocSte12]--Ste12_[c] True, Dig2_[Fus3]-{P} True, Ste12_[nDB]--Tec1_[AssocSte12] True
+< Dig2(Fus3~P,AssocSte12) + Dig1(AssocSte12!2).Ste12(c!2,nDB!1,nDBD).Tec1(AssocSte12!1) -> Dig1(AssocSte12!2).Dig2(Fus3~P,AssocSte12!1).Ste12(c!2,nDB,nDBD!1) + Tec1(AssocSte12)    k110_3
+---
+> # Optional requirements: Dig1_[AssocSte12]--Ste12_[c] False, Dig2_[Fus3]-{P} False
+> Dig2(Fus3~U,AssocSte12) + Ste12(c,nDB,nDBD) <-> Dig2(Fus3~U,AssocSte12!1).Ste12(c,nDB,nDBD!1)    kf110_3, kr110_3
+1788,1801c1590,1591
+< # Optional requirements: Dig1_[AssocSte12]--Ste12_[c] True, Dig2_[Fus3]-{P} True, Ste12_[nDB]--Tec1_[AssocSte12] False
+< Dig2(Fus3~P,AssocSte12) + Dig1(AssocSte12!1).Ste12(c!1,nDB,nDBD) <-> Dig1(AssocSte12!2).Dig2(Fus3~P,AssocSte12!1).Ste12(c!2,nDB,nDBD!1)    kf110_4, kr110_4
+< #>>>>>>>>> Rule: 110_5
+< # Optional requirements: Dig1_[AssocSte12]--Ste12_[c] False, Dig2_[Fus3]-{P} False, Ste12_[nDB]--Tec1_[AssocSte12] True
+< Dig2(Fus3~U,AssocSte12) + Ste12(c,nDB!1,nDBD).Tec1(AssocSte12!1) -> Dig2(Fus3~U,AssocSte12!1).Ste12(c,nDB,nDBD!1) + Tec1(AssocSte12)    k110_5
+< #>>>>>>>>> Rule: 110_6
+< # Optional requirements: Dig1_[AssocSte12]--Ste12_[c] False, Dig2_[Fus3]-{P} False, Ste12_[nDB]--Tec1_[AssocSte12] False
+< Dig2(Fus3~U,AssocSte12) + Ste12(c,nDB,nDBD) <-> Dig2(Fus3~U,AssocSte12!1).Ste12(c,nDB,nDBD!1)    kf110_6, kr110_6
+< #>>>>>>>>> Rule: 110_7
+< # Optional requirements: Dig1_[AssocSte12]--Ste12_[c] False, Dig2_[Fus3]-{P} True, Ste12_[nDB]--Tec1_[AssocSte12] True
+< Dig2(Fus3~P,AssocSte12) + Ste12(c,nDB!1,nDBD).Tec1(AssocSte12!1) -> Dig2(Fus3~P,AssocSte12!1).Ste12(c,nDB,nDBD!1) + Tec1(AssocSte12)    k110_7
+< #>>>>>>>>> Rule: 110_8
+< # Optional requirements: Dig1_[AssocSte12]--Ste12_[c] False, Dig2_[Fus3]-{P} True, Ste12_[nDB]--Tec1_[AssocSte12] False
+< Dig2(Fus3~P,AssocSte12) + Ste12(c,nDB,nDBD) <-> Dig2(Fus3~P,AssocSte12!1).Ste12(c,nDB,nDBD!1)    kf110_8, kr110_8
+---
+> # Optional requirements: Dig1_[AssocSte12]--Ste12_[c] False, Dig2_[Fus3]-{P} True
+> Dig2(Fus3~P,AssocSte12) + Ste12(c,nDB,nDBD) <-> Dig2(Fus3~P,AssocSte12!1).Ste12(c,nDB,nDBD!1)    kf110_4, kr110_4
+1932,1979c1722
+< #>>>>>>>>> Rule: 126_1
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Far1_[nRINGH2]--Ste4_[AssocFar1] True, Ste4_[AssocSte20]--Ste20_[c] True
+< Gpa1(GnP~U,AssocSte4) + Cdc24(AssocSte4!2).Far1(nRINGH2!3).Ste20(c!4).Ste4(AssocCdc24!2,AssocFar1!3,AssocSte20!4,BDGpa1,BDSte5!1).Ste5(nRINGH2!1) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Cdc24(AssocSte4) + Far1(nRINGH2) + Ste20(c) + Ste5(nRINGH2)    k126_1
+< #>>>>>>>>> Rule: 126_2
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] False, Far1_[nRINGH2]--Ste4_[AssocFar1] True, Ste4_[AssocSte20]--Ste20_[c] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True
+< Gpa1(GnP~U,AssocSte4) + Cdc24(AssocSte4!1).Far1(nRINGH2!2).Ste20(c!3).Ste4(AssocCdc24!1,AssocFar1!2,AssocSte20!3,BDGpa1,BDSte5) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Cdc24(AssocSte4) + Far1(nRINGH2) + Ste20(c)    k126_2
+< #>>>>>>>>> Rule: 126_3
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Far1_[nRINGH2]--Ste4_[AssocFar1] True, Ste4_[AssocSte20]--Ste20_[c] False
+< Gpa1(GnP~U,AssocSte4) + Cdc24(AssocSte4!2).Far1(nRINGH2!3).Ste4(AssocCdc24!2,AssocFar1!3,AssocSte20,BDGpa1,BDSte5!1).Ste5(nRINGH2!1) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Cdc24(AssocSte4) + Far1(nRINGH2) + Ste5(nRINGH2)    k126_3
+< #>>>>>>>>> Rule: 126_4
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] False, Far1_[nRINGH2]--Ste4_[AssocFar1] True, Ste4_[AssocSte20]--Ste20_[c] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True
+< Gpa1(GnP~U,AssocSte4) + Cdc24(AssocSte4!1).Far1(nRINGH2!2).Ste4(AssocCdc24!1,AssocFar1!2,AssocSte20,BDGpa1,BDSte5) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Cdc24(AssocSte4) + Far1(nRINGH2)    k126_4
+< #>>>>>>>>> Rule: 126_5
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Ste4_[AssocSte20]--Ste20_[c] True, Far1_[nRINGH2]--Ste4_[AssocFar1] False
+< Gpa1(GnP~U,AssocSte4) + Cdc24(AssocSte4!2).Ste20(c!3).Ste4(AssocCdc24!2,AssocFar1,AssocSte20!3,BDGpa1,BDSte5!1).Ste5(nRINGH2!1) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Cdc24(AssocSte4) + Ste20(c) + Ste5(nRINGH2)    k126_5
+< #>>>>>>>>> Rule: 126_6
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Ste4_[AssocSte20]--Ste20_[c] True, Far1_[nRINGH2]--Ste4_[AssocFar1] False
+< Gpa1(GnP~U,AssocSte4) + Cdc24(AssocSte4!1).Ste20(c!2).Ste4(AssocCdc24!1,AssocFar1,AssocSte20!2,BDGpa1,BDSte5) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Cdc24(AssocSte4) + Ste20(c)    k126_6
+< #>>>>>>>>> Rule: 126_7
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Ste4_[AssocSte20]--Ste20_[c] False, Far1_[nRINGH2]--Ste4_[AssocFar1] False
+< Gpa1(GnP~U,AssocSte4) + Cdc24(AssocSte4!2).Ste4(AssocCdc24!2,AssocFar1,AssocSte20,BDGpa1,BDSte5!1).Ste5(nRINGH2!1) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Cdc24(AssocSte4) + Ste5(nRINGH2)    k126_7
+< #>>>>>>>>> Rule: 126_8
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Ste4_[AssocSte20]--Ste20_[c] False, Far1_[nRINGH2]--Ste4_[AssocFar1] False
+< Gpa1(GnP~U,AssocSte4) + Cdc24(AssocSte4!1).Ste4(AssocCdc24!1,AssocFar1,AssocSte20,BDGpa1,BDSte5) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Cdc24(AssocSte4)    k126_8
+< #>>>>>>>>> Rule: 126_9
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] True, Far1_[nRINGH2]--Ste4_[AssocFar1] True, Ste4_[AssocSte20]--Ste20_[c] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+< Gpa1(GnP~U,AssocSte4) + Far1(nRINGH2!2).Ste20(c!3).Ste4(AssocCdc24,AssocFar1!2,AssocSte20!3,BDGpa1,BDSte5!1).Ste5(nRINGH2!1) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Far1(nRINGH2) + Ste20(c) + Ste5(nRINGH2)    k126_9
+< #>>>>>>>>> Rule: 126_10
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] False, Far1_[nRINGH2]--Ste4_[AssocFar1] True, Ste4_[AssocSte20]--Ste20_[c] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+< Gpa1(GnP~U,AssocSte4) + Far1(nRINGH2!1).Ste20(c!2).Ste4(AssocCdc24,AssocFar1!1,AssocSte20!2,BDGpa1,BDSte5) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Far1(nRINGH2) + Ste20(c)    k126_10
+< #>>>>>>>>> Rule: 126_11
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] True, Far1_[nRINGH2]--Ste4_[AssocFar1] True, Ste4_[AssocSte20]--Ste20_[c] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+< Gpa1(GnP~U,AssocSte4) + Far1(nRINGH2!2).Ste4(AssocCdc24,AssocFar1!2,AssocSte20,BDGpa1,BDSte5!1).Ste5(nRINGH2!1) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Far1(nRINGH2) + Ste5(nRINGH2)    k126_11
+< #>>>>>>>>> Rule: 126_12
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] False, Far1_[nRINGH2]--Ste4_[AssocFar1] True, Ste4_[AssocSte20]--Ste20_[c] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+< Gpa1(GnP~U,AssocSte4) + Far1(nRINGH2!1).Ste4(AssocCdc24,AssocFar1!1,AssocSte20,BDGpa1,BDSte5) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Far1(nRINGH2)    k126_12
+< #>>>>>>>>> Rule: 126_13
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] True, Ste4_[AssocSte20]--Ste20_[c] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Far1_[nRINGH2]--Ste4_[AssocFar1] False
+< Gpa1(GnP~U,AssocSte4) + Ste20(c!2).Ste4(AssocCdc24,AssocFar1,AssocSte20!2,BDGpa1,BDSte5!1).Ste5(nRINGH2!1) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Ste20(c) + Ste5(nRINGH2)    k126_13
+< #>>>>>>>>> Rule: 126_14
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] False, Ste4_[AssocSte20]--Ste20_[c] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Far1_[nRINGH2]--Ste4_[AssocFar1] False
+< Gpa1(GnP~U,AssocSte4) + Ste20(c!1).Ste4(AssocCdc24,AssocFar1,AssocSte20!1,BDGpa1,BDSte5) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Ste20(c)    k126_14
+< #>>>>>>>>> Rule: 126_15
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] True, Ste4_[AssocSte20]--Ste20_[c] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Far1_[nRINGH2]--Ste4_[AssocFar1] False
+< Gpa1(GnP~U,AssocSte4) + Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1,BDSte5!1).Ste5(nRINGH2!1) -> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5) + Ste5(nRINGH2)    k126_15
+< #>>>>>>>>> Rule: 126_16
+< # Optional requirements: Ste4_[BDSte5]--Ste5_[nRINGH2] False, Ste4_[AssocSte20]--Ste20_[c] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Far1_[nRINGH2]--Ste4_[AssocFar1] False
+< Gpa1(GnP~U,AssocSte4) + Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1,BDSte5) <-> Gpa1(GnP~U,AssocSte4!1).Ste4(AssocCdc24,AssocFar1,AssocSte20,BDGpa1!1,BDSte5)    kf126_16, kr126_16
+---
+> Gpa1(GnP~U,AssocSte4) + Ste4(BDGpa1) <-> Gpa1(GnP~U,AssocSte4!1).Ste4(BDGpa1!1)    kf126, kr126
+2007a1751,1753
+> #>>>>>>>>> Rule: 130_3
+> # Optional requirements: Kss1_[T183]-{P} False, Kss1_[Y185]-{P} True
+> Kss1(T183~U,Y185~P,AssocSte12) + Ste12(AssocKss1) <-> Kss1(T183~U,Y185~P,AssocSte12!1).Ste12(AssocKss1!1)    kf130_3, kr130_3
+2038c1784
+< # Absolute requirements: Gpa1_[GnP]-{P} True, Gpa1_[AssocSte4]--Ste4_[BDGpa1] False
+---
+> # Absolute requirements: Gpa1_[GnP]-{P} True
+2041c1787
+< #>>>>>>>>> Rule: 135_2
+---
+> #>>>>>>>>> Rule: 135_1
+2043,2044c1789,1790
+< Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~P,AssocSte4,BDRec!1).Ste2(CyT!1) -> Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~U,AssocSte4,BDRec!1).Ste2(CyT!1)    k135_2
+< #>>>>>>>>> Rule: 135_4
+---
+> Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~P,BDRec!1).Ste2(CyT!1) -> Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~U,BDRec!1).Ste2(CyT!1)    k135_1
+> #>>>>>>>>> Rule: 135_2
+2046,2047c1792,1793
+< Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~P,AssocSte4,BDRec) -> Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~U,AssocSte4,BDRec)    k135_4
+< #>>>>>>>>> Rule: 135_6
+---
+> Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~P,BDRec) -> Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~U,BDRec)    k135_2
+> #>>>>>>>>> Rule: 135_3
+2049,2050c1795,1796
+< Sst2(nDEP) + Gpa1(GnP~P,AssocSte4,BDRec!1).Ste2(CyT!1) -> Sst2(nDEP) + Gpa1(GnP~U,AssocSte4,BDRec!1).Ste2(CyT!1)    k135_6
+< #>>>>>>>>> Rule: 135_8
+---
+> Sst2(nDEP) + Gpa1(GnP~P,BDRec!1).Ste2(CyT!1) -> Sst2(nDEP) + Gpa1(GnP~U,BDRec!1).Ste2(CyT!1)    k135_3
+> #>>>>>>>>> Rule: 135_4
+2052c1798
+< Sst2(nDEP) + Gpa1(GnP~P,AssocSte4,BDRec) -> Sst2(nDEP) + Gpa1(GnP~U,AssocSte4,BDRec)    k135_8
+---
+> Sst2(nDEP) + Gpa1(GnP~P,BDRec) -> Sst2(nDEP) + Gpa1(GnP~U,BDRec)    k135_4
+2076a1823
+> # Absolute requirements: Dig2_[AssocSte12]--Ste12_[nDBD] False
+2079,2084c1826
+< #>>>>>>>>> Rule: 138_1
+< # Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] True
+< Dig2(AssocSte12!1).Ste12(nDB,nDBD!1) + Tec1(AssocSte12) -> Ste12(nDB!1,nDBD).Tec1(AssocSte12!1) + Dig2(AssocSte12)    k138_1
+< #>>>>>>>>> Rule: 138_2
+< # Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] False
+< Ste12(nDB,nDBD) + Tec1(AssocSte12) <-> Ste12(nDB!1,nDBD).Tec1(AssocSte12!1)    kf138_2, kr138_2
+---
+> Ste12(nDB,nDBD) + Tec1(AssocSte12) <-> Ste12(nDB!1,nDBD).Tec1(AssocSte12!1)    kf138, kr138
+2116a1859
+> # Absolute requirements: Sho1_[CyT]--Ste11_[BDSho1] False
+2119,2124c1862
+< #>>>>>>>>> Rule: 145_1
+< # Optional requirements: Sho1_[CyT]--Ste11_[BDSho1] True
+< Ste5(MEKK) + Sho1(CyT!1).Ste11(AssocSte5,BDSho1!1) -> Ste11(AssocSte5!1,BDSho1).Ste5(MEKK!1) + Sho1(CyT)    k145_1
+< #>>>>>>>>> Rule: 145_2
+< # Optional requirements: Sho1_[CyT]--Ste11_[BDSho1] False
+< Ste5(MEKK) + Ste11(AssocSte5,BDSho1) <-> Ste11(AssocSte5!1,BDSho1).Ste5(MEKK!1)    kf145_2, kr145_2
+---
+> Ste5(MEKK) + Ste11(AssocSte5,BDSho1) <-> Ste11(AssocSte5!1,BDSho1).Ste5(MEKK!1)    kf145, kr145
+2218,2226c1956
+< #>>>>>>>>> Rule: 158_1
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] True, Slt2_[DB]--Swi4_[c] True
+< Ptp2 + SCBFKS2(AssocSwi4!1).Slt2(Y192~P,DB!2).Swi4(AssocSCBFKS2!1,c!2) -> Ptp2 + Slt2(Y192~U,DB) + Swi4(AssocSCBFKS2,c) + SCBFKS2(AssocSwi4)    k158_1
+< #>>>>>>>>> Rule: 158_2
+< # Optional requirements: Slt2_[DB]--Swi4_[c] False
+< Ptp2 + Slt2(Y192~P,DB) -> Ptp2 + Slt2(Y192~U,DB)    k158_2
+< #>>>>>>>>> Rule: 158_3
+< # Optional requirements: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] False, Slt2_[DB]--Swi4_[c] True
+< Ptp2 + Slt2(Y192~P,DB!1).Swi4(AssocSCBFKS2,c!1) -> Ptp2 + Slt2(Y192~U,DB) + Swi4(AssocSCBFKS2,c)    k158_3
+---
+> Ptp2 + Slt2(Y192~P) -> Ptp2 + Slt2(Y192~U)    k158
+2361,2366c2091
+< #>>>>>>>>> Rule: 184_1
+< # Optional requirements: Hog1_[n]--Hot1_[m] True
+< Ptc3 + Hog1(T174~P,n!1).Hot1(m!1) -> Ptc3 + Hog1(T174~U,n) + Hot1(m)    k184_1
+< #>>>>>>>>> Rule: 184_2
+< # Optional requirements: Hog1_[n]--Hot1_[m] False
+< Ptc3 + Hog1(T174~P,n) -> Ptc3 + Hog1(T174~U,n)    k184_2
+---
+> Ptc3 + Hog1(T174~P) -> Ptc3 + Hog1(T174~U)    k184
+2373,2374c2098,2099
+< # Optional requirements: Hog1_[CD]--Ptp2_[AssocHog1] True, Hog1_[n]--Hot1_[m] True
+< Hog1(Y176~P,CD!1,n!2).Hot1(m!2).Ptp2(AssocHog1!1) -> Hog1(Y176~U,CD!1,n).Ptp2(AssocHog1!1) + Hot1(m)    k185_1
+---
+> # Optional requirements: Hog1_[CD]--Ptp2_[AssocHog1] True
+> Hog1(Y176~P,CD!1).Ptp2(AssocHog1!1) -> Hog1(Y176~U,CD!1).Ptp2(AssocHog1!1)    k185_1
+2376,2383c2101,2102
+< # Optional requirements: Hog1_[CD]--Ptp2_[AssocHog1] True, Hog1_[n]--Hot1_[m] False
+< Hog1(Y176~P,CD!1,n).Ptp2(AssocHog1!1) -> Hog1(Y176~U,CD!1,n).Ptp2(AssocHog1!1)    k185_2
+< #>>>>>>>>> Rule: 185_3
+< # Optional requirements: Hog1_[CD]--Ptp2_[AssocHog1] False, Hog1_[n]--Hot1_[m] True
+< Ptp2(AssocHog1) + Hog1(Y176~P,CD,n!1).Hot1(m!1) -> Ptp2(AssocHog1) + Hog1(Y176~U,CD,n) + Hot1(m)    k185_3
+< #>>>>>>>>> Rule: 185_4
+< # Optional requirements: Hog1_[CD]--Ptp2_[AssocHog1] False, Hog1_[n]--Hot1_[m] False
+< Ptp2(AssocHog1) + Hog1(Y176~P,CD,n) -> Ptp2(AssocHog1) + Hog1(Y176~U,CD,n)    k185_4
+---
+> # Optional requirements: Hog1_[CD]--Ptp2_[AssocHog1] False
+> Ptp2(AssocHog1) + Hog1(Y176~P,CD) -> Ptp2(AssocHog1) + Hog1(Y176~U,CD)    k185_2
+2390,2391c2109,2110
+< # Optional requirements: Hog1_[CD]--Ptp3_[AssocHog1] True, Hog1_[n]--Hot1_[m] True
+< Hog1(Y176~P,CD!1,n!2).Hot1(m!2).Ptp3(AssocHog1!1) -> Hog1(Y176~U,CD!1,n).Ptp3(AssocHog1!1) + Hot1(m)    k186_1
+---
+> # Optional requirements: Hog1_[CD]--Ptp3_[AssocHog1] True
+> Hog1(Y176~P,CD!1).Ptp3(AssocHog1!1) -> Hog1(Y176~U,CD!1).Ptp3(AssocHog1!1)    k186_1
+2393,2400c2112,2113
+< # Optional requirements: Hog1_[CD]--Ptp3_[AssocHog1] True, Hog1_[n]--Hot1_[m] False
+< Hog1(Y176~P,CD!1,n).Ptp3(AssocHog1!1) -> Hog1(Y176~U,CD!1,n).Ptp3(AssocHog1!1)    k186_2
+< #>>>>>>>>> Rule: 186_3
+< # Optional requirements: Hog1_[CD]--Ptp3_[AssocHog1] False, Hog1_[n]--Hot1_[m] True
+< Ptp3(AssocHog1) + Hog1(Y176~P,CD,n!1).Hot1(m!1) -> Ptp3(AssocHog1) + Hog1(Y176~U,CD,n) + Hot1(m)    k186_3
+< #>>>>>>>>> Rule: 186_4
+< # Optional requirements: Hog1_[CD]--Ptp3_[AssocHog1] False, Hog1_[n]--Hot1_[m] False
+< Ptp3(AssocHog1) + Hog1(Y176~P,CD,n) -> Ptp3(AssocHog1) + Hog1(Y176~U,CD,n)    k186_4
+---
+> # Optional requirements: Hog1_[CD]--Ptp3_[AssocHog1] False
+> Ptp3(AssocHog1) + Hog1(Y176~P,CD) -> Ptp3(AssocHog1) + Hog1(Y176~U,CD)    k186_2
+2441,2446c2154
+< #>>>>>>>>> Rule: 192_1
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] True
+< Rom1 + Pkc1(C1!1).Rho1(GnP~U,ED!1) -> Rom1 + Rho1(GnP~P,ED) + Pkc1(C1)    k192_1
+< #>>>>>>>>> Rule: 192_2
+< # Optional requirements: Pkc1_[C1]--Rho1_[ED] False
+< Rom1 + Rho1(GnP~U,ED) -> Rom1 + Rho1(GnP~P,ED)    k192_2
+---
+> Rom1 + Rho1(GnP~U) -> Rom1 + Rho1(GnP~P)    k192
+2585a2294,2296
+> #>>>>>>>>> Rule: 212_5
+> # Optional requirements: Sko1_[nS108]-{P} False, Sko1_[nS113]-{P} False, Sko1_[nS126]-{P} True
+> Sko1(nS108~U,nS113~U,nS126~P,n) + Tup1(AssocSko1) <-> Sko1(nS108~U,nS113~U,nS126~P,n!1).Tup1(AssocSko1!1)    kf212_5, kr212_5
+2588a2300,2302
+> #>>>>>>>>> Rule: 212_7
+> # Optional requirements: Sko1_[nS108]-{P} False, Sko1_[nS113]-{P} True, Sko1_[nS126]-{P} True
+> Sko1(nS108~U,nS113~P,nS126~P,n) + Tup1(AssocSko1) <-> Sko1(nS108~U,nS113~P,nS126~P,n!1).Tup1(AssocSko1!1)    kf212_7, kr212_7

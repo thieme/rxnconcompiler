@@ -49,7 +49,7 @@ import re
 
 from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.util.rxncon_errors import RxnconBooleanError
-from rxnconcompiler.tree import ComplexNode, ComplexTree
+from complex_tree import ComplexTree
 
 (_ADD, _DELETE, _INSERT) = range(3)
 
