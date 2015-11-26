@@ -1,5 +1,6 @@
 from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.tree import Tree, Node
+from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
 import re
 
 (_ADD, _DELETE, _INSERT) = range(3)
@@ -8,7 +9,7 @@ import re
 class ReducedPDNode(Node):
     def __init__(self, complex, id, new_lvl=True):
         self.name = ""
-        self.getName(complex.molecules)
+        self.get_name(complex.molecules)
         Node.__init__(self, self.name, id, new_lvl=new_lvl)
         self.node_object = complex
         self.parent = []
@@ -22,7 +23,7 @@ class ReducedPDNode(Node):
         if isinstance(value, BiologicalComplex):
             self.__node_object = value
 
-    def getLocDomain(self, domains, used_domains, mol):
+    def get_loc_domain(self, domains, used_domains, mol):
         # 1. Localisation domain
         loc_str = ''
 
@@ -37,7 +38,7 @@ class ReducedPDNode(Node):
             used_domains.append(dom)
         return domains, used_domains
 
-    def getModDomain(self, domains, used_domains, mol):
+    def get_mod_domain(self, domains, used_domains, mol):
         # 2. Covalent modification domains
         mod_domains = []
         for modif in mol.modifications:
@@ -61,8 +62,8 @@ class ReducedPDNode(Node):
         domains = []
         used_domains = []
 
-        domains, used_domains = self.getLocDomain(domains, used_domains, mol)
-        domains, used_domains = self.getModDomain(domains, used_domains, mol)
+        domains, used_domains = self.get_loc_domain(domains, used_domains, mol)
+        domains, used_domains = self.get_mod_domain(domains, used_domains, mol)
 
         if domains:
             result = "%s(%s)" %(mol.name, ','.join(domains))
@@ -70,7 +71,7 @@ class ReducedPDNode(Node):
         #    result = mol.name
             return re.sub('[-/]', '', result)
 
-    def formatName(self, mol, first=False):
+    def format_name(self, mol, first=False):
         modifications = self.get_molecule_str(mol)
         #modifications = ",".join(mol.modifications)
         if modifications:
@@ -84,7 +85,7 @@ class ReducedPDNode(Node):
             else:
                 self.name+="-%s"%mol.name
 
-    def getName(self, molecules):
+    def get_name(self, molecules):
         """
         creates names they should look like Ste5-Ste5-St7_{P,Ub}-Ste11
         modification are only shown if they are present
@@ -93,9 +94,9 @@ class ReducedPDNode(Node):
         """
         for i, mol in enumerate(molecules):
             if i == 0:
-                self.formatName(mol, first=True)
+                self.format_name(mol, first=True)
             else:
-                self.formatName(mol)
+                self.format_name(mol)
 
 
 class ReducedPDTree(Tree):
@@ -103,7 +104,7 @@ class ReducedPDTree(Tree):
         Tree.__init__(self)
         self.last_node = ""
 
-    def setParent(self, node, parent_list):
+    def set_parent(self, node, parent_list):
         """
         set the parent to a respective node
         @param node:
@@ -128,12 +129,31 @@ class ReducedPDTree(Tree):
             id = self.get_highest_id()
             id += 1
         node = ReducedPDNode(complex=complex, id=id)
+
         if self.has_node(node.name):
+            node = self.nodes[self.get_index(node.name)]
             self.last_node = node.name
+            if parent_list is not None:
+                for parent_id in parent_list:
+                    parent_node = self.get_node(parent_id)
+                    parent_tuple = (parent_node.name, parent_node.id)
+                    node_tuple = (node.name, node.id)
+                    if parent_tuple not in node.parent and node_tuple[1] not in parent_list:
+                            self.update_parent(parent_tuple, node)
             return
         self.nodes.append(node)
         self.last_node = node.name
-        self.setParent(node=node, parent_list=parent_list)
+        self.set_parent(node=node, parent_list=parent_list)
+
+    def update_parent(self, parent_tuple, node):
+        """
+        update function if node is known but a parent missing
+        @param parent_id: int
+        @param node: ReducedPDNode obj
+        @return:
+        """
+        node.parent.append(parent_tuple)
+        self.update_children(parent_tuple[0], node.id, _ADD, parent_tuple[1])
 
     def show(self, position, level=_ROOT):
         """
@@ -175,6 +195,14 @@ if __name__ == "__main__":
     Ste11_ppi_Ste7
     Ste11_[KD]_P+_Ste7_[(ALS359)]; ! Ste11--Ste7
     """
+    TOY3 = """
+    a_p+_b
+    a_p+_c
+    """
+    TOY4 = """
+    a_p+_b_[x]
+    c_p+_b_[x]
+    """
     rxncon = Rxncon(TOY1)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
@@ -187,14 +215,8 @@ if __name__ == "__main__":
     # <b>; AND Ste5--Ste7
     # <b>; AND Ste5--Ste5"""
     #
-    # TOY3 = """
-    # a_p+_b
-    # a_p+_c
-    # """
-    # TOY4 = """
-    # a_p+_b_[x]
-    # c_p+_b_[x]
-    # """
+
+
     # TOY5 = """
     # Ste5_ppi_Ste11
     # Ste5_ppi_Ste7; ! Ste5--Ste11
