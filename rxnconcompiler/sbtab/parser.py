@@ -15,6 +15,7 @@ from rxnconcompiler.parser.rxncon_parser import parse_rxncon
 from rxnconcompiler.parser.rxncon_parser import parse_xls
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE # default def for new format
+from rxnconcompiler.util.rxncon_errors import RxnconParserError
 #from rxnconcompiler.rxncon import Rxncon
 #import rxnconcompiler.rxncon as rxncon_mod
 #import rxnconcompiler.rxncon
@@ -135,9 +136,6 @@ class Commandline(object):
             except (TypeError, IndexError, ValueError):
                 print 'Error, either entered index is not in range or entered filename is not in this directory.'
 
-
-
-
     def outputformat_formating(self, possibilities, default):
         self.outputformat= raw_input('Please enter the output format. Possible are .{0} (default= .{1}):\n'.format(" & .".join(possibilities), default))
         if self.outputformat=='':
@@ -173,7 +171,6 @@ class Parser(Commandline):
         self.ob_list=[]
 
     def get_info(ob):
-        #Basti: Die Funktion find ich gut bau sie noch etwas aus um auf einem Blick alle wichtigen Informationen zu bekommen
         '''
         Function that gives some Information about given Object and current working enviroment
         '''
@@ -183,42 +180,20 @@ class Parser(Commandline):
         print type(ob)
         print'\nDir: '
         print dir(ob)
-        #print getattr(ob)
-        #print hasattr(ob)
-        #print '\nGlobals: '
-        #print globals()
         print '\nLocals: '
         print locals()
         print '\nCallable: '
         print callable(ob)
         print ''
 
-    def get_SBtab_info(ob):
-        #Basti: das gehoert eigendlich in das SBtab module wueder ich hier rausmachen und/oder in der get_info mit beruecksichtigen
-        '''
-        Uses SBtab methods to print out some Information about input SBtabTable instance
-        '''
-
-        print 'Columns:\t', ob.columns
-        print 'Header_row: \t', ob.header_row
-        #print ob.sbtab_list
-        #print ob.table
-        print 'TableType:\t', ob.table_type
-
     def parse_SBtab2rxncon(self, output=''):
-        #Basti: alles auskommentieres rausschmeissen
-
         '''
         Main function for translating SBtab --> rxncon Format. Creates rxncon object
         '''
-        #files = get_files(self.inputdir)
-        #print files, '\n Achtung! Wenn es ein multi rxncon dir war, werden hier zu viele objekte erzeugt! parse_sbtab2rxncon'
         #self.read_outputformat(self.parsable_to) #reactivate
         print self.outputformat
         if self.outputformat!='txt' and self.outputformat!='xls':
-            print 'Error, the format ',self.outputformat,' is not supported.'  # Basti: richtigen Error setzen
-
-        #self.ob_list=[] # List of dictionaries
+            raise RxnconParserError('Error, the format '+self.outputformat+' is not supported.')
         reaction_def_found=False
 
         #Basti: Funktion draus machen
@@ -232,7 +207,6 @@ class Parser(Commandline):
                                          'filename':filename })
             else:
                 self.ob_list.append({'object':ob[0], 'type':ob[0].table_type, 'filename':filename })
-        #self.ob_list= [{'object':ob, 'type':ob.table_type, 'filename':filename } for ob in obs]
 
         #for filename in self.d.files:
         #Basti: versuch das etwas auf zu spalten du hast in der if und elif doppelten code
@@ -260,17 +234,10 @@ class Parser(Commandline):
             else:
                 reaction_definition=self.build_reaction_definition()
 
-
-
-        # if self.outputformat=='xls' and self.target_format=='xls':
-        #     self.gene_list=self.build_gene_list(self.ob_list)
-
-        #if output=='xls_tables':
         self.rxncon = self.build_rxncon(self.ob_list, reaction_definition) #rxncon object
-        #else:
+
         # rxncon object generation for writing must happen in seperate file (writer.py or so) because of cyclic imports
         # parser MUST NOT import rxncon, because its importet into parsing controller and parsing controller is imported intp rxncon
-            #self.rxncon = rxnconcompiler.rxncon.Rxncon(self.build_rxncon(self.ob_list, reaction_definition)) #rxncon object
 
 
     def build_rxncon(self, ob_list, reaction_definition):
@@ -429,45 +396,9 @@ class Parser(Commandline):
         out = component("a")
         out+='_'+row[d['rea']]+'_'
         out+= component("b")
-        # Reaction B
-        # out+=row[d['cbn']]
-        # if row[d['cbd']]:
-        #     out+='_['+row[d['cbd']]
-        #     if row[d['cbs']]:
-        #         out+='/'+row[d['cbs']]
-        #     outif row[d['cbr']]:
-        #         out+='('+row[d['cbr']]+')'
-        #     out+=']'
-        # elif row[d['cbs']]:
-        #     out+='_['+row[d['cbs']]  # if no domain but only subdomain is given, the subdomain becomes domain. is that correct?
-        #     if row[d['cbr']]:
-        #         out+='('+row[d['cbr']]+')'
-        #     out+=']'
-        # elif row[d['cbr']]:
-        #     out+='_[(' + row[d['cbr']] + ')]'
 
         return out
 
-    def build_gene_list(self, ob_list):
-        #Basti: brauchst du die hier noch?
-        '''
-        Creates gene list from given SBtab file
-        '''
-        for ob in ob_list:
-            if ob['type']=='Gene':
-            # Find column indexes for !Target, !Contingency and !Modifier columns
-                gene_col_index= ob['object'].columns.index('!Gene')
-                name_col_index= ob['object'].columns.index('!Name')
-                locus_col_index= ob['object'].columns.index('!LocusName')
-
-                # Save the data of these three columns to lists
-                gene_list=[{
-                        'Gene': row[gene_col_index],
-                        'Name': row[name_col_index],
-                        'LocusName': row[locus_col_index]
-                    } for row in ob['object'].getRows()]
-
-        return gene_list
 
     def build_reaction_definition(self):
         '''
@@ -529,20 +460,10 @@ class Parser(Commandline):
                     reactionTypeID2def = dict([(row['ReactionType:ID'], row) for row in REACTION_TEMPLATE])
                     indexes_dict={
                         'r': ob['object'].columns.index('!UID:Reaction'),
-                        #'ct': ob['object'].columns.index('!Category:Type'),
-                        #'c': ob['object'].columns.index('!Category'),
-                        #'si': ob['object'].columns.index('!SubclassID'),
-                        #'s': ob['object'].columns.index('!Subclass'),
                         'm': ob['object'].columns.index('!ModifierBoundary'),
                         'rtn': ob['object'].columns.index('!ReactionType:Name'),
                         'rti': ob['object'].columns.index('!ReactionType:ID'),
                         'rn': ob['object'].columns.index('!Reaction:Name'),
-                        #'rev': ob['object'].columns.index('!Reversibility'),
-                        #'d': ob['object'].columns.index('!Directionality'),
-                        #'ssc': ob['object'].columns.index('!SourceState:Component'),
-                        #'ssm': ob['object'].columns.index('!SourceState:Modification'),
-                        #'psc': ob['object'].columns.index('!ProductState:Component'),
-                        #'psm': ob['object'].columns.index('!ProductState:Modification'),
                         'cs': ob['object'].columns.index('!coSubstrates'),
                         'cp': ob['object'].columns.index('!coProducts'),
                         'co': ob['object'].columns.index('!Comment')
@@ -552,21 +473,10 @@ class Parser(Commandline):
                     # reaction_list.pop(0)
                         reaction_definition_list.append({
                             'UID:Reaction' : unicode(row[indexes_dict['r']]),
-                            # 'CategoryType' : unicode(row[indexes_dict['ct']]),
-                            # 'Category' : unicode(row[indexes_dict['c']]),
-                            # 'SubclassID' : unicode(row[indexes_dict['si']]),
-                            # 'Subclass' : unicode(row[indexes_dict['s']]),
                             'ModifierBoundary' : unicode(row[indexes_dict['m']]),
                             'ReactionType:ID' : unicode(row[indexes_dict['rti']]),
-                            #'ReactionType' : unicode(row[indexes_dict['rt']]),
                             'ReactionType:Name' : unicode(row[indexes_dict['rtn']]),
                             'Reaction:Name' : unicode(row[indexes_dict['rn']]),
-                            # 'Reversibility' : unicode(row[indexes_dict['rev']]),
-                            # 'Directionality' : unicode(row[indexes_dict['d']]),
-                            # 'SourceState[Component]' : unicode(row[indexes_dict['ssc']]),
-                            # 'SourceState[Modification]' : unicode(row[indexes_dict['ssm']]),
-                            # 'ProductState[Component]' : unicode(row[indexes_dict['psc']]),
-                            # 'ProductState[Modification]' : unicode(row[indexes_dict['psm']]),
                             'coSubstrate(s)' : unicode(row[indexes_dict['cs']]),
                             'coProduct(s)' : unicode(row[indexes_dict['cp']]),
                             'Comment' : unicode(row[indexes_dict['co']])
