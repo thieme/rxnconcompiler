@@ -37,7 +37,7 @@ class DirCheck():
         self.target_format=''
         self.parsable_to=''
 
-        print 'd initialised. inputdir= ', self.inputdir," delete in the end"
+        #print 'd initialised. inputdir= ', self.inputdir," delete in the end"
 
     def processing(self, filedir):
         if filedir.endswith('.txt'):# basti: nach dem letzten punkt mit split
@@ -222,7 +222,7 @@ class DirCheck():
         found_table_types=[]
         ob_list=[]
         for filename in self.files:
-            print 'Filename: ', filename, '            delete in look_for_SBtab_files()'
+            #print 'Filename: ', filename, '            delete in look_for_SBtab_files()'
             ob_list.extend(sbtab_utils.build_SBtab_object(inputdir, filename))
         #ob_list.pop(0)
         found_table_types= [ob.table_type for ob in ob_list]
