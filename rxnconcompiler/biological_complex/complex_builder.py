@@ -273,8 +273,8 @@ class ComplexBuilder:
             queue = node.children
             if node.new_lvl:
 
-                for i, child_cid in enumerate(queue):
-                    child_node = self.tree.get_node(child_cid)
+                for i, child in enumerate(queue):
+                    child_node = self.tree.get_node(child.id)
                     root_cont = node.cont[i]
                     # ToDo: what if we have modification then it should be just an integer
                     if len(root_cont.state.components) > 1:
@@ -292,7 +292,7 @@ class ComplexBuilder:
                     if root_cont.ctype in ["and", "or"] or "--" in root_cont.ctype or re.match("^[1-9]*$", root_cont.ctype):
                         root_cont.ctype = sid
                     root_cont.state = state
-                    self.update_tree_contingencies(child_cid)  # recursive call
+                    self.update_tree_contingencies(child.id)  # recursive call
         else:
             raise NameError("NodeID {0} does not exists!".format(node_cid))
 
