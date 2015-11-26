@@ -52,7 +52,6 @@ class DirCheck():
             print 'Found File(s) in .ods format. This format ist not supported. ' \
                   '\nPlease export to .xls or .txt format (Open/Libre Office and Excel can do this).\n' \
                   'If you want to translate from SBtab to rxncon you can also use .csv format.'
-            #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
 
         elif filedir.endswith('.csv'):# basti: nach dem letzten punkt mit split
             # Read csv Table
@@ -167,8 +166,6 @@ class DirCheck():
         Checks whether ods file is rxncon, SBtab or other file type
         NOT SUPPORTED YET
         '''
-        #sbtab_detected, rxncon_detected, other_detected = check_ods_File(filedir, sbtab_detected, rxncon_detected, other_detected)
-        #return sbtab_detected, rxncon_detected, other_detected
 
         pass
 
@@ -224,7 +221,6 @@ class DirCheck():
         for filename in self.files:
             #print 'Filename: ', filename, '            delete in look_for_SBtab_files()'
             ob_list.extend(sbtab_utils.build_SBtab_object(inputdir, filename))
-        #ob_list.pop(0)
         found_table_types= [ob.table_type for ob in ob_list]
 
         if 'ReactionID' in found_table_types and'ContingencyID' in found_table_types:
