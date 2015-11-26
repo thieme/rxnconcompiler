@@ -68,7 +68,7 @@ class Tree(object):
                 max_id = node.id
         return max_id
 
-    def add_Node(self, name, id=None, parent=None, parent_cid=None):
+    def add_Node(self, name, id=None, parent=None, parent_id=None):
         """
         add a node in a tree
         """
@@ -78,7 +78,7 @@ class Tree(object):
             id += 1
         node = Node(name=name, id= id)
         self.nodes.append(node)
-        parent_node = self.update_children(parent, node.id, _ADD, parent_cid)
+        parent_node = self.update_children(parent, node.id, _ADD, parent_id)
         if parent is None:
             node.parent = (None, None)
         else:
@@ -109,7 +109,7 @@ class Tree(object):
             self.nodes.append(old_node)  # put the node back in the nodes list
             self.update_children(old_node.parent, old_node.id, _ADD)  # add the node again in the treeTracker
 
-    def remove_Node(self, cid):
+    def remove_Node(self, id):
         """
         remove a node from the tree
         """
@@ -161,7 +161,11 @@ class Tree(object):
             if node.name == name:
                 return i
 
-
+    def has_node(self, name):
+        if self.get_index(name) is not None:
+            return True
+        else:
+            return False
     def show(self, position, level=_ROOT):
         """
         basic visualisation of the tree for testing and developing
@@ -190,7 +194,7 @@ class Tree(object):
         root_nodes = [node for node in self.nodes if node.parent == (None, None)]
         return root_nodes
 
-    def get_parent(self, cid):
+    def get_parent(self, id):
         """
         get the parent of a specific node
         """
