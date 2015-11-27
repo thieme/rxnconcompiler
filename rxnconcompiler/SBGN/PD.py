@@ -1,10 +1,16 @@
 from rxnconcompiler.rxncon import Rxncon
-from rxnconcompiler.tree import Tree, Node
+from rxnconcompiler.tree import Tree, Node, Children
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
 import re
 
 (_ADD, _DELETE, _INSERT) = range(3)
 (_ROOT, _DEPTH, _WIDTH) = range(3)
+
+class ReducedPDChildren(Children):
+    def __init__(self, name, id, reaction, reversibility):
+        Children.__init__(name, id)
+        self.reaction = reaction
+        self.reversibility = reversibility
 
 class ReducedPDNode(Node):
     def __init__(self, complex, id, new_lvl=True):
