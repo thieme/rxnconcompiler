@@ -179,7 +179,7 @@ class ComplexBuilder:
                 self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid)
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
-                root.update_children(child.cid, _ADD)
+                root.update_children(child.name, child.cid, _ADD)
 
         def structured(new_root, root, bond):
             if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
@@ -187,7 +187,7 @@ class ComplexBuilder:
 
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
-                root.update_children(child.cid, _ADD)
+                root.update_children(child.name, child.cid, _ADD)
                 if root_node.old_cid is None:
                     old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
                     if old_root is not None:

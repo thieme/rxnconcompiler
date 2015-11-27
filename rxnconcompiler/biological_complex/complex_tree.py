@@ -19,8 +19,10 @@ class ComplexNode(Node):
     def __init__(self, name, cid, old_cid=None, new_lvl=True):
         """Constructor for ComplexNode"""
         #super(ComplexNode, self).__init__(name, cid, new_lvl=new_lvl)
-        Node.__init__(self, name, cid, new_lvl=new_lvl)
-        self.cid = self.id
+        Node.__init__(self, name, cid, new_lvl=new_lvl, ID=False)
+        if hasattr(Node, "id"): # needed to avoid that id and cid are there. cid is specific for this class
+            delattr(Node,"id")
+        self.cid = cid
         self.old_cid = old_cid
 
     @property

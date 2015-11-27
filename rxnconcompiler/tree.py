@@ -4,22 +4,27 @@
 class Children():
     """"""
 
-    def __init__(self, name, id, reaction=None, reversibility=None):
+    def __init__(self, name, id):
         """Constructor for Children"""
-        self.reversibility = reversibility
-        self.reaction = reaction
         self.id = id
         self.name = name
 
     def __repr__(self):
         return self.name
 
+    def __eq__(self, other):
+        if self.id == other.id and self.name == other.name:
+            return True
+        else:
+            return False
+
 class Node:
     """
 
     """
-    def __init__(self, name, id, new_lvl=True):
-        self.id = id
+    def __init__(self, name, id, new_lvl=True, ID=True):
+        if ID:
+            self.id = id
         self.name = name
         self.new_lvl = new_lvl
         self.__children = []
