@@ -8,11 +8,22 @@ class Children():
         """Constructor for Children"""
         self.id = id
         self.name = name
-    
+
     def __repr__(self):
         return self.name
 
     def __eq__(self, other):
+        if isinstance(other, int):
+            if self.id == other:
+                return True
+            else:
+                return False
+
+        if isinstance(other, str):
+            if self.name == other:
+                return True
+            else:
+                return False
         if self.id == other.id and self.name == other.name:
             return True
         else:
@@ -171,7 +182,7 @@ class Tree(object):
             return
         else:
             if parent_id is None:
-                parent_idx = self.get_index(parent[0])
+                parent_idx = self.get_index(parent)
                 self[parent_idx].update_children(name, id, mode)
                 return self[parent_idx]
             else:

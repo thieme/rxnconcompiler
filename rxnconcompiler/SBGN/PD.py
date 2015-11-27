@@ -116,7 +116,7 @@ class ReducedPDTree(Tree):
             return node
         for parent_id in parent_list:
             parent_node = self.get_node(parent_id)
-            self.update_children(parent_node.name, node.id, _ADD, parent_id)
+            self.update_children(parent_node.name, node.name, node.id, _ADD, parent_id)
             node.parent.append((parent_node.name, parent_node.id))
         return node
 
@@ -153,7 +153,7 @@ class ReducedPDTree(Tree):
         @return:
         """
         node.parent.append(parent_tuple)
-        self.update_children(parent_tuple[0], node.id, _ADD, parent_tuple[1])
+        self.update_children(parent_tuple[0],node.name, node.id, _ADD, parent_tuple[1])
 
     def show(self, position, level=_ROOT):
         """
@@ -203,7 +203,15 @@ if __name__ == "__main__":
     a_p+_b_[x]
     c_p+_b_[x]
     """
-    rxncon = Rxncon(TOY1)
+    TOY5 = """Ste5_ppi_Ste11
+    Ste5_ppi_Ste7
+    Ste5_ppi_Ste5
+    Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <b>
+    <b>; AND Ste5--Ste11
+    <b>; AND Ste5--Ste7
+    <b>; AND Ste5--Ste5"""
+
+    rxncon = Rxncon(TOY5)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
