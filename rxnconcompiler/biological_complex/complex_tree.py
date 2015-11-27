@@ -1,7 +1,17 @@
-from rxnconcompiler.tree import Tree, Node
+from rxnconcompiler.tree import Tree, Node, Children
 (_ADD, _DELETE, _INSERT) = range(3)
 (_ROOT, _DEPTH, _WIDTH) = range(3)
 
+class ComplexChildren(Children):
+    """"""
+
+    def __init__(self, name, cid, reaction=None, reversibility=None):
+        """Constructor for Children"""
+        Children.__init__(name, cid)
+        self.cid = cid
+
+    def __repr__(self):
+        return self.name
 
 class ComplexNode(Node):
     """"""
@@ -9,8 +19,10 @@ class ComplexNode(Node):
     def __init__(self, name, cid, old_cid=None, new_lvl=True):
         """Constructor for ComplexNode"""
         #super(ComplexNode, self).__init__(name, cid, new_lvl=new_lvl)
-        Node.__init__(self, name, cid, new_lvl=new_lvl)
-        self.cid = self.id
+        Node.__init__(self, name, cid, new_lvl=new_lvl, ID=False)
+        if hasattr(Node, "id"): # needed to avoid that id and cid are there. cid is specific for this class
+            delattr(Node,"id")
+        self.cid = cid
         self.old_cid = old_cid
 
     @property
@@ -41,7 +53,7 @@ class ComplexTree(Tree):
                 max_cid = node.cid
         return max_cid
 
-    def add_Node(self, name, cid=None, old_cid=None, parent=None, parent_cid=None):
+    def add_Node(self, name, cid=None, old_cid=None, parent=(None,None), parent_cid=None):
         """
         add a node in a tree
         """
@@ -50,8 +62,8 @@ class ComplexTree(Tree):
             cid += 1
         node = ComplexNode(name=name, cid=cid, old_cid=old_cid)
         self.nodes.append(node)
-        parent_node = self.update_children(parent, node.cid, _ADD, parent_cid)
-        if parent is None:
+        parent_node = self.update_children(parent, node.name, node.cid, _ADD, parent_cid)
+        if parent[0] is None:
             node.parent = (None, None)
         else:
             node.parent = (parent_node.name, parent_node.cid)
@@ -100,8 +112,8 @@ class ComplexTree(Tree):
 
     def children_by_old_cid(self, node):
         result = []
-        for child_cid in node.children:
-            child_node = self.get_node(cid=child_cid)
+        for child in node.children:
+            child_node = self.get_node(cid=child.cid)
             result.append(child_node.old_cid)
         return result
 

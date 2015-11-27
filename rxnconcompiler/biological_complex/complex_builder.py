@@ -179,7 +179,7 @@ class ComplexBuilder:
                 self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid)
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
-                root.update_children(child.cid, _ADD)
+                root.update_children(child.name, child.cid, _ADD)
 
         def structured(new_root, root, bond):
             if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
@@ -187,7 +187,7 @@ class ComplexBuilder:
 
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
-                root.update_children(child.cid, _ADD)
+                root.update_children(child.name, child.cid, _ADD)
                 if root_node.old_cid is None:
                     old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
                     if old_root is not None:
@@ -273,8 +273,8 @@ class ComplexBuilder:
             queue = node.children
             if node.new_lvl:
 
-                for i, child_cid in enumerate(queue):
-                    child_node = self.tree.get_node(child_cid)
+                for i, child in enumerate(queue):
+                    child_node = self.tree.get_node(child.id)
                     root_cont = node.cont[i]
                     # ToDo: what if we have modification then it should be just an integer
                     if len(root_cont.state.components) > 1:
@@ -292,7 +292,7 @@ class ComplexBuilder:
                     if root_cont.ctype in ["and", "or"] or "--" in root_cont.ctype or re.match("^[1-9]*$", root_cont.ctype):
                         root_cont.ctype = sid
                     root_cont.state = state
-                    self.update_tree_contingencies(child_cid)  # recursive call
+                    self.update_tree_contingencies(child.id)  # recursive call
         else:
             raise NameError("NodeID {0} does not exists!".format(node_cid))
 

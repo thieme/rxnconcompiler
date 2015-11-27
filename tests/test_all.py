@@ -5,7 +5,8 @@ All tests for rxncon modules.
 """
 
 from unittest import main, TestCase
-
+# test tree
+from test_tree.test_tree import TestTree
 #
 from test_rxncon import RxnconTests
 from test_compiler import CompilerTests
@@ -54,6 +55,8 @@ from test_reaction.test_reaction_factory import ReactionFactoryTests
 
 # test_util
 from test_util.test_util import UtilTests
+
+
 
 
 if __name__ == '__main__':
