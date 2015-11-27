@@ -145,14 +145,14 @@ class BiologicalComplexBuilderTests(TestCase):
         # add Node B a second time to children of A
         root = self.expected_structured_unstructured_Tree.get_node(cid=2)
         child = self.expected_structured_unstructured_Tree.get_node(name="B", parent_cid=2)
-        root.update_children(child.cid, _ADD)
+        root.update_children(child.name, child.cid, _ADD)
 
         self.expected_structured_unstructured_Tree.add_Node("C",parent="B", parent_cid=3)
         # Node for B--B connection is already known
         # add Node B a second time to children of B
         root = self.expected_structured_unstructured_Tree.get_node(cid=3)
         child = self.expected_structured_unstructured_Tree.get_node(name="B", parent_cid=3)
-        root.update_children(child.cid, _ADD)
+        root.update_children(child.name, child.cid, _ADD)
         self.expected_structured_unstructured_Tree.add_Node("G",parent="B", parent_cid=3)
         #self.expected_structured_unstructured_Tree.add_Node("E")
 
@@ -171,14 +171,14 @@ class BiologicalComplexBuilderTests(TestCase):
 
         root = self.expected_structured_structured_Tree.get_node(cid=2)
         child = self.expected_structured_structured_Tree.get_node(name="B", parent_cid=2)
-        root.update_children(child.cid, _ADD)
+        root.update_children(child.name, child.cid, _ADD)
         root.old_cid = "36"
 
         self.expected_structured_structured_Tree.add_Node("C", parent="B", parent_cid=3, old_cid="38")
 
         root = self.expected_structured_structured_Tree.get_node(cid=3)
         child = self.expected_structured_structured_Tree.get_node(name="B", parent_cid=3)
-        root.update_children(child.cid, _ADD)
+        root.update_children(child.name, child.cid, _ADD)
         root.old_cid = "37"
         child.old_cid = "39"
 
