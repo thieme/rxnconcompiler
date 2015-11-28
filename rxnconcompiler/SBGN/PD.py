@@ -196,7 +196,8 @@ class ReducedPDTree(Tree):
         @param node: ReducedPDNode obj
         @return:
         """
-        self.update_children(parent.name, node.name, node.id, _ADD, parent.id)
+        parent_tuple = (parent.name, parent.id)
+        self.update_children(parent_tuple, node.name, node.id, _ADD)
         node.parent.append((parent.name, parent.id))
 
         #node.parent.append(parent_tuple)
