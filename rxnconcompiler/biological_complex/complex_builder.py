@@ -176,14 +176,14 @@ class ComplexBuilder:
         """
         def non_structured(new_root, root):
             if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
-                self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid)
+                self.tree.add_Node(new_root.name, parent=(root.name, root.cid))
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
                 root.update_children(child.name, child.cid, _ADD)
 
         def structured(new_root, root, bond):
             if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
-                self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid, old_cid=new_root.cid)
+                self.tree.add_Node(new_root.name, parent=(root.name, root.cid), old_cid=new_root.cid)
 
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
@@ -407,9 +407,9 @@ class ComplexBuilder:
 if __name__ == "__main__":
     tree = ComplexTree()
     tree.add_Node("A", cid=3)
-    tree.add_Node("B", cid=4 , parent="A")
-    tree.add_Node("B", parent="B", parent_cid=4)
-    tree.add_Node("D", parent="B")
-    tree.add_Node("C", parent="B", parent_cid=5)
+    tree.add_Node("B", cid=4 , parent=("A",3))
+    tree.add_Node("B", parent=("B", 4))
+    tree.add_Node("D", parent=("B", 4))
+    tree.add_Node("C", parent=("B", 5))
     #leafs = tree.get_leaf(3)
     tree.show(3)

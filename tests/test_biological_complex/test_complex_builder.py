@@ -101,23 +101,23 @@ class BiologicalComplexBuilderTests(TestCase):
         self.expected_Cdc24_tree = ComplexTree()
         self.expected_Cdc24_tree.add_Node("Cdc42")
         self.expected_Cdc24_tree.add_Node("Cdc24")
-        self.expected_Cdc24_tree.add_Node("Far1",parent="Cdc24", parent_cid=2)
-        self.expected_Cdc24_tree.add_Node("Ste4", parent="Far1", parent_cid=3)
-        self.expected_Cdc24_tree.add_Node("Ste18", parent="St4", parent_cid=4)
-        self.expected_Cdc24_tree.add_Node("Ste4", parent="Cdc24", parent_cid=2)
-        self.expected_Cdc24_tree.add_Node("Ste18", parent="Ste4", parent_cid=6)
+        self.expected_Cdc24_tree.add_Node("Far1",parent=("Cdc24", 2))
+        self.expected_Cdc24_tree.add_Node("Ste4", parent=("Far1", 3))
+        self.expected_Cdc24_tree.add_Node("Ste18", parent=("St4", 4))
+        self.expected_Cdc24_tree.add_Node("Ste4", parent=("Cdc24", 2))
+        self.expected_Cdc24_tree.add_Node("Ste18", parent=("Ste4", 6))
         #self.expected_Cdc24_tree.add_Node("Cdc42")
 
         basic_tree = ComplexTree()
         basic_tree.add_Node("E")
         basic_tree.add_Node("A", old_cid="5")
-        basic_tree.add_Node("B",parent="A", parent_cid=2, old_cid="25")
-        basic_tree.add_Node("F",parent="A", parent_cid=2, old_cid="10")
-        basic_tree.add_Node("B",parent="B", parent_cid=3, old_cid="7")
-        basic_tree.add_Node("D",parent="B", parent_cid=3, old_cid="9")
-        basic_tree.add_Node("B",parent="F", parent_cid=4, old_cid="11")
-        basic_tree.add_Node("C",parent="B", parent_cid=5, old_cid="8")
-        basic_tree.add_Node("G",parent="B", parent_cid=7, old_cid="12")
+        basic_tree.add_Node("B",parent=("A", 2), old_cid="25")
+        basic_tree.add_Node("F",parent=("A", 2), old_cid="10")
+        basic_tree.add_Node("B",parent=("B", 3), old_cid="7")
+        basic_tree.add_Node("D",parent=("B", 3), old_cid="9")
+        basic_tree.add_Node("B",parent=("F", 4), old_cid="11")
+        basic_tree.add_Node("C",parent=("B", 5), old_cid="8")
+        basic_tree.add_Node("G",parent=("B", 7), old_cid="12")
 ###############################
         """
                             A(2)
@@ -147,13 +147,13 @@ class BiologicalComplexBuilderTests(TestCase):
         child = self.expected_structured_unstructured_Tree.get_node(name="B", parent_cid=2)
         root.update_children(child.name, child.cid, _ADD)
 
-        self.expected_structured_unstructured_Tree.add_Node("C",parent="B", parent_cid=3)
+        self.expected_structured_unstructured_Tree.add_Node("C",parent=("B", 3))
         # Node for B--B connection is already known
         # add Node B a second time to children of B
         root = self.expected_structured_unstructured_Tree.get_node(cid=3)
         child = self.expected_structured_unstructured_Tree.get_node(name="B", parent_cid=3)
         root.update_children(child.name, child.cid, _ADD)
-        self.expected_structured_unstructured_Tree.add_Node("G",parent="B", parent_cid=3)
+        self.expected_structured_unstructured_Tree.add_Node("G",parent=("B", 3))
         #self.expected_structured_unstructured_Tree.add_Node("E")
 
 ############################################
@@ -174,7 +174,7 @@ class BiologicalComplexBuilderTests(TestCase):
         root.update_children(child.name, child.cid, _ADD)
         root.old_cid = "36"
 
-        self.expected_structured_structured_Tree.add_Node("C", parent="B", parent_cid=3, old_cid="38")
+        self.expected_structured_structured_Tree.add_Node("C", parent=("B", 3), old_cid="38")
 
         root = self.expected_structured_structured_Tree.get_node(cid=3)
         child = self.expected_structured_structured_Tree.get_node(name="B", parent_cid=3)
@@ -182,7 +182,7 @@ class BiologicalComplexBuilderTests(TestCase):
         root.old_cid = "37"
         child.old_cid = "39"
 
-        self.expected_structured_structured_Tree.add_Node("G", parent="B", parent_cid=5, old_cid="40")
+        self.expected_structured_structured_Tree.add_Node("G", parent=("B", 5), old_cid="40")
         #self.expected_structured_structured_Tree.add_Node("E")
 
 ############################################
@@ -197,7 +197,7 @@ class BiologicalComplexBuilderTests(TestCase):
                         C(8)      G(9) B(10)
         """
         self.expected_structured_pPlus_Tree = copy.deepcopy(basic_tree)
-        self.expected_structured_pPlus_Tree.add_Node("B", parent="B", parent_cid=7, old_cid="11")
+        self.expected_structured_pPlus_Tree.add_Node("B", parent=("B", 7), old_cid="11")
         #self.expected_structured_pPlus_Tree.add_Node("E")
 
     def test_complex(self):

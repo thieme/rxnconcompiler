@@ -62,7 +62,7 @@ class ComplexTree(Tree):
             cid += 1
         node = ComplexNode(name=name, cid=cid, old_cid=old_cid)
         self.nodes.append(node)
-        parent_node = self.update_children(parent, node.name, node.cid, _ADD, parent_cid)
+        parent_node = self.update_children(parent, node.name, node.cid, _ADD)
         if parent[0] is None:
             node.parent = (None, None)
         else:
