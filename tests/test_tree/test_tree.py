@@ -10,16 +10,16 @@ class TestTree(TestCase):
         """Constructor for TestTree"""
         self.tree = Tree()
         self.tree.add_Node(name="Harry", id=1)  # root node
-        self.tree.add_Node(name="Jane", id=2, parent="Harry", parent_id=1)
-        self.tree.add_Node(name="Bill", id=3, parent="Harry", parent_id=1)
-        self.tree.add_Node(name="Joe", id=4, parent="Jane", parent_id=2)
-        self.tree.add_Node(name="Diane", id=5, parent="Jane",parent_id=2)
-        self.tree.add_Node(name="George", id=6,parent="Diane",parent_id=5)
-        self.tree.add_Node(name="Mary", id=7, parent="Diane", parent_id=5)
-        self.tree.add_Node(name="Jill", id=8, parent="George", parent_id=6)
-        self.tree.add_Node(name="Carol", id=9, parent="Jill", parent_id=8)
-        self.tree.add_Node(name="Grace", id=10,parent="Bill", parent_id=3)
-        self.tree.add_Node(name="Mark", id=11, parent="Harry", parent_id=1)
+        self.tree.add_Node(name="Jane", id=2, parent=("Harry",1))
+        self.tree.add_Node(name="Bill", id=3, parent=("Harry",1))
+        self.tree.add_Node(name="Joe", id=4, parent=("Jane",2))
+        self.tree.add_Node(name="Diane", id=5, parent=("Jane",2))
+        self.tree.add_Node(name="George", id=6,parent=("Diane",5))
+        self.tree.add_Node(name="Mary", id=7, parent=("Diane", 5))
+        self.tree.add_Node(name="Jill", id=8, parent=("George", 6))
+        self.tree.add_Node(name="Carol", id=9, parent=("Jill", 8))
+        self.tree.add_Node(name="Grace", id=10,parent=("Bill", 3))
+        self.tree.add_Node(name="Mark", id=11, parent=("Harry", 1))
 
     def test_add_Node(self):
         tree = Tree()
@@ -31,7 +31,7 @@ class TestTree(TestCase):
     def test_test_children(self):
         tree = Tree()
         tree.add_Node(name="Harry", id=1)  # root node
-        tree.add_Node(name="Jane", id=2, parent="Harry", parent_id=1)
+        tree.add_Node(name="Jane", id=2, parent=("Harry", 1))
 
         self.assertEqual(len(tree.nodes[0].children), 1)
         self.assertEqual(tree.nodes[0].children[0].id, 2)

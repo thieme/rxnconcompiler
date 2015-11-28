@@ -7,10 +7,23 @@ import re
 (_ROOT, _DEPTH, _WIDTH) = range(3)
 
 class ReducedPDChildren(Children):
-    def __init__(self, name, id, reaction, reversibility):
-        Children.__init__(name, id)
+    def __init__(self, name, id):
+        Children.__init__(self, name, id)
+
+
+class ReducedPDEdge():
+    def __init__(self, parent_id, node_id, reaction):
+        self.__edge = []
         self.reaction = reaction
-        self.reversibility = reversibility
+        # a combination of parent and children if there is no parent the first number will be set to 0
+        self.id = (parent_id,node_id)
+
+    @property
+    def edge(self):
+        return self.__edge
+
+    def __repr__(self):
+        return "{0}-{1}".format(self.id, self.reaction.rtypeID)
 
 class ReducedPDNode(Node):
     def __init__(self, complex, id, new_lvl=True):
@@ -28,6 +41,16 @@ class ReducedPDNode(Node):
     def node_object(self, value):
         if isinstance(value, BiologicalComplex):
             self.__node_object = value
+
+    def update_children(self, name, id, mode=_ADD):
+        if mode == _ADD:
+            self.children.append(ReducedPDChildren(name, id))
+        if mode == _DELETE:
+            for i,child in enumerate(self.children):
+                if id == child.id and name == child.name:
+                    del self.children[i]
+        if mode == _INSERT:
+            pass
 
     def get_loc_domain(self, domains, used_domains, mol):
         # 1. Localisation domain
@@ -109,6 +132,7 @@ class ReducedPDTree(Tree):
     def __init__(self):
         Tree.__init__(self)
         self.last_node = ""
+        self.edges = []
 
     def set_parent(self, node, parent_list):
         """
@@ -122,15 +146,27 @@ class ReducedPDTree(Tree):
             return node
         for parent_id in parent_list:
             parent_node = self.get_node(parent_id)
-            self.update_children(parent_node.name, node.name, node.id, _ADD, parent_id)
-            node.parent.append((parent_node.name, parent_node.id))
+            self.add_parent(parent_node, node)
         return node
 
-    def add_Node(self, complex, id=None, parent_list=None, parent_id=None):
+    def set_edge(self, node, parent_list, reaction):
+        if parent_list is None:
+            pass # if partents list are None we have the roots there are no edges
+        else:
+            for parent_id in parent_list:
+                self.add_edge(node=node, parent_id=parent_id, reaction=reaction)
+
+    def add_edge(self, node, parent_id, reaction):
+        edge = ReducedPDEdge(parent_id=parent_id, node_id=node.id, reaction=reaction)
+        self.edges.append(edge)
+
+    def remove_edge(self):
+        pass
+
+    def add_Node(self, complex, id=None, parent_list=None, parent_id=None, reaction=None, reversibility=None):
         """
         add a node in a tree
         """
-
         if id is None:
             id = self.get_highest_id()
             id += 1
@@ -145,21 +181,26 @@ class ReducedPDTree(Tree):
                     parent_tuple = (parent_node.name, parent_node.id)
                     node_tuple = (node.name, node.id)
                     if parent_tuple not in node.parent and node_tuple[1] not in parent_list:
-                            self.update_parent(parent_tuple, node)
+                            self.add_parent(parent_node, node)
+                            self.add_edge(node=node, parent_id=parent_tuple[1], reaction=reaction)
             return
         self.nodes.append(node)
         self.last_node = node.name
         self.set_parent(node=node, parent_list=parent_list)
+        self.set_edge(node=node, parent_list=parent_list, reaction=reaction)
 
-    def update_parent(self, parent_tuple, node):
+    def add_parent(self, parent, node):
         """
         update function if node is known but a parent missing
         @param parent_id: int
         @param node: ReducedPDNode obj
         @return:
         """
-        node.parent.append(parent_tuple)
-        self.update_children(parent_tuple[0],node.name, node.id, _ADD, parent_tuple[1])
+        self.update_children(parent.name, node.name, node.id, _ADD, parent.id)
+        node.parent.append((parent.name, parent.id))
+
+        #node.parent.append(parent_tuple)
+        #self.update_children(parent_tuple[0],node.name, node.id, _ADD, parent_tuple[1])
 
     def show(self, position, level=_ROOT):
         """
@@ -191,25 +232,25 @@ class ReducedProcessDescription(object):
             for rxn in rxn_container:
                 parents = []
                 for substrate_complex in rxn.substrat_complexes:
-                    self.tree.add_Node(complex=substrate_complex)
+                    self.tree.add_Node(complex=substrate_complex, reaction=rxn )
                     parents.append(self.tree.nodes[self.tree.get_index(self.tree.last_node)].id)
                 for product_complex in rxn.product_complexes:
-                    self.tree.add_Node(complex=product_complex, parent_list=parents)
+                    self.tree.add_Node(complex=product_complex, parent_list=parents, reaction=rxn)
 
 if __name__ == "__main__":
     TOY1 = """
     Ste11_ppi_Ste7
     Ste11_[KD]_P+_Ste7_[(ALS359)]; ! Ste11--Ste7
     """
-    TOY3 = """
+    TOY2 = """
     a_p+_b
     a_p+_c
     """
-    TOY4 = """
+    TOY3 = """
     a_p+_b_[x]
     c_p+_b_[x]
     """
-    TOY5 = """Ste5_ppi_Ste11
+    TOY4 = """Ste5_ppi_Ste11
     Ste5_ppi_Ste7
     Ste5_ppi_Ste5
     Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <b>
@@ -217,7 +258,7 @@ if __name__ == "__main__":
     <b>; AND Ste5--Ste7
     <b>; AND Ste5--Ste5"""
 
-    rxncon = Rxncon(TOY5)
+    rxncon = Rxncon(TOY3)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()

@@ -111,7 +111,7 @@ class Tree(object):
             id += 1
         node = Node(name=name, id= id)
         self.nodes.append(node)
-        parent_node = self.update_children(parent, node.name, node.id, _ADD, parent_id)
+        parent_node = self.update_children(parent, node.name, node.id, _ADD)
         #if parent[0] is None and parent[1] is None:
         if parent[0] is None:
             node.parent = parent
@@ -176,17 +176,17 @@ class Tree(object):
     def is_branch(self, position):
         return self[position].children
 
-    def update_children(self, parent, name, id, mode, parent_id=None):
+    def update_children(self, parent, name, id, mode):
         #if parent[0] is None and parent[1] is None:
         if parent[0] is None:
             return
         else:
-            if parent_id is None:
-                parent_idx = self.get_index(parent)
+            if parent[0] is None:
+                parent_idx = self.get_index(parent[1])
                 self[parent_idx].update_children(name, id, mode)
                 return self[parent_idx]
             else:
-                parent = self.get_node(parent_id)
+                parent = self.get_node(parent[1])
                 parent.update_children(name, id, mode)
                 return parent
 
@@ -197,6 +197,7 @@ class Tree(object):
         for i, node in enumerate(self.nodes):
             if node.name == name:
                 return i
+
     def has_node(self, name):
         if self.get_index(name) is not None:
             return True
@@ -291,16 +292,16 @@ if __name__ == "__main__":
     tree = Tree()
     #, parent=(None,None), parent_id=None
     tree.add_Node(name="Harry", id=1)  # root node
-    tree.add_Node(name="Jane", id=2, parent="Harry", parent_id=1)
-    tree.add_Node(name="Bill", id=3, parent="Harry", parent_id=1)
-    tree.add_Node(name="Joe", id=4, parent="Jane", parent_id=2)
-    tree.add_Node(name="Diane", id=5, parent="Jane",parent_id=2)
-    tree.add_Node(name="George", id=6,parent="Diane",parent_id=5)
-    tree.add_Node(name="Mary", id=7, parent="Diane", parent_id=5)
-    tree.add_Node(name="Jill", id=8, parent="George", parent_id=6)
-    tree.add_Node(name="Carol", id=9, parent="Jill", parent_id=8)
-    tree.add_Node(name="Grace", id=10,parent="Bill", parent_id=3)
-    tree.add_Node(name="Mark", id=11, parent="Harry", parent_id=1)
+    tree.add_Node(name="Jane", id=2, parent=("Harry",1))
+    tree.add_Node(name="Bill", id=3, parent=("Harry",1))
+    tree.add_Node(name="Joe", id=4, parent=("Jane",2))
+    tree.add_Node(name="Diane", id=5, parent=("Jane",2))
+    tree.add_Node(name="George", id=6,parent=("Diane",5))
+    tree.add_Node(name="Mary", id=7, parent=("Diane", 5))
+    tree.add_Node(name="Jill", id=8, parent=("George", 6))
+    tree.add_Node(name="Carol", id=9, parent=("Jill", 8))
+    tree.add_Node(name="Grace", id=10,parent=("Bill", 3))
+    tree.add_Node(name="Mark", id=11, parent=("Harry", 1))
     pass
     # print("="*80)
     #tree.show(1)
