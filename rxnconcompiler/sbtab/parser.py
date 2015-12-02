@@ -103,8 +103,6 @@ class Commandline(object):
             # else:
             #     self.outputformat = self.outputformat[-3:]
 
-
-
 class Parser(Commandline):
 
     def __init__(self, inputdir, d=None):
@@ -123,7 +121,7 @@ class Parser(Commandline):
 
     def get_info(ob):
         '''
-        Function that gives some Information about given Object and current working enviroment
+        Function that gives some Information about given Object and current working environment
         '''
         print 'Print: '
         print ob
@@ -137,17 +135,7 @@ class Parser(Commandline):
         print callable(ob)
         print ''
 
-    def parse_SBtab2rxncon(self, output=''):
-        '''
-        Main function for translating SBtab --> rxncon Format. Creates rxncon object
-        '''
-        #self.read_outputformat(self.parsable_to) #reactivate
-        #print self.outputformat
-        if self.outputformat!='txt' and self.outputformat!='xls':
-            raise RxnconParserError('Error, the format '+self.outputformat+' is not supported.')
-        reaction_def_found=False
-
-        #Basti: Funktion draus machen
+    def build_ob_list(self):
         for filename in self.d.files:
             ob= sbtab_utils.build_SBtab_object(self.inputdir, filename) # if file has multiple
             # sheets, ob already is the ob list. and this for loop only has one step. This is why
@@ -159,36 +147,33 @@ class Parser(Commandline):
             else:
                 self.ob_list.append({'object':ob[0], 'type':ob[0].table_type, 'filename':filename })
 
-        #for filename in self.d.files:
-        #Basti: versuch das etwas auf zu spalten du hast in der if und elif doppelten code
-        if self.d.rxncon_sbtab_detected==0:
-            for ob_ele in self.ob_list:
-                if ob_ele["type"]=='ReactionList' and ob_ele['object'].table_name=='Reaction definitions':
-                    reaction_def_found=True
-                    #print 'Custom reaction definition file detected in: ' + ob_ele["filename"]
-            if not reaction_def_found:
-                #print 'No reaction definition file found. Using default.'
-                reaction_definition = DEFAULT_DEFINITION
-            else:
-                reaction_definition=self.build_reaction_definition()
+    def parse_SBtab2rxncon(self, output=''):
+        '''
+        Main function for translating SBtab --> rxncon Format. Creates rxncon object
+        '''
+        reaction_def_found=False
 
-        elif self.d.rxncon_sbtab_detected>0:
-            for ob_ele in self.ob_list:
-                if ob_ele["type"]=='rxnconReactionDefinition':
+        #self.read_outputformat(self.parsable_to) #reactivate
+        #print self.outputformat
+        if self.outputformat!='txt' and self.outputformat!='xls':
+            raise RxnconParserError('Error, the format '+self.outputformat+' is not supported.')
+
+        self.build_ob_list()
+
+        for ob_ele in self.ob_list:
+            if (ob_ele["type"]=='ReactionList' and ob_ele['object'].table_name=='Reaction definitions') or ob_ele["type"]=='rxnconReactionDefinition':
                     reaction_def_found=True
-                    #print 'Custom reaction definition file detected in: ' + ob_ele["filename"]
             if not reaction_def_found:
-                # Basti: bau eine richtige reaction_definition
-                print 'No reaction definition file found. Using default.'
-                reaction_definition = DEFAULT_DEFINITION
-                reaction_template = REACTION_TEMPLATE  # das muss in reaction_definition noch reingeupdated werden
+                reaction_definition= DEFAULT_DEFINITION
+                if self.d.rxncon_sbtab_detected>0:
+                    reaction_template = REACTION_TEMPLATE  # needs to be updated into reaction_definition
             else:
                 reaction_definition=self.build_reaction_definition()
 
         self.rxncon = self.build_rxncon(self.ob_list, reaction_definition) #rxncon object
 
-        # rxncon object generation for writing must happen in seperate file (writer.py or so) because of cyclic imports
-        # parser MUST NOT import rxncon, because its importet into parsing controller and parsing controller is imported intp rxncon
+        # rxncon object generation for writing must happen in separate file (writer.py or so) because of cyclic imports
+        # parser MUST NOT import rxncon, because it is imported into parsing controller and parsing controller is imported intp rxncon
 
 
     def build_rxncon(self, ob_list, reaction_definition):
