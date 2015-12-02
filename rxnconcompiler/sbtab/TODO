@@ -1,6 +1,0 @@
-- mit profiler alles mal checken:
-      - range() wird ziemlich oft gecallt. Vielleicht ein mal abspeichern und dann imemr readen?
-   - beim ausführen von test_rxncon_sbtab_parsing() werden einige variablen scheinbar doppelt
-     initialisiert. ein mal zB in commandline und dann im dircheck. also das d object hält schon
-     einiges und im self sind variablen mit dem selben namen, aber leer.
-   - weitere parsing tests hinzufügen, die alle formate in allen 3 Fällen abchecken

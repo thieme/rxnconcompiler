@@ -38,7 +38,7 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.sbtab_detected)
 
         if prints:
-            print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+            print "#################",sys._getfme().f_code.co_name, 'successful.##################'
 
 
     def test_rxncon_sbtab_detection(self):

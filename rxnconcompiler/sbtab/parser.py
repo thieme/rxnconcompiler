@@ -13,7 +13,6 @@ class Commandline(object):
         self.inputdir = ''
         self.inputfile = ''
         self.outputformat = 'xls'
-        self.files = []  # needed ?
 
     def hello(self):
         '''
