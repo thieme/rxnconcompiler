@@ -116,7 +116,6 @@ class Parser(Commandline):
         self.parsable_to=self.d.parsable_to
         self.inputdir=inputdir
         self.target_format = self.d.target_format
-        # self.gene_list=None
         self.ob_list=[]
 
     def get_info(ob):
@@ -147,7 +146,7 @@ class Parser(Commandline):
             else:
                 self.ob_list.append({'object':ob[0], 'type':ob[0].table_type, 'filename':filename })
 
-    def parse_SBtab2rxncon(self, output=''):
+    def parse_SBtab2rxncon(self):
         '''
         Main function for translating SBtab --> rxncon Format. Creates rxncon object
         '''
