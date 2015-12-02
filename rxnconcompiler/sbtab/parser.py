@@ -200,11 +200,9 @@ class Parser(Commandline):
         return contingency_list
 
     def build_reaction_list(self, ob, indexes_dict, reaction_definition, format):
-        if format=='standard':
-            reaction_list=[{}]
-            for row in ob['object'].getRows():
-                reaction_list.append({
-                'ReactionType': row[indexes_dict['rea']],
+        reaction_list=[{}]
+        for i,row in enumerate(ob['object'].getRows()):
+            reaction_list.append({
                 'ComponentA[Name]': row[indexes_dict['can']],
                 'ComponentA[Domain]': row[indexes_dict['cad']],
                 'ComponentA[Subdomain]': row[indexes_dict['cas']],
@@ -214,37 +212,26 @@ class Parser(Commandline):
                 'ComponentB[Subdomain]': row[indexes_dict['cbs']],
                 'ComponentB[Residue]': row[indexes_dict['cbr']],
                 'Reaction[Full]': self.build_full(row,indexes_dict)
-                })
-            reaction_list.pop(0)
+            })
 
-        else:
-        #new rxncon
-            reaction_list=[{}]
-            for i,row in enumerate(ob['object'].getRows()):
+            if format=='standard':
+                reaction_list[-1]['ReactionType']= row[indexes_dict['rea']]
+
+            else:
+            #new rxncon
                 r_def= [reaction for reaction in reaction_definition if row[indexes_dict['rea']].lower() == reaction['UID:Reaction'].lower()][0]
                 # using reaction as foreign key on reaction definition UID:Reaction to get the ReactionTypeID
-                reaction_list.append({
-                        'ReactionID' : i+1,
-                        'UID:Reaction' : r_def['UID:Reaction'].lower(),
-                        'ReactionType:ID' : r_def['ReactionType:ID'],
+                reaction_list[-1]['ReactionID'] = i+1
+                reaction_list[-1]['UID:Reaction']= r_def['UID:Reaction'].lower()
+                reaction_list[-1]['ReactionType:ID']= r_def['ReactionType:ID']
 
-                        'SourceState' : row[indexes_dict['ss']],
-                        'ProductState' : row[indexes_dict['ps']],
+                reaction_list[-1]['SourceState']= row[indexes_dict['ss']]
+                reaction_list[-1]['ProductState']= row[indexes_dict['ps']]
 
-                        'ComponentA[Name]': row[indexes_dict['can']],
-                        'ComponentA[Domain]': row[indexes_dict['cad']],
-                        'ComponentA[Subdomain]': row[indexes_dict['cas']],
-                        'ComponentA[Residue]': row[indexes_dict['car']],
-                        'ComponentA[DSR]': '{0}/{1}({2})'.format(row[indexes_dict['cad']],row[indexes_dict['cas']],row[indexes_dict['car']]),
-                        'ComponentB[Name]': row[indexes_dict['cbn']],
-                        'ComponentB[Domain]': row[indexes_dict['cbd']],
-                        'ComponentB[Subdomain]': row[indexes_dict['cbs']],
-                        'ComponentB[Residue]': row[indexes_dict['cbr']],
-                        'ComponentB[DSR]': '{0}/{1}({2})'.format(row[indexes_dict['cbd']],row[indexes_dict['cbs']],row[indexes_dict['cbr']]),
+                reaction_list[-1]['ComponentA[DSR]']= '{0}/{1}({2})'.format(row[indexes_dict['cad']],row[indexes_dict['cas']],row[indexes_dict['car']])
+                reaction_list[-1]['ComponentB[DSR]']= '{0}/{1}({2})'.format(row[indexes_dict['cbd']],row[indexes_dict['cbs']],row[indexes_dict['cbr']])
 
-                        'Reaction[Full]': self.build_full(row,indexes_dict)
-                    })
-            reaction_list.pop(0)
+        reaction_list.pop(0)
         return reaction_list
 
     def build_rxncon(self, ob_list, reaction_definition):
