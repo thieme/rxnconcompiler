@@ -6,6 +6,7 @@ newer:
      einiges und im self sind variablen mit dem selben namen, aber leer.
    - weitere parsing tests hinzufügen, die alle formate in allen 3 Fällen abchecken
    - pycharm auto formatting drüber laufen lassen (für tabs und so)
+   - lösche /verschiebe unbenötigte dateien
 
 
 New:

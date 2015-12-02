@@ -39,20 +39,20 @@ class DirCheck():
         #print 'd initialised. inputdir= ', self.inputdir," delete in the end"
 
     def processing(self, filedir):
-        if filedir.endswith('.txt'):# basti: nach dem letzten punkt mit split
+        if filedir.split('.')[-1]=='txt':
             self.check_txt_File(filedir)
 
-        elif filedir.endswith('.xls'):# basti: nach dem letzten punkt mit split
+        elif filedir.split('.')[-1]=='xls':
             # Read Excel Document
             self.check_xls_File(filedir)
 
-        elif filedir.endswith('.ods'):# basti: nach dem letzten punkt mit split
+        elif filedir.split('.')[-1]=='ods':
             # Read Open / Libre Office Document
             print 'Found File(s) in .ods format. This format ist not supported. ' \
                   '\nPlease export to .xls or .txt format (Open/Libre Office and Excel can do this).\n' \
                   'If you want to translate from SBtab to rxncon you can also use .csv format.'
 
-        elif filedir.endswith('.csv'):# basti: nach dem letzten punkt mit split
+        elif filedir.split('.')[-1]=='csv':
             # Read csv Table
             self.check_csv_File(filedir)
             if self.rxncon_detected>0:
