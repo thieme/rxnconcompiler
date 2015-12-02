@@ -87,41 +87,6 @@ class Commandline(object):
         self.files=get_files(self.inputdir)
 
 
-    def multiple_rxncon_files(self, counter, filelist):
-        '''
-        If multiple rxncon files (old or new sbtab format) were found in one directory, asks user which one to use
-        :param counter: number of files in dir
-        :param filelist: file names
-        :return: filename
-        '''
-        i=0
-        print 'There were %i rxncon files found in the input directory: \n'%(counter+1)
-        print 'Index| Filename'
-        print '-----|','-'*60
-        for file in filelist:
-            print '%d    | %s'%(i, file)
-            i+=1
-        print '-----|','-'*60,'\n'
-        #reactivate:
-        #self.inputfile= raw_input('Please enter the index or filename of the rxncon file you want to parse. \n')
-
-        ################################################################################################################
-        #self.inputfile=0 #first one
-        self.inputfile='rxncon_template_2_0.xls'
-        print '!!!!!!!!!!!!!!!!!!!################!!!!!!!!!!!!!!'
-        print 'Used testing shortcut in multiple_rxncon_files() to always pic first file'
-        print '!!!!!!!!!!!!!!!!!!!################!!!!!!!!!!!!!!'
-        ###############################################################################################################
-        if self.inputfile in filelist:
-            #return self.inputfile
-            self.files= [self.inputfile]
-        else:
-            try:
-                #return filelist[int(self.inputfile)]
-                self.files= filelist[int(self.inputfile)]
-            except (TypeError, IndexError, ValueError):
-                print 'Error, either entered index is not in range or entered filename is not in this directory.'
-
     def outputformat_formating(self, possibilities, default):
         self.outputformat= raw_input('Please enter the output format. Possible are .{0} (default= .{1}):\n'.format(" & .".join(possibilities), default))
         if self.outputformat=='':
