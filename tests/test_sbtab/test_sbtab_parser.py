@@ -21,6 +21,10 @@ from rxnconcompiler.bngl.bngl import Bngl
 
 SBTAB_FILES = os.path.join(test_data.__path__[0], "sbtab_files")
 
+# toggle success printouts for each test
+#prints=True
+prints=False
+
 class DirCheckTest(TestCase):
 
     def test_rxncon_detection(self):
@@ -33,7 +37,8 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.other_detected)
         self.assertFalse(d.sbtab_detected)
 
-        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+        if prints:
+            print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
 
     def test_rxncon_sbtab_detection(self):
@@ -46,7 +51,8 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.other_detected)
         self.assertTrue(d.sbtab_detected)
 
-        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+        if prints:
+            print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
     def test_sbtab_detection(self):
         path=os.path.join(SBTAB_FILES,"sbtab/tiger_files_xls")
@@ -58,7 +64,8 @@ class DirCheckTest(TestCase):
         self.assertFalse(d.other_detected)
         self.assertTrue(d.sbtab_detected)
 
-        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+        if prints:
+            print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
     def test_other_detection(self):
         path=SBTAB_FILES
@@ -67,7 +74,8 @@ class DirCheckTest(TestCase):
 
         self.assertTrue(d.other_detected)
 
-        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+        if prints:
+            print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
 class ParserTest(TestCase):
 
@@ -100,6 +108,9 @@ class ParserTest(TestCase):
 
         self.xls_tables_keys_test(xls_tables)
 
+        if prints:
+            print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+
     def test_sbtab_parsing_csv(self):
         #works
         path=os.path.join(SBTAB_FILES,"sbtab/tiger_files_csv_cut") #csv
@@ -112,7 +123,8 @@ class ParserTest(TestCase):
 
         self.xls_tables_keys_test(xls_tables)
 
-        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+        if prints:
+            print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
     def test_sbtab_parsing_xls(self):
         #works
@@ -125,6 +137,9 @@ class ParserTest(TestCase):
         self.assertEqual(len(xls_tables["reaction_list"]), 222)
 
         self.xls_tables_keys_test(xls_tables)
+
+        if prints:
+            print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
 # class DataManipulationTest(TestCase):
 #     def test_bngl_output(self):

@@ -191,7 +191,7 @@ class Parser(Commandline):
         Main function for translating SBtab --> rxncon Format. Creates rxncon object
         '''
         #self.read_outputformat(self.parsable_to) #reactivate
-        print self.outputformat
+        #print self.outputformat
         if self.outputformat!='txt' and self.outputformat!='xls':
             raise RxnconParserError('Error, the format '+self.outputformat+' is not supported.')
         reaction_def_found=False
@@ -214,9 +214,9 @@ class Parser(Commandline):
             for ob_ele in self.ob_list:
                 if ob_ele["type"]=='ReactionList' and ob_ele['object'].table_name=='Reaction definitions':
                     reaction_def_found=True
-                    print 'Custom reaction definition file detected in: ' + ob_ele["filename"]
+                    #print 'Custom reaction definition file detected in: ' + ob_ele["filename"]
             if not reaction_def_found:
-                print 'No reaction definition file found. Using default.'
+                #print 'No reaction definition file found. Using default.'
                 reaction_definition = DEFAULT_DEFINITION
             else:
                 reaction_definition=self.build_reaction_definition()
@@ -225,7 +225,7 @@ class Parser(Commandline):
             for ob_ele in self.ob_list:
                 if ob_ele["type"]=='rxnconReactionDefinition':
                     reaction_def_found=True
-                    print 'Custom reaction definition file detected in: ' + ob_ele["filename"]
+                    #print 'Custom reaction definition file detected in: ' + ob_ele["filename"]
             if not reaction_def_found:
                 # Basti: bau eine richtige reaction_definition
                 print 'No reaction definition file found. Using default.'
