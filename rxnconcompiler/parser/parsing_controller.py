@@ -87,9 +87,9 @@ class DirCheck():
 
         if self.rxncon_detected==1:
             if self.sbtab_detected:
-                print 'Error, both SBtab and rxncon files detected in input directory! Please clean up the directory!'
+                raise RxnconParserError('Error, both SBtab and rxncon files detected in input directory! Please clean up the directory!')
             elif self.other_detected:
-                print 'Error, files of unknown format (neither SBtab nor rxncon) detected!' # basti: fkt da doppelt spaeter
+                raise RxnconParserError('Error, files of unknown format (neither SBtab nor rxncon) detected!') # basti: fkt da doppelt spaeter
             else:
                 if self.rxncon_detected>1: # if >0 and not >1 --> ==1
                     raise RxnconParserError('Please specify path to single rxncon file')
@@ -97,14 +97,14 @@ class DirCheck():
 
         elif self.sbtab_detected:
             if self.other_detected:
-                print 'Error, files of unknown format (neither SBtab nor rxncon) detected!'
+                raise RxnconParserError('Error, files of unknown format (neither SBtab nor rxncon) detected!')
             elif self.rxncon_sbtab_detected > 1:
                 raise RxnconParserError('Please specify path to single rxncon file')
                 #TODO: framework filepicker
             elif self.rxncon_sbtab_detected==1:
                 self.look_for_rxnconSBtab_files(self.inputdir)
             else:
-                print 'Directory of SBtab files detected. Starting parser.'
+                #print 'Directory of SBtab files detected. Starting parser.'
                 self.look_for_SBtab_files(self.inputdir)
                 if self.target_format:
                     if self.target_format=='txt':
