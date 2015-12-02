@@ -7,61 +7,6 @@ from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE # def
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
 import sbtab_utils
 
-
-
-class Mapper(object):
-    #Basti: wird das immernoch gebraucht?
-    def __init__(self):
-        self.mapping_dict={
-                            #left : SBtab, right: rxncon
-                                # Reaction List
-                                '!ReactionID' : 'ReactionID',
-                                '!ComponentA:Name' : 'ComponentA[Name]',
-                                '!ComponentA:Domain' : 'ComponentA[Domain]',
-                                '!ComponentA:Subdomain' : 'ComponentA[Subdomain]',
-                                '!ComponentA:Residue' : 'ComponentA[Residue]',
-                                '!Reaction' : 'ReactionType', # 'Reaction',
-                                '!ComponentB:Name' : 'ComponentB[Name]',
-                                '!ComponentB:Domain' : 'ComponentB[Domain]',
-                                '!ComponentB:Subdomain' : 'ComponentB[Subdomain]',
-                                '!ComponentB:Residue' : 'ComponentB[Residue]',
-                                '!Quality' : 'Quality',
-                                '!PubMedIdentifiers' : 'PubMedIdentifier(s)',
-                                '!Comment': 'Comments',
-                                # Contigency List
-                                '!ContingencyID' : 'ContingencyID',
-                                '!Target' : 'Target',
-                                '!Contingency' : 'Contingency',
-                                '!Modifier' : 'Modifier',
-                                # Reaction definition
-                                #'!Reaction' : 'Reaction',
-                                '!Category:Type' : 'CategoryType',
-                                '!Category' : 'Category',
-                                '!SubclassID' : 'SubclassID',
-                                '!Subclass' : 'Subclass',
-                                '!ModifierOrBoundary' : 'Modifier or Boundary',
-                                '!ReactionType:ID' : 'ReactionTypeID',
-                                '!ReactionType' : 'ReactionType',
-                                '!Reaction:Name' : 'ReactionName',
-                                '!Reversibility' : 'Reversibility',
-                                '!Directionality' : 'Directionality',
-                                '!SourceState:Component' : 'SourceState[Component]',
-                                '!SourceState:Modification' : 'SourceState[Modification]',
-                                '!ProductState:Component' : 'ProductState[Component]',
-                                '!ProductState:Modification' : 'ProductState[Modification]',
-                                '!coSubstrates' : 'coSubstrate(s)',
-                                '!coProducts' : 'coProduct(s)'
-                        }
-
-    def update_mapping_dict(self, tableType):
-        if 'reaction_list' in tableType:
-            self.mapping_dict['!Reaction']= 'ReactionType'
-            self.mapping_dict['!Comment']='Comments'
-        else:
-            self.mapping_dict['!Reaction']= 'Reaction'
-            if 'contingency_list' in tableType:
-                self.mapping_dict['!Comment']='Comment'
-
 class Commandline(object):
     def __init__(self):
         self.inputdir= ''
