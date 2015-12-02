@@ -174,38 +174,40 @@ class Parser(Commandline):
         # rxncon object generation for writing must happen in separate file (writer.py or so) because of cyclic imports
         # parser MUST NOT import rxncon, because it is imported into parsing controller and parsing controller is imported intp rxncon
 
+    def build_contingency_list(self,ob):
+    # Find column indexes for !Target, !Contingency and !Modifier columns
+        targ_col_index= ob['object'].columns.index('!Target')
+        cont_col_index= ob['object'].columns.index('!Contingency')
+        modi_col_index= ob['object'].columns.index('!Modifier')
+        if '!UID:Contingency' in ob['object'].columns_dict:
+            # new rxncon inout
+            id_col_index= ob['object'].columns.index('!UID:Contingency')
+        else:
+            # standard sbtab
+            id_col_index= ob['object'].columns.index('!ContingencyID')
+
+        # Save the data of these three columns to lists
+        contingency_list=[{}]
+        for row in ob['object'].getRows():
+            if row[id_col_index]!='':
+                contingency_list.append({
+                    'ContingencyID': row[id_col_index],
+                    'Target': row[targ_col_index],
+                    'Contingency': row[cont_col_index],
+                    'Modifier': row[modi_col_index]
+                })
+        contingency_list.pop(0)
+        return contingency_list
 
     def build_rxncon(self, ob_list, reaction_definition):
         '''
         Creates rxncon object from given SBtab files
         '''
+
         for ob in ob_list:
             if ob['type'] in['ContingencyID','rxnconContingencyList']:
                 # nearly same in both old rxncon input and new rxncon SBtab hybrid input
-                # Find column indexes for !Target, !Contingency and !Modifier columns
-                    targ_col_index= ob['object'].columns.index('!Target')
-                    cont_col_index= ob['object'].columns.index('!Contingency')
-                    modi_col_index= ob['object'].columns.index('!Modifier')
-                    if '!UID:Contingency' in ob['object'].columns_dict:
-                        # new rxncon inout
-                        id_col_index= ob['object'].columns.index('!UID:Contingency')
-                    else:
-                        # standart sbtab
-                        id_col_index= ob['object'].columns.index('!ContingencyID')
-
-
-                    # Save the data of these three columns to lists
-                    #Basti: extra Funktion
-                    contingency_list=[{}]
-                    for row in ob['object'].getRows():
-                        if row[id_col_index]!='':
-                            contingency_list.append({
-                                'ContingencyID': row[id_col_index],
-                                'Target': row[targ_col_index],
-                                'Contingency': row[cont_col_index],
-                                'Modifier': row[modi_col_index]
-                            })
-                    contingency_list.pop(0)
+                    contingency_list= self.build_contingency_list(ob)
 
             if self.d.rxncon_sbtab_detected==0:
                 #Basti: Versuch den inhalt hier und den im else Fall ein bisschen mehr zusammen zu fuehren. Wenn ich das

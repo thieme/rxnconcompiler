@@ -5,6 +5,7 @@ newer:
      initialisiert. ein mal zB in commandline und dann im dircheck. also das d object hält schon
      einiges und im self sind variablen mit dem selben namen, aber leer.
    - weitere parsing tests hinzufügen, die alle formate in allen 3 Fällen abchecken
+   - pycharm auto formatting drüber laufen lassen (für tabs und so)
 
 
 New:

@@ -289,10 +289,10 @@ class DirCheck():
                 p= sbtab_parser.Parser(self.inputdir, self)
                 if self.rxncon_sbtab_detected>0: # new rxncon input
                     if p.parsable_to=='rxncon':
-                        p.parse_SBtab2rxncon('xls_tables') # we want xls_tables as return
+                        p.parse_SBtab2rxncon()
                         return p.rxncon
                 elif not self.rxncon_detected and not self.other_detected:
-                    p.parse_SBtab2rxncon('xls_tables') # standart sbtab format
+                    p.parse_SBtab2rxncon()
                     return p.rxncon
 
 
