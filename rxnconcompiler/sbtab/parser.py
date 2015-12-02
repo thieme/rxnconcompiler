@@ -1,26 +1,12 @@
-# File parser to convert from rxncon format to sbtab format and vice
-# versa
-# Mathias Wajnberg July 2015
+# File parser for parsing SBtab files and reformatting the data to fir internal Rxncon format representation
+# Mathias Wajnberg July 2015 - December 2015
 __author__ = 'Mathias Wajnberg'
 
-
-import SBtab
-import os
-import tablibIO
-import tablib
-import xlsxwriter
-import xlrd
-import re
-from rxnconcompiler.parser.rxncon_parser import parse_rxncon
-from rxnconcompiler.parser.rxncon_parser import parse_xls
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION # default definition tabelle machen
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE # default def for new format
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
-#from rxnconcompiler.rxncon import Rxncon
-#import rxnconcompiler.rxncon as rxncon_mod
-#import rxnconcompiler.rxncon
 import sbtab_utils
-#from SBtabTools import createDataset
+
 
 
 class Mapper(object):

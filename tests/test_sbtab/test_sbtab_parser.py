@@ -13,10 +13,10 @@ Done parsing tests:
 from unittest import TestCase, main
 import os
 from rxnconcompiler.parser.parsing_controller import DirCheck
-import rxnconcompiler.rxncon as rxncon
 from tests import test_data
 import sys
-import itertools
+# for if correct inputfiles for DataManipulationTest exist:
+import rxnconcompiler.rxncon as rxncon
 from rxnconcompiler.bngl.bngl import Bngl
 
 SBTAB_FILES = os.path.join(test_data.__path__[0], "sbtab_files")

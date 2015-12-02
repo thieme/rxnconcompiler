@@ -1,11 +1,10 @@
-import rxnconcompiler.sbtab.parser
+
 import xlrd
 import csv
 import sys
 import os
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
 import rxnconcompiler.sbtab.sbtab_utils as sbtab_utils
-import rxnconcompiler.sbtab
 import rxnconcompiler.sbtab.parser as sbtab_parser
 import rxnconcompiler.parser.rxncon_parser as rxncon_parser
 
