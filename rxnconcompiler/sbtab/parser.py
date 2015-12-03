@@ -4,6 +4,7 @@ __author__ = 'Mathias Wajnberg'
 
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION  # default definition tabelle machen
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE  # default def for new format
+from rxnconcompiler.parser.parsing_controller import get_files
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
 import sbtab_utils
 
