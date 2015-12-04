@@ -23,7 +23,3 @@ def build_SBtab_object(inputdir, filename):
         ob = SBtab.SBtabTable(tablib_table, filename)
         return [ob]
 
-
-def build_rxncon_dict(inputdir, filename):
-    d = parse_rxncon(inputdir + '/' + filename)
-    return d

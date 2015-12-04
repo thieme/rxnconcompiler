@@ -55,7 +55,7 @@ from test_reaction.test_reaction_factory import ReactionFactoryTests
 # test_util
 from test_util.test_util import UtilTests
 
-# test_sbta
+# test_SBtab
 from test_sbtab.test_sbtab_parser import DirCheckTest
 #from test_sbtab.test_sbtab_parser import DataManipulationTest
 from test_sbtab.test_sbtab_parser import ParserTest

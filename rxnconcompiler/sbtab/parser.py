@@ -4,7 +4,6 @@ __author__ = 'Mathias Wajnberg'
 
 from rxnconcompiler.definitions.default_definition import DEFAULT_DEFINITION  # default definition tabelle machen
 from rxnconcompiler.definitions.reaction_template import REACTION_TEMPLATE  # default def for new format
-from rxnconcompiler.parser.parsing_controller import get_files
 from rxnconcompiler.util.rxncon_errors import RxnconParserError
 import sbtab_utils
 
@@ -15,22 +14,22 @@ class Commandline(object):
         self.inputfile = ''
         self.outputformat = 'xls'
 
-    def hello(self):
-        '''
-        Introduces parser to user and reads input directory from comment line
-        '''
-        print 'You are using rxncon SBtab parser.' \
-              'It helps you to translate network data from rxncon format to SBtab format and vice versa.' \
-            #      'If you want to parse a rxncon file to a SBtab file, the following input filetypes are supported:' \
-        #       ' - .txt' \
-        #       ' - .xls'
-        # print 'If you want to parse a SBtab file to a rxncon file, these input filetypes are supported:' \
-        #       ' - .xls' \
-        #       ' - .csv'
-        print ''
-        self.inputdir = raw_input(
-            'Please enter the path to the directory containing your network files: \n')  # only works in python 2.x, for python3 would be input()
-        self.files = get_files(self.inputdir)
+    # def hello(self):
+    #     '''
+    #     Introduces parser to user and reads input directory from comment line
+    #     '''
+    #     print 'You are using rxncon SBtab parser.' \
+    #           'It helps you to translate network data from rxncon format to SBtab format and vice versa.' \
+    #         #      'If you want to parse a rxncon file to a SBtab file, the following input filetypes are supported:' \
+    #     #       ' - .txt' \
+    #     #       ' - .xls'
+    #     # print 'If you want to parse a SBtab file to a rxncon file, these input filetypes are supported:' \
+    #     #       ' - .xls' \
+    #     #       ' - .csv'
+    #     print ''
+    #     self.inputdir = raw_input(
+    #         'Please enter the path to the directory containing your network files: \n')  # only works in python 2.x, for python3 would be input()
+    #     self.files = get_files(self.inputdir)
 
     def outputformat_formating(self, possibilities, default):
         self.outputformat = raw_input(

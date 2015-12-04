@@ -15,7 +15,7 @@ import os
 from rxnconcompiler.parser.parsing_controller import DirCheck
 from tests import test_data
 import sys
-# for if correct inputfiles for DataManipulationTest exist:
+import itertools
 import rxnconcompiler.rxncon as rxncon
 from rxnconcompiler.bngl.bngl import Bngl
 
@@ -141,35 +141,35 @@ class ParserTest(TestCase):
         if prints:
             print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
-# class DataManipulationTest(TestCase):
-#     def test_bngl_output(self):
-#         '''
-#         Function opens mini example networks in the all formats, that has been parsed by hand. This generates
-#         4 rxncon objects from which bngl output gets generated. Then, this output gets compared.
-#         '''
-#         #paths=[os.path.join(SBTAB_FILES,"sbtab/tiger_files_csv_cut"), #sbtab_csv
-#         #      os.path.join(SBTAB_FILES,"sbtab/tiger_files_xls_cut"), #sbtab_xls
-#          #     os.path.join(SBTAB_FILES,"rxncon_old/tiger_files_old_rxncon_cut.xls") , # rxncon old
-#           #    os.path.join(SBTAB_FILES,"rxncon_new/tiger_files_new_rxncon_cut.xls") # rxncon new
-#            #   ]
-#         paths=[os.path.join(SBTAB_FILES,"rxncon_new/tiger_files_new_rxncon_cut.xls"),
-#                os.path.join(SBTAB_FILES,"rxncon_old/tiger_files_old_rxncon_cut.xls") ]
-#               # rxncon new
-#
-#         bngl_outputs=[]
-#         for path in paths:
-#             print 'test for loop entered. Parth: ', path
-#             t = DirCheck(path)
-#             xls_tables=t.controller()
-#
-#             r= rxncon.Rxncon(xls_tables)
-#             output=Bngl(r.reaction_pool,r.molecule_pool,r.contingency_pool)
-#             bngl_outputs.append(output.get_src())
-#
-#         for a, b in itertools.combinations(bngl_outputs, 2):
-#             self.assertEqual(a,b)
-#
-#         print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+class DataManipulationTest(TestCase):
+    def test_bngl_output(self):
+        '''
+        Function opens mini example networks in the all formats, that has been parsed by hand. This generates
+        4 rxncon objects from which bngl output gets generated. Then, this output gets compared.
+        '''
+        #paths=[os.path.join(SBTAB_FILES,"sbtab/tiger_files_csv_cut"), #sbtab_csv
+        #      os.path.join(SBTAB_FILES,"sbtab/tiger_files_xls_cut"), #sbtab_xls
+         #     os.path.join(SBTAB_FILES,"rxncon_old/tiger_files_old_rxncon_cut.xls") , # rxncon old
+          #    os.path.join(SBTAB_FILES,"rxncon_new/tiger_files_new_rxncon_cut.xls") # rxncon new
+           #   ]
+        paths=[os.path.join(SBTAB_FILES,"rxncon_new/rxncon_new_template_example1.xls"),
+               os.path.join(SBTAB_FILES,"rxncon_old/rxncon_old_format_example1.xls") ]
+              # rxncon new
+
+        bngl_outputs=[]
+        for path in paths:
+            print 'test for loop entered. Parth: ', path
+            t = DirCheck(path)
+            xls_tables=t.controller()
+
+            r= rxncon.Rxncon(xls_tables)
+            output=Bngl(r.reaction_pool,r.molecule_pool,r.contingency_pool)
+            bngl_outputs.append(output.get_src())
+
+        for a, b in itertools.combinations(bngl_outputs, 2):
+            self.assertEqual(a,b)
+
+        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
 if __name__ == '__main__':
     main()

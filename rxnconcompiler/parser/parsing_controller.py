@@ -70,8 +70,6 @@ class DirCheck():
         Checks whether input directory consists of SBtab, rxncon, both or other files
         '''
 
-
-        # TODO: wird bei sbtab inputdir ueberprueft, ob jeder tabletype auch nur ein mal gefunden wurde? koennte man eventuell testen, nachdem ob_list erzeugt wurde
         self.files = get_files(self.inputdir)
 
         for filename in self.files:
@@ -146,7 +144,6 @@ class DirCheck():
             except IndexError:
                 sheet_number += 1
 
-        # TODO: Raise error is first line is not readable
         for cell in first_line:
             if '!!SBtab' in str(cell):
                 self.sbtab_detected = True
@@ -214,7 +211,6 @@ class DirCheck():
 
         inputdir = self.file_or_dir(input)
 
-        found_table_types = []
         ob_list = []
         for filename in self.files:
             # print 'Filename: ', filename, '            delete in look_for_SBtab_files()'
