@@ -17,6 +17,7 @@ from tests import test_data
 import sys
 import itertools
 import rxnconcompiler.rxncon as rxncon
+import itertools
 from rxnconcompiler.bngl.bngl import Bngl
 
 SBTAB_FILES = os.path.join(test_data.__path__[0], "sbtab_files")
@@ -163,13 +164,14 @@ class DataManipulationTest(TestCase):
             xls_tables=t.controller()
 
             r= rxncon.Rxncon(xls_tables)
+            r.run_process()
             output=Bngl(r.reaction_pool,r.molecule_pool,r.contingency_pool)
             bngl_outputs.append(output.get_src())
 
         for a, b in itertools.combinations(bngl_outputs, 2):
             self.assertEqual(a,b)
 
-        print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+        #print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
 if __name__ == '__main__':
     main()

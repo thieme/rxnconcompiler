@@ -36,7 +36,7 @@ class ReactionContainer(list):
         """
         @return: name and number of reactions in the container.
         """
-        return "ReacionConteiner for %s: %i reactions present" % (self.name, len(self)) 
+        return "ReactionContainer for %s: %i reactions present" % (self.name, len(self))
 
     def add_reaction(self, reaction):
         """

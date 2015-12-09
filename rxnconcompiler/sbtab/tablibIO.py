@@ -2,6 +2,10 @@
 
 import mimetypes
 import sys
+import os
+import misc
+path = os.path.dirname(misc.__file__) #  Since misc is imported properly I used this for getting the path to the sbtab folder
+sys.path.append(path)
 import tablib
 import tablib.core
 import csv
