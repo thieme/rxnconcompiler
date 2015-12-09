@@ -159,7 +159,6 @@ class DataManipulationTest(TestCase):
 
         bngl_outputs=[]
         for path in paths:
-            print 'test for loop entered. Parth: ', path
             t = DirCheck(path)
             xls_tables=t.controller()
 
@@ -171,7 +170,8 @@ class DataManipulationTest(TestCase):
         for a, b in itertools.combinations(bngl_outputs, 2):
             self.assertEqual(a,b)
 
-        #print "#################",sys._getframe().f_code.co_name, 'successful.##################'
+        if prints:
+            print "#################",sys._getframe().f_code.co_name, 'successful.##################'
 
 if __name__ == '__main__':
     main()
