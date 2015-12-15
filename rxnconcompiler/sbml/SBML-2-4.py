@@ -24,7 +24,8 @@ class SBMLBuilder(object):
         species = self.model.createSpecies()
         for node in self.tree.nodes:
             if node.id == visitId:
-                species.setId("s" + str(node.id) )          #TODO SBML prefers ID with meaning so may be changed and become dependend on the name!?
+                species.setId("s" + str(node.id) )          #TODO SBML prefers ID with meaning so may be changed and become dependend on the name!? cant be just numerical
+                species.setName(str(node.name))
                 species.setCompartment('c1')                #TODO Compartment is static set to default comp c1
                 species.setConstant(False)                  #TODO find coresponding value in rxncon
                 species.setInitialAmount(node.id*2)         #TODO find coresponding value in rxncon actual value just for identification
@@ -48,7 +49,10 @@ class SBMLBuilder(object):
 
 
         visited_nodes=[]
-        for edge in rPDTree.edges:      # TODO handle the edge itself with reaction etc.
+        # for all edges it is checked if the nodes are already visited, if not they are added as species in process_node
+        # the same will happen for each edge their reaction
+        # TODO handle the edge itself with reaction etc.
+        for edge in rPDTree.edges:
             print(edge.id)
             if edge.id[0] not in visited_nodes :
                 self.process_node(edge.id[0])
