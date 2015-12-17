@@ -53,24 +53,33 @@ class SBMLBuilder(object):
             #reaction.setId('r' + str(value +1) )
             #self.numOfReactions[anReaction.name] = value +1
 
-        #reaction.setId("r" + str(anReaction.rid ) )
         reaction.setName(anReaction.name)
         #reaction.setKineticLaw()
         reaction.setReversible(anReaction.definition["Reversibility"] == "reversible")
         #reaction.setFast()
         #reaction.setSBOTerm()
-        #reaction.setCompartment()                          # exist not before SBML L3V1
+        if(self.namespace.getLevel >=3):
+            reaction.setCompartment('c1')                          # exist not before SBML L3V1
 
-        #TODO work with SpeciesReference
+        #TODO find more elaborate way to get species id, serach for species the name of the right reactant
+        #TODO what happens if a compelex has more than one molecule, add handle for the complex itself
         for reactand in anReaction.substrat_complexes:
             for mol in reactand.molecules:
-                reactRef = reaction.createReactant()
-                reactRef.setSpecies("s" + str(mol._id))      #TODO find more elaborate way to compute this, serach for species the name of the right reactant
+                if not reactand._BiologicalComplex__is_modifier:
+                    reactRef = reaction.createReactant()
+                    reactRef.setSpecies("s" + str(mol._id))
+                else:
+                    modRef = reaction.createModifier()
+                    modRef.setSpecies("s" + str(mol._id))
 
         for reactand in anReaction.product_complexes:
             for mol in reactand.molecules:
-                prodRef = reaction.createProduct()
-                prodRef.setSpecies("s" + str(mol._id))      #TODO find more elaborate way to compute this, serach for species the name of the right reactant
+                if not reactand._BiologicalComplex__is_modifier:
+                    prodRef = reaction.createProduct()
+                    prodRef.setSpecies("s" + str(mol._id))
+                else:
+                    modRef = reaction.createModifier()
+                    modRef.setSpecies("s" + str(mol._id))
 
 
     def build_model(self, rPDTree):
@@ -100,7 +109,7 @@ class SBMLBuilder(object):
             if edge.id[1] not in visited_nodes :
                 self.process_node(edge.id[1])
                 visited_nodes.append(edge.id[1])
-            if edge.reaction.rid not in handled_reactions :
+            if edge.reaction.rid not in handled_reactions :     #TODO check if it is ok to skip a reaction if it was processed on an other edge already
                 self.process_reaction(edge.reaction)
                 handled_reactions.append(edge.reaction.rid)
 
@@ -125,7 +134,7 @@ if __name__ == "__main__":
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
-    # sb = SBMLBuilder(level = 3, version = 1)
+    #sb = SBMLBuilder(level = 3, version = 1)
     sb = SBMLBuilder()
     toy1sbml =  sb.build_model(reducedPD.tree)
     sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/testsbml.sbml"))
