@@ -17,7 +17,9 @@ class ContingencyApplicatorTests(TestCase):
     """Checks whether proper contingencies pool is generated for simple example."""
     def setUp(self):
         rxn = Rxncon('A_ppi_B')
+        rxn1 = Rxncon("A_pt_B")
         self.rcont = rxn.reaction_pool['A_ppi_B']  # reaction container
+        self.rcont1 = rxn1.reaction_pool['A_pt_B']
 
     def test_kminus(self):
         """Tests whether k- is properly applied."""
@@ -38,6 +40,14 @@ class ContingencyApplicatorTests(TestCase):
             mod_sites = react.substrat_complexes[0].molecules[0].modification_sites
             self.assertTrue(cont.state in mod + mod_sites)
             self.assertTrue(str(cont.state) in [str(st) for st in (mod + mod_sites)])
+
+    def test_k_on_ptReaction(self):
+        cont = Contingency('A_pt_B', 'K+', get_state('A--B'))
+        ComplexApplicator(self.rcont1, []).apply_complexes() 
+        cap = ContingencyApplicator()
+        cap.apply_on_container(self.rcont1, cont)
+        for react in self.rcont1:
+            react.run_reaction()
 
     def test_applying_on_homo(self):
         """"""

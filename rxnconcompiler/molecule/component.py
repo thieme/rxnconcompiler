@@ -6,6 +6,7 @@ Class Component    - cleaps information about name, domain and id.
 
 from domain_factory import DomainFactory
 
+
 class Component:
     """
     Component object keeps informations about name, domain and id.
@@ -28,7 +29,7 @@ class Component:
         return self.name 
 
     def __eq__(self, other):
-        if not self.name == other.name:
+        if self.name != other.name:
             return False
         if self.cid and other.cid and self.cid != other.cid:
             return False
@@ -44,7 +45,7 @@ class Component:
                 return -1
             elif self.cid > other.cid:
                 return 1
-        else: return 0        
+        else: return 0      
 
     def exact_compare(self, other):
         """
@@ -57,3 +58,5 @@ class Component:
         if self.second_domain != other.second_domain:
             return False
         return True
+
+    

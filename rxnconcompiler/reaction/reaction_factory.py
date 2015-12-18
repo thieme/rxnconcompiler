@@ -96,6 +96,7 @@ class ReactionFactoryFromDict:
         reaction.name = row['Reaction[Full]']
         if self.definitions.has_key(r_type):
             reaction.definition = self.definitions[r_type]
+            reaction.reversibility = self.definitions[r_type]["Reversibility"]
         else: 
             raise TypeError('No reactio type %s.') % r_type
 
@@ -118,6 +119,7 @@ class ReactionFactoryFromDict:
                 reaction.right_reactant.add_modification_site(state)
                 reaction.left_reactant.add_modification(state_pt)
                 reaction.to_change_pt = state_pt
+
             elif '-' in r_type or r_type in ['gap']:
                 reaction.right_reactant.add_modification(state)
             else:
@@ -268,7 +270,7 @@ class ReactionFactoryFromList:
     def parse_reactions(self, states_list):
         """
         Go through all states in states_list
-        and cretes single ReactionContainer object for each state.
+        and create single ReactionContainer object for each state.
         Adds ReactionContainer to ReactionPool.
         Adds left and right reactant to  MoleculePool.
         """
@@ -281,6 +283,7 @@ class ReactionFactoryFromList:
             reaction = self.get_reaction_object(state) 
             reaction.rid = state_id + 1
             reaction.rate = Rate(reaction)
+            reaction.reversibility = reaction.definition["Reversibility"]
 
             container.add_reaction(reaction)
             self.reaction_pool[container.name] = container

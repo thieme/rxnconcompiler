@@ -225,12 +225,15 @@ class BiologicalComplex:
         # get all molecule-state data:
         mol_state = []
         mols = sorted(self.molecules, key=lambda mol: mol.name)
+        #print "mols: ", mols
+        #print ""
         for mol in mols:
             for state in mol.binding_partners:
                 mol_state.append((mol, state))
         
         # get pairs molecule-state & molecule-state
         pairs = []
+        
         while mol_state:
             ms = mol_state.pop()
             done = False
@@ -254,7 +257,7 @@ class BiologicalComplex:
             elif len(p) == 1 and p[0][1].type == 'Intraprotein':
                 bonds[p[0]] = counter
                 counter += 1
-            else:
+            else:   
                 print 'Adding bond - sth strange', self 
         return bonds
 

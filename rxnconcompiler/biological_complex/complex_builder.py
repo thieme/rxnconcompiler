@@ -135,7 +135,7 @@ class ComplexBuilder:
 
     def build_required_complexes(self, positive_complexes, root):
         """
-        Builds all required complexes for one boolean contingeny.
+        Builds all required complexes for one boolean contingency.
 
         @type root:  Molecule object
         @param root: a molecule from a reaction for which complex will be applied.
@@ -187,6 +187,7 @@ class ComplexBuilder:
         Returns AlternativeComplexes object.
         Information about Input states is stored in AlternativeComplex.input_condition.
         """
+        #print "build_positive_complexes_from_boolean"
         alter_comp = AlternativeComplexes(str(bool_cont.state))
         alter_comp.ctype = bool_cont.ctype
 
@@ -289,6 +290,7 @@ class ComplexBuilder:
 
         #TODO: What if we have two root molecules
         """
+        #print "build_negative_complexes"
         ordered_states = self.get_states_from_complex(compl, root_molecule)
         alter_comp = AlternativeComplexes('')
         counter = len(ordered_states) -1

@@ -36,17 +36,19 @@ class Reaction:
     right_reactant:
     substrate_complexes:
     """
+    class_name = "Reaction"
     def __init__(self):
         self.name = None
         self.rid = None
         self.rtype = None
         self.definition = None
+        self.reversibility = None
         self.left_reactant = None # RxnconMolecule object
         self.right_reactant = None # RxnconMolecule object
         self.substrat_complexes = []
         self.product_complexes = [] #RxnconMolecule objects
         self.conditions = None # e.g. ['Start'], ['Turgor'] ...
-        self.to_change = None # domain that will chage during reaction.
+        self.to_change = None # domain that will change during reaction.
         self.to_change_pt = None # used only in PT reaction - here two domains change.
         self.rate = None # Rate object
 
@@ -87,12 +89,14 @@ class Reaction:
         new.rid = copy.deepcopy(self.rid)
         new.rtype = self.rtype
         new.definition = self.definition
+        new.reversibility = self.reversibility
         new.left_reactant = self.left_reactant #None # RxnconMolecule object
         new.right_reactant = self.right_reactant #None # RxnconMolecule object
         new.substrat_complexes = copy.deepcopy(self.substrat_complexes)
         new.product_complexes = copy.deepcopy(self.product_complexes)
         new.conditions = copy.deepcopy(self.conditions)
         new.to_change = copy.deepcopy(self.to_change)
+        new.to_change_pt = copy.deepcopy(self.to_change_pt)
         new.rate = copy.deepcopy(self.rate)
         return new
 
@@ -207,6 +211,7 @@ class Reaction:
 
 class Interaction(Reaction):
     """"""
+    class_name = "Interaction"
     def run_ipi_reaction(self):
         """
         Creates product_complexes.
@@ -243,9 +248,9 @@ class Interaction(Reaction):
             self.product_complexes.append(new)
 
 
-
 class Modification(Reaction):
     """"""
+    class_name = "Modification"
     def get_modifier(self):
         """
         Returns complex that doesn't change during reaction.
@@ -255,7 +260,7 @@ class Modification(Reaction):
         A substrate complex is returned.
         (it is the same as product but has different _id)
         """
-        lcompl = self.get_substrate_complex('L')  
+        lcompl = self.get_substrate_complex('L')
         if lcompl:
             return [lcompl]
         return []
@@ -308,6 +313,7 @@ class Modification(Reaction):
             plmol = pcomp.get_molecules(lmol.name, lmol.mid)[0] 
             prmol = pcomp.get_molecules(rmol.name, rmol.mid)[0] 
             prmol.add_modification(self.to_change)
+
             plmol.remove_modification(self.to_change_pt) 
 
             self.product_complexes += [pcomp]    
@@ -317,7 +323,7 @@ class Modification(Reaction):
             prcomp = srcomp.clone()
             prmol = prcomp.get_molecules(rmol.name, rmol.mid)[0]
             prmol.add_modification(self.to_change)
-
+            
             slcomp = self.get_substrate_complex('L')
             slmol = slcomp.get_molecules(lmol.name, lmol.mid)[0]        
             plcomp = slcomp.clone()
@@ -357,6 +363,7 @@ class SyntDeg(Reaction):
     trsl (translation)
     deg (degradation)
     """
+    class_name = "SyntDeg"
     def get_modifier(self):
         """
         Returns complex that doesn't change during reaction:

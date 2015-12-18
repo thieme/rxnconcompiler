@@ -200,7 +200,7 @@ class DomainFactory:
       
             domain = row['ComponentA[Name]'] 
             return re.sub('\(|\)|\[|\]', '', domain)  
-            
+
         elif component == 'A':
             if row.has_key('ComponentA[DSR]'):
                 b_dsr = row['ComponentA[DSR]']
@@ -208,6 +208,6 @@ class DomainFactory:
                 b_dsr = self.get_dsr(row, 'A')
             if b_dsr:
                 return re.sub('\(|\)|\[|\]', '', b_dsr)
-      
-            domain = row['ComponentB[Name]'] 
-            return re.sub('\(|\)|\[|\]', '', domain) 
+
+            domain = row['ComponentB[Name]']
+            return re.sub('\(|\)|\[|\]', '', domain)

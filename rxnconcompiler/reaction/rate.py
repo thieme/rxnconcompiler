@@ -106,7 +106,7 @@ class Rate:
         """"""
         return  str(self.get_rates_for_reaction())
 
-    def set_basic_rates(self, reaction):
+    def set_basic_rates(self, reaction, manual_change=False, direction="forward"):
         """
         Sets rate names based on reaction data.
 
@@ -116,13 +116,22 @@ class Rate:
         For a reversible reaction frate and rrate have values and rate is None.
         For a irreversible reaction rate has a value and frate and frate are None.
         """
-        if reaction.definition['Reversibility'] == 'irreversible':
+        #if reaction.definition['Reversibility'] == 'irreversible':
+        if reaction.reversibility == 'irreversible':
             self.rate = 'k%s' % reaction.rid # rate for irreversible reaction
             self._rate_names = [self.rate]
         else:
             self.frate = 'kf%s' % reaction.rid # forward rate
             self.rrate = 'kr%s' % reaction.rid # reverse rate
             self._rate_names = [self.frate, self.rrate] # e.g. [kf1_1, kr1_1, k_start]
+
+        if manual_change:
+            if direction == "forward":
+                self.rate = 'kf%s' % reaction.rid
+            elif direction == "reverse":
+                self.rate = 'kr%s' % reaction.rid
+
+            self._rate_names = [self.rate]
 
     def get_rates_for_reaction(self):
         """
@@ -139,7 +148,7 @@ class Rate:
         e.g. 
         [1_1, 1_2]
         [1]
-        One Rate may hace maximaly two such ids.
+        One Rate may have maximaly two such ids.
         """
         rates = []
         for rate in self._rate_names:

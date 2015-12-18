@@ -80,7 +80,7 @@ class ContingencyFactoryTests(TestCase):
 
     def test_two_reactions(self):
         """
-        Asseerts that the same boolean contingencie 
+        Asserts that the same boolean contingency 
         can be used for two reactions.
         """
         table = parse_text(TWO_REACTIONS)
@@ -91,7 +91,7 @@ class ContingencyFactoryTests(TestCase):
 
     def test_boolean(self):
         """
-        Asseerts that the same boolean contingencie 
+        Asserts that the same boolean contingency 
         can be used for two reactions.
         """
         table = parse_text(OR_AND_OR)
@@ -107,7 +107,7 @@ class ContingencyApoptosisTests(TestCase):
         self.pool = factory.parse_contingencies()
 
     def test_parsing(self):
-        self.assertEqual(len(self.pool),24)
+        self.assertEqual(len(self.pool), 24)
 
     def test_contingencies(self):
         cont = Contingency('TRAIL_i_R', 'x', get_state('FADD--R'))
@@ -123,7 +123,7 @@ class ContingencyMAPKTests(TestCase):
         self.pool = factory.parse_contingencies()
 
     def test_parsing(self):
-        self.assertEqual(len(self.pool),139)
+        self.assertEqual(len(self.pool), 139)
 
 class ContingencyWrapperTests(TestCase):
     """
@@ -146,7 +146,7 @@ class ContingencyWrapperTests(TestCase):
 
     def test_new_sign(self):
         """
-        Checks whether right contingencie type is assigned right based 
+        Checks whether right contingency type is assigned right based 
         on old contingency type and mode (positive or negative).
         """
         # K+: positive: !, negative: x
@@ -161,7 +161,7 @@ class ContingencyWrapperTests(TestCase):
 
 class ComplexTests(TestCase):
     """
-    Checks whether complexes are parsed corectly.
+    Checks whether complexes are parsed correctly.
     (boolean contingencies with defined geometry)
     """
     def setUp(self):
@@ -173,7 +173,7 @@ class ComplexTests(TestCase):
         """Tests whether contingencies with defined geometry are parsed."""
         self.assertEqual(len(self.pool.keys()), 1)
         self.assertIn('A_ppi_X', self.pool.keys())
-        self.assertEqual(len(self.pool['A_ppi_X'].children),3)
+        self.assertEqual(len(self.pool['A_ppi_X'].children), 3)
 
     def test_complex(self):
         """Tests whether all contingencies go to the complex."""

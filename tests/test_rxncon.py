@@ -37,6 +37,10 @@ class RxnconTests(TestCase):
         # reaction with K contingency
         self.cont_k = Rxncon('A_ppi_B; K+ A--C')
 
+        self.double_domain_use = Rxncon("a_[1]_ppi_b \n a_[1]_ppi_c")
+
+        self.negative_test_double_domain_use = Rxncon("a_ppi_b; x a_[1]--c \n a_[1]_ppi_c")
+
     def test_molecule_pool(self):
         """
         Tests that molecules_pool is created and 
@@ -146,6 +150,12 @@ class RxnconTests(TestCase):
         self.assertEqual(len(self.cont_x.war.not_in_products), 3)
         self.cont_k.run_process()
         self.assertEqual(len(self.cont_k.war.not_in_products), 1)
+        self.double_domain_use.run_process()
+        self.double_domain_use.war.get_mutual_exclusive_reactions(self.double_domain_use.reaction_pool)
+        self.assertEqual(len(self.double_domain_use.war.mutual_exclusive_reactions), 2)
+        self.negative_test_double_domain_use.run_process()
+        self.negative_test_double_domain_use.war.get_mutual_exclusive_reactions(self.negative_test_double_domain_use.reaction_pool)
+        self.assertEqual(len(self.negative_test_double_domain_use.war.mutual_exclusive_reactions), 0)
 
     def test_add_missing_reactions(self):
         """
@@ -158,10 +168,6 @@ class RxnconTests(TestCase):
 
         self.cont.run_process(False, True)
         self.assertTrue(len(self.cont.reaction_pool), 3)
-
-
-
-
 
 
 class BnglTests(TestCase):
@@ -184,8 +190,6 @@ class BnglTests(TestCase):
         self.assertTrue('# Product states: A_[AssocB]--B_[AssocA] True' in source)
         self.assertFalse('# Absolute requirements:' in source)
         self.assertFalse('kf1_1' in source)
-
-
 
 if __name__ == '__main__':
     main()
