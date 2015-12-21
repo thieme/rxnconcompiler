@@ -5,7 +5,8 @@ All tests for rxncon modules.
 """
 
 from unittest import main, TestCase
-
+# test tree
+from test_tree.test_tree import TestTree
 #
 from test_rxncon import RxnconTests
 from test_compiler import CompilerTests
@@ -59,6 +60,8 @@ from test_util.test_util import UtilTests
 from test_sbtab.test_sbtab_parser import DirCheckTest
 #from test_sbtab.test_sbtab_parser import DataManipulationTest
 from test_sbtab.test_sbtab_parser import ParserTest
+
+
 
 if __name__ == '__main__':
     main()

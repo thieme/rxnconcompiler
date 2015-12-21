@@ -174,6 +174,7 @@ class Reaction:
                 mols = compl.get_molecules(compon.name, compon.cid)
                 if mols:
                     mols[0].binding_partners.append(state)
+                    mols[0].mid = compon.cid
 
         new_comp = left.complex_addition(right)
         new_comp.side = 'LR'

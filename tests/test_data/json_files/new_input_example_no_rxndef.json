@@ -1,0 +1,36 @@
+{
+    "reaction_list": [
+        {
+
+            "ReactionID": 0,
+            "ReactionType:ID": "2.1.1.1",
+            "UID:Reaction": "ppi",
+            "Reaction[Full]": "A_ppi_B",
+            "SourceState": "N/A",
+            "ProductState": "A--B",
+            "ComponentA[Name]": "A",
+            "ComponentA[DSR]": "",
+            "ComponentA[Domain]": "",
+            "ComponentA[Subdomain]": "",
+            "ComponentA[Residue]": "",
+
+            "ComponentB[Name]": "B",
+            "ComponentB[DSR]": "",
+            "ComponentB[Domain]": "",
+            "ComponentB[Subdomain]": "",
+            "ComponentB[Residue]": ""
+
+        }
+    ],
+    "contingency_list": [
+        {
+            "Contingency": "!", 
+            "ContingencyID": 0, 
+            "Modifier": "A--C", 
+            "Target": "A_ppi_B"
+        }
+    ], 
+    "reaction_definition": [
+
+    ]
+}

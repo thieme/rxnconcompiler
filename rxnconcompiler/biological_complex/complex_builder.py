@@ -55,281 +55,9 @@ import re
 
 from rxnconcompiler.molecule.state import get_state
 from rxnconcompiler.util.rxncon_errors import RxnconBooleanError
-
+from complex_tree import ComplexTree
 
 (_ADD, _DELETE, _INSERT) = range(3)
-(_ROOT, _DEPTH, _WIDTH) = range(3)
-
-#def format_id(id):
-#    """
-#    formating the identifier
-#    """
-#   return id.strip().replace(" ", "")
-
-class Node:
-    """
-    Colection of algorithms creating groups of complexes.
-    (BiologicalComplex objects keept by AlternativeComplexes).
-    """
-    def __init__(self, name, cid, old_cid = None, new_lvl=True):
-        self.cid = cid
-        self.old_cid = old_cid
-        self.name = name
-        self.new_lvl = new_lvl
-        self.__children = []
-        self.parent = None
-        self.__cont = []
-
-    def __repr__(self):
-        return self.name
-
-    @property
-    def old_cid(self):
-        return self.__old_cid
-
-    @old_cid.setter
-    def old_cid(self, value):
-        self.__old_cid = value
-
-    @property
-    def name(self):
-        return self.__name
-
-    @name.setter
-    def name(self, value):
-        self.__name = value
-
-    @property
-    def cid(self):
-        return self.__cid
-
-    @cid.setter
-    def cid(self, value):
-        self.__cid = value
-
-    @property
-    def parent(self):
-        return self.__parent
-
-    @parent.setter
-    def parent(self, value):
-        self.__parent = value
-
-    @property
-    def cont(self):
-        return self.__cont
-
-    @property
-    def children(self):
-        return self.__children
-
-    def update_children(self, cid, mode=_ADD):
-        if mode == _ADD:
-            self.children.append(cid)
-        if mode == _DELETE:
-            self.children.remove(cid)
-        if mode == _INSERT:
-            self.children = [cid]
-
-
-class Tree(object):
-    def __init__(self):
-        self.nodes = []
-
-    def get_highest_cid(self):
-        max_cid = 0
-        for node in self.nodes:
-            if node.cid > max_cid:
-                max_cid = node.cid
-        return max_cid
-
-    def add_Node(self, name, cid=None, old_cid=None, parent=None, parent_cid=None):
-        """
-        add a node in a tree
-        """
-        #if not self.contains(identifier):
-        if cid is None:
-            cid = self.get_highest_cid()
-            cid += 1
-        node = Node(name=name, cid= cid, old_cid=old_cid)
-        self.nodes.append(node)
-        parent_node = self.__update_children(parent, node.cid, _ADD, parent_cid)
-        if parent is None:
-            node.parent = (None, None)
-        else:
-            node.parent = (parent_node.name, parent_node.cid)
-
-        return node
-
-    def set_parent(self, node, children, levelup=False):
-        """
-        change the parent of one or more children
-        """
-        for children_cid in children:
-            child_node = self.get_node(cid=children_cid)
-            # we have to instances to manipulate
-            # 1) the list of nodes in the tree
-            # 2) the treeTracker information
-            # To update the nodes list we have to remove the node change the information and put it back
-            # to update the treeTracker we have also to remove the old entry and replace it with the new one to make sure that everything is in correct position
-
-            old_node_idx =  self.nodes.index(child_node)
-            old_node = self.nodes.pop(old_node_idx)  # remove the node by its index from nodes list
-            self.__update_children(child_node.parent, child_node.cid, _DELETE)  # remove the respective entry in treeTracker
-
-            if levelup:
-                old_node.parent = node.parent  # change the parent of the old node
-            else:
-                old_node.parent = node.cid  # change the parent of the old node
-            self.nodes.append(old_node)  # put the node back in the nodes list
-            self.__update_children(old_node.parent, old_node.cid, _ADD)  # add the node again in the treeTracker
-
-    def remove_Node(self, cid):
-        """
-        remove a node from the tree
-        """
-        if self.contains(cid):
-            node = self.get_node(cid=cid)
-            children = self.get_children(node.cid)
-            self.set_parent(node, children, levelup=True)
-            self.__update_children(node.parent, node.cid, _DELETE)
-            self.nodes.remove(node)
-        else:
-            raise("Node {0} not known!".format(cid))
-            #print "Node {0} not known!".format(id)
-
-    def expand_tree(self, position, mode=_DEPTH):
-        # Python generator. Loosly based on an algorithm from 'Essential LISP' by
-        # John R. Anderson, Albert T. Corbett, and Brian J. Reiser, page 239-241
-        node = self.get_node(cid=position)
-        yield node
-        queue = node.children
-        while queue:
-            node = self.get_node(cid=queue[0])
-            yield node
-            expansion = node.children
-            if mode is _DEPTH:
-                queue = expansion + queue[1:]  # depth-first
-            elif mode is _WIDTH:
-                queue = queue[1:] + expansion  # width-first
-
-    def is_branch(self, position):
-        return self[position].children
-
-    def __update_children(self, parent, cid, mode, parent_cid=None):
-        if parent is None:
-            return
-        else:
-            if parent_cid is None:
-                self[parent].update_children(cid, mode)
-                return self[parent]
-            else:
-                parent = self.get_node(cid=parent_cid)
-                parent.update_children(cid, mode)
-                return parent
-
-    def get_index(self, name):
-        """
-        get the index of identifier
-        """
-        for i, node in enumerate(self.nodes):
-            if node.name == name:
-                return i
-
-
-    def show(self, position, level=_ROOT):
-        """
-        basic visualisation of the tree for testing and developing
-        """
-        if self.contains(position):
-            node = self.get_node(cid=position)
-            queue = node.children
-            print("\t" * level, "{0} [{1}] parent: {2}".format(node.name, node.cid, node.parent))
-            if node.new_lvl:
-                level += 1
-                for element in queue:
-                    self.show(element, level)  # recursive call
-        else:
-            raise NameError("Node {0} does not exists!".format(position))
-
-    def get_leaf(self, position):
-        """
-        get the leafes of a node
-        gets identifier type str
-        return list of identifier type str
-        """
-        #leafes = [node for node in self.expand_tree(position) if self.get_children(node) == []]
-        leafes = []
-        leafes = [node for node in self.expand_tree(position) if self.get_children(node.name) == []]
-        return leafes
-
-    def get_root_nodes(self):
-        root_nodes = [node for node in self.nodes if node.parent == (None, None)]
-        return root_nodes
-
-    def get_parent(self, cid):
-        """
-        get the parent of a specific node
-        """
-        for node in self.nodes:
-            if node.cid == cid:
-                return node.parent
-
-    def get_children(self, name):
-        """
-        get all children of a specific node
-        """
-        children = [node for node in self.nodes if node.parent == name]
-        return children
-
-    def get_node(self, cid=None, name=None, parent_cid=None):
-        for node in self.nodes:
-            if cid is not None and node.cid == cid:
-                return node
-            elif (name != None and parent_cid is not None) and (node.name == name and node.parent[1] == parent_cid):
-                return node
-            elif name is not None and parent_cid is None and node.name == name: # we have a root node
-                return node
-
-    def __getitem__(self, idx):
-        return self.nodes[idx]
-
-    def contains(self, cid):
-        """
-        test if a node already exists
-        """
-        for node in self.nodes:
-            if node.cid == cid:
-                return True
-
-    def list_of_node_names(self):
-        names = [node.name for node in self.nodes]
-        return names
-
-    def children_by_name(self, node):
-        result = []
-        for child_cid in node.children:
-            child_node = self.get_node(child_cid)
-            result.append(child_node.name)
-        return result
-
-    def children_by_old_cid(self, node):
-        result = []
-        for child_cid in node.children:
-            child_node = self.get_node(child_cid)
-            result.append(child_node.old_cid)
-        return result
-
-    def get_all_cont(self):
-        result = []
-        for node in self.nodes:
-            result.extend(node.cont)
-        return result
-
-    def reset_old_cid(self):
-        for node in self.nodes:
-            if node.old_cid is not None:
-                node.old_cid = None
 
 class ComplexBuilder:
     """
@@ -351,7 +79,6 @@ class ComplexBuilder:
         @return final_states: list of contingencies
         @type final_states: list
         """
-        
 
         self.get_state_sets(bool_cont) # we want only the list
         return self.final_states
@@ -383,18 +110,20 @@ class ComplexBuilder:
         self.complexes_test = complexes
         possible_roots = reaction_container.get_reactants()
 
-        self.tree = Tree()
+        self.tree = ComplexTree()
 
-        for root in possible_roots:
-            self.tree.add_Node(root.name)
-            root_node = self.tree.get_node(name=root.name)
-            self.structured_complexes = self.check_for_structured_complex(complexes, root_node)
-            if self.structured_complexes:
-                self.get_structured_complex(self.structured_complexes, root_node, structure=True)
-            for complex_tuple in complexes:
-                for complex in complex_tuple[1]:
-                    if complex != self.structured_complexes:
-                        self.get_structured_complex(complex, self.tree.get_node(name=root.name))
+        for root in possible_roots[::-1]: # start with modified first
+            if self.tree.get_node(name=root.name) is None:
+                self.tree.add_Node(root.name)
+                root_node = self.tree.get_node(name=root.name)
+                self.structured_complexes = self.check_for_structured_complex(complexes, root_node)
+                if self.structured_complexes:
+                    self.get_structured_complex(self.structured_complexes, root_node, structure=True)
+            #    already = self.tree.get_all_cont()
+                for complex_tuple in complexes:
+                    for complex in complex_tuple[1]:
+                        if complex != self.structured_complexes:
+                            self.get_structured_complex(complex, self.tree.get_node(name=root.name))  # TODO: root_node
 
         self.process_structured_complex()
 
@@ -407,6 +136,26 @@ class ComplexBuilder:
                     return True
         return False
 
+    def get_cont_for_root(self, root, inner_list, structure, ):
+        root_cont = []
+        for cont in inner_list:
+                if structure:
+                    if self.check_cont_components(cont, root):
+                        root_cont.append(cont)
+                else:
+                    if cont.state.has_component(root):
+                        root_cont.append(cont)
+        return root_cont
+
+    def initialise_root_old_cid(self, root, root_cont):
+
+        for cont in root_cont:
+            for component in cont.state.components:
+                if component.name == root.name:
+                    if root.old_cid is None:
+                        root.old_cid = component.cid
+                    elif int(root.old_cid) > int(component.cid):
+                        root.old_cid = component.cid
 
     def get_structured_complex(self, inner_list, root, structure=False):
         """
@@ -420,10 +169,11 @@ class ComplexBuilder:
                     if root.old_cid is not None:
                         self.tree.reset_old_cid()
                     break
+        already = []
         while stack:
-            stack = self._get_complex_layer(inner_list, stack, structure)
+            stack, already = self._get_complex_layer(inner_list, stack, structure, already)
 
-    def _get_complex_layer(self, inner_list, root_list, structure):
+    def _get_complex_layer(self, inner_list, root_list, structure, already = []):
         """
         Helper function for get_ordered_tree.
 
@@ -432,44 +182,53 @@ class ComplexBuilder:
         """
         def non_structured(new_root, root):
             if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
-                self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid)
+                self.tree.add_Node(new_root.name, parent=(root.name, root.cid))
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
-                root.update_children(child.cid, _ADD)
+                root.update_children(child.name, child.cid, _ADD)
 
         def structured(new_root, root, bond):
             if not new_root.name in self.tree.children_by_name(root): # check if the node already exists
-                self.tree.add_Node(new_root.name, parent=root.name, parent_cid=root.cid, old_cid=new_root.cid)
-                if root.old_cid == None:
-                    old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
-                    if old_root is not None:
-                        root.old_cid = old_root.cid
+                self.tree.add_Node(new_root.name, parent=(root.name, root.cid), old_cid=new_root.cid)
+
             else:
                 child = self.tree.get_node(name=new_root.name, parent_cid=root.cid)
-                root.update_children(child.cid, _ADD)
+                root.update_children(child.name, child.cid, _ADD)
                 if root_node.old_cid is None:
                     old_root = bond.state.get_partner(bond.state.get_component(new_root.name))
                     if old_root is not None:
                         root_node.old_cid = old_root.cid
                 if child.old_cid == None:
                     child.old_cid = new_root.cid
+        def get_new_root(bond, root):
+            if structure and bond.state.homodimer:
+                # in case of a structured complex we want the component of a homodimer which differs from the root
+                for comp in bond.state.components:
+                    if comp.cid != root.old_cid:
+                        return comp
+            else:
+                # if it is an unstructured complex is does not matter which of both we get, because the name is important only
+                return bond.state.get_partner(bond.state.get_component(root.name))
 
-        already = self.tree.get_all_cont()
+        #already = self.tree.get_all_cont()
         new_roots = []
         for root in root_list:
-            root_cont = []
             root_node = self.tree.get_node(cid=root.cid)
-            for cont in inner_list:
-                if structure:
-                    if self.check_cont_components(cont, root):
-                        root_cont.append(cont)
-                else:
-                    if cont.state.has_component(root):
-                        root_cont.append(cont)
+            root_cont = self.get_cont_for_root(root, inner_list, structure)
+            # in this case we have to figure out what the correct Molecule is in case of multiple molecules with
+            # the same name within a structured complex
+            # in this case we take the molecule with the lowest index number as the the root
+            if structure and root.old_cid is None:
+                self.initialise_root_old_cid(root, root_cont)
+                root_cont = self.get_cont_for_root(root, inner_list, structure)
+
             for bond in root_cont:
                 if bond not in already:  # to avoid double contingency recognistion A--B, root: A next root B
+                    already.append(bond)
                     if bond.state.type == "Association":
-                        new_root = bond.state.get_partner(bond.state.get_component(root.name))
+
+                        new_root = get_new_root(bond, root)
+
                         if structure:
                             structured(new_root, root_node, bond)
                         else:
@@ -484,7 +243,7 @@ class ComplexBuilder:
                             non_structured(comp, root_node)
                         root_node.cont.append(bond)
                         new_roots = new_roots
-        return new_roots
+        return new_roots, already
 
     def process_structured_complex(self):
         """
@@ -520,8 +279,8 @@ class ComplexBuilder:
             queue = node.children
             if node.new_lvl:
 
-                for i, child_cid in enumerate(queue):
-                    child_node = self.tree.get_node(child_cid)
+                for i, child in enumerate(queue):
+                    child_node = self.tree.get_node(child.id)
                     root_cont = node.cont[i]
                     # ToDo: what if we have modification then it should be just an integer
                     if len(root_cont.state.components) > 1:
@@ -539,7 +298,7 @@ class ComplexBuilder:
                     if root_cont.ctype in ["and", "or"] or "--" in root_cont.ctype or re.match("^[1-9]*$", root_cont.ctype):
                         root_cont.ctype = sid
                     root_cont.state = state
-                    self.update_tree_contingencies(child_cid)  # recursive call
+                    self.update_tree_contingencies(child.id)  # recursive call
         else:
             raise NameError("NodeID {0} does not exists!".format(node_cid))
 
@@ -651,13 +410,12 @@ class ComplexBuilder:
                     self.final_states.append(result)
 
 
-
 if __name__ == "__main__":
-    tree = Tree()
+    tree = ComplexTree()
     tree.add_Node("A", cid=3)
-    tree.add_Node("B", cid=4 , parent="A")
-    tree.add_Node("B", parent="B", parent_cid=4)
-    tree.add_Node("D", parent="B")
-    tree.add_Node("C", parent="B", parent_cid=5)
+    tree.add_Node("B", cid=4 , parent=("A",3))
+    tree.add_Node("B", parent=("B", 4))
+    tree.add_Node("D", parent=("B", 4))
+    tree.add_Node("C", parent=("B", 5))
     #leafs = tree.get_leaf(3)
     tree.show(3)

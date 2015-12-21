@@ -1,0 +1,68 @@
+DONE:
+added tests for p- conflict and ppi conflict in test/test_data/bngl_rules/rules_basic_data.py
+changed PDonor_PT_PAcceptor reversible to irreversible
+added example for recursive conflict.
+merge branches master -> x!
+solve conflicts of merging process
+solve binding issues
+implement a list of mutual exclusive reactions, or reactions which cannot happen if an other reaction takes place
+
+TODO:
+
+change MAPK tests to the actual interpretation of the rules (with the x! logic change we get more rules than before)
+
+
+
+ A_ppi_B; ! <AorC> 
+                      <AorC>; OR <compl1>
+                      <AorC>; OR <compl2>
+                      <compl1>; OR B_[x]-{P}
+                      <compl1>; OR B--D
+                      <compl2>; OR A_[y]-{P}
+                      <AorC>; OR [START]
+
+MASTER:
+
+[Complex: Opy2, Ste11, Ste50]
+
+
+
+Rule:  Sho1(CyT,TMD) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Opy2(BDSte50!1).Sho1(CyT!3,TMD).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)
+Not found in:
+Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!2).Ste11(AssocSte5,BDSho1,SAM!1).Ste50(RA!2,SAM!1) <-> Hkr1(TMD!4).Opy2(BDSte50!2).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!1).Ste50(RA!2,SAM!1)    kf1_1, kr1_1
+Msb2(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!2).Ste11(AssocSte5,BDSho1,SAM!1).Ste50(RA!2,SAM!1) <-> Msb2(TMD!4).Opy2(BDSte50!2).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!1).Ste50(RA!2,SAM!1)    kf1_2, kr1_2
+Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!2).Ste11(AssocSte5,BDSho1,SAM!1).Ste50(RA!2,SAM!1) <-> Hkr1(TMD!4).Opy2(BDSte50!2).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!1).Ste50(RA!2,SAM!1)    kf1_3, kr1_3
+Sho1(CyT,TMD) + Opy2(BDSte50!2).Ste11(AssocSte5,BDSho1,SAM!1).Ste50(RA!2,SAM!1) <-> Opy2(BDSte50!2).Sho1(CyT!3,TMD).Ste11(AssocSte5,BDSho1!3,SAM!1).Ste50(RA!2,SAM!1)    kf1_4, kr1_4
+Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!2).Ste11(AssocSte5,BDSho1,SAM!1).Ste50(RA!2,SAM!1) <-> Hkr1(TMD!4).Opy2(BDSte50!2).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!1).Ste50(RA!2,SAM!1)    kf1_5, kr1_5
+Msb2(CyT,TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!2).Ste11(AssocSte5,BDSho1,SAM!1).Ste50(RA!2,SAM!1) <-> Msb2(CyT,TMD!4).Opy2(BDSte50!2).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!1).Ste50(RA!2,SAM!1)    kf1_6, kr1_6
+Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!2).Ste11(AssocSte5,BDSho1,SAM!1).Ste50(RA!2,SAM!1) <-> Hkr1(TMD!4).Opy2(BDSte50!2).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!1).Ste50(RA!2,SAM!1)    kf1_7, kr1_7
+Sho1(CyT,TMD) + Opy2(BDSte50!2).Ste11(AssocSte5,BDSho1,SAM!1).Ste50(RA!2,SAM!1) <-> Opy2(BDSte50!2).Sho1(CyT!3,TMD).Ste11(AssocSte5,BDSho1!3,SAM!1).Ste50(RA!2,SAM!1)    kf1_8, kr1_8
+
+
+
+
+
+self.final_states:  [[or Sho1_[CyT]--Ste11_[BDSho1]], [and Ste5_[MEKK]--Ste11_[AssocSte5], and Ste4_[BDSte5]--Ste5_[nRING-H2], and Ste4_[AssocSte18]--Ste18_[AssocSte4]]]
+final_states:  [[or Sho1_[CyT]--Ste11_[BDSho1]], [and Ste5_[MEKK]--Ste11_[AssocSte5], and Ste4_[BDSte5]--Ste5_[nRING-H2], and Ste4_[AssocSte18]--Ste18_[AssocSte4]]]
+self.stack:  [or Sho1_[CyT]--Ste11_[BDSho1]]
+NO STACKS HERE
+self.stack:  [and Ste5_[MEKK]--Ste11_[AssocSte5], and Ste4_[BDSte5]--Ste5_[nRING-H2], and Ste4_[AssocSte18]--Ste18_[AssocSte4]]
+first stack:  [[or Sho1_[CyT]--Ste11_[BDSho1]]]
+state:  and Ste4_[AssocSte18]--Ste18_[AssocSte4]
+state_stack:  [or Sho1_[CyT]--Ste11_[BDSho1]]
+NO CONNECTION:  [[[or Sho1_[CyT]--Ste11_[BDSho1]]], [[and Ste4_[AssocSte18]--Ste18_[AssocSte4]]]] # issue
+first stack:  [[or Sho1_[CyT]--Ste11_[BDSho1]]]
+state:  and Ste4_[BDSte5]--Ste5_[nRING-H2]
+state_stack:  [or Sho1_[CyT]--Ste11_[BDSho1]]
+first stack:  [[and Ste4_[AssocSte18]--Ste18_[AssocSte4]]]
+state:  and Ste4_[BDSte5]--Ste5_[nRING-H2]
+state_stack:  [and Ste4_[AssocSte18]--Ste18_[AssocSte4]]
+kein neuer STACK:  [[and Ste4_[AssocSte18]--Ste18_[AssocSte4], and Ste4_[BDSte5]--Ste5_[nRING-H2]]]
+first stack:  [[or Sho1_[CyT]--Ste11_[BDSho1]]]
+state:  and Ste5_[MEKK]--Ste11_[AssocSte5]
+state_stack:  [or Sho1_[CyT]--Ste11_[BDSho1]]
+kein neuer STACK:  [[or Sho1_[CyT]--Ste11_[BDSho1], and Ste5_[MEKK]--Ste11_[AssocSte5]]]
+stacks:  [[[or Sho1_[CyT]--Ste11_[BDSho1], and Ste5_[MEKK]--Ste11_[AssocSte5]]], [[and Ste4_[AssocSte18]--Ste18_[AssocSte4], and Ste4_[BDSte5]--Ste5_[nRING-H2]]]]
+state_group:  [or Sho1_[CyT]--Ste11_[BDSho1], and Ste5_[MEKK]--Ste11_[AssocSte5]]
+state_group:  [and Ste4_[AssocSte18]--Ste18_[AssocSte4], and Ste4_[BDSte5]--Ste5_[nRING-H2]]
+alter_complexes:  [[[[or Sho1_[CyT]--Ste11_[BDSho1], and Ste5_[MEKK]--Ste11_[AssocSte5]]], [[and Ste4_[AssocSte18]--Ste18_[AssocSte4], and Ste4_[BDSte5]--Ste5_[nRING-H2]]]], [Complex: Sho1, Ste11, Ste5], [Complex: Ste18, Ste4, Ste5]]

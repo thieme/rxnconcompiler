@@ -46,9 +46,7 @@ class Contingency:
         Two ContingencyComponent objests are eqal when 
         target reaction, ctype and states are eqal.
         """
-        ########
-        if self is None:
-            print "self"
+
         if self.target_reaction == other.target_reaction:
             if self.ctype == other.ctype:
                 if self.state == other.state:

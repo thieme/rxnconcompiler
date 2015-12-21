@@ -49,11 +49,7 @@ class x_exclamation_mark_Tests(TestCase):
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Example_Reactions.xls"
-        #input = "/home/wajnberg/rxncon/source/rxnconcompiler/sbtab/rxncon_sbtab_files/rxncon_template_2_0.xls"
-        input = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Example_Reactions.xls"
-        #rxncon = rxncon_mod.Rxncon(input)
-        rxncon = Rxncon("""Rck2_AP_R2_[Ser]""")
-        #rxncon = Rxncon("""A_ppi_B""")
+
 #######################################   Presentation ########################################
         # rxncon = Rxncon("""A_ppi_B; ! <comp1>
         #                  <comp1>; OR <comp1C1>
@@ -100,10 +96,6 @@ class x_exclamation_mark_Tests(TestCase):
         #                     <bool>; and Cdc4_[WD40]--Tec1_[CPD]
         #                     """)
 
-        #rxncon = Rxncon("""
-        #               A_ppi_B; ! <AorC>
-        #               <AorC>; AND A--C; AND A--D
-        #               """)  # works
 
 
         # rxncon = Rxncon("""SCF_p+_Tec1; ! Cdc4_[SCF]--SCF_[Cdc4]
@@ -184,8 +176,6 @@ class x_exclamation_mark_Tests(TestCase):
         # rxncon = Rxncon("""
         #                 A_ppi_B; ! <AorC>
         #                 <AorC>; OR A_[x]-{P}
-        #                 <AorC>; OR B--C
-        #                 <AorC>; OR A--D
         #                 <AorC>; OR B_[y]-{P}
         #                 <AorC>; OR A--C
         #                 <AorC>; OR B--D
@@ -217,17 +207,6 @@ class x_exclamation_mark_Tests(TestCase):
         #                 <bool3>; AND B--Hb3; AND B--Ib3
         #                 """)
 
-        # we don't tell that A D E cannot exist as long as F is not bound ?
-        # rxncon = Rxncon(""" A_ppi_B; ! <compA>
-        #                 <compA>; or <compA1>
-        #                 <compA>; or <compA2>
-        #                 <compA>; or <compB>
-        #                 <compB>; and B--T
-        #                 <compB>; and B--Z
-        #                 <compA1>; and A--C
-        #                 <compA1>; and A--D
-        #                 <compA2>; and A--E
-        #                 <compA2>; and A--F """) 
 
 
         #rxncon = Rxncon("""A_ppi_B; k+ A--C""")
@@ -241,8 +220,6 @@ class x_exclamation_mark_Tests(TestCase):
         #                     <comp2C1>; AND B--E""")
 
 
-       
-        #rxncon = Rxncon('A_ppi_B; ! A-{P} \n A_ppi_B; x A-{P}; ! B-{P}')
 
 # conflicting example ################################
 
@@ -259,9 +236,6 @@ class x_exclamation_mark_Tests(TestCase):
         #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
         # ''')
         #rxncon = Rxncon("""A_ipi_A_[d/s(r)]""")
-
-        #rxncon = Rxncon('A_ppi_B\nA_ppi_C; ! A--B ')
-
         # rxncon = Rxncon('''Z_p+_A
         #                 Y_p+_A_[d]
         #                 W_p+_A_[d/s]
@@ -276,10 +250,10 @@ class x_exclamation_mark_Tests(TestCase):
         #                 A_ppi_J; ! A_[(r)]-{P}''',lumpedModifier=True)
 
 ####### TEST
-        # rxncon = Rxncon("""Z_p+_A
-        #                 W_p+_A
-        #                 A_ppi_C; ! A-{P}
-        #                 """, lumpedModifier=True)
+        rxncon = Rxncon("""Z_p+_A
+                        W_p+_A
+                        A_ppi_C; ! A-{P}
+                        """, lumpedModifier=True)
 
 #delete contingency
         # rxncon = Rxncon("""A_ppi_B; ! A-{P}
@@ -294,7 +268,6 @@ class x_exclamation_mark_Tests(TestCase):
         #                     H_p+_A_[d/(r)]
         #
         # """)
-
 #         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
 # <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
 # <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]

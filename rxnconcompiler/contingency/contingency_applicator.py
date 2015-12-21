@@ -112,6 +112,9 @@ class ContingencyApplicator():
 
         if add_partner:
             mols[0].binding_partners.append(cont.state)
+            if mols[0].mid is None:
+                mol_comp = cont.state.get_component(mols[0].name)
+                mols[0].mid = mol_comp.cid
             if homodimer_consideration:
                 # TODO: is this needed?
                 for state in mols[1].binding_partners:
@@ -211,7 +214,6 @@ class ContingencyApplicator():
                 # if A--B, A and B present in substrates but if reaction creates A and B
                 # we don't join. We want then A
                     reaction.join_substrate_complexes(cont.state)
-                    pass
                 # here one of mols from contingency is present in both complexes
                 # but it was added because of previously applayed contingency so we dont want to join.
                 #else:

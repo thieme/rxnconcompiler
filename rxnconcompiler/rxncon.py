@@ -319,7 +319,7 @@ class Rxncon():
                     if not default_domain_present:
                         if len(available) > 1:
                             self.war.produced_in_more[cont] = available
-                            cont.state = available[0]
+                            #cont.state = available[0]  # in this case we should warn not change
                         elif len(available) == 1:
                             cont.state = state
                         else:
@@ -394,7 +394,7 @@ class Rxncon():
             if complexes:
                 builder = ComplexBuilder()
                 builder.structure_complex(complexes, react_container)
-                ComplexApplicator(react_container, copy.deepcopy(complexes)).apply_complexes()  # 2
+                ComplexApplicator(react_container, copy.deepcopy(complexes), self.war).apply_complexes()  # 2
             # self.apply_rules(react_container, rules)
             # after applying complexes we may have more reactions in a single container.
             orignial_react_container = copy.deepcopy(react_container)
@@ -406,9 +406,6 @@ class Rxncon():
             if add_contingencies or self.solve_conflict.conflict_found:
                 self.apply_contingencies_on_complex(react_container)
                 self.apply_contingencies_on_complex(orignial_react_container)
-######
-
-####
             # single contingency is applied for all reactions. If K+/K- reactions are dubbled.
             self.update_reactions()  # 4
             for reaction in react_container:  # 5
@@ -452,13 +449,6 @@ class ConflictSolver(Rxncon):
     def is_conflict(self, product_contingency, required_cont):
         if re.search('^(?!_)\[(.*?)\]', required_cont.target_reaction) or re.search('<(.*?)>', required_cont.target_reaction):
             return False
-        ###################
-        if required_cont is None:
-            print 'required'
-        if product_contingency is None:
-            print 'product', required_cont.target_reaction,'\n', product_contingency
-
-        #############
         elif str(required_cont.state) == str(product_contingency.state):
             if str(required_cont.ctype) != str(product_contingency.ctype):
                 if str(required_cont.ctype) not in ["and", "or", "0"]:
@@ -679,9 +669,6 @@ class ConflictSolver(Rxncon):
         import re
 
         product_contingency = react_container.product_contingency
-        print "##########"
-        print react_container
-        print product_contingency
         conflicted_state = ""
         self.conflicted_states = []
         self.conflict_found = False

@@ -1,0 +1,2357 @@
+bngl_src:  begin model
+begin parameters
+# input parameters
+k_START 0
+k_NutrientDeprivation 0
+k_Turgor 0
+# normal parameters
+kf1 1
+kr1 1
+k2 1
+k3 1
+kf4 1
+kr4 1
+k5_1 1
+k5_2 1
+k6_1 1
+k6_2 1
+k7 1
+k8 1
+kf9 1
+kr9 1
+kf10 1
+kr10 1
+kf11 1
+kr11 1
+kf12 1
+kr12 1
+kf13 1
+kr13 1
+k14 1
+k15 1
+kf16 1
+kr16 1
+kf17 1
+kr17 1
+kf18 1
+kr18 1
+k19_1 1
+k19_2 1
+kf20 1
+kr20 1
+kf21 1
+kr21 1
+kf22 1
+kr22 1
+kf23 1
+kr23 1
+k24_1 1
+k24_2 1
+k24_3 1
+k24_4 1
+k24_5 1
+k24_6 1
+k24_7 1
+k24_8 1
+k24_9 1
+k24_10 1
+k24_11 1
+k24_12 1
+k24_13 1
+k24_14 1
+k24_15 1
+k24_16 1
+kf25 1
+kr25 1
+kf26 1
+kr26 1
+k27 1
+k28 1
+k29 1
+kf30 1
+kr30 1
+k31 1
+k32 1
+k33 1
+k34 1
+k35 1
+kf36 1
+kr36 1
+k37 1
+kf38 1
+kr38 1
+k39 1
+k40 1
+k41_1 1
+k41_2 1
+kf42_1 1
+kr42_1 1
+kf42_2 1
+kr42_2 1
+kf43 1
+kr43 1
+kf44 1
+kr44 1
+kf45 1
+kr45 1
+kf46_1 1
+kr46_1 1
+kf46_2 1
+kr46_2 1
+kf47_1 1
+kr47_1 1
+kf47_2 1
+kr47_2 1
+kf48 1
+kr48 1
+k49 1
+kf50 1
+kr50 1
+k51 1
+kf52 1
+kr52 1
+k53 1
+k54 1
+k55 1
+kf56 1
+kr56 1
+kf57 1
+kr57 1
+kf58 1
+kr58 1
+kf59 1
+kr59 1
+kf60 1
+kr60 1
+kf61 1
+kr61 1
+k62_1 1
+k62_2 1
+k62_3 1
+k62_4 1
+k63_1 1
+k63_2 1
+k63_3 1
+k63_4 1
+kf64_1 1
+kr64_1 1
+kf64_2 1
+kr64_2 1
+kf64_3 1
+kr64_3 1
+kf64_4 1
+kr64_4 1
+kf64_5 1
+kr64_5 1
+kf64_6 1
+kr64_6 1
+kf64_7 1
+kr64_7 1
+kf64_8 1
+kr64_8 1
+kf65 1
+kr65 1
+kf66 1
+kr66 1
+kf67 1
+kr67 1
+kf68 1
+kr68 1
+k69_1 1
+k69_2 1
+k70 1
+k71_1 1
+k71_2 1
+k72 1
+k73 1
+kf74_1 1
+kr74_1 1
+kf74_2 1
+kr74_2 1
+kf74_3 1
+kr74_3 1
+kf74_4 1
+kr74_4 1
+kf74_5 1
+kr74_5 1
+kf74_6 1
+kr74_6 1
+kf74_7 1
+kr74_7 1
+kf74_8 1
+kr74_8 1
+kf75 1
+kr75 1
+k76_1 1
+k76_2 1
+kf77 1
+kr77 1
+k78 1
+kf79 1
+kr79 1
+k80 1
+kf81 1
+kr81 1
+kf82 1
+kr82 1
+kf83 1
+kr83 1
+k84 1
+k85 1
+k86_1 1
+k86_2 1
+k87 1
+k88 1
+k89 1
+k90 1
+kf91_1 1
+kr91_1 1
+kf91_2 1
+kr91_2 1
+kf91_3 1
+kr91_3 1
+kf91_4 1
+kr91_4 1
+kf91_5 1
+kr91_5 1
+kf91_6 1
+kr91_6 1
+kf91_7 1
+kr91_7 1
+kf91_8 1
+kr91_8 1
+kf92 1
+kr92 1
+k93_1 1
+k93_2 1
+k94_1 1
+k94_2 1
+k95_1 1
+k95_2 1
+k96 1
+kf97_1 1
+kf97_2 1
+kr97_1 1
+kr97_2 1
+kf98_1 1
+kf98_2 1
+kr98_1 1
+kr98_2 1
+kf99_3 1
+kf99_4 1
+kr99_3 1
+kr99_4 1
+k100 1
+kf101 1
+kr101 1
+kf102 1
+kr102 1
+kf103 1
+kr103 1
+kf104 1
+kr104 1
+kf105 1
+kr105 1
+kf106 1
+kr106 1
+kf107_1 1
+kr107_1 1
+kf107_2 1
+kr107_2 1
+kf107_3 1
+kr107_3 1
+kf107_4 1
+kr107_4 1
+kf107_5 1
+kr107_5 1
+kf107_6 1
+kr107_6 1
+kf107_7 1
+kr107_7 1
+kf107_8 1
+kr107_8 1
+kf107_9 1
+kr107_9 1
+kf107_10 1
+kr107_10 1
+kf107_11 1
+kr107_11 1
+kf107_12 1
+kr107_12 1
+kf107_13 1
+kr107_13 1
+kf107_14 1
+kr107_14 1
+kf107_15 1
+kr107_15 1
+kf107_16 1
+kr107_16 1
+kf108 1
+kr108 1
+kf109 1
+kr109 1
+kf110_1 1
+kr110_1 1
+kf110_2 1
+kr110_2 1
+kf110_3 1
+kr110_3 1
+kf110_4 1
+kr110_4 1
+kf111 1
+kr111 1
+kf112 1
+kr112 1
+k113 1
+k114 1
+k115 1
+kf116_1 1
+kr116_1 1
+kf116_2 1
+kr116_2 1
+kf116_3 1
+kr116_3 1
+kf116_4 1
+kr116_4 1
+kf116_5 1
+kr116_5 1
+kf116_6 1
+kr116_6 1
+kf116_7 1
+kr116_7 1
+kf116_8 1
+kr116_8 1
+k117 1
+kf118 1
+kr118 1
+k119 1
+kf120_1 1
+kr120_1 1
+kf120_2 1
+kr120_2 1
+kf120_3 1
+kr120_3 1
+kf120_4 1
+kr120_4 1
+kf120_5 1
+kr120_5 1
+kf120_6 1
+kr120_6 1
+kf120_7 1
+kr120_7 1
+kf120_8 1
+kr120_8 1
+kf121 1
+kr121 1
+k122 1
+kf123 1
+kr123 1
+k124 1
+kf125 1
+kr125 1
+kf126 1
+kr126 1
+k127 1
+k128 1
+k129 1
+kf130_1 1
+kr130_1 1
+kf130_2 1
+kr130_2 1
+kf130_3 1
+kr130_3 1
+kf130_4 1
+kr130_4 1
+k131 1
+kf132 1
+kr132 1
+kf133 1
+kr133 1
+k134_1 1
+k134_2 1
+k135_1 1
+k135_2 1
+k135_3 1
+k135_4 1
+k136 1
+k137 1
+kf138 1
+kr138 1
+kf139 1
+kr139 1
+k140 1
+kf141 1
+kr141 1
+kf142 1
+kr142 1
+kf143 1
+kr143 1
+kf144 1
+kr144 1
+kf145 1
+kr145 1
+kf146 1
+kr146 1
+kf147 1
+kr147 1
+kf148 1
+kr148 1
+k149 1
+k150 1
+k151 1
+k152 1
+k153 1
+kf154 1
+kr154 1
+kf155 1
+kr155 1
+k156_1 1
+k156_2 1
+k156_3 1
+k156_4 1
+k156_5 1
+k156_6 1
+k156_7 1
+k156_8 1
+k157_1 1
+k157_2 1
+k158 1
+kf159 1
+kr159 1
+kf160 1
+kr160 1
+k161 1
+k162 1
+k163 1
+k164 1
+k165 1
+k166 1
+k167 1
+k168 1
+k169 1
+kf170 1
+kr170 1
+kf171 1
+kr171 1
+k172 1
+kf173_1 1
+kr173_1 1
+kf173_2 1
+kr173_2 1
+kf174 1
+kr174 1
+kf175 1
+kr175 1
+kf176 1
+kr176 1
+kf177 1
+kr177 1
+kf178 1
+kr178 1
+kf179 1
+kr179 1
+kf180 1
+kr180 1
+kf181 1
+kr181 1
+k182 1
+k183 1
+k184 1
+k185_1 1
+k185_2 1
+k186_1 1
+k186_2 1
+k187 1
+k188 1
+k189 1
+k190_1 1
+k190_2 1
+k191_1 1
+k191_2 1
+k192 1
+kf193 1
+kr193 1
+k194_1 1
+k194_2 1
+k195_1 1
+k195_2 1
+k196_1 1
+k196_2 1
+k197_1 1
+k197_2 1
+k198 1
+k199 1
+k200 1
+k201 1
+kf202 1
+kr202 1
+kf203 1
+kr203 1
+k204 1
+k205 1
+k206 1
+kf207 1
+kr207 1
+k208_1 1
+k208_2 1
+kf209 1
+kr209 1
+k210 1
+kf211 1
+kr211 1
+kf212_1 1
+kr212_1 1
+kf212_2 1
+kr212_2 1
+kf212_3 1
+kr212_3 1
+kf212_4 1
+kr212_4 1
+kf212_5 1
+kr212_5 1
+kf212_6 1
+kr212_6 1
+kf212_7 1
+kr212_7 1
+kf212_8 1
+kr212_8 1
+kf213 1
+kr213 1
+kf214 1
+kr214 1
+kf215 1
+kr215 1
+kf216 1
+kr216 1
+kf217 1
+kr217 1
+kf218 1
+kr218 1
+kf219 1
+kr219 1
+kf220 1
+kr220 1
+k221 1
+kf222 1
+kr222 1
+end parameters
+
+begin molecule types
+Bag7
+Bar1
+Bck1(S939~U~P,AssocMkk1,AssocMkk2,n)
+Bem2
+Bem3
+CRE(AssocSko1)
+Cdc24(AssocFar1,AssocSte4,AssocSte5)
+Cdc4(AssocSCF,WD40)
+Cdc42(GnP~U~P,AssocMsb2,AssocSte50,ED)
+Cyc8(TPR13)
+Dig1(Fus3~U~P,Kss1~U~P,AssocSte12,Dsite)
+Dig2(Fus3~U~P,Kss1~U~P,AssocSte12,Dsite)
+Far1(T306~U~P,c,nBDFus3,nRINGH2)
+Fus3(T180~U~P,Y182~U~P,AssocSte12,AssocSte5,AssocTec1,CD,CD7m,n)
+Gpa1(GnP~U~P,AssocSte4,BDRec,n)
+Hkr1(TMD)
+Hog1(T174~U~P,Y176~U~P,AssocSic1,AssocSko1,AssocSmp1,CD,PBD2,n)
+Hot1(S153~U~P,S30~U~P,S360~U~P,S410~U~P,S70~U~P,AssocHot1Site,m)
+Hot1Site(AssocHot1)
+Kss1(T183~U~P,Y185~U~P,AssocMsg5,AssocSte12,AssocSte5,AssocTec1,CD,CD7m)
+Lrg1
+MFa(AssocSte3)
+MFalpha(AssocSte2)
+Mid2(CyT)
+Mkk1(S377~U~P,T381~U~P,AssocBck1,AssocPkc1,n)
+Mkk2(S370~U~P,T374~U~P,AssocBck1,n)
+Mlp1(AssocRlm1)
+Msb2(HMHCD~U~Truncated,CyT,TMD)
+Msg5(Fus3~U~P,Slt2~U~P,n)
+Mtl1(AssocRom2)
+Nbp2(SH3,n)
+Opy2(BDSte50)
+PHS(AssocPkh1,AssocPkh2)
+PIP2(AssocSte20)
+PRE(AssocSte12)
+PS(AssocPkc1)
+Pbs2(ALS514~U~P,ALT518~U~P,HBD1,KD,RSD1,RSD2,RSD2PR,SIM2)
+Pkc1(ALT983~U~P,AssocMkk1,AssocPS,C1,HR1)
+Pkh1(AssocPHS)
+Pkh2(AssocPHS)
+Ptc1(AssocNbp2)
+Ptc2
+Ptc3
+Ptp2(AssocHog1)
+Ptp3(AssocHog1,CH2)
+Rck2(Ser~U~P,cS519~U~P,c)
+Rga1
+Rga2
+Rho1(GnP~U~P,AssocPkc1,AssocSte4,ED)
+Rlm1(cS427~U~P,cT439~U~P,AssocRlm1Site,AssocSmp1,c)
+Rlm1Site(AssocRlm1)
+Rom1
+Rom2(Slt2~U~P,AssocMid2,AssocMtl1,AssocWsc2,n)
+SCBFKS2(AssocSwi4)
+SCBG1(AssocSwi4)
+SCF(AssocCdc4)
+Sac7
+Sdp1(AssocSlt2)
+Sho1(CyT,CyTSH3,TMD)
+Sic1(T173~U~P,AssocHog1)
+Sir3(S275~U~P,S282~U~P,S289~U~P,S295~U~P)
+Sko1(nS108~U~P,nS113~U~P,nS126~U~P,bZIP,n)
+Slg1(CyT)
+Sln1(HKH576~U~P,RRD1144~U~P,BDSln1,RR)
+Slt2(T190~U~P,Y192~U~P,AssocRlm1,AssocSdp1,DB,n)
+Smp1(S348~U~P,S357~U~P,S376~U~P,T365~U~P,AssocHog1,AssocRlm1,AssocSmp1Site)
+Smp1Site(AssocSmp1)
+Ssk1(RRD544~U~P,AssocSsk22,BDSsk1,RR)
+Ssk2(T1460~U~P,BDSsk1,KD)
+Ssk22(AssocSsk1,KD)
+Sst2(S539~U~P,nDEP)
+Ste11(CBDS302~U~P,CBDS306~U~P,CBDT307~U~P,AssocSte5,AssocSte7,BDSho1,CBD,KD,SAM,n)
+Ste12(Fus3~U~P,Kss1~U~P,AssocFus3,AssocKss1,c,nDB,nDBD,nHTH)
+Ste18(AssocSte4)
+Ste2(CyT,Receptor,TMD)
+Ste20(SerThr~U~P,AssocSte5,BR,CRIB,KD,PR,c)
+Ste3(CyT,Receptor)
+Ste4(AssocCdc24,AssocFar1,AssocRho1,AssocSte18,AssocSte20,BDGpa1,BDSte5)
+Ste5(Fus3~U~P,Kss1~U~P,AssocSte20,BDSte5,MAPK,MEK,MEKK,Unlock,c,nRINGH2)
+Ste50(RA,SAM,m)
+Ste7(ALS359~U~P,ALT363~U~P,Fus3~U~P,Kss1~U~P,AssocSte11,AssocSte5,BDMAPK)
+Swi4(Slt2~U~P,AssocSCBFKS2,AssocSCBG1,c,n)
+Swi6(S238~U~P,c)
+TCS(AssocTec1)
+Tec1(SCF~U~Ub,T273~U~P,T276~U~P,AssocSte12,CPD,c,n,nTEA)
+Tup1(AssocSko1,n)
+Tus1
+Wsc2(AssocRom2)
+Ypd1(H64~U~P,AssocSln1,AssocSsk1)
+Yps1
+Zeo1(AssocMid2)
+end molecule types
+
+begin seed species
+Bag7                                                                                       100
+Bar1                                                                                       100
+Bck1(S939~U,AssocMkk1,AssocMkk2,n)                                                         100
+Bem2                                                                                       100
+Bem3                                                                                       100
+CRE(AssocSko1)                                                                             100
+Cdc24(AssocFar1,AssocSte4,AssocSte5)                                                       100
+Cdc4(AssocSCF,WD40)                                                                        100
+Cdc42(GnP~U,AssocMsb2,AssocSte50,ED)                                                       100
+Cyc8(TPR13)                                                                                100
+Dig1(Fus3~U,Kss1~U,AssocSte12,Dsite)                                                       100
+Dig2(Fus3~U,Kss1~U,AssocSte12,Dsite)                                                       100
+Far1(T306~U,c,nBDFus3,nRINGH2)                                                             100
+Fus3(T180~U,Y182~U,AssocSte12,AssocSte5,AssocTec1,CD,CD7m,n)                               100
+Gpa1(GnP~U,AssocSte4,BDRec,n)                                                              100
+Hkr1(TMD)                                                                                  100
+Hog1(T174~U,Y176~U,AssocSic1,AssocSko1,AssocSmp1,CD,PBD2,n)                                100
+Hot1(S153~U,S30~U,S360~U,S410~U,S70~U,AssocHot1Site,m)                                     100
+Hot1Site(AssocHot1)                                                                        100
+Kss1(T183~U,Y185~U,AssocMsg5,AssocSte12,AssocSte5,AssocTec1,CD,CD7m)                       100
+Lrg1                                                                                       100
+MFa(AssocSte3)                                                                             100
+MFalpha(AssocSte2)                                                                         100
+Mid2(CyT)                                                                                  100
+Mkk1(S377~U,T381~U,AssocBck1,AssocPkc1,n)                                                  100
+Mkk2(S370~U,T374~U,AssocBck1,n)                                                            100
+Mlp1(AssocRlm1)                                                                            100
+Msb2(HMHCD~U,CyT,TMD)                                                                      100
+Msg5(Fus3~U,Slt2~U,n)                                                                      100
+Mtl1(AssocRom2)                                                                            100
+Nbp2(SH3,n)                                                                                100
+Opy2(BDSte50)                                                                              100
+PHS(AssocPkh1,AssocPkh2)                                                                   100
+PIP2(AssocSte20)                                                                           100
+PRE(AssocSte12)                                                                            100
+PS(AssocPkc1)                                                                              100
+Pbs2(ALS514~U,ALT518~U,HBD1,KD,RSD1,RSD2,RSD2PR,SIM2)                                      100
+Pkc1(ALT983~U,AssocMkk1,AssocPS,C1,HR1)                                                    100
+Pkh1(AssocPHS)                                                                             100
+Pkh2(AssocPHS)                                                                             100
+Ptc1(AssocNbp2)                                                                            100
+Ptc2                                                                                       100
+Ptc3                                                                                       100
+Ptp2(AssocHog1)                                                                            100
+Ptp3(AssocHog1,CH2)                                                                        100
+Rck2(Ser~U,cS519~U,c)                                                                      100
+Rga1                                                                                       100
+Rga2                                                                                       100
+Rho1(GnP~U,AssocPkc1,AssocSte4,ED)                                                         100
+Rlm1(cS427~U,cT439~U,AssocRlm1Site,AssocSmp1,c)                                            100
+Rlm1Site(AssocRlm1)                                                                        100
+Rom1                                                                                       100
+Rom2(Slt2~U,AssocMid2,AssocMtl1,AssocWsc2,n)                                               100
+SCBFKS2(AssocSwi4)                                                                         100
+SCBG1(AssocSwi4)                                                                           100
+SCF(AssocCdc4)                                                                             100
+Sac7                                                                                       100
+Sdp1(AssocSlt2)                                                                            100
+Sho1(CyT,CyTSH3,TMD)                                                                       100
+Sic1(T173~U,AssocHog1)                                                                     100
+Sir3(S275~U,S282~U,S289~U,S295~U)                                                          100
+Sko1(nS108~U,nS113~U,nS126~U,bZIP,n)                                                       100
+Slg1(CyT)                                                                                  100
+Sln1(HKH576~U,RRD1144~U,BDSln1,RR)                                                         100
+Slt2(T190~U,Y192~U,AssocRlm1,AssocSdp1,DB,n)                                               100
+Smp1(S348~U,S357~U,S376~U,T365~U,AssocHog1,AssocRlm1,AssocSmp1Site)                        100
+Smp1Site(AssocSmp1)                                                                        100
+Ssk1(RRD544~U,AssocSsk22,BDSsk1,RR)                                                        100
+Ssk2(T1460~U,BDSsk1,KD)                                                                    100
+Ssk22(AssocSsk1,KD)                                                                        100
+Sst2(S539~U,nDEP)                                                                          100
+Ste11(CBDS302~U,CBDS306~U,CBDT307~U,AssocSte5,AssocSte7,BDSho1,CBD,KD,SAM,n)               100
+Ste12(Fus3~U,Kss1~U,AssocFus3,AssocKss1,c,nDB,nDBD,nHTH)                                   100
+Ste18(AssocSte4)                                                                           100
+Ste2(CyT,Receptor,TMD)                                                                     100
+Ste20(SerThr~U,AssocSte5,BR,CRIB,KD,PR,c)                                                  100
+Ste3(CyT,Receptor)                                                                         100
+Ste4(AssocCdc24,AssocFar1,AssocRho1,AssocSte18,AssocSte20,BDGpa1,BDSte5)                   100
+Ste5(Fus3~U,Kss1~U,AssocSte20,BDSte5,MAPK,MEK,MEKK,Unlock,c,nRINGH2)                       100
+Ste50(RA,SAM,m)                                                                            100
+Ste7(ALS359~U,ALT363~U,Fus3~U,Kss1~U,AssocSte11,AssocSte5,BDMAPK)                          100
+Swi4(Slt2~U,AssocSCBFKS2,AssocSCBG1,c,n)                                                   100
+Swi6(S238~U,c)                                                                             100
+TCS(AssocTec1)                                                                             100
+Tec1(SCF~U,T273~U,T276~U,AssocSte12,CPD,c,n,nTEA)                                          100
+Tup1(AssocSko1,n)                                                                          100
+Tus1                                                                                       100
+Wsc2(AssocRom2)                                                                            100
+Ypd1(H64~U,AssocSln1,AssocSsk1)                                                            100
+Yps1                                                                                       100
+Zeo1(AssocMid2)                                                                            100
+end seed species
+
+begin observables
+
+end observables
+
+begin reaction rules
+###########################  1####Fus3 ppi Msg5###
+# Source states:  Fus3_[CD]--Msg5_[n] False
+# Product states: Fus3_[CD]--Msg5_[n] True
+Fus3(CD) + Msg5(n) <-> Fus3(CD!1).Msg5(n!1)    kf1, kr1
+###########################  2####Fus3 p+ Sst2###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Sst2_[S539]-{P} False
+# Product states: Sst2_[S539]-{P} True
+Fus3(T180~P,Y182~P) + Sst2(S539~U) -> Fus3(T180~P,Y182~P) + Sst2(S539~P)    k2
+###########################  3####Fus3 p+ Ste5###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Ste5_[Fus3]-{P} False
+# Product states: Ste5_[Fus3]-{P} True
+Fus3(T180~P,Y182~P) + Ste5(Fus3~U) -> Fus3(T180~P,Y182~P) + Ste5(Fus3~P)    k3
+###########################  4####MFalpha ppi Ste2###
+# Contingencies: ! MFalpha
+# Source states:  MFalpha_[AssocSte2]--Ste2_[Receptor] False
+# Product states: MFalpha_[AssocSte2]--Ste2_[Receptor] True
+MFalpha(AssocSte2) + Ste2(Receptor) <-> MFalpha(AssocSte2!1).Ste2(Receptor!1)    kf4, kr4
+###########################  5####Msg5 p- Fus3###
+# Contingencies: k+ Fus3_[CD]--Msg5_[n]
+# Absolute requirements: Fus3_[T180]-{P} True
+# Source states:  Fus3_[T180]-{P} False
+# Product states: Fus3_[T180]-{P} True
+#>>>>>>>>> Rule: 5_1
+# Optional requirements: Fus3_[CD]--Msg5_[n] True
+Fus3(T180~P,CD!1).Msg5(n!1) -> Fus3(T180~U,CD!1).Msg5(n!1)    k5_1
+#>>>>>>>>> Rule: 5_2
+# Optional requirements: Fus3_[CD]--Msg5_[n] False
+Msg5(n) + Fus3(T180~P,CD) -> Msg5(n) + Fus3(T180~U,CD)    k5_2
+###########################  6####Msg5 p- Fus3###
+# Contingencies: k+ Fus3_[CD]--Msg5_[n]
+# Absolute requirements: Fus3_[Y182]-{P} True
+# Source states:  Fus3_[Y182]-{P} False
+# Product states: Fus3_[Y182]-{P} True
+#>>>>>>>>> Rule: 6_1
+# Optional requirements: Fus3_[CD]--Msg5_[n] True
+Fus3(Y182~P,CD!1).Msg5(n!1) -> Fus3(Y182~U,CD!1).Msg5(n!1)    k6_1
+#>>>>>>>>> Rule: 6_2
+# Optional requirements: Fus3_[CD]--Msg5_[n] False
+Msg5(n) + Fus3(Y182~P,CD) -> Msg5(n) + Fus3(Y182~U,CD)    k6_2
+###########################  7####Bem2 gap Rho1###
+# Absolute requirements: Rho1_[GnP]-{P} True
+# Source states:  Rho1_[GnP]-{P} False
+# Product states: Rho1_[GnP]-{P} True
+Bem2 + Rho1(GnP~P) -> Bem2 + Rho1(GnP~U)    k7
+###########################  8####Lrg1 gap Rho1###
+# Absolute requirements: Rho1_[GnP]-{P} True
+# Source states:  Rho1_[GnP]-{P} False
+# Product states: Rho1_[GnP]-{P} True
+Lrg1 + Rho1(GnP~P) -> Lrg1 + Rho1(GnP~U)    k8
+###########################  9####Mid2 ppi Rom2###
+# Source states:  Mid2_[CyT]--Rom2_[AssocMid2] False
+# Product states: Mid2_[CyT]--Rom2_[AssocMid2] True
+Mid2(CyT) + Rom2(AssocMid2) <-> Mid2(CyT!1).Rom2(AssocMid2!1)    kf9, kr9
+########################### 10####Mid2 ppi Zeo1###
+# Source states:  Mid2_[CyT]--Zeo1_[AssocMid2] False
+# Product states: Mid2_[CyT]--Zeo1_[AssocMid2] True
+Mid2(CyT) + Zeo1(AssocMid2) <-> Mid2(CyT!1).Zeo1(AssocMid2!1)    kf10, kr10
+########################### 11####Mkk1 ppi Pkc1###
+# Source states:  Mkk1_[AssocPkc1]--Pkc1_[AssocMkk1] False
+# Product states: Mkk1_[AssocPkc1]--Pkc1_[AssocMkk1] True
+Mkk1(AssocPkc1) + Pkc1(AssocMkk1) <-> Mkk1(AssocPkc1!1).Pkc1(AssocMkk1!1)    kf11, kr11
+########################### 12####Mkk2 ppi Slt2###
+# Source states:  Mkk2_[n]--Slt2_[n] False
+# Product states: Mkk2_[n]--Slt2_[n] True
+Mkk2(n) + Slt2(n) <-> Mkk2(n!1).Slt2(n!1)    kf12, kr12
+########################### 13####Mlp1 ppi Rlm1###
+# Source states:  Mlp1_[AssocRlm1]--Rlm1_[c] False
+# Product states: Mlp1_[AssocRlm1]--Rlm1_[c] True
+Mlp1(AssocRlm1) + Rlm1(c) <-> Mlp1(AssocRlm1!1).Rlm1(c!1)    kf13, kr13
+########################### 14####Msg5 p- Slt2###
+# Contingencies: ! Msg5_[n]--Slt2_[n]
+# Absolute requirements: Msg5_[n]--Slt2_[n] True, Slt2_[T190]-{P} True
+# Source states:  Slt2_[T190]-{P} False
+# Product states: Slt2_[T190]-{P} True
+Msg5(n!1).Slt2(T190~P,n!1) -> Msg5(n!1).Slt2(T190~U,n!1)    k14
+########################### 15####Msg5 p- Slt2###
+# Contingencies: ! Msg5_[n]--Slt2_[n]
+# Absolute requirements: Msg5_[n]--Slt2_[n] True, Slt2_[Y192]-{P} True
+# Source states:  Slt2_[Y192]-{P} False
+# Product states: Slt2_[Y192]-{P} True
+Msg5(n!1).Slt2(Y192~P,n!1) -> Msg5(n!1).Slt2(Y192~U,n!1)    k15
+########################### 16####Msg5 ppi Slt2###
+# Source states:  Msg5_[n]--Slt2_[n] False
+# Product states: Msg5_[n]--Slt2_[n] True
+Msg5(n) + Slt2(n) <-> Msg5(n!1).Slt2(n!1)    kf16, kr16
+########################### 17####Pkc1 i PS###
+# Source states:  Pkc1_[AssocPS]--PS_[AssocPkc1] False
+# Product states: Pkc1_[AssocPS]--PS_[AssocPkc1] True
+Pkc1(AssocPS) + PS(AssocPkc1) <-> PS(AssocPkc1!1).Pkc1(AssocPS!1)    kf17, kr17
+########################### 18####Pkc1 ppi Rho1###
+# Source states:  Pkc1_[HR1]--Rho1_[AssocPkc1] False
+# Product states: Pkc1_[HR1]--Rho1_[AssocPkc1] True
+Pkc1(HR1) + Rho1(AssocPkc1) <-> Pkc1(HR1!1).Rho1(AssocPkc1!1)    kf18, kr18
+########################### 19####Pkh2 p+ Pkc1###
+# Contingencies: k+ Pkh2_[AssocPHS]--PHS_[AssocPkh2]
+# Source states:  Pkc1_[ALT983]-{P} False
+# Product states: Pkc1_[ALT983]-{P} True
+#>>>>>>>>> Rule: 19_1
+# Optional requirements: Pkh2_[AssocPHS]--PHS_[AssocPkh2] True
+PHS(AssocPkh2!1).Pkh2(AssocPHS!1) + Pkc1(ALT983~U) -> PHS(AssocPkh2!1).Pkh2(AssocPHS!1) + Pkc1(ALT983~P)    k19_1
+#>>>>>>>>> Rule: 19_2
+# Optional requirements: Pkh2_[AssocPHS]--PHS_[AssocPkh2] False
+Pkh2(AssocPHS) + Pkc1(ALT983~U) -> Pkh2(AssocPHS) + Pkc1(ALT983~P)    k19_2
+########################### 20####Pkc1 ppi Rho1###
+# Contingencies: ! Rho1_[GnP]-{P}
+# Absolute requirements: Rho1_[GnP]-{P} True
+# Source states:  Pkc1_[C1]--Rho1_[ED] False
+# Product states: Pkc1_[C1]--Rho1_[ED] True
+Pkc1(C1) + Rho1(GnP~P,ED) <-> Pkc1(C1!1).Rho1(GnP~P,ED!1)    kf20, kr20
+########################### 21####Rho1 ppi Ste4###
+# Source states:  Rho1_[AssocSte4]--Ste4_[AssocRho1] False
+# Product states: Rho1_[AssocSte4]--Ste4_[AssocRho1] True
+Rho1(AssocSte4) + Ste4(AssocRho1) <-> Rho1(AssocSte4!1).Ste4(AssocRho1!1)    kf21, kr21
+########################### 22####Rlm1 ppi Slt2###
+# Source states:  Rlm1_[c]--Slt2_[AssocRlm1] False
+# Product states: Rlm1_[c]--Slt2_[AssocRlm1] True
+Rlm1(c) + Slt2(AssocRlm1) <-> Rlm1(c!1).Slt2(AssocRlm1!1)    kf22, kr22
+########################### 23####Rlm1 ppi Smp1###
+# Source states:  Rlm1_[AssocSmp1]--Smp1_[AssocRlm1] False
+# Product states: Rlm1_[AssocSmp1]--Smp1_[AssocRlm1] True
+Rlm1(AssocSmp1) + Smp1(AssocRlm1) <-> Rlm1(AssocSmp1!1).Smp1(AssocRlm1!1)    kf23, kr23
+########################### 24####Rom2 gef Rho1###
+# Contingencies: k+ Rom2_[n]--Slg1_[CyT], k+ Rom2_[AssocWsc2]--Wsc2_[AssocRom2], k+ Mtl1_[AssocRom2]--Rom2_[AssocMtl1], k+ Mid2_[CyT]--Rom2_[AssocMid2]
+# Source states:  Rho1_[GnP]-{P} False
+# Product states: Rho1_[GnP]-{P} True
+#>>>>>>>>> Rule: 24_1
+# Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+Mid2(CyT!3).Mtl1(AssocRom2!4).Rom2(AssocMid2!3,AssocMtl1!4,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mid2(CyT!3).Mtl1(AssocRom2!4).Rom2(AssocMid2!3,AssocMtl1!4,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_1
+#>>>>>>>>> Rule: 24_2
+# Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_2
+#>>>>>>>>> Rule: 24_3
+# Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[n]--Slg1_[CyT] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U) -> Mid2(CyT!2).Mtl1(AssocRom2!3).Rom2(AssocMid2!2,AssocMtl1!3,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P)    k24_3
+#>>>>>>>>> Rule: 24_4
+# Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+Mid2(CyT!1).Mtl1(AssocRom2!2).Rom2(AssocMid2!1,AssocMtl1!2,AssocWsc2,n) + Rho1(GnP~U) -> Mid2(CyT!1).Mtl1(AssocRom2!2).Rom2(AssocMid2!1,AssocMtl1!2,AssocWsc2,n) + Rho1(GnP~P)    k24_4
+#>>>>>>>>> Rule: 24_5
+# Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True
+Mid2(CyT!3).Rom2(AssocMid2!3,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mid2(CyT!3).Rom2(AssocMid2!3,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_5
+#>>>>>>>>> Rule: 24_6
+# Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True
+Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_6
+#>>>>>>>>> Rule: 24_7
+# Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False
+Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U) -> Mid2(CyT!2).Rom2(AssocMid2!2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P)    k24_7
+#>>>>>>>>> Rule: 24_8
+# Optional requirements: Mid2_[CyT]--Rom2_[AssocMid2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False
+Mid2(CyT!1).Rom2(AssocMid2!1,AssocMtl1,AssocWsc2,n) + Rho1(GnP~U) -> Mid2(CyT!1).Rom2(AssocMid2!1,AssocMtl1,AssocWsc2,n) + Rho1(GnP~P)    k24_8
+#>>>>>>>>> Rule: 24_9
+# Optional requirements: Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+Mtl1(AssocRom2!3).Rom2(AssocMid2,AssocMtl1!3,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mtl1(AssocRom2!3).Rom2(AssocMid2,AssocMtl1!3,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_9
+#>>>>>>>>> Rule: 24_10
+# Optional requirements: Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_10
+#>>>>>>>>> Rule: 24_11
+# Optional requirements: Rom2_[n]--Slg1_[CyT] True, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U) -> Mtl1(AssocRom2!2).Rom2(AssocMid2,AssocMtl1!2,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P)    k24_11
+#>>>>>>>>> Rule: 24_12
+# Optional requirements: Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+Mtl1(AssocRom2!1).Rom2(AssocMid2,AssocMtl1!1,AssocWsc2,n) + Rho1(GnP~U) -> Mtl1(AssocRom2!1).Rom2(AssocMid2,AssocMtl1!1,AssocWsc2,n) + Rho1(GnP~P)    k24_12
+#>>>>>>>>> Rule: 24_13
+# Optional requirements: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Rom2_[n]--Slg1_[CyT] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n!2).Slg1(CyT!2).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_13
+#>>>>>>>>> Rule: 24_14
+# Optional requirements: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True, Mid2_[CyT]--Rom2_[AssocMid2] False
+Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~U) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2!1,n).Wsc2(AssocRom2!1) + Rho1(GnP~P)    k24_14
+#>>>>>>>>> Rule: 24_15
+# Optional requirements: Rom2_[n]--Slg1_[CyT] True, Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+Rom2(AssocMid2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~U) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n!1).Slg1(CyT!1) + Rho1(GnP~P)    k24_15
+#>>>>>>>>> Rule: 24_16
+# Optional requirements: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False, Rom2_[n]--Slg1_[CyT] False, Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False, Mid2_[CyT]--Rom2_[AssocMid2] False
+Rom2(AssocMid2,AssocMtl1,AssocWsc2,n) + Rho1(GnP~U) -> Rom2(AssocMid2,AssocMtl1,AssocWsc2,n) + Rho1(GnP~P)    k24_16
+########################### 25####Rom2 ppi Slg1###
+# Source states:  Rom2_[n]--Slg1_[CyT] False
+# Product states: Rom2_[n]--Slg1_[CyT] True
+Rom2(n) + Slg1(CyT) <-> Rom2(n!1).Slg1(CyT!1)    kf25, kr25
+########################### 26####Rom2 ppi Wsc2###
+# Source states:  Rom2_[AssocWsc2]--Wsc2_[AssocRom2] False
+# Product states: Rom2_[AssocWsc2]--Wsc2_[AssocRom2] True
+Rom2(AssocWsc2) + Wsc2(AssocRom2) <-> Rom2(AssocWsc2!1).Wsc2(AssocRom2!1)    kf26, kr26
+########################### 27####Sac7 gap Rho1###
+# Absolute requirements: Rho1_[GnP]-{P} True
+# Source states:  Rho1_[GnP]-{P} False
+# Product states: Rho1_[GnP]-{P} True
+Sac7 + Rho1(GnP~P) -> Sac7 + Rho1(GnP~U)    k27
+########################### 28####Sdp1 p- Slt2###
+# Contingencies: ! Sdp1_[AssocSlt2]--Slt2_[AssocSdp1]
+# Absolute requirements: Sdp1_[AssocSlt2]--Slt2_[AssocSdp1] True, Slt2_[T190]-{P} True
+# Source states:  Slt2_[T190]-{P} False
+# Product states: Slt2_[T190]-{P} True
+Sdp1(AssocSlt2!1).Slt2(T190~P,AssocSdp1!1) -> Sdp1(AssocSlt2!1).Slt2(T190~U,AssocSdp1!1)    k28
+########################### 29####Sdp1 p- Slt2###
+# Contingencies: ! Sdp1_[AssocSlt2]--Slt2_[AssocSdp1]
+# Absolute requirements: Sdp1_[AssocSlt2]--Slt2_[AssocSdp1] True, Slt2_[Y192]-{P} True
+# Source states:  Slt2_[Y192]-{P} False
+# Product states: Slt2_[Y192]-{P} True
+Sdp1(AssocSlt2!1).Slt2(Y192~P,AssocSdp1!1) -> Sdp1(AssocSlt2!1).Slt2(Y192~U,AssocSdp1!1)    k29
+########################### 30####Sdp1 ppi Slt2###
+# Source states:  Sdp1_[AssocSlt2]--Slt2_[AssocSdp1] False
+# Product states: Sdp1_[AssocSlt2]--Slt2_[AssocSdp1] True
+Sdp1(AssocSlt2) + Slt2(AssocSdp1) <-> Sdp1(AssocSlt2!1).Slt2(AssocSdp1!1)    kf30, kr30
+########################### 31####Slt2 p+ Msg5###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Msg5_[Slt2]-{P} False
+# Product states: Msg5_[Slt2]-{P} True
+Slt2(T190~P,Y192~P) + Msg5(Slt2~U) -> Slt2(T190~P,Y192~P) + Msg5(Slt2~P)    k31
+########################### 32####Slt2 p+ Rlm1###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Rlm1_[cS427]-{P} False
+# Product states: Rlm1_[cS427]-{P} True
+Slt2(T190~P,Y192~P) + Rlm1(cS427~U) -> Slt2(T190~P,Y192~P) + Rlm1(cS427~P)    k32
+########################### 33####Slt2 p+ Rlm1###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Rlm1_[cT439]-{P} False
+# Product states: Rlm1_[cT439]-{P} True
+Slt2(T190~P,Y192~P) + Rlm1(cT439~U) -> Slt2(T190~P,Y192~P) + Rlm1(cT439~P)    k33
+########################### 34####Slt2 p+ Sir3###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Sir3_[S275]-{P} False
+# Product states: Sir3_[S275]-{P} True
+Slt2(T190~P,Y192~P) + Sir3(S275~U) -> Slt2(T190~P,Y192~P) + Sir3(S275~P)    k34
+########################### 35####Slt2 p+ Swi4###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Swi4_[Slt2]-{P} False
+# Product states: Swi4_[Slt2]-{P} True
+Slt2(T190~P,Y192~P) + Swi4(Slt2~U) -> Slt2(T190~P,Y192~P) + Swi4(Slt2~P)    k35
+########################### 36####Slt2 ppi Swi4###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}, 0 Swi4_[c]--Swi6_[c]
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Slt2_[DB]--Swi4_[c] False
+# Product states: Slt2_[DB]--Swi4_[c] True
+Slt2(T190~P,Y192~P,DB) + Swi4(c) <-> Slt2(T190~P,Y192~P,DB!1).Swi4(c!1)    kf36, kr36
+########################### 37####Slt2 p+ Swi6###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Swi6_[S238]-{P} False
+# Product states: Swi6_[S238]-{P} True
+Slt2(T190~P,Y192~P) + Swi6(S238~U) -> Slt2(T190~P,Y192~P) + Swi6(S238~P)    k37
+########################### 38####Swi4 ppi Swi6###
+# Contingencies: 0 Slt2_[DB]--Swi4_[c]
+# Source states:  Swi4_[c]--Swi6_[c] False
+# Product states: Swi4_[c]--Swi6_[c] True
+Swi4(c) + Swi6(c) <-> Swi4(c!1).Swi6(c!1)    kf38, kr38
+########################### 39####Tus1 gef Rho1###
+# Source states:  Rho1_[GnP]-{P} False
+# Product states: Rho1_[GnP]-{P} True
+Tus1 + Rho1(GnP~U) -> Tus1 + Rho1(GnP~P)    k39
+########################### 40####Bem3 gap Cdc42###
+# Absolute requirements: Cdc42_[GnP]-{P} True
+# Source states:  Cdc42_[GnP]-{P} False
+# Product states: Cdc42_[GnP]-{P} True
+Bem3 + Cdc42(GnP~P) -> Bem3 + Cdc42(GnP~U)    k40
+########################### 41####Cdc24 gef Cdc42###
+# Contingencies: k+ ((Cdc24_[AssocSte4]--Ste4_[AssocCdc24] and Ste4_[AssocSte18]--Ste18_[AssocSte4]) or (Cdc24_[AssocFar1]--Far1_[c] and (Far1_[nRING-H2]--Ste4_[AssocFar1] and Ste4_[AssocSte18]--Ste18_[AssocSte4])) or [START])
+# Source states:  Cdc42_[GnP]-{P} False
+# Product states: Cdc42_[GnP]-{P} True
+#>>>>>>>>> Rule: 41_1
+# Optional requirements: Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True
+Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~U) -> Cdc24(AssocSte4!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!1,AssocSte18!2) + Cdc42(GnP~P)    k41_1
+#>>>>>>>>> Rule: 41_2
+# Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocFar1]--Far1_[c] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True
+Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U) -> Cdc24(AssocFar1!4,AssocSte4!3).Far1(c!4,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocCdc24!3,AssocSte18).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P)    k41_1
+#>>>>>>>>> Rule: 41_3
+# Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True, Cdc24_[AssocFar1]--Far1_[c] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~U) -> Cdc24(AssocFar1!3,AssocSte4).Far1(c!3,nRINGH2!1).Ste18(AssocSte4!2).Ste4(AssocFar1!1,AssocSte18!2) + Cdc42(GnP~P)    k41_1
+#>>>>>>>>> Rule: 41_4
+# Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Cdc24_[AssocFar1]--Far1_[c] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False
+Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1!3,AssocSte4!2).Far1(c!3,nRINGH2!1).Ste4(AssocCdc24!2,AssocSte18).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P)    k41_2*(1-k_START)+k41_1*k_START
+#>>>>>>>>> Rule: 41_5
+# Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Cdc24_[AssocFar1]--Far1_[c] True, Far1_[nRING-H2]--Ste4_[AssocFar1] False, Ste4_[AssocSte18]--Ste18_[AssocSte4] False
+Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1!2,AssocSte4!1).Far1(c!2,nRINGH2).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P)    k41_1
+#>>>>>>>>> Rule: 41_6
+# Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc24_[AssocFar1]--Far1_[c] False
+Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1,AssocSte4!1).Ste4(AssocCdc24!1,AssocSte18) + Cdc42(GnP~P)    k41_1
+#>>>>>>>>> Rule: 41_7
+# Optional requirements: Far1_[nRING-H2]--Ste4_[AssocFar1] True, Cdc24_[AssocFar1]--Far1_[c] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~U) -> Cdc24(AssocFar1!2,AssocSte4).Far1(c!2,nRINGH2!1).Ste4(AssocFar1!1,AssocSte18) + Cdc42(GnP~P)    k41_1
+#>>>>>>>>> Rule: 41_8
+# Optional requirements: Cdc24_[AssocFar1]--Far1_[c] True, Far1_[nRING-H2]--Ste4_[AssocFar1] False, Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~U) -> Cdc24(AssocFar1!1,AssocSte4).Far1(c!1,nRINGH2) + Cdc42(GnP~P)    k41_1
+#>>>>>>>>> Rule: 41_9
+# Optional requirements: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False, Cdc24_[AssocFar1]--Far1_[c] False
+Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~U) -> Cdc24(AssocFar1,AssocSte4) + Cdc42(GnP~P)    k41_1
+########################### 42####Cdc42 ppi Ste20###
+# Contingencies: ! Cdc42_[GnP]-{P}, k+ Ste20_[BR]--PIP2_[AssocSte20]
+# Absolute requirements: Cdc42_[GnP]-{P} True
+# Source states:  Cdc42_[ED]--Ste20_[CRIB] False
+# Product states: Cdc42_[ED]--Ste20_[CRIB] True
+#>>>>>>>>> Rule: 42_1
+# Optional requirements: Ste20_[BR]--PIP2_[AssocSte20] True
+Cdc42(GnP~P,ED) + PIP2(AssocSte20!1).Ste20(BR!1,CRIB) <-> Cdc42(GnP~P,ED!1).PIP2(AssocSte20!2).Ste20(BR!2,CRIB!1)    kf42_1, kr42_1
+#>>>>>>>>> Rule: 42_2
+# Optional requirements: Ste20_[BR]--PIP2_[AssocSte20] False
+Cdc42(GnP~P,ED) + Ste20(BR,CRIB) <-> Cdc42(GnP~P,ED!1).Ste20(BR,CRIB!1)    kf42_2, kr42_2
+########################### 43####Cdc42 ppi Ste50###
+# Contingencies: 0 Cdc42_[GnP]-{P}
+# Source states:  Cdc42_[AssocSte50]--Ste50_[RA] False
+# Product states: Cdc42_[AssocSte50]--Ste50_[RA] True
+Cdc42(AssocSte50) + Ste50(RA) <-> Cdc42(AssocSte50!1).Ste50(RA!1)    kf43, kr43
+########################### 44####Hog1 ppi Hot1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Hog1_[n]--Hot1_[m] False
+# Product states: Hog1_[n]--Hot1_[m] True
+Hog1(T174~P,Y176~P,n) + Hot1(m) <-> Hog1(T174~P,Y176~P,n!1).Hot1(m!1)    kf44, kr44
+########################### 45####Hog1 ppi Pbs2###
+# Source states:  Hog1_[CD]--Pbs2_[HBD1] False
+# Product states: Hog1_[CD]--Pbs2_[HBD1] True
+Hog1(CD) + Pbs2(HBD1) <-> Hog1(CD!1).Pbs2(HBD1!1)    kf45, kr45
+########################### 46####Hog1 ppi Pbs2###
+# Contingencies: k+ Hog1_[CD]--Pbs2_[HBD-1]
+# Source states:  Hog1_[PBD2]--Pbs2_[HBD1] False
+# Product states: Hog1_[PBD2]--Pbs2_[HBD1] True
+#>>>>>>>>> Rule: 46_1
+# Optional requirements: Hog1_[CD]--Pbs2_[HBD-1] True
+Hog1(CD!1,PBD2).Pbs2(HBD1!1) + Hog1(CD!1).Pbs2(HBD1!1,HBD1) <-> Hog1(CD!3,PBD2!2).Hog1(CD!1).Pbs2(HBD1!3).Pbs2(HBD1!2,HBD1!1)    kf46_1, kr46_1
+#>>>>>>>>> Rule: 46_2
+# Optional requirements: Hog1_[CD]--Pbs2_[HBD-1] False
+Hog1(CD,PBD2) + Pbs2(HBD1,HBD1) <-> Hog1(CD,PBD2!1).Pbs2(HBD1,HBD1!1)    kf46_2, kr46_2
+########################### 47####Hog1 ppi Ptp2###
+# Contingencies: k+ Hog1_[Y176]-{P}
+# Source states:  Hog1_[CD]--Ptp2_[AssocHog1] False
+# Product states: Hog1_[CD]--Ptp2_[AssocHog1] True
+#>>>>>>>>> Rule: 47_1
+# Optional requirements: Hog1_[Y176]-{P} True
+Hog1(Y176~P,CD) + Ptp2(AssocHog1) <-> Hog1(Y176~P,CD!1).Ptp2(AssocHog1!1)    kf47_1, kr47_1
+#>>>>>>>>> Rule: 47_2
+# Optional requirements: Hog1_[Y176]-{P} False
+Hog1(Y176~U,CD) + Ptp2(AssocHog1) <-> Hog1(Y176~U,CD!1).Ptp2(AssocHog1!1)    kf47_2, kr47_2
+########################### 48####Hog1 ppi Ptp3###
+# Source states:  Hog1_[CD]--Ptp3_[AssocHog1] False
+# Product states: Hog1_[CD]--Ptp3_[AssocHog1] True
+Hog1(CD) + Ptp3(AssocHog1) <-> Hog1(CD!1).Ptp3(AssocHog1!1)    kf48, kr48
+########################### 49####Hog1 p+ Rck2###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Rck2_[cS519]-{P} False
+# Product states: Rck2_[cS519]-{P} True
+Hog1(T174~P,Y176~P) + Rck2(cS519~U) -> Hog1(T174~P,Y176~P) + Rck2(cS519~P)    k49
+########################### 50####Hog1 ppi Rck2###
+# Source states:  Hog1_[CD]--Rck2_[c] False
+# Product states: Hog1_[CD]--Rck2_[c] True
+Hog1(CD) + Rck2(c) <-> Hog1(CD!1).Rck2(c!1)    kf50, kr50
+########################### 51####Hog1 p+ Sic1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Sic1_[T173]-{P} False
+# Product states: Sic1_[T173]-{P} True
+Hog1(T174~P,Y176~P) + Sic1(T173~U) -> Hog1(T174~P,Y176~P) + Sic1(T173~P)    k51
+########################### 52####Hog1 ppi Sic1###
+# Source states:  Hog1_[AssocSic1]--Sic1_[AssocHog1] False
+# Product states: Hog1_[AssocSic1]--Sic1_[AssocHog1] True
+Hog1(AssocSic1) + Sic1(AssocHog1) <-> Hog1(AssocSic1!1).Sic1(AssocHog1!1)    kf52, kr52
+########################### 53####Hog1 p+ Sko1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Sko1_[nS108]-{P} False
+# Product states: Sko1_[nS108]-{P} True
+Hog1(T174~P,Y176~P) + Sko1(nS108~U) -> Hog1(T174~P,Y176~P) + Sko1(nS108~P)    k53
+########################### 54####Hog1 p+ Sko1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Sko1_[nS113]-{P} False
+# Product states: Sko1_[nS113]-{P} True
+Hog1(T174~P,Y176~P) + Sko1(nS113~U) -> Hog1(T174~P,Y176~P) + Sko1(nS113~P)    k54
+########################### 55####Hog1 p+ Sko1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Sko1_[nS126]-{P} False
+# Product states: Sko1_[nS126]-{P} True
+Hog1(T174~P,Y176~P) + Sko1(nS126~U) -> Hog1(T174~P,Y176~P) + Sko1(nS126~P)    k55
+########################### 56####Hog1 ppi Sko1###
+# Source states:  Hog1_[AssocSko1]--Sko1_[n] False
+# Product states: Hog1_[AssocSko1]--Sko1_[n] True
+Hog1(AssocSko1) + Sko1(n) <-> Hog1(AssocSko1!1).Sko1(n!1)    kf56, kr56
+########################### 57####Hog1 ppi Smp1###
+# Source states:  Hog1_[AssocSmp1]--Smp1_[AssocHog1] False
+# Product states: Hog1_[AssocSmp1]--Smp1_[AssocHog1] True
+Hog1(AssocSmp1) + Smp1(AssocHog1) <-> Hog1(AssocSmp1!1).Smp1(AssocHog1!1)    kf57, kr57
+########################### 58####Nbp2 ppi Pbs2###
+# Source states:  Nbp2_[SH3]--Pbs2_[SIM2] False
+# Product states: Nbp2_[SH3]--Pbs2_[SIM2] True
+Nbp2(SH3) + Pbs2(SIM2) <-> Nbp2(SH3!1).Pbs2(SIM2!1)    kf58, kr58
+########################### 59####Nbp2 ppi Ptc1###
+# Source states:  Nbp2_[n]--Ptc1_[AssocNbp2] False
+# Product states: Nbp2_[n]--Ptc1_[AssocNbp2] True
+Nbp2(n) + Ptc1(AssocNbp2) <-> Nbp2(n!1).Ptc1(AssocNbp2!1)    kf59, kr59
+########################### 60####Nbp2 ppi Ste20###
+# Source states:  Nbp2_[SH3]--Ste20_[PR] False
+# Product states: Nbp2_[SH3]--Ste20_[PR] True
+Nbp2(SH3) + Ste20(PR) <-> Nbp2(SH3!1).Ste20(PR!1)    kf60, kr60
+########################### 61####Opy2 ppi Ste50###
+# Source states:  Opy2_[BDSte50]--Ste50_[RA] False
+# Product states: Opy2_[BDSte50]--Ste50_[RA] True
+Opy2(BDSte50) + Ste50(RA) <-> Opy2(BDSte50!1).Ste50(RA!1)    kf61, kr61
+########################### 62####Pbs2 p+ Hog1###
+# Contingencies: k+ Hog1_[CD]--Pbs2_[HBD-1], k+ Hog1_[PBD-2]--Pbs2_[HBD-1], ! Pbs2_[ALS514]-{P}, ! Pbs2_[ALT518]-{P}
+# Absolute requirements: Pbs2_[ALT518]-{P} True, Pbs2_[ALS514]-{P} True
+# Source states:  Hog1_[T174]-{P} False
+# Product states: Hog1_[T174]-{P} True
+#>>>>>>>>> Rule: 62_1
+# Optional requirements: Hog1_[CD]--Pbs2_[HBD-1] True, Hog1_[PBD-2]--Pbs2_[HBD-1] True
+Hog1(T174~U,CD!2,PBD2!1).Pbs2(ALS514~P,ALT518~P,HBD1!2).Pbs2(HBD1!1) -> Hog1(T174~P,CD!2,PBD2!1).Pbs2(ALS514~P,ALT518~P,HBD1!2).Pbs2(HBD1!1)    k62_1
+#>>>>>>>>> Rule: 62_2
+# Optional requirements: Hog1_[CD]--Pbs2_[HBD-1] False, Hog1_[PBD-2]--Pbs2_[HBD-1] True
+Hog1(T174~U,CD,PBD2!1).Pbs2(ALS514~P,ALT518~P,HBD1!1) -> Hog1(T174~P,CD,PBD2!1).Pbs2(ALS514~P,ALT518~P,HBD1!1)    k62_2
+#>>>>>>>>> Rule: 62_3
+# Optional requirements: Hog1_[CD]--Pbs2_[HBD-1] True, Hog1_[PBD-2]--Pbs2_[HBD-1] False
+Hog1(T174~U,CD!1,PBD2).Pbs2(ALS514~P,ALT518~P,HBD1!1) -> Hog1(T174~P,CD!1,PBD2).Pbs2(ALS514~P,ALT518~P,HBD1!1)    k62_3
+#>>>>>>>>> Rule: 62_4
+# Optional requirements: Hog1_[PBD-2]--Pbs2_[HBD-1] False, Hog1_[CD]--Pbs2_[HBD-1] False
+Pbs2(ALS514~P,ALT518~P,HBD1) + Hog1(T174~U,CD,PBD2) -> Pbs2(ALS514~P,ALT518~P,HBD1) + Hog1(T174~P,CD,PBD2)    k62_4
+########################### 63####Pbs2 p+ Hog1###
+# Contingencies: k+ Hog1_[CD]--Pbs2_[HBD-1], k+ Hog1_[PBD-2]--Pbs2_[HBD-1], ! Pbs2_[ALS514]-{P}, ! Pbs2_[ALT518]-{P}
+# Absolute requirements: Pbs2_[ALT518]-{P} True, Pbs2_[ALS514]-{P} True
+# Source states:  Hog1_[Y176]-{P} False
+# Product states: Hog1_[Y176]-{P} True
+#>>>>>>>>> Rule: 63_1
+# Optional requirements: Hog1_[CD]--Pbs2_[HBD-1] True, Hog1_[PBD-2]--Pbs2_[HBD-1] True
+Hog1(Y176~U,CD!2,PBD2!1).Pbs2(ALS514~P,ALT518~P,HBD1!2).Pbs2(HBD1!1) -> Hog1(Y176~P,CD!2,PBD2!1).Pbs2(ALS514~P,ALT518~P,HBD1!2).Pbs2(HBD1!1)    k63_1
+#>>>>>>>>> Rule: 63_2
+# Optional requirements: Hog1_[CD]--Pbs2_[HBD-1] False, Hog1_[PBD-2]--Pbs2_[HBD-1] True
+Hog1(Y176~U,CD,PBD2!1).Pbs2(ALS514~P,ALT518~P,HBD1!1) -> Hog1(Y176~P,CD,PBD2!1).Pbs2(ALS514~P,ALT518~P,HBD1!1)    k63_2
+#>>>>>>>>> Rule: 63_3
+# Optional requirements: Hog1_[CD]--Pbs2_[HBD-1] True, Hog1_[PBD-2]--Pbs2_[HBD-1] False
+Hog1(Y176~U,CD!1,PBD2).Pbs2(ALS514~P,ALT518~P,HBD1!1) -> Hog1(Y176~P,CD!1,PBD2).Pbs2(ALS514~P,ALT518~P,HBD1!1)    k63_3
+#>>>>>>>>> Rule: 63_4
+# Optional requirements: Hog1_[PBD-2]--Pbs2_[HBD-1] False, Hog1_[CD]--Pbs2_[HBD-1] False
+Pbs2(ALS514~P,ALT518~P,HBD1) + Hog1(Y176~U,CD,PBD2) -> Pbs2(ALS514~P,ALT518~P,HBD1) + Hog1(Y176~P,CD,PBD2)    k63_4
+########################### 64####Pbs2 ppi Sho1###
+# Contingencies: k+ Hkr1_[TMD]--Sho1_[TMD], k+ Msb2_[TMD]--Sho1_[TMD], k+ Msb2_[CyT]--Sho1_[CyT]
+# Source states:  Pbs2_[RSD2PR]--Sho1_[CyTSH3] False
+# Product states: Pbs2_[RSD2PR]--Sho1_[CyTSH3] True
+#>>>>>>>>> Rule: 64_1
+# Optional requirements: Msb2_[CyT]--Sho1_[CyT] True, Hkr1_[TMD]--Sho1_[TMD] True
+Pbs2(RSD2PR) + Hkr1(TMD!2).Msb2(CyT!1).Sho1(CyT!1,CyTSH3,TMD!2) <-> Hkr1(TMD!3).Msb2(CyT!2).Pbs2(RSD2PR!1).Sho1(CyT!2,CyTSH3!1,TMD!3)    kf64_1, kr64_1
+#>>>>>>>>> Rule: 64_2
+# Optional requirements: Msb2_[CyT]--Sho1_[CyT] True, Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True
+Pbs2(RSD2PR) + Msb2(CyT!1,TMD!2).Sho1(CyTSH3,TMD!2).Sho1(CyT!1) <-> Msb2(CyT!1,TMD!3).Pbs2(RSD2PR!2).Sho1(CyTSH3!2,TMD!3).Sho1(CyT!1)    kf64_2, kr64_2
+#>>>>>>>>> Rule: 64_3
+# Optional requirements: Msb2_[CyT]--Sho1_[CyT] True, Hkr1_[TMD]--Sho1_[TMD] True
+Pbs2(RSD2PR) + Hkr1(TMD!2).Msb2(CyT!1).Sho1(CyT!1,CyTSH3,TMD!2) <-> Hkr1(TMD!3).Msb2(CyT!2).Pbs2(RSD2PR!1).Sho1(CyT!2,CyTSH3!1,TMD!3)    kf64_3, kr64_3
+#>>>>>>>>> Rule: 64_4
+# Optional requirements: Msb2_[CyT]--Sho1_[CyT] True, Hkr1_[TMD]--Sho1_[TMD] False
+Pbs2(RSD2PR) + Msb2(CyT!1).Sho1(CyT!1,CyTSH3,TMD) <-> Msb2(CyT!2).Pbs2(RSD2PR!1).Sho1(CyT!2,CyTSH3!1,TMD)    kf64_4, kr64_4
+#>>>>>>>>> Rule: 64_5
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True, Msb2_[CyT]--Sho1_[CyT] False
+Pbs2(RSD2PR) + Hkr1(TMD!1).Sho1(CyT,CyTSH3,TMD!1) <-> Hkr1(TMD!2).Pbs2(RSD2PR!1).Sho1(CyT,CyTSH3!1,TMD!2)    kf64_5, kr64_5
+#>>>>>>>>> Rule: 64_6
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True, Msb2_[CyT]--Sho1_[CyT] False
+Pbs2(RSD2PR) + Msb2(CyT,TMD!1).Sho1(CyT,CyTSH3,TMD!1) <-> Msb2(CyT,TMD!2).Pbs2(RSD2PR!1).Sho1(CyT,CyTSH3!1,TMD!2)    kf64_6, kr64_6
+#>>>>>>>>> Rule: 64_7
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True, Msb2_[CyT]--Sho1_[CyT] False
+Pbs2(RSD2PR) + Hkr1(TMD!1).Sho1(CyT,CyTSH3,TMD!1) <-> Hkr1(TMD!2).Pbs2(RSD2PR!1).Sho1(CyT,CyTSH3!1,TMD!2)    kf64_7, kr64_7
+#>>>>>>>>> Rule: 64_8
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[CyT]--Sho1_[CyT] False
+Pbs2(RSD2PR) + Sho1(CyT,CyTSH3,TMD) <-> Pbs2(RSD2PR!1).Sho1(CyT,CyTSH3!1,TMD)    kf64_8, kr64_8
+########################### 65####Pbs2 ppi Ssk2###
+# Source states:  Pbs2_[RSD1]--Ssk2_[KD] False
+# Product states: Pbs2_[RSD1]--Ssk2_[KD] True
+Pbs2(RSD1) + Ssk2(KD) <-> Pbs2(RSD1!1).Ssk2(KD!1)    kf65, kr65
+########################### 66####Pbs2 ppi Ssk2###
+# Source states:  Pbs2_[KD]--Ssk2_[KD] False
+# Product states: Pbs2_[KD]--Ssk2_[KD] True
+Pbs2(KD) + Ssk2(KD) <-> Pbs2(KD!1).Ssk2(KD!1)    kf66, kr66
+########################### 67####Pbs2 ppi Ssk22###
+# Source states:  Pbs2_[RSD1]--Ssk22_[KD] False
+# Product states: Pbs2_[RSD1]--Ssk22_[KD] True
+Pbs2(RSD1) + Ssk22(KD) <-> Pbs2(RSD1!1).Ssk22(KD!1)    kf67, kr67
+########################### 68####Pbs2 ppi Ste11###
+# Source states:  Pbs2_[RSD2]--Ste11_[n] False
+# Product states: Pbs2_[RSD2]--Ste11_[n] True
+Pbs2(RSD2) + Ste11(n) <-> Pbs2(RSD2!1).Ste11(n!1)    kf68, kr68
+########################### 69####Ptc1 p- Hog1###
+# Contingencies: k+ (Nbp2_[SH3]--Pbs2_[SIM2] and Nbp2_[n]--Ptc1_[AssocNbp2])
+# Absolute requirements: Hog1_[T174]-{P} True
+# Source states:  Hog1_[T174]-{P} False
+# Product states: Hog1_[T174]-{P} True
+#>>>>>>>>> Rule: 69_1
+# Optional requirements: Nbp2_[SH3]--Pbs2_[SIM2] True, Nbp2_[n]--Ptc1_[AssocNbp2] True
+Nbp2(SH3!2,n!1).Pbs2(SIM2!2).Ptc1(AssocNbp2!1) + Hog1(T174~P) -> Nbp2(SH3!2,n!1).Pbs2(SIM2!2).Ptc1(AssocNbp2!1) + Hog1(T174~U)    k69_1
+#>>>>>>>>> Rule: 69_2
+# Optional requirements: Nbp2_[SH3]--Pbs2_[SIM2] False, Nbp2_[n]--Ptc1_[AssocNbp2] True
+Nbp2(SH3,n!1).Ptc1(AssocNbp2!1) + Hog1(T174~P) -> Nbp2(SH3,n!1).Ptc1(AssocNbp2!1) + Hog1(T174~U)    k69_2
+#>>>>>>>>> Rule: 69_3
+# Optional requirements: Nbp2_[n]--Ptc1_[AssocNbp2] False
+Ptc1(AssocNbp2) + Hog1(T174~P) -> Ptc1(AssocNbp2) + Hog1(T174~U)    k69_2
+########################### 70####Ptc2 p- Hog1###
+# Absolute requirements: Hog1_[T174]-{P} True
+# Source states:  Hog1_[T174]-{P} False
+# Product states: Hog1_[T174]-{P} True
+Ptc2 + Hog1(T174~P) -> Ptc2 + Hog1(T174~U)    k70
+########################### 71####Rck2 ap Rck2###
+# Contingencies: k+ Rck2_[cS519]-{P}
+# Source states:  Rck2_[Ser]-{P} False
+# Product states: Rck2_[Ser]-{P} True
+#>>>>>>>>> Rule: 71_1
+# Optional requirements: Rck2_[cS519]-{P} True
+Rck2(cS519~P) + Rck2(Ser~U,cS519~P) -> Rck2(cS519~P) + Rck2(Ser~P,cS519~P)    k71_1
+#>>>>>>>>> Rule: 71_2
+# Optional requirements: Rck2_[cS519]-{P} False
+Rck2(cS519~U) + Rck2(Ser~U,cS519~U) -> Rck2(cS519~U) + Rck2(Ser~P,cS519~U)    k71_2
+########################### 72####Rga1 gap Cdc42###
+# Absolute requirements: Cdc42_[GnP]-{P} True
+# Source states:  Cdc42_[GnP]-{P} False
+# Product states: Cdc42_[GnP]-{P} True
+Rga1 + Cdc42(GnP~P) -> Rga1 + Cdc42(GnP~U)    k72
+########################### 73####Rga2 gap Cdc42###
+# Absolute requirements: Cdc42_[GnP]-{P} True
+# Source states:  Cdc42_[GnP]-{P} False
+# Product states: Cdc42_[GnP]-{P} True
+Rga2 + Cdc42(GnP~P) -> Rga2 + Cdc42(GnP~U)    k73
+########################### 74####Sho1 ppi Ste11###
+# Contingencies: x Ste5_[MEKK]--Ste11_[AssocSte5], ! (Opy2_[BDSte50]--Ste50_[RA] and Ste11_[SAM]--Ste50_[SAM]) k+ Hkr1_[TMD]--Sho1_[TMD], k+ Msb2_[TMD]--Sho1_[TMD], k+ Msb2_[CyT]--Sho1_[CyT]
+# Absolute requirements: Opy2_[BDSte50]--Ste50_[RA] True, Ste5_[MEKK]--Ste11_[AssocSte5] False, Ste11_[SAM]--Ste50_[SAM] True
+# Source states:  Sho1_[CyT]--Ste11_[BDSho1] False
+# Product states: Sho1_[CyT]--Ste11_[BDSho1] True
+#>>>>>>>>> Rule: 74_1
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True
+Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_1, kr74_1
+#>>>>>>>>> Rule: 74_2
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True
+Msb2(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Msb2(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_2, kr74_2
+#>>>>>>>>> Rule: 74_3
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True
+Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_3, kr74_3
+#>>>>>>>>> Rule: 74_4
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False
+Sho1(CyT,TMD) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Opy2(BDSte50!1).Sho1(CyT!3,TMD).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_4, kr74_4
+#>>>>>>>>> Rule: 74_5
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True
+Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_5, kr74_5
+#>>>>>>>>> Rule: 74_6
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False, Msb2_[TMD]--Sho1_[TMD] True, Msb2_[CyT]--Sho1_[CyT] False
+Msb2(CyT,TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Msb2(CyT,TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_6, kr74_6
+#>>>>>>>>> Rule: 74_7
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] True
+Hkr1(TMD!1).Sho1(CyT,TMD!1) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Hkr1(TMD!4).Opy2(BDSte50!1).Sho1(CyT!3,TMD!4).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_7, kr74_7
+#>>>>>>>>> Rule: 74_8
+# Optional requirements: Hkr1_[TMD]--Sho1_[TMD] False
+Sho1(CyT,TMD) + Opy2(BDSte50!1).Ste11(AssocSte5,BDSho1,SAM!2).Ste50(RA!1,SAM!2) <-> Opy2(BDSte50!1).Sho1(CyT!3,TMD).Ste11(AssocSte5,BDSho1!3,SAM!2).Ste50(RA!1,SAM!2)    kf74_8, kr74_8
+########################### 75####Sho1 ppi Ste50###
+# Source states:  Sho1_[CyT]--Ste50_[m] False
+# Product states: Sho1_[CyT]--Ste50_[m] True
+Sho1(CyT) + Ste50(m) <-> Sho1(CyT!1).Ste50(m!1)    kf75, kr75
+########################### 76####Sln1 p+ Sln1###
+# Contingencies: ! Sln1_[BDSln1]--Sln1_[BDSln1], k+ [Turgor]
+# Absolute requirements: Sln1_[BDSln1]--Sln1_[BDSln1] True
+# Source states:  Sln1_[HKH576]-{P} False
+# Product states: Sln1_[HKH576]-{P} True
+Sln1(BDSln1!1).Sln1(HKH576~U,BDSln1!1) -> Sln1(BDSln1!1).Sln1(HKH576~P,BDSln1!1)    k76_2*(1-k_Turgor)+k76_1*k_Turgor
+########################### 77####Sln1 ppi Sln1###
+# Source states:  Sln1_[BDSln1]--Sln1_[BDSln1] False
+# Product states: Sln1_[BDSln1]--Sln1_[BDSln1] True
+Sln1(BDSln1) + Sln1(BDSln1) <-> Sln1(BDSln1!1).Sln1(BDSln1!1)    kf77, kr77
+########################### 78####Sln1 pt Sln1###
+# Absolute requirements: Sln1_[HKH576]-{P} True
+# Source states:  Sln1_[RRD1144]-{P} False
+# Product states: Sln1_[RRD1144]-{P} True
+Sln1(HKH576~P) + Sln1(RRD1144~U) -> Sln1(HKH576~U) + Sln1(RRD1144~P)    k78
+########################### 79####Sln1 ppi Ypd1###
+# Source states:  Sln1_[RR]--Ypd1_[AssocSln1] False
+# Product states: Sln1_[RR]--Ypd1_[AssocSln1] True
+Sln1(RR) + Ypd1(AssocSln1) <-> Sln1(RR!1).Ypd1(AssocSln1!1)    kf79, kr79
+########################### 80####Sln1 pt Ypd1###
+# Absolute requirements: Sln1_[RRD1144]-{P} True
+# Source states:  Ypd1_[H64]-{P} False
+# Product states: Ypd1_[H64]-{P} True
+Sln1(RRD1144~P) + Ypd1(H64~U) -> Sln1(RRD1144~U) + Ypd1(H64~P)    k80
+########################### 81####Ssk1 ppi Ssk2###
+# Contingencies: x Ssk1_[RRD544]-{P}
+# Absolute requirements: Ssk1_[RRD544]-{P} False
+# Source states:  Ssk1_[RR]--Ssk2_[BDSsk1] False
+# Product states: Ssk1_[RR]--Ssk2_[BDSsk1] True
+Ssk1(RRD544~U,RR) + Ssk2(BDSsk1) <-> Ssk1(RRD544~U,RR!1).Ssk2(BDSsk1!1)    kf81, kr81
+########################### 82####Ssk1 ppi Ssk22###
+# Contingencies: x Ssk1_[RRD544]-{P}
+# Absolute requirements: Ssk1_[RRD544]-{P} False
+# Source states:  Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1] False
+# Product states: Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1] True
+Ssk1(RRD544~U,AssocSsk22) + Ssk22(AssocSsk1) <-> Ssk1(RRD544~U,AssocSsk22!1).Ssk22(AssocSsk1!1)    kf82, kr82
+########################### 83####Ssk1 ppi Ypd1###
+# Source states:  Ssk1_[RR]--Ypd1_[AssocSsk1] False
+# Product states: Ssk1_[RR]--Ypd1_[AssocSsk1] True
+Ssk1(RR) + Ypd1(AssocSsk1) <-> Ssk1(RR!1).Ypd1(AssocSsk1!1)    kf83, kr83
+########################### 84####Ssk2 p+ Pbs2###
+# Contingencies: ! Ssk2_[T1460]-{P}, ! Pbs2_[RSD1]--Ssk2_[KD]
+# Absolute requirements: Ssk2_[T1460]-{P} True, Pbs2_[RSD1]--Ssk2_[KD] True
+# Source states:  Pbs2_[ALS514]-{P} False
+# Product states: Pbs2_[ALS514]-{P} True
+Pbs2(ALS514~U,RSD1!1).Ssk2(T1460~P,KD!1) -> Pbs2(ALS514~P,RSD1!1).Ssk2(T1460~P,KD!1)    k84
+########################### 85####Ssk2 p+ Pbs2###
+# Contingencies: ! Ssk2_[T1460]-{P}, ! Pbs2_[RSD1]--Ssk2_[KD]
+# Absolute requirements: Ssk2_[T1460]-{P} True, Pbs2_[RSD1]--Ssk2_[KD] True
+# Source states:  Pbs2_[ALT518]-{P} False
+# Product states: Pbs2_[ALT518]-{P} True
+Pbs2(ALT518~U,RSD1!1).Ssk2(T1460~P,KD!1) -> Pbs2(ALT518~P,RSD1!1).Ssk2(T1460~P,KD!1)    k85
+########################### 86####Ssk2 ap Ssk2###
+# Contingencies: k+ (Ssk1_[BDSsk1]--Ssk1_[BDSsk1] and Ssk1_[RR]--Ssk2_[BDSsk1])
+# Source states:  Ssk2_[T1460]-{P} False
+# Product states: Ssk2_[T1460]-{P} True
+#>>>>>>>>> Rule: 86_1
+# Optional requirements: Ssk1_[RR]--Ssk2_[BDSsk1] True, Ssk1_[BDSsk1]--Ssk1_[BDSsk1] True
+Ssk1(BDSsk1!2,RR!1).Ssk1(BDSsk1!2).Ssk2(T1460~U,BDSsk1!1) -> Ssk1(BDSsk1!2,RR!1).Ssk1(BDSsk1!2).Ssk2(T1460~P,BDSsk1!1)    k86_1
+#>>>>>>>>> Rule: 86_2
+# Optional requirements: Ssk1_[BDSsk1]--Ssk1_[BDSsk1] False, Ssk1_[RR]--Ssk2_[BDSsk1] True
+Ssk1(BDSsk1,RR!1).Ssk2(T1460~U,BDSsk1!1) -> Ssk1(BDSsk1,RR!1).Ssk2(T1460~P,BDSsk1!1)    k86_2
+#>>>>>>>>> Rule: 86_3
+# Optional requirements: Ssk1_[RR]--Ssk2_[BDSsk1] False
+Ssk2(T1460~U,BDSsk1) -> Ssk2(T1460~P,BDSsk1)    k86_2
+########################### 87####Ssk22 p+ Pbs2###
+# Contingencies: ! Pbs2_[RSD1]--Ssk22_[KD], ! Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1]
+# Absolute requirements: Pbs2_[RSD1]--Ssk22_[KD] True, Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1] True
+# Source states:  Pbs2_[ALS514]-{P} False
+# Product states: Pbs2_[ALS514]-{P} True
+Pbs2(ALS514~U,RSD1!2).Ssk1(AssocSsk22!1).Ssk22(AssocSsk1!1,KD!2) -> Pbs2(ALS514~P,RSD1!2).Ssk1(AssocSsk22!1).Ssk22(AssocSsk1!1,KD!2)    k87
+########################### 88####Ssk22 p+ Pbs2###
+# Contingencies: ! Pbs2_[RSD1]--Ssk22_[KD], ! Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1]
+# Absolute requirements: Pbs2_[RSD1]--Ssk22_[KD] True, Ssk1_[AssocSsk22]--Ssk22_[AssocSsk1] True
+# Source states:  Pbs2_[ALT518]-{P} False
+# Product states: Pbs2_[ALT518]-{P} True
+Pbs2(ALT518~U,RSD1!2).Ssk1(AssocSsk22!1).Ssk22(AssocSsk1!1,KD!2) -> Pbs2(ALT518~P,RSD1!2).Ssk1(AssocSsk22!1).Ssk22(AssocSsk1!1,KD!2)    k88
+########################### 89####Ste11 p+ Pbs2###
+# Contingencies: x Ste11_[CBD]--Ste11_[KD], ! Pbs2_[RSD2]--Ste11_[n], ! Sho1_[CyT]--Ste11_[BDSho1], ! Pbs2_[RSD2PR]--Sho1_[CyTSH3]
+# Absolute requirements: Pbs2_[RSD2PR]--Sho1_[CyTSH3] True, Ste11_[CBD]--Ste11_[KD] False, Sho1_[CyT]--Ste11_[BDSho1] True, Pbs2_[RSD2]--Ste11_[n] True
+# Source states:  Pbs2_[ALS514]-{P} False
+# Product states: Pbs2_[ALS514]-{P} True
+Pbs2(ALS514~U,RSD2!2,RSD2PR!3).Sho1(CyT!1).Sho1(CyTSH3!3).Ste11(BDSho1!1,CBD,n!2) -> Pbs2(ALS514~P,RSD2!2,RSD2PR!3).Sho1(CyT!1).Sho1(CyTSH3!3).Ste11(BDSho1!1,CBD,n!2)    k89
+########################### 90####Ste11 p+ Pbs2###
+# Contingencies: x Ste11_[CBD]--Ste11_[KD], ! Pbs2_[RSD2]--Ste11_[n], ! Sho1_[CyT]--Ste11_[BDSho1], ! Pbs2_[RSD2PR]--Sho1_[CyTSH3]
+# Absolute requirements: Pbs2_[RSD2PR]--Sho1_[CyTSH3] True, Ste11_[CBD]--Ste11_[KD] False, Sho1_[CyT]--Ste11_[BDSho1] True, Pbs2_[RSD2]--Ste11_[n] True
+# Source states:  Pbs2_[ALT518]-{P} False
+# Product states: Pbs2_[ALT518]-{P} True
+Pbs2(ALT518~U,RSD2!2,RSD2PR!3).Sho1(CyT!1).Sho1(CyTSH3!3).Ste11(BDSho1!1,CBD,n!2) -> Pbs2(ALT518~P,RSD2!2,RSD2PR!3).Sho1(CyT!1).Sho1(CyTSH3!3).Ste11(BDSho1!1,CBD,n!2)    k90
+########################### 91####Ste11 ppi Ste11###
+# Contingencies: k- Ste11_[CBDS302]-{P}, k- Ste11_[CBDS306]-{P}, k- Ste11_[CBDT307]-{P}
+# Source states:  Ste11_[CBD]--Ste11_[KD] False
+# Product states: Ste11_[CBD]--Ste11_[KD] True
+#>>>>>>>>> Rule: 91_1
+# Optional requirements: Ste11_[CBDS306]-{P} False, Ste11_[CBDT307]-{P} False, Ste11_[CBDS302]-{P} False
+Ste11(CBDS302~U,CBDS306~U,CBDT307~U,CBD) + Ste11(CBDS302~U,CBDS306~U,CBDT307~U,KD) <-> Ste11(CBDS302~U,CBDS306~U,CBDT307~U,CBD!1).Ste11(CBDS302~U,CBDS306~U,CBDT307~U,KD!1)    kf91_1, kr91_1
+#>>>>>>>>> Rule: 91_2
+# Optional requirements: Ste11_[CBDS306]-{P} False, Ste11_[CBDT307]-{P} False, Ste11_[CBDS302]-{P} True
+Ste11(CBDS302~P,CBDS306~U,CBDT307~U,CBD) + Ste11(CBDS302~P,CBDS306~U,CBDT307~U,KD) <-> Ste11(CBDS302~P,CBDS306~U,CBDT307~U,CBD!1).Ste11(CBDS302~P,CBDS306~U,CBDT307~U,KD!1)    kf91_2, kr91_2
+#>>>>>>>>> Rule: 91_3
+# Optional requirements: Ste11_[CBDT307]-{P} False, Ste11_[CBDS302]-{P} False, Ste11_[CBDS306]-{P} True
+Ste11(CBDS302~U,CBDS306~P,CBDT307~U,CBD) + Ste11(CBDS302~U,CBDS306~P,CBDT307~U,KD) <-> Ste11(CBDS302~U,CBDS306~P,CBDT307~U,CBD!1).Ste11(CBDS302~U,CBDS306~P,CBDT307~U,KD!1)    kf91_3, kr91_3
+#>>>>>>>>> Rule: 91_4
+# Optional requirements: Ste11_[CBDT307]-{P} False, Ste11_[CBDS302]-{P} True, Ste11_[CBDS306]-{P} True
+Ste11(CBDS302~P,CBDS306~P,CBDT307~U,CBD) + Ste11(CBDS302~P,CBDS306~P,CBDT307~U,KD) <-> Ste11(CBDS302~P,CBDS306~P,CBDT307~U,CBD!1).Ste11(CBDS302~P,CBDS306~P,CBDT307~U,KD!1)    kf91_4, kr91_4
+#>>>>>>>>> Rule: 91_5
+# Optional requirements: Ste11_[CBDS306]-{P} False, Ste11_[CBDT307]-{P} True, Ste11_[CBDS302]-{P} False
+Ste11(CBDS302~U,CBDS306~U,CBDT307~P,CBD) + Ste11(CBDS302~U,CBDS306~U,CBDT307~P,KD) <-> Ste11(CBDS302~U,CBDS306~U,CBDT307~P,CBD!1).Ste11(CBDS302~U,CBDS306~U,CBDT307~P,KD!1)    kf91_5, kr91_5
+#>>>>>>>>> Rule: 91_6
+# Optional requirements: Ste11_[CBDS306]-{P} False, Ste11_[CBDS302]-{P} True, Ste11_[CBDT307]-{P} True
+Ste11(CBDS302~P,CBDS306~U,CBDT307~P,CBD) + Ste11(CBDS302~P,CBDS306~U,CBDT307~P,KD) <-> Ste11(CBDS302~P,CBDS306~U,CBDT307~P,CBD!1).Ste11(CBDS302~P,CBDS306~U,CBDT307~P,KD!1)    kf91_6, kr91_6
+#>>>>>>>>> Rule: 91_7
+# Optional requirements: Ste11_[CBDT307]-{P} True, Ste11_[CBDS302]-{P} False, Ste11_[CBDS306]-{P} True
+Ste11(CBDS302~U,CBDS306~P,CBDT307~P,CBD) + Ste11(CBDS302~U,CBDS306~P,CBDT307~P,KD) <-> Ste11(CBDS302~U,CBDS306~P,CBDT307~P,CBD!1).Ste11(CBDS302~U,CBDS306~P,CBDT307~P,KD!1)    kf91_7, kr91_7
+#>>>>>>>>> Rule: 91_8
+# Optional requirements: Ste11_[CBDS302]-{P} True, Ste11_[CBDS306]-{P} True, Ste11_[CBDT307]-{P} True
+Ste11(CBDS302~P,CBDS306~P,CBDT307~P,CBD) + Ste11(CBDS302~P,CBDS306~P,CBDT307~P,KD) <-> Ste11(CBDS302~P,CBDS306~P,CBDT307~P,CBD!1).Ste11(CBDS302~P,CBDS306~P,CBDT307~P,KD!1)    kf91_8, kr91_8
+########################### 92####Ste11 ppi Ste50###
+# Source states:  Ste11_[SAM]--Ste50_[SAM] False
+# Product states: Ste11_[SAM]--Ste50_[SAM] True
+Ste11(SAM) + Ste50(SAM) <-> Ste11(SAM!1).Ste50(SAM!1)    kf92, kr92
+########################### 93####Ste20 p+ Ste11###
+# Contingencies: k+ Ste20_[SerThr]-{P}, x Ste20_[KD]--Ste20_[CRIB], ! (Sho1_[CyT]--Ste11_[BDSho1] or (Ste5_[MEKK]--Ste11_[AssocSte5] and (Ste4_[BDSte5]--Ste5_[nRING-H2] and Ste4_[AssocSte18]--Ste18_[AssocSte4]))) k+ (Cdc42_[AssocMsb2]--Msb2_[CyT] and Msb2_[CyT]--Sho1_[CyT])
+# Absolute requirements: Ste20_[KD]--Ste20_[CRIB] False
+# Source states:  Ste11_[CBDS302]-{P} False
+# Product states: Ste11_[CBDS302]-{P} True
+#>>>>>>>>> Rule: 93_1
+# Optional requirements: Ste20_[SerThr]-{P} True, Sho1_[CyT]--Ste11_[BDSho1] True
+Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDS302~U,BDSho1!1) -> Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDS302~P,BDSho1!1)    k93_1
+#>>>>>>>>> Rule: 93_2
+# Optional requirements: Ste20_[SerThr]-{P} True, Ste4_[BDSte5]--Ste5_[nRING-H2] True, Sho1_[CyT]--Ste11_[BDSho1] False, Ste5_[MEKK]--Ste11_[AssocSte5] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True
+Ste20(SerThr~P,KD) + Ste11(CBDS302~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~P,KD) + Ste11(CBDS302~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)    k93_1
+#>>>>>>>>> Rule: 93_3
+# Optional requirements: Sho1_[CyT]--Ste11_[BDSho1] True, Ste20_[SerThr]-{P} False
+Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDS302~U,BDSho1!1) -> Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDS302~P,BDSho1!1)    k93_2
+#>>>>>>>>> Rule: 93_4
+# Optional requirements: Ste20_[SerThr]-{P} False, Ste4_[BDSte5]--Ste5_[nRING-H2] True, Sho1_[CyT]--Ste11_[BDSho1] False, Ste5_[MEKK]--Ste11_[AssocSte5] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True
+Ste20(SerThr~U,KD) + Ste11(CBDS302~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~U,KD) + Ste11(CBDS302~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)    k93_2
+########################### 94####Ste20 p+ Ste11###
+# Contingencies: k+ Ste20_[SerThr]-{P}, x Ste20_[KD]--Ste20_[CRIB], ! (Sho1_[CyT]--Ste11_[BDSho1] or (Ste5_[MEKK]--Ste11_[AssocSte5] and (Ste4_[BDSte5]--Ste5_[nRING-H2] and Ste4_[AssocSte18]--Ste18_[AssocSte4]))) k+ (Cdc42_[AssocMsb2]--Msb2_[CyT] and Msb2_[CyT]--Sho1_[CyT])
+# Absolute requirements: Ste20_[KD]--Ste20_[CRIB] False
+# Source states:  Ste11_[CBDS306]-{P} False
+# Product states: Ste11_[CBDS306]-{P} True
+#>>>>>>>>> Rule: 94_1
+# Optional requirements: Ste20_[SerThr]-{P} True, Sho1_[CyT]--Ste11_[BDSho1] True
+Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDS306~U,BDSho1!1) -> Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDS306~P,BDSho1!1)    k94_1
+#>>>>>>>>> Rule: 94_2
+# Optional requirements: Ste20_[SerThr]-{P} True, Ste4_[BDSte5]--Ste5_[nRING-H2] True, Sho1_[CyT]--Ste11_[BDSho1] False, Ste5_[MEKK]--Ste11_[AssocSte5] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True
+Ste20(SerThr~P,KD) + Ste11(CBDS306~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~P,KD) + Ste11(CBDS306~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)    k94_1
+#>>>>>>>>> Rule: 94_3
+# Optional requirements: Sho1_[CyT]--Ste11_[BDSho1] True, Ste20_[SerThr]-{P} False
+Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDS306~U,BDSho1!1) -> Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDS306~P,BDSho1!1)    k94_2
+#>>>>>>>>> Rule: 94_4
+# Optional requirements: Ste20_[SerThr]-{P} False, Ste4_[BDSte5]--Ste5_[nRING-H2] True, Sho1_[CyT]--Ste11_[BDSho1] False, Ste5_[MEKK]--Ste11_[AssocSte5] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True
+Ste20(SerThr~U,KD) + Ste11(CBDS306~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~U,KD) + Ste11(CBDS306~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)    k94_2
+########################### 95####Ste20 p+ Ste11###
+# Contingencies: k+ Ste20_[SerThr]-{P}, x Ste20_[KD]--Ste20_[CRIB], ! (Sho1_[CyT]--Ste11_[BDSho1] or (Ste5_[MEKK]--Ste11_[AssocSte5] and (Ste4_[BDSte5]--Ste5_[nRING-H2] and Ste4_[AssocSte18]--Ste18_[AssocSte4]))) k+ (Cdc42_[AssocMsb2]--Msb2_[CyT] and Msb2_[CyT]--Sho1_[CyT])
+# Absolute requirements: Ste20_[KD]--Ste20_[CRIB] False
+# Source states:  Ste11_[CBDT307]-{P} False
+# Product states: Ste11_[CBDT307]-{P} True
+#>>>>>>>>> Rule: 95_1
+# Optional requirements: Ste20_[SerThr]-{P} True, Sho1_[CyT]--Ste11_[BDSho1] True
+Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDT307~U,BDSho1!1) -> Ste20(SerThr~P,KD) + Sho1(CyT!1).Ste11(CBDT307~P,BDSho1!1)    k95_1
+#>>>>>>>>> Rule: 95_2
+# Optional requirements: Ste20_[SerThr]-{P} True, Ste4_[BDSte5]--Ste5_[nRING-H2] True, Sho1_[CyT]--Ste11_[BDSho1] False, Ste5_[MEKK]--Ste11_[AssocSte5] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True
+Ste20(SerThr~P,KD) + Ste11(CBDT307~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~P,KD) + Ste11(CBDT307~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)    k95_1
+#>>>>>>>>> Rule: 95_3
+# Optional requirements: Sho1_[CyT]--Ste11_[BDSho1] True, Ste20_[SerThr]-{P} False
+Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDT307~U,BDSho1!1) -> Ste20(SerThr~U,KD) + Sho1(CyT!1).Ste11(CBDT307~P,BDSho1!1)    k95_2
+#>>>>>>>>> Rule: 95_4
+# Optional requirements: Ste20_[SerThr]-{P} False, Ste4_[BDSte5]--Ste5_[nRING-H2] True, Sho1_[CyT]--Ste11_[BDSho1] False, Ste5_[MEKK]--Ste11_[AssocSte5] True, Ste4_[AssocSte18]--Ste18_[AssocSte4] True
+Ste20(SerThr~U,KD) + Ste11(CBDT307~U,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2) -> Ste20(SerThr~U,KD) + Ste11(CBDT307~P,AssocSte5!1,BDSho1).Ste18(AssocSte4!3).Ste4(AssocSte18!3,BDSte5!2).Ste5(MEKK!1,nRINGH2!2)    k95_2
+########################### 96####Ypd1 pt Ssk1###
+# Contingencies: ! Ssk1_[RR]--Ypd1_[AssocSsk1]
+# Absolute requirements: Ssk1_[RR]--Ypd1_[AssocSsk1] True, Ypd1_[H64]-{P} True
+# Source states:  Ssk1_[RRD544]-{P} False
+# Product states: Ssk1_[RRD544]-{P} True
+Ssk1(RRD544~U,RR!1).Ypd1(H64~P,AssocSsk1!1) -> Ssk1(RRD544~P,RR!1).Ypd1(H64~U,AssocSsk1!1)    k96
+########################### 97####Hkr1 ppi Sho1###
+# Contingencies: k- [Turgor]
+# Source states:  Hkr1_[TMD]--Sho1_[TMD] False
+# Product states: Hkr1_[TMD]--Sho1_[TMD] True
+Hkr1(TMD) + Sho1(TMD) <-> Hkr1(TMD!1).Sho1(TMD!1)    kf97_2*(1-k_Turgor)+kf97_1*k_Turgor, kr97_2*(1-k_Turgor)+kr97_1*k_Turgor
+########################### 98####Msb2 ppi Sho1###
+# Contingencies: k- [Turgor]
+# Source states:  Msb2_[TMD]--Sho1_[TMD] False
+# Product states: Msb2_[TMD]--Sho1_[TMD] True
+Msb2(TMD) + Sho1(TMD) <-> Msb2(TMD!1).Sho1(TMD!1)    kf98_2*(1-k_Turgor)+kf98_1*k_Turgor, kr98_2*(1-k_Turgor)+kr98_1*k_Turgor
+########################### 99####Msb2 ppi Sho1###
+# Contingencies: k+ Msb2_[HMH/CD]-{Truncated}, k- [Turgor]
+# Source states:  Msb2_[CyT]--Sho1_[CyT] False
+# Product states: Msb2_[CyT]--Sho1_[CyT] True
+#>>>>>>>>> Rule: 99_1
+# Optional requirements: Msb2_[HMH/CD]-{Truncated} True
+Msb2(HMHCD~Truncated,CyT) + Sho1(CyT) <-> Msb2(HMHCD~Truncated,CyT!1).Sho1(CyT!1)    kf99_4*(1-k_Turgor)+kf99_3*k_Turgor, kr99_4*(1-k_Turgor)+kr99_3*k_Turgor
+#>>>>>>>>> Rule: 99_2
+# Optional requirements: Msb2_[HMH/CD]-{Truncated} False
+Msb2(HMHCD~U,CyT) + Sho1(CyT) <-> Msb2(HMHCD~U,CyT!1).Sho1(CyT!1)    kf99_4*(1-k_Turgor)+kf99_3*k_Turgor, kr99_4*(1-k_Turgor)+kr99_3*k_Turgor
+###########################100####Bar1 deg MFalpha###
+# Source states:  None False
+# Product states: None True
+Bar1 + MFalpha -> Bar1    k100
+###########################101####Cdc24 ppi Far1###
+# Source states:  Cdc24_[AssocFar1]--Far1_[c] False
+# Product states: Cdc24_[AssocFar1]--Far1_[c] True
+Cdc24(AssocFar1) + Far1(c) <-> Cdc24(AssocFar1!1).Far1(c!1)    kf101, kr101
+###########################102####Cdc24 ppi Ste4###
+# Contingencies: x Gpa1_[AssocSte4]--Ste4_[BDGpa1], 0 Far1_[nRING-H2]--Ste4_[AssocFar1]
+# Absolute requirements: Gpa1_[AssocSte4]--Ste4_[BDGpa1] False
+# Source states:  Cdc24_[AssocSte4]--Ste4_[AssocCdc24] False
+# Product states: Cdc24_[AssocSte4]--Ste4_[AssocCdc24] True
+Cdc24(AssocSte4) + Ste4(AssocCdc24,BDGpa1) <-> Cdc24(AssocSte4!1).Ste4(AssocCdc24!1,BDGpa1)    kf102, kr102
+###########################103####Cdc24 ppi Ste5###
+# Source states:  Cdc24_[AssocSte5]--Ste5_[c] False
+# Product states: Cdc24_[AssocSte5]--Ste5_[c] True
+Cdc24(AssocSte5) + Ste5(c) <-> Cdc24(AssocSte5!1).Ste5(c!1)    kf103, kr103
+###########################104####Cdc42 ppi Msb2###
+# Source states:  Cdc42_[AssocMsb2]--Msb2_[CyT] False
+# Product states: Cdc42_[AssocMsb2]--Msb2_[CyT] True
+Cdc42(AssocMsb2) + Msb2(CyT) <-> Cdc42(AssocMsb2!1).Msb2(CyT!1)    kf104, kr104
+###########################105####Dig1 ppi Fus3###
+# Source states:  Dig1_[Dsite]--Fus3_[CD7m] False
+# Product states: Dig1_[Dsite]--Fus3_[CD7m] True
+Dig1(Dsite) + Fus3(CD7m) <-> Dig1(Dsite!1).Fus3(CD7m!1)    kf105, kr105
+###########################106####Dig1 ppi Kss1###
+# Source states:  Dig1_[Dsite]--Kss1_[CD7m] False
+# Product states: Dig1_[Dsite]--Kss1_[CD7m] True
+Dig1(Dsite) + Kss1(CD7m) <-> Dig1(Dsite!1).Kss1(CD7m!1)    kf106, kr106
+###########################107####Dig1 ppi Ste12###
+# Contingencies: k- Dig1_[Kss1]-{P}, k+ Dig2_[AssocSte12]--Ste12_[nDBD], k+ Kss1_[AssocSte12]--Ste12_[AssocKss1], k+ Fus3_[AssocSte12]--Ste12_[AssocFus3]
+# Source states:  Dig1_[AssocSte12]--Ste12_[c] False
+# Product states: Dig1_[AssocSte12]--Ste12_[c] True
+#>>>>>>>>> Rule: 107_1
+# Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] True, Dig1_[Kss1]-{P} False, Fus3_[AssocSte12]--Ste12_[AssocFus3] True, Kss1_[AssocSte12]--Ste12_[AssocKss1] True
+Dig1(Kss1~U,AssocSte12) + Dig2(AssocSte12!3).Fus3(AssocSte12!1).Kss1(AssocSte12!2).Ste12(AssocFus3!1,AssocKss1!2,c,nDBD!3) <-> Dig1(Kss1~U,AssocSte12!1).Dig2(AssocSte12!4).Fus3(AssocSte12!2).Kss1(AssocSte12!3).Ste12(AssocFus3!2,AssocKss1!3,c!1,nDBD!4)    kf107_1, kr107_1
+#>>>>>>>>> Rule: 107_2
+# Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] True, Fus3_[AssocSte12]--Ste12_[AssocFus3] True, Kss1_[AssocSte12]--Ste12_[AssocKss1] True, Dig1_[Kss1]-{P} True
+Dig1(Kss1~P,AssocSte12) + Dig2(AssocSte12!3).Fus3(AssocSte12!1).Kss1(AssocSte12!2).Ste12(AssocFus3!1,AssocKss1!2,c,nDBD!3) <-> Dig1(Kss1~P,AssocSte12!1).Dig2(AssocSte12!4).Fus3(AssocSte12!2).Kss1(AssocSte12!3).Ste12(AssocFus3!2,AssocKss1!3,c!1,nDBD!4)    kf107_2, kr107_2
+#>>>>>>>>> Rule: 107_3
+# Optional requirements: Kss1_[AssocSte12]--Ste12_[AssocKss1] True, Dig1_[Kss1]-{P} False, Fus3_[AssocSte12]--Ste12_[AssocFus3] True, Dig2_[AssocSte12]--Ste12_[nDBD] False
+Dig1(Kss1~U,AssocSte12) + Fus3(AssocSte12!1).Kss1(AssocSte12!2).Ste12(AssocFus3!1,AssocKss1!2,c,nDBD) <-> Dig1(Kss1~U,AssocSte12!1).Fus3(AssocSte12!2).Kss1(AssocSte12!3).Ste12(AssocFus3!2,AssocKss1!3,c!1,nDBD)    kf107_3, kr107_3
+#>>>>>>>>> Rule: 107_4
+# Optional requirements: Kss1_[AssocSte12]--Ste12_[AssocKss1] True, Fus3_[AssocSte12]--Ste12_[AssocFus3] True, Dig2_[AssocSte12]--Ste12_[nDBD] False, Dig1_[Kss1]-{P} True
+Dig1(Kss1~P,AssocSte12) + Fus3(AssocSte12!1).Kss1(AssocSte12!2).Ste12(AssocFus3!1,AssocKss1!2,c,nDBD) <-> Dig1(Kss1~P,AssocSte12!1).Fus3(AssocSte12!2).Kss1(AssocSte12!3).Ste12(AssocFus3!2,AssocKss1!3,c!1,nDBD)    kf107_4, kr107_4
+#>>>>>>>>> Rule: 107_5
+# Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] True, Dig1_[Kss1]-{P} False, Fus3_[AssocSte12]--Ste12_[AssocFus3] True, Kss1_[AssocSte12]--Ste12_[AssocKss1] False
+Dig1(Kss1~U,AssocSte12) + Dig2(AssocSte12!2).Fus3(AssocSte12!1).Ste12(AssocFus3!1,AssocKss1,c,nDBD!2) <-> Dig1(Kss1~U,AssocSte12!1).Dig2(AssocSte12!3).Fus3(AssocSte12!2).Ste12(AssocFus3!2,AssocKss1,c!1,nDBD!3)    kf107_5, kr107_5
+#>>>>>>>>> Rule: 107_6
+# Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] True, Fus3_[AssocSte12]--Ste12_[AssocFus3] True, Kss1_[AssocSte12]--Ste12_[AssocKss1] False, Dig1_[Kss1]-{P} True
+Dig1(Kss1~P,AssocSte12) + Dig2(AssocSte12!2).Fus3(AssocSte12!1).Ste12(AssocFus3!1,AssocKss1,c,nDBD!2) <-> Dig1(Kss1~P,AssocSte12!1).Dig2(AssocSte12!3).Fus3(AssocSte12!2).Ste12(AssocFus3!2,AssocKss1,c!1,nDBD!3)    kf107_6, kr107_6
+#>>>>>>>>> Rule: 107_7
+# Optional requirements: Dig1_[Kss1]-{P} False, Fus3_[AssocSte12]--Ste12_[AssocFus3] True, Dig2_[AssocSte12]--Ste12_[nDBD] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] False
+Dig1(Kss1~U,AssocSte12) + Fus3(AssocSte12!1).Ste12(AssocFus3!1,AssocKss1,c,nDBD) <-> Dig1(Kss1~U,AssocSte12!1).Fus3(AssocSte12!2).Ste12(AssocFus3!2,AssocKss1,c!1,nDBD)    kf107_7, kr107_7
+#>>>>>>>>> Rule: 107_8
+# Optional requirements: Fus3_[AssocSte12]--Ste12_[AssocFus3] True, Dig2_[AssocSte12]--Ste12_[nDBD] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] False, Dig1_[Kss1]-{P} True
+Dig1(Kss1~P,AssocSte12) + Fus3(AssocSte12!1).Ste12(AssocFus3!1,AssocKss1,c,nDBD) <-> Dig1(Kss1~P,AssocSte12!1).Fus3(AssocSte12!2).Ste12(AssocFus3!2,AssocKss1,c!1,nDBD)    kf107_8, kr107_8
+#>>>>>>>>> Rule: 107_9
+# Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] True, Dig1_[Kss1]-{P} False, Fus3_[AssocSte12]--Ste12_[AssocFus3] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] True
+Dig1(Kss1~U,AssocSte12) + Dig2(AssocSte12!2).Kss1(AssocSte12!1).Ste12(AssocFus3,AssocKss1!1,c,nDBD!2) <-> Dig1(Kss1~U,AssocSte12!1).Dig2(AssocSte12!3).Kss1(AssocSte12!2).Ste12(AssocFus3,AssocKss1!2,c!1,nDBD!3)    kf107_9, kr107_9
+#>>>>>>>>> Rule: 107_10
+# Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] True, Dig1_[Kss1]-{P} True, Fus3_[AssocSte12]--Ste12_[AssocFus3] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] True
+Dig1(Kss1~P,AssocSte12) + Dig2(AssocSte12!2).Kss1(AssocSte12!1).Ste12(AssocFus3,AssocKss1!1,c,nDBD!2) <-> Dig1(Kss1~P,AssocSte12!1).Dig2(AssocSte12!3).Kss1(AssocSte12!2).Ste12(AssocFus3,AssocKss1!2,c!1,nDBD!3)    kf107_10, kr107_10
+#>>>>>>>>> Rule: 107_11
+# Optional requirements: Fus3_[AssocSte12]--Ste12_[AssocFus3] False, Dig1_[Kss1]-{P} False, Dig2_[AssocSte12]--Ste12_[nDBD] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] True
+Dig1(Kss1~U,AssocSte12) + Kss1(AssocSte12!1).Ste12(AssocFus3,AssocKss1!1,c,nDBD) <-> Dig1(Kss1~U,AssocSte12!1).Kss1(AssocSte12!2).Ste12(AssocFus3,AssocKss1!2,c!1,nDBD)    kf107_11, kr107_11
+#>>>>>>>>> Rule: 107_12
+# Optional requirements: Fus3_[AssocSte12]--Ste12_[AssocFus3] False, Dig1_[Kss1]-{P} True, Dig2_[AssocSte12]--Ste12_[nDBD] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] True
+Dig1(Kss1~P,AssocSte12) + Kss1(AssocSte12!1).Ste12(AssocFus3,AssocKss1!1,c,nDBD) <-> Dig1(Kss1~P,AssocSte12!1).Kss1(AssocSte12!2).Ste12(AssocFus3,AssocKss1!2,c!1,nDBD)    kf107_12, kr107_12
+#>>>>>>>>> Rule: 107_13
+# Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] True, Dig1_[Kss1]-{P} False, Fus3_[AssocSte12]--Ste12_[AssocFus3] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] False
+Dig1(Kss1~U,AssocSte12) + Dig2(AssocSte12!1).Ste12(AssocFus3,AssocKss1,c,nDBD!1) <-> Dig1(Kss1~U,AssocSte12!1).Dig2(AssocSte12!2).Ste12(AssocFus3,AssocKss1,c!1,nDBD!2)    kf107_13, kr107_13
+#>>>>>>>>> Rule: 107_14
+# Optional requirements: Dig2_[AssocSte12]--Ste12_[nDBD] True, Dig1_[Kss1]-{P} True, Fus3_[AssocSte12]--Ste12_[AssocFus3] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] False
+Dig1(Kss1~P,AssocSte12) + Dig2(AssocSte12!1).Ste12(AssocFus3,AssocKss1,c,nDBD!1) <-> Dig1(Kss1~P,AssocSte12!1).Dig2(AssocSte12!2).Ste12(AssocFus3,AssocKss1,c!1,nDBD!2)    kf107_14, kr107_14
+#>>>>>>>>> Rule: 107_15
+# Optional requirements: Fus3_[AssocSte12]--Ste12_[AssocFus3] False, Dig1_[Kss1]-{P} False, Dig2_[AssocSte12]--Ste12_[nDBD] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] False
+Dig1(Kss1~U,AssocSte12) + Ste12(AssocFus3,AssocKss1,c,nDBD) <-> Dig1(Kss1~U,AssocSte12!1).Ste12(AssocFus3,AssocKss1,c!1,nDBD)    kf107_15, kr107_15
+#>>>>>>>>> Rule: 107_16
+# Optional requirements: Fus3_[AssocSte12]--Ste12_[AssocFus3] False, Dig1_[Kss1]-{P} True, Dig2_[AssocSte12]--Ste12_[nDBD] False, Kss1_[AssocSte12]--Ste12_[AssocKss1] False
+Dig1(Kss1~P,AssocSte12) + Ste12(AssocFus3,AssocKss1,c,nDBD) <-> Dig1(Kss1~P,AssocSte12!1).Ste12(AssocFus3,AssocKss1,c!1,nDBD)    kf107_16, kr107_16
+###########################108####Dig2 ppi Fus3###
+# Source states:  Dig2_[Dsite]--Fus3_[CD7m] False
+# Product states: Dig2_[Dsite]--Fus3_[CD7m] True
+Dig2(Dsite) + Fus3(CD7m) <-> Dig2(Dsite!1).Fus3(CD7m!1)    kf108, kr108
+###########################109####Dig2 ppi Kss1###
+# Source states:  Dig2_[Dsite]--Kss1_[CD7m] False
+# Product states: Dig2_[Dsite]--Kss1_[CD7m] True
+Dig2(Dsite) + Kss1(CD7m) <-> Dig2(Dsite!1).Kss1(CD7m!1)    kf109, kr109
+###########################110####Dig2 ppi Ste12###
+# Contingencies: k- Dig2_[Fus3]-{P}, k+ Dig1_[AssocSte12]--Ste12_[c], x Ste12_[nDB]--Tec1_[AssocSte12]
+# Absolute requirements: Ste12_[nDB]--Tec1_[AssocSte12] False
+# Source states:  Dig2_[AssocSte12]--Ste12_[nDBD] False
+# Product states: Dig2_[AssocSte12]--Ste12_[nDBD] True
+#>>>>>>>>> Rule: 110_1
+# Optional requirements: Dig2_[Fus3]-{P} False, Dig1_[AssocSte12]--Ste12_[c] True
+Dig2(Fus3~U,AssocSte12) + Dig1(AssocSte12!1).Ste12(c!1,nDB,nDBD) <-> Dig1(AssocSte12!2).Dig2(Fus3~U,AssocSte12!1).Ste12(c!2,nDB,nDBD!1)    kf110_1, kr110_1
+#>>>>>>>>> Rule: 110_2
+# Optional requirements: Dig1_[AssocSte12]--Ste12_[c] True, Dig2_[Fus3]-{P} True
+Dig2(Fus3~P,AssocSte12) + Dig1(AssocSte12!1).Ste12(c!1,nDB,nDBD) <-> Dig1(AssocSte12!2).Dig2(Fus3~P,AssocSte12!1).Ste12(c!2,nDB,nDBD!1)    kf110_2, kr110_2
+#>>>>>>>>> Rule: 110_3
+# Optional requirements: Dig1_[AssocSte12]--Ste12_[c] False, Dig2_[Fus3]-{P} False
+Dig2(Fus3~U,AssocSte12) + Ste12(c,nDB,nDBD) <-> Dig2(Fus3~U,AssocSte12!1).Ste12(c,nDB,nDBD!1)    kf110_3, kr110_3
+#>>>>>>>>> Rule: 110_4
+# Optional requirements: Dig1_[AssocSte12]--Ste12_[c] False, Dig2_[Fus3]-{P} True
+Dig2(Fus3~P,AssocSte12) + Ste12(c,nDB,nDBD) <-> Dig2(Fus3~P,AssocSte12!1).Ste12(c,nDB,nDBD!1)    kf110_4, kr110_4
+###########################111####Far1 ppi Fus3###
+# Source states:  Far1_[nBDFus3]--Fus3_[CD] False
+# Product states: Far1_[nBDFus3]--Fus3_[CD] True
+Far1(nBDFus3) + Fus3(CD) <-> Far1(nBDFus3!1).Fus3(CD!1)    kf111, kr111
+###########################112####Far1 ppi Ste4###
+# Contingencies: x Gpa1_[AssocSte4]--Ste4_[BDGpa1], 0 Cdc24_[AssocSte4]--Ste4_[AssocCdc24]
+# Absolute requirements: Gpa1_[AssocSte4]--Ste4_[BDGpa1] False
+# Source states:  Far1_[nRINGH2]--Ste4_[AssocFar1] False
+# Product states: Far1_[nRINGH2]--Ste4_[AssocFar1] True
+Far1(nRINGH2) + Ste4(AssocFar1,BDGpa1) <-> Far1(nRINGH2!1).Ste4(AssocFar1!1,BDGpa1)    kf112, kr112
+###########################113####Fus3 p+ Dig1###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Dig1_[Fus3]-{P} False
+# Product states: Dig1_[Fus3]-{P} True
+Fus3(T180~P,Y182~P) + Dig1(Fus3~U) -> Fus3(T180~P,Y182~P) + Dig1(Fus3~P)    k113
+###########################114####Fus3 p+ Dig2###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Dig2_[Fus3]-{P} False
+# Product states: Dig2_[Fus3]-{P} True
+Fus3(T180~P,Y182~P) + Dig2(Fus3~U) -> Fus3(T180~P,Y182~P) + Dig2(Fus3~P)    k114
+###########################115####Fus3 p+ Far1###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Far1_[T306]-{P} False
+# Product states: Far1_[T306]-{P} True
+Fus3(T180~P,Y182~P) + Far1(T306~U) -> Fus3(T180~P,Y182~P) + Far1(T306~P)    k115
+###########################116####Fus3 ppi Gpa1###
+# Contingencies: k+ Gpa1_[GnP]-{P}, k+ Fus3_[T180]-{P}, k+ Fus3_[Y182]-{P}
+# Source states:  Fus3_[n]--Gpa1_[n] False
+# Product states: Fus3_[n]--Gpa1_[n] True
+#>>>>>>>>> Rule: 116_1
+# Optional requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True, Gpa1_[GnP]-{P} True
+Fus3(T180~P,Y182~P,n) + Gpa1(GnP~P,n) <-> Fus3(T180~P,Y182~P,n!1).Gpa1(GnP~P,n!1)    kf116_1, kr116_1
+#>>>>>>>>> Rule: 116_2
+# Optional requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True, Gpa1_[GnP]-{P} False
+Fus3(T180~P,Y182~P,n) + Gpa1(GnP~U,n) <-> Fus3(T180~P,Y182~P,n!1).Gpa1(GnP~U,n!1)    kf116_2, kr116_2
+#>>>>>>>>> Rule: 116_3
+# Optional requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} False, Gpa1_[GnP]-{P} True
+Fus3(T180~U,Y182~P,n) + Gpa1(GnP~P,n) <-> Fus3(T180~U,Y182~P,n!1).Gpa1(GnP~P,n!1)    kf116_3, kr116_3
+#>>>>>>>>> Rule: 116_4
+# Optional requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} False, Gpa1_[GnP]-{P} False
+Fus3(T180~U,Y182~P,n) + Gpa1(GnP~U,n) <-> Fus3(T180~U,Y182~P,n!1).Gpa1(GnP~U,n!1)    kf116_4, kr116_4
+#>>>>>>>>> Rule: 116_5
+# Optional requirements: Fus3_[Y182]-{P} False, Gpa1_[GnP]-{P} True, Fus3_[T180]-{P} True
+Fus3(T180~P,Y182~U,n) + Gpa1(GnP~P,n) <-> Fus3(T180~P,Y182~U,n!1).Gpa1(GnP~P,n!1)    kf116_5, kr116_5
+#>>>>>>>>> Rule: 116_6
+# Optional requirements: Fus3_[Y182]-{P} False, Fus3_[T180]-{P} True, Gpa1_[GnP]-{P} False
+Fus3(T180~P,Y182~U,n) + Gpa1(GnP~U,n) <-> Fus3(T180~P,Y182~U,n!1).Gpa1(GnP~U,n!1)    kf116_6, kr116_6
+#>>>>>>>>> Rule: 116_7
+# Optional requirements: Fus3_[Y182]-{P} False, Gpa1_[GnP]-{P} True, Fus3_[T180]-{P} False
+Fus3(T180~U,Y182~U,n) + Gpa1(GnP~P,n) <-> Fus3(T180~U,Y182~U,n!1).Gpa1(GnP~P,n!1)    kf116_7, kr116_7
+#>>>>>>>>> Rule: 116_8
+# Optional requirements: Fus3_[Y182]-{P} False, Fus3_[T180]-{P} False, Gpa1_[GnP]-{P} False
+Fus3(T180~U,Y182~U,n) + Gpa1(GnP~U,n) <-> Fus3(T180~U,Y182~U,n!1).Gpa1(GnP~U,n!1)    kf116_8, kr116_8
+###########################117####Fus3 p+ Msg5###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Msg5_[Fus3]-{P} False
+# Product states: Msg5_[Fus3]-{P} True
+Fus3(T180~P,Y182~P) + Msg5(Fus3~U) -> Fus3(T180~P,Y182~P) + Msg5(Fus3~P)    k117
+###########################118####Fus3 ppi Ptp3###
+# Contingencies: 0 Fus3_[Y182]-{P}
+# Source states:  Fus3_[CD]--Ptp3_[CH2] False
+# Product states: Fus3_[CD]--Ptp3_[CH2] True
+Fus3(CD) + Ptp3(CH2) <-> Fus3(CD!1).Ptp3(CH2!1)    kf118, kr118
+###########################119####Fus3 p+ Ste12###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Ste12_[Fus3]-{P} False
+# Product states: Ste12_[Fus3]-{P} True
+Fus3(T180~P,Y182~P) + Ste12(Fus3~U) -> Fus3(T180~P,Y182~P) + Ste12(Fus3~P)    k119
+###########################120####Fus3 ppi Ste12###
+# Contingencies: k- Fus3_[T180]-{P}, k- Fus3_[Y182]-{P}, k+ Dig1_[AssocSte12]--Ste12_[c]
+# Source states:  Fus3_[AssocSte12]--Ste12_[AssocFus3] False
+# Product states: Fus3_[AssocSte12]--Ste12_[AssocFus3] True
+#>>>>>>>>> Rule: 120_1
+# Optional requirements: Fus3_[Y182]-{P} False, Dig1_[AssocSte12]--Ste12_[c] True, Fus3_[T180]-{P} False
+Fus3(T180~U,Y182~U,AssocSte12) + Dig1(AssocSte12!1).Ste12(AssocFus3,c!1) <-> Dig1(AssocSte12!2).Fus3(T180~U,Y182~U,AssocSte12!1).Ste12(AssocFus3!1,c!2)    kf120_1, kr120_1
+#>>>>>>>>> Rule: 120_2
+# Optional requirements: Fus3_[Y182]-{P} False, Dig1_[AssocSte12]--Ste12_[c] True, Fus3_[T180]-{P} True
+Fus3(T180~P,Y182~U,AssocSte12) + Dig1(AssocSte12!1).Ste12(AssocFus3,c!1) <-> Dig1(AssocSte12!2).Fus3(T180~P,Y182~U,AssocSte12!1).Ste12(AssocFus3!1,c!2)    kf120_2, kr120_2
+#>>>>>>>>> Rule: 120_3
+# Optional requirements: Fus3_[Y182]-{P} True, Dig1_[AssocSte12]--Ste12_[c] True, Fus3_[T180]-{P} False
+Fus3(T180~U,Y182~P,AssocSte12) + Dig1(AssocSte12!1).Ste12(AssocFus3,c!1) <-> Dig1(AssocSte12!2).Fus3(T180~U,Y182~P,AssocSte12!1).Ste12(AssocFus3!1,c!2)    kf120_3, kr120_3
+#>>>>>>>>> Rule: 120_4
+# Optional requirements: Fus3_[Y182]-{P} True, Dig1_[AssocSte12]--Ste12_[c] True, Fus3_[T180]-{P} True
+Fus3(T180~P,Y182~P,AssocSte12) + Dig1(AssocSte12!1).Ste12(AssocFus3,c!1) <-> Dig1(AssocSte12!2).Fus3(T180~P,Y182~P,AssocSte12!1).Ste12(AssocFus3!1,c!2)    kf120_4, kr120_4
+#>>>>>>>>> Rule: 120_5
+# Optional requirements: Fus3_[Y182]-{P} False, Dig1_[AssocSte12]--Ste12_[c] False, Fus3_[T180]-{P} False
+Fus3(T180~U,Y182~U,AssocSte12) + Ste12(AssocFus3,c) <-> Fus3(T180~U,Y182~U,AssocSte12!1).Ste12(AssocFus3!1,c)    kf120_5, kr120_5
+#>>>>>>>>> Rule: 120_6
+# Optional requirements: Fus3_[Y182]-{P} False, Dig1_[AssocSte12]--Ste12_[c] False, Fus3_[T180]-{P} True
+Fus3(T180~P,Y182~U,AssocSte12) + Ste12(AssocFus3,c) <-> Fus3(T180~P,Y182~U,AssocSte12!1).Ste12(AssocFus3!1,c)    kf120_6, kr120_6
+#>>>>>>>>> Rule: 120_7
+# Optional requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} False, Dig1_[AssocSte12]--Ste12_[c] False
+Fus3(T180~U,Y182~P,AssocSte12) + Ste12(AssocFus3,c) <-> Fus3(T180~U,Y182~P,AssocSte12!1).Ste12(AssocFus3!1,c)    kf120_7, kr120_7
+#>>>>>>>>> Rule: 120_8
+# Optional requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True, Dig1_[AssocSte12]--Ste12_[c] False
+Fus3(T180~P,Y182~P,AssocSte12) + Ste12(AssocFus3,c) <-> Fus3(T180~P,Y182~P,AssocSte12!1).Ste12(AssocFus3!1,c)    kf120_8, kr120_8
+###########################121####Fus3 ppi Ste5###
+# Source states:  Fus3_[AssocSte5]--Ste5_[MAPK] False
+# Product states: Fus3_[AssocSte5]--Ste5_[MAPK] True
+Fus3(AssocSte5) + Ste5(MAPK) <-> Fus3(AssocSte5!1).Ste5(MAPK!1)    kf121, kr121
+###########################122####Fus3 p+ Ste7###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Ste7_[Fus3]-{P} False
+# Product states: Ste7_[Fus3]-{P} True
+Fus3(T180~P,Y182~P) + Ste7(Fus3~U) -> Fus3(T180~P,Y182~P) + Ste7(Fus3~P)    k122
+###########################123####Fus3 ppi Ste7###
+# Source states:  Fus3_[CD]--Ste7_[BDMAPK] False
+# Product states: Fus3_[CD]--Ste7_[BDMAPK] True
+Fus3(CD) + Ste7(BDMAPK) <-> Fus3(CD!1).Ste7(BDMAPK!1)    kf123, kr123
+###########################124####Fus3 p+ Tec1###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Tec1_[T273]-{P} False
+# Product states: Tec1_[T273]-{P} True
+Fus3(T180~P,Y182~P) + Tec1(T273~U) -> Fus3(T180~P,Y182~P) + Tec1(T273~P)    k124
+###########################125####Fus3 ppi Tec1###
+# Source states:  Fus3_[AssocTec1]--Tec1_[n] False
+# Product states: Fus3_[AssocTec1]--Tec1_[n] True
+Fus3(AssocTec1) + Tec1(n) <-> Fus3(AssocTec1!1).Tec1(n!1)    kf125, kr125
+###########################126####Gpa1 ppi Ste4###
+# Contingencies: x Gpa1_[GnP]-{P}
+# Absolute requirements: Gpa1_[GnP]-{P} False
+# Source states:  Gpa1_[AssocSte4]--Ste4_[BDGpa1] False
+# Product states: Gpa1_[AssocSte4]--Ste4_[BDGpa1] True
+Gpa1(GnP~U,AssocSte4) + Ste4(BDGpa1) <-> Gpa1(GnP~U,AssocSte4!1).Ste4(BDGpa1!1)    kf126, kr126
+###########################127####Kss1 p+ Dig1###
+# Contingencies: ! Kss1_[T183]-{P}, ! Kss1_[Y185]-{P}
+# Absolute requirements: Kss1_[Y185]-{P} True, Kss1_[T183]-{P} True
+# Source states:  Dig1_[Kss1]-{P} False
+# Product states: Dig1_[Kss1]-{P} True
+Kss1(T183~P,Y185~P) + Dig1(Kss1~U) -> Kss1(T183~P,Y185~P) + Dig1(Kss1~P)    k127
+###########################128####Kss1 p+ Dig2###
+# Contingencies: ! Kss1_[T183]-{P}, ! Kss1_[Y185]-{P}
+# Absolute requirements: Kss1_[Y185]-{P} True, Kss1_[T183]-{P} True
+# Source states:  Dig2_[Kss1]-{P} False
+# Product states: Dig2_[Kss1]-{P} True
+Kss1(T183~P,Y185~P) + Dig2(Kss1~U) -> Kss1(T183~P,Y185~P) + Dig2(Kss1~P)    k128
+###########################129####Kss1 p+ Ste12###
+# Contingencies: ! Kss1_[T183]-{P}, ! Kss1_[Y185]-{P}
+# Absolute requirements: Kss1_[Y185]-{P} True, Kss1_[T183]-{P} True
+# Source states:  Ste12_[Kss1]-{P} False
+# Product states: Ste12_[Kss1]-{P} True
+Kss1(T183~P,Y185~P) + Ste12(Kss1~U) -> Kss1(T183~P,Y185~P) + Ste12(Kss1~P)    k129
+###########################130####Kss1 ppi Ste12###
+# Contingencies: k- Kss1_[T183]-{P}, k- Kss1_[Y185]-{P}
+# Source states:  Kss1_[AssocSte12]--Ste12_[AssocKss1] False
+# Product states: Kss1_[AssocSte12]--Ste12_[AssocKss1] True
+#>>>>>>>>> Rule: 130_1
+# Optional requirements: Kss1_[T183]-{P} False, Kss1_[Y185]-{P} False
+Kss1(T183~U,Y185~U,AssocSte12) + Ste12(AssocKss1) <-> Kss1(T183~U,Y185~U,AssocSte12!1).Ste12(AssocKss1!1)    kf130_1, kr130_1
+#>>>>>>>>> Rule: 130_2
+# Optional requirements: Kss1_[Y185]-{P} False, Kss1_[T183]-{P} True
+Kss1(T183~P,Y185~U,AssocSte12) + Ste12(AssocKss1) <-> Kss1(T183~P,Y185~U,AssocSte12!1).Ste12(AssocKss1!1)    kf130_2, kr130_2
+#>>>>>>>>> Rule: 130_3
+# Optional requirements: Kss1_[T183]-{P} False, Kss1_[Y185]-{P} True
+Kss1(T183~U,Y185~P,AssocSte12) + Ste12(AssocKss1) <-> Kss1(T183~U,Y185~P,AssocSte12!1).Ste12(AssocKss1!1)    kf130_3, kr130_3
+#>>>>>>>>> Rule: 130_4
+# Optional requirements: Kss1_[Y185]-{P} True, Kss1_[T183]-{P} True
+Kss1(T183~P,Y185~P,AssocSte12) + Ste12(AssocKss1) <-> Kss1(T183~P,Y185~P,AssocSte12!1).Ste12(AssocKss1!1)    kf130_4, kr130_4
+###########################131####Kss1 p+ Ste7###
+# Contingencies: ! Kss1_[T183]-{P}, ! Kss1_[Y185]-{P}
+# Absolute requirements: Kss1_[Y185]-{P} True, Kss1_[T183]-{P} True
+# Source states:  Ste7_[Kss1]-{P} False
+# Product states: Ste7_[Kss1]-{P} True
+Kss1(T183~P,Y185~P) + Ste7(Kss1~U) -> Kss1(T183~P,Y185~P) + Ste7(Kss1~P)    k131
+###########################132####Kss1 ppi Ste7###
+# Source states:  Kss1_[CD]--Ste7_[BDMAPK] False
+# Product states: Kss1_[CD]--Ste7_[BDMAPK] True
+Kss1(CD) + Ste7(BDMAPK) <-> Kss1(CD!1).Ste7(BDMAPK!1)    kf132, kr132
+###########################133####Kss1 ppi Tec1###
+# Source states:  Kss1_[AssocTec1]--Tec1_[c] False
+# Product states: Kss1_[AssocTec1]--Tec1_[c] True
+Kss1(AssocTec1) + Tec1(c) <-> Kss1(AssocTec1!1).Tec1(c!1)    kf133, kr133
+###########################134####Ptp3 p- Fus3###
+# Contingencies: k+ Fus3_[CD]--Ptp3_[CH2]
+# Absolute requirements: Fus3_[Y182]-{P} True
+# Source states:  Fus3_[Y182]-{P} False
+# Product states: Fus3_[Y182]-{P} True
+#>>>>>>>>> Rule: 134_1
+# Optional requirements: Fus3_[CD]--Ptp3_[CH2] True
+Fus3(Y182~P,CD!1).Ptp3(CH2!1) -> Fus3(Y182~U,CD!1).Ptp3(CH2!1)    k134_1
+#>>>>>>>>> Rule: 134_2
+# Optional requirements: Fus3_[CD]--Ptp3_[CH2] False
+Ptp3(CH2) + Fus3(Y182~P,CD) -> Ptp3(CH2) + Fus3(Y182~U,CD)    k134_2
+###########################135####Sst2 gap Gpa1###
+# Contingencies: k+ Gpa1_[BDRec]--Ste2_[CyT], k+ Ste2_[CyT]--Sst2_[nDEP]
+# Absolute requirements: Gpa1_[GnP]-{P} True
+# Source states:  Gpa1_[GnP]-{P} False
+# Product states: Gpa1_[GnP]-{P} True
+#>>>>>>>>> Rule: 135_1
+# Optional requirements: Gpa1_[BDRec]--Ste2_[CyT] True, Ste2_[CyT]--Sst2_[nDEP] True
+Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~P,BDRec!1).Ste2(CyT!1) -> Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~U,BDRec!1).Ste2(CyT!1)    k135_1
+#>>>>>>>>> Rule: 135_2
+# Optional requirements: Gpa1_[BDRec]--Ste2_[CyT] False, Ste2_[CyT]--Sst2_[nDEP] True
+Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~P,BDRec) -> Sst2(nDEP!1).Ste2(CyT!1) + Gpa1(GnP~U,BDRec)    k135_2
+#>>>>>>>>> Rule: 135_3
+# Optional requirements: Gpa1_[BDRec]--Ste2_[CyT] True, Ste2_[CyT]--Sst2_[nDEP] False
+Sst2(nDEP) + Gpa1(GnP~P,BDRec!1).Ste2(CyT!1) -> Sst2(nDEP) + Gpa1(GnP~U,BDRec!1).Ste2(CyT!1)    k135_3
+#>>>>>>>>> Rule: 135_4
+# Optional requirements: Gpa1_[BDRec]--Ste2_[CyT] False, Ste2_[CyT]--Sst2_[nDEP] False
+Sst2(nDEP) + Gpa1(GnP~P,BDRec) -> Sst2(nDEP) + Gpa1(GnP~U,BDRec)    k135_4
+###########################136####Ste11 p+ Ste7###
+# Contingencies: x Ste11_[CBD]--Ste11_[KD], ! (Ste7_[AssocSte11]--Ste11_[AssocSte7] or (Ste5_[MEKK]--Ste11_[AssocSte5] and Ste5_[MEK]--Ste7_[AssocSte5] and Ste5_[BDSte5]--Ste5_[BDSte5]))
+# Absolute requirements: Ste11_[CBD]--Ste11_[KD] False
+# Source states:  Ste7_[ALS359]-{P} False
+# Product states: Ste7_[ALS359]-{P} True
+#>>>>>>>>> Rule: 136_1
+# Optional requirements: Ste7_[AssocSte11]--Ste11_[AssocSte7] True
+Ste11(AssocSte7!1,CBD).Ste7(ALS359~U,AssocSte11!1) -> Ste11(AssocSte7!1,CBD).Ste7(ALS359~P,AssocSte11!1)    k136
+#>>>>>>>>> Rule: 136_2
+# Optional requirements: Ste5_[MEK]--Ste7_[AssocSte5] True, Ste7_[AssocSte11]--Ste11_[AssocSte7] False, Ste5_[BDSte5]--Ste5_[BDSte5] True, Ste5_[MEKK]--Ste11_[AssocSte5] True
+Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~U,AssocSte5!1) -> Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte5!1)    k136
+###########################137####Ste11 p+ Ste7###
+# Contingencies: x Ste11_[CBD]--Ste11_[KD], ! (Ste7_[AssocSte11]--Ste11_[AssocSte7] or (Ste5_[MEKK]--Ste11_[AssocSte5] and Ste5_[MEK]--Ste7_[AssocSte5] and Ste5_[BDSte5]--Ste5_[BDSte5]))
+# Absolute requirements: Ste11_[CBD]--Ste11_[KD] False
+# Source states:  Ste7_[ALT363]-{P} False
+# Product states: Ste7_[ALT363]-{P} True
+#>>>>>>>>> Rule: 137_1
+# Optional requirements: Ste7_[AssocSte11]--Ste11_[AssocSte7] True
+Ste11(AssocSte7!1,CBD).Ste7(ALT363~U,AssocSte11!1) -> Ste11(AssocSte7!1,CBD).Ste7(ALT363~P,AssocSte11!1)    k137
+#>>>>>>>>> Rule: 137_2
+# Optional requirements: Ste5_[MEK]--Ste7_[AssocSte5] True, Ste7_[AssocSte11]--Ste11_[AssocSte7] False, Ste5_[BDSte5]--Ste5_[BDSte5] True, Ste5_[MEKK]--Ste11_[AssocSte5] True
+Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALT363~U,AssocSte5!1) -> Ste11(AssocSte5!3,AssocSte7,CBD).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALT363~P,AssocSte5!1)    k137
+###########################138####Ste12 ppi Tec1###
+# Contingencies: x Dig2_[AssocSte12]--Ste12_[nDBD]
+# Absolute requirements: Dig2_[AssocSte12]--Ste12_[nDBD] False
+# Source states:  Ste12_[nDB]--Tec1_[AssocSte12] False
+# Product states: Ste12_[nDB]--Tec1_[AssocSte12] True
+Ste12(nDB,nDBD) + Tec1(AssocSte12) <-> Ste12(nDB!1,nDBD).Tec1(AssocSte12!1)    kf138, kr138
+###########################139####Ste2 ppi Sst2###
+# Source states:  Ste2_[CyT]--Sst2_[nDEP] False
+# Product states: Ste2_[CyT]--Sst2_[nDEP] True
+Ste2(CyT) + Sst2(nDEP) <-> Sst2(nDEP!1).Ste2(CyT!1)    kf139, kr139
+###########################140####Ste20 ap Ste20###
+# Source states:  Ste20_[SerThr]-{P} False
+# Product states: Ste20_[SerThr]-{P} True
+Ste20 + Ste20(SerThr~U) -> Ste20 + Ste20(SerThr~P)    k140
+###########################141####Ste20 ppi Ste20###
+# Contingencies: x Cdc42_[ED]--Ste20_[CRIB]
+# Absolute requirements: Cdc42_[ED]--Ste20_[CRIB] False
+# Source states:  Ste20_[KD]--Ste20_[CRIB] False
+# Product states: Ste20_[KD]--Ste20_[CRIB] True
+Ste20(CRIB,KD) + Ste20(CRIB) <-> Ste20(CRIB,KD!1).Ste20(CRIB!1)    kf141, kr141
+###########################142####Ste4 ppi Ste18###
+# Source states:  Ste4_[AssocSte18]--Ste18_[AssocSte4] False
+# Product states: Ste4_[AssocSte18]--Ste18_[AssocSte4] True
+Ste4(AssocSte18) + Ste18(AssocSte4) <-> Ste18(AssocSte4!1).Ste4(AssocSte18!1)    kf142, kr142
+###########################143####Ste4 ppi Ste20###
+# Contingencies: x Gpa1_[AssocSte4]--Ste4_[BDGpa1]
+# Absolute requirements: Gpa1_[AssocSte4]--Ste4_[BDGpa1] False
+# Source states:  Ste4_[AssocSte20]--Ste20_[c] False
+# Product states: Ste4_[AssocSte20]--Ste20_[c] True
+Ste4(AssocSte20,BDGpa1) + Ste20(c) <-> Ste20(c!1).Ste4(AssocSte20!1,BDGpa1)    kf143, kr143
+###########################144####Ste4 ppi Ste5###
+# Contingencies: x Gpa1_[AssocSte4]--Ste4_[BDGpa1]
+# Absolute requirements: Gpa1_[AssocSte4]--Ste4_[BDGpa1] False
+# Source states:  Ste4_[BDSte5]--Ste5_[nRINGH2] False
+# Product states: Ste4_[BDSte5]--Ste5_[nRINGH2] True
+Ste4(BDGpa1,BDSte5) + Ste5(nRINGH2) <-> Ste4(BDGpa1,BDSte5!1).Ste5(nRINGH2!1)    kf144, kr144
+###########################145####Ste5 ppi Ste11###
+# Contingencies: x Sho1_[CyT]--Ste11_[BDSho1]
+# Absolute requirements: Sho1_[CyT]--Ste11_[BDSho1] False
+# Source states:  Ste5_[MEKK]--Ste11_[AssocSte5] False
+# Product states: Ste5_[MEKK]--Ste11_[AssocSte5] True
+Ste5(MEKK) + Ste11(AssocSte5,BDSho1) <-> Ste11(AssocSte5!1,BDSho1).Ste5(MEKK!1)    kf145, kr145
+###########################146####Ste5 ppi Ste20###
+# Source states:  Ste5_[AssocSte20]--Ste20_[AssocSte5] False
+# Product states: Ste5_[AssocSte20]--Ste20_[AssocSte5] True
+Ste5(AssocSte20) + Ste20(AssocSte5) <-> Ste20(AssocSte5!1).Ste5(AssocSte20!1)    kf146, kr146
+###########################147####Ste5 ppi Ste5###
+# Contingencies: ! Ste4_[BDSte5]--Ste5_[nRING-H2]
+# Absolute requirements: Ste4_[BDSte5]--Ste5_[nRING-H2] True
+# Source states:  Ste5_[BDSte5]--Ste5_[BDSte5] False
+# Product states: Ste5_[BDSte5]--Ste5_[BDSte5] True
+Ste4(BDSte5!1).Ste5(BDSte5,nRINGH2!1) + Ste4(BDSte5!1).Ste5(BDSte5,nRINGH2!1) <-> Ste4(BDSte5!3).Ste4(BDSte5!2).Ste5(BDSte5!1,nRINGH2!3).Ste5(BDSte5!1,nRINGH2!2)    kf147, kr147
+###########################148####Ste5 ppi Ste7###
+# Source states:  Ste5_[MEK]--Ste7_[AssocSte5] False
+# Product states: Ste5_[MEK]--Ste7_[AssocSte5] True
+Ste5(MEK) + Ste7(AssocSte5) <-> Ste5(MEK!1).Ste7(AssocSte5!1)    kf148, kr148
+###########################149####Ste7 p+ Fus3###
+# Contingencies: ! Ste7_[ALS359]-{P}, ! Ste7_[ALT363]-{P}, ! Fus3_[AssocSte5]--Ste5_[Unlock]
+# Absolute requirements: Fus3_[AssocSte5]--Ste5_[Unlock] True, Ste7_[ALS359]-{P} True, Ste7_[ALT363]-{P} True
+# Source states:  Fus3_[T180]-{P} False
+# Product states: Fus3_[T180]-{P} True
+Ste7(ALS359~P,ALT363~P) + Fus3(T180~U,AssocSte5!1).Ste5(Unlock!1) -> Ste7(ALS359~P,ALT363~P) + Fus3(T180~P,AssocSte5!1).Ste5(Unlock!1)    k149
+###########################150####Ste7 p+ Fus3###
+# Contingencies: ! Ste7_[ALS359]-{P}, ! Ste7_[ALT363]-{P}, ! Fus3_[AssocSte5]--Ste5_[Unlock]
+# Absolute requirements: Fus3_[AssocSte5]--Ste5_[Unlock] True, Ste7_[ALS359]-{P} True, Ste7_[ALT363]-{P} True
+# Source states:  Fus3_[Y182]-{P} False
+# Product states: Fus3_[Y182]-{P} True
+Ste7(ALS359~P,ALT363~P) + Fus3(Y182~U,AssocSte5!1).Ste5(Unlock!1) -> Ste7(ALS359~P,ALT363~P) + Fus3(Y182~P,AssocSte5!1).Ste5(Unlock!1)    k150
+###########################151####Ste7 p+ Kss1###
+# Contingencies: ! Ste7_[ALS359]-{P}, ! Ste7_[ALT363]-{P}, ! Kss1_[CD]--Ste7_[BDMAPK]
+# Absolute requirements: Kss1_[CD]--Ste7_[BDMAPK] True, Ste7_[ALS359]-{P} True, Ste7_[ALT363]-{P} True
+# Source states:  Kss1_[T183]-{P} False
+# Product states: Kss1_[T183]-{P} True
+Kss1(T183~U,CD!1).Ste7(ALS359~P,ALT363~P,BDMAPK!1) -> Kss1(T183~P,CD!1).Ste7(ALS359~P,ALT363~P,BDMAPK!1)    k151
+###########################152####Ste7 p+ Kss1###
+# Contingencies: ! Ste7_[ALS359]-{P}, ! Ste7_[ALT363]-{P}, ! Kss1_[CD]--Ste7_[BDMAPK]
+# Absolute requirements: Kss1_[CD]--Ste7_[BDMAPK] True, Ste7_[ALS359]-{P} True, Ste7_[ALT363]-{P} True
+# Source states:  Kss1_[Y185]-{P} False
+# Product states: Kss1_[Y185]-{P} True
+Kss1(Y185~U,CD!1).Ste7(ALS359~P,ALT363~P,BDMAPK!1) -> Kss1(Y185~P,CD!1).Ste7(ALS359~P,ALT363~P,BDMAPK!1)    k152
+###########################153####Bag7 gap Rho1###
+# Absolute requirements: Rho1_[GnP]-{P} True
+# Source states:  Rho1_[GnP]-{P} False
+# Product states: Rho1_[GnP]-{P} True
+Bag7 + Rho1(GnP~P) -> Bag7 + Rho1(GnP~U)    k153
+###########################154####Pkh1 i PHS###
+# Source states:  Pkh1_[AssocPHS]--PHS_[AssocPkh1] False
+# Product states: Pkh1_[AssocPHS]--PHS_[AssocPkh1] True
+Pkh1(AssocPHS) + PHS(AssocPkh1) <-> PHS(AssocPkh1!1).Pkh1(AssocPHS!1)    kf154, kr154
+###########################155####Pkh2 i PHS###
+# Source states:  Pkh2_[AssocPHS]--PHS_[AssocPkh2] False
+# Product states: Pkh2_[AssocPHS]--PHS_[AssocPkh2] True
+Pkh2(AssocPHS) + PHS(AssocPkh2) <-> PHS(AssocPkh2!1).Pkh2(AssocPHS!1)    kf155, kr155
+###########################156####Pkc1 p+ Bck1###
+# Contingencies: k+ Pkc1_[C1]--Rho1_[ED], k+ Pkc1_[AssocPS]--PS_[AssocPkc1], k+ Pkc1_[ALT983]-{P}
+# Source states:  Bck1_[S939]-{P} False
+# Product states: Bck1_[S939]-{P} True
+#>>>>>>>>> Rule: 156_1
+# Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Pkc1_[AssocPS]--PS_[AssocPkc1] True, Pkc1_[ALT983]-{P} True
+PS(AssocPkc1!2).Pkc1(ALT983~P,AssocPS!2,C1!1).Rho1(ED!1) + Bck1(S939~U) -> PS(AssocPkc1!2).Pkc1(ALT983~P,AssocPS!2,C1!1).Rho1(ED!1) + Bck1(S939~P)    k156_1
+#>>>>>>>>> Rule: 156_2
+# Optional requirements: Pkc1_[C1]--Rho1_[ED] False, Pkc1_[AssocPS]--PS_[AssocPkc1] True, Pkc1_[ALT983]-{P} True
+PS(AssocPkc1!1).Pkc1(ALT983~P,AssocPS!1,C1) + Bck1(S939~U) -> PS(AssocPkc1!1).Pkc1(ALT983~P,AssocPS!1,C1) + Bck1(S939~P)    k156_2
+#>>>>>>>>> Rule: 156_3
+# Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Pkc1_[AssocPS]--PS_[AssocPkc1] False, Pkc1_[ALT983]-{P} True
+Pkc1(ALT983~P,AssocPS,C1!1).Rho1(ED!1) + Bck1(S939~U) -> Pkc1(ALT983~P,AssocPS,C1!1).Rho1(ED!1) + Bck1(S939~P)    k156_3
+#>>>>>>>>> Rule: 156_4
+# Optional requirements: Pkc1_[C1]--Rho1_[ED] False, Pkc1_[AssocPS]--PS_[AssocPkc1] False, Pkc1_[ALT983]-{P} True
+Pkc1(ALT983~P,AssocPS,C1) + Bck1(S939~U) -> Pkc1(ALT983~P,AssocPS,C1) + Bck1(S939~P)    k156_4
+#>>>>>>>>> Rule: 156_5
+# Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Pkc1_[ALT983]-{P} False, Pkc1_[AssocPS]--PS_[AssocPkc1] True
+PS(AssocPkc1!2).Pkc1(ALT983~U,AssocPS!2,C1!1).Rho1(ED!1) + Bck1(S939~U) -> PS(AssocPkc1!2).Pkc1(ALT983~U,AssocPS!2,C1!1).Rho1(ED!1) + Bck1(S939~P)    k156_5
+#>>>>>>>>> Rule: 156_6
+# Optional requirements: Pkc1_[C1]--Rho1_[ED] False, Pkc1_[ALT983]-{P} False, Pkc1_[AssocPS]--PS_[AssocPkc1] True
+PS(AssocPkc1!1).Pkc1(ALT983~U,AssocPS!1,C1) + Bck1(S939~U) -> PS(AssocPkc1!1).Pkc1(ALT983~U,AssocPS!1,C1) + Bck1(S939~P)    k156_6
+#>>>>>>>>> Rule: 156_7
+# Optional requirements: Pkc1_[C1]--Rho1_[ED] True, Pkc1_[AssocPS]--PS_[AssocPkc1] False, Pkc1_[ALT983]-{P} False
+Pkc1(ALT983~U,AssocPS,C1!1).Rho1(ED!1) + Bck1(S939~U) -> Pkc1(ALT983~U,AssocPS,C1!1).Rho1(ED!1) + Bck1(S939~P)    k156_7
+#>>>>>>>>> Rule: 156_8
+# Optional requirements: Pkc1_[C1]--Rho1_[ED] False, Pkc1_[ALT983]-{P} False, Pkc1_[AssocPS]--PS_[AssocPkc1] False
+Pkc1(ALT983~U,AssocPS,C1) + Bck1(S939~U) -> Pkc1(ALT983~U,AssocPS,C1) + Bck1(S939~P)    k156_8
+###########################157####Pkh1 p+ Pkc1###
+# Contingencies: k+ Pkh1_[AssocPHS]--PHS_[AssocPkh1]
+# Source states:  Pkc1_[ALT983]-{P} False
+# Product states: Pkc1_[ALT983]-{P} True
+#>>>>>>>>> Rule: 157_1
+# Optional requirements: Pkh1_[AssocPHS]--PHS_[AssocPkh1] True
+PHS(AssocPkh1!1).Pkh1(AssocPHS!1) + Pkc1(ALT983~U) -> PHS(AssocPkh1!1).Pkh1(AssocPHS!1) + Pkc1(ALT983~P)    k157_1
+#>>>>>>>>> Rule: 157_2
+# Optional requirements: Pkh1_[AssocPHS]--PHS_[AssocPkh1] False
+Pkh1(AssocPHS) + Pkc1(ALT983~U) -> Pkh1(AssocPHS) + Pkc1(ALT983~P)    k157_2
+###########################158####Ptp2 p- Slt2###
+# Absolute requirements: Slt2_[Y192]-{P} True
+# Source states:  Slt2_[Y192]-{P} False
+# Product states: Slt2_[Y192]-{P} True
+Ptp2 + Slt2(Y192~P) -> Ptp2 + Slt2(Y192~U)    k158
+###########################159####Kss1 ppi Msg5###
+# Source states:  Kss1_[AssocMsg5]--Msg5_[n] False
+# Product states: Kss1_[AssocMsg5]--Msg5_[n] True
+Kss1(AssocMsg5) + Msg5(n) <-> Kss1(AssocMsg5!1).Msg5(n!1)    kf159, kr159
+###########################160####Ssk1 ppi Ssk1###
+# Source states:  Ssk1_[BDSsk1]--Ssk1_[BDSsk1] False
+# Product states: Ssk1_[BDSsk1]--Ssk1_[BDSsk1] True
+Ssk1(BDSsk1) + Ssk1(BDSsk1) <-> Ssk1(BDSsk1!1).Ssk1(BDSsk1!1)    kf160, kr160
+###########################161####Hog1 p+ Smp1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Smp1_[S348]-{P} False
+# Product states: Smp1_[S348]-{P} True
+Hog1(T174~P,Y176~P) + Smp1(S348~U) -> Hog1(T174~P,Y176~P) + Smp1(S348~P)    k161
+###########################162####Hog1 p+ Smp1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Smp1_[S357]-{P} False
+# Product states: Smp1_[S357]-{P} True
+Hog1(T174~P,Y176~P) + Smp1(S357~U) -> Hog1(T174~P,Y176~P) + Smp1(S357~P)    k162
+###########################163####Hog1 p+ Smp1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Smp1_[T365]-{P} False
+# Product states: Smp1_[T365]-{P} True
+Hog1(T174~P,Y176~P) + Smp1(T365~U) -> Hog1(T174~P,Y176~P) + Smp1(T365~P)    k163
+###########################164####Hog1 p+ Smp1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Smp1_[S376]-{P} False
+# Product states: Smp1_[S376]-{P} True
+Hog1(T174~P,Y176~P) + Smp1(S376~U) -> Hog1(T174~P,Y176~P) + Smp1(S376~P)    k164
+###########################165####Hog1 p+ Hot1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Hot1_[S30]-{P} False
+# Product states: Hot1_[S30]-{P} True
+Hog1(T174~P,Y176~P) + Hot1(S30~U) -> Hog1(T174~P,Y176~P) + Hot1(S30~P)    k165
+###########################166####Hog1 p+ Hot1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Hot1_[S70]-{P} False
+# Product states: Hot1_[S70]-{P} True
+Hog1(T174~P,Y176~P) + Hot1(S70~U) -> Hog1(T174~P,Y176~P) + Hot1(S70~P)    k166
+###########################167####Hog1 p+ Hot1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Hot1_[S153]-{P} False
+# Product states: Hot1_[S153]-{P} True
+Hog1(T174~P,Y176~P) + Hot1(S153~U) -> Hog1(T174~P,Y176~P) + Hot1(S153~P)    k167
+###########################168####Hog1 p+ Hot1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Hot1_[S360]-{P} False
+# Product states: Hot1_[S360]-{P} True
+Hog1(T174~P,Y176~P) + Hot1(S360~U) -> Hog1(T174~P,Y176~P) + Hot1(S360~P)    k168
+###########################169####Hog1 p+ Hot1###
+# Contingencies: ! Hog1_[T174]-{P}, ! Hog1_[Y176]-{P}
+# Absolute requirements: Hog1_[Y176]-{P} True, Hog1_[T174]-{P} True
+# Source states:  Hot1_[S410]-{P} False
+# Product states: Hot1_[S410]-{P} True
+Hog1(T174~P,Y176~P) + Hot1(S410~U) -> Hog1(T174~P,Y176~P) + Hot1(S410~P)    k169
+###########################170####Gpa1 ppi Ste2###
+# Source states:  Gpa1_[BDRec]--Ste2_[CyT] False
+# Product states: Gpa1_[BDRec]--Ste2_[CyT] True
+Gpa1(BDRec) + Ste2(CyT) <-> Gpa1(BDRec!1).Ste2(CyT!1)    kf170, kr170
+###########################171####Ste2 ppi Ste2###
+# Source states:  Ste2_[TMD]--Ste2_[TMD] False
+# Product states: Ste2_[TMD]--Ste2_[TMD] True
+Ste2(TMD) + Ste2(TMD) <-> Ste2(TMD!1).Ste2(TMD!1)    kf171, kr171
+###########################172####Slt2 p+ Rom2###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Rom2_[Slt2]-{P} False
+# Product states: Rom2_[Slt2]-{P} True
+Slt2(T190~P,Y192~P) + Rom2(Slt2~U) -> Slt2(T190~P,Y192~P) + Rom2(Slt2~P)    k172
+###########################173####Bck1 ppi Bck1###
+# Contingencies: k- Bck1_[S939]-{P}
+# Source states:  Bck1_[n]--Bck1_[n] False
+# Product states: Bck1_[n]--Bck1_[n] True
+#>>>>>>>>> Rule: 173_1
+# Optional requirements: Bck1_[S939]-{P} False
+Bck1(S939~U,n) + Bck1(S939~U,n) <-> Bck1(S939~U,n!1).Bck1(S939~U,n!1)    kf173_1, kr173_1
+#>>>>>>>>> Rule: 173_2
+# Optional requirements: Bck1_[S939]-{P} True
+Bck1(S939~P,n) + Bck1(S939~P,n) <-> Bck1(S939~P,n!1).Bck1(S939~P,n!1)    kf173_2, kr173_2
+###########################174####Bck1 ppi Mkk1###
+# Source states:  Bck1_[AssocMkk1]--Mkk1_[AssocBck1] False
+# Product states: Bck1_[AssocMkk1]--Mkk1_[AssocBck1] True
+Bck1(AssocMkk1) + Mkk1(AssocBck1) <-> Bck1(AssocMkk1!1).Mkk1(AssocBck1!1)    kf174, kr174
+###########################175####Bck1 ppi Mkk2###
+# Source states:  Bck1_[AssocMkk2]--Mkk2_[AssocBck1] False
+# Product states: Bck1_[AssocMkk2]--Mkk2_[AssocBck1] True
+Bck1(AssocMkk2) + Mkk2(AssocBck1) <-> Bck1(AssocMkk2!1).Mkk2(AssocBck1!1)    kf175, kr175
+###########################176####Mkk1 ppi Slt2###
+# Source states:  Mkk1_[n]--Slt2_[n] False
+# Product states: Mkk1_[n]--Slt2_[n] True
+Mkk1(n) + Slt2(n) <-> Mkk1(n!1).Slt2(n!1)    kf176, kr176
+###########################177####Swi4 ipi Swi4###
+# Contingencies: x Swi4_[c]--Swi6_[c], x Slt2_[DB]--Swi4_[c]
+# Source states:  Swi4_[n]--[c] False
+# Product states: Swi4_[n]--[c] True
+Swi4(c,n) <-> Swi4(c!1,n!1)    kf177, kr177
+###########################178####MFa ppi Ste3###
+# Contingencies: ! MFa
+# Source states:  MFa_[AssocSte3]--Ste3_[Receptor] False
+# Product states: MFa_[AssocSte3]--Ste3_[Receptor] True
+MFa(AssocSte3) + Ste3(Receptor) <-> MFa(AssocSte3!1).Ste3(Receptor!1)    kf178, kr178
+###########################179####Ste3 ppi Sst2###
+# Source states:  Ste3_[CyT]--Sst2_[nDEP] False
+# Product states: Ste3_[CyT]--Sst2_[nDEP] True
+Ste3(CyT) + Sst2(nDEP) <-> Sst2(nDEP!1).Ste3(CyT!1)    kf179, kr179
+###########################180####Gpa1 ppi Ste3###
+# Source states:  Gpa1_[BDRec]--Ste3_[CyT] False
+# Product states: Gpa1_[BDRec]--Ste3_[CyT] True
+Gpa1(BDRec) + Ste3(CyT) <-> Gpa1(BDRec!1).Ste3(CyT!1)    kf180, kr180
+###########################181####Kss1 ppi Ste5###
+# Source states:  Kss1_[AssocSte5]--Ste5_[MAPK] False
+# Product states: Kss1_[AssocSte5]--Ste5_[MAPK] True
+Kss1(AssocSte5) + Ste5(MAPK) <-> Kss1(AssocSte5!1).Ste5(MAPK!1)    kf181, kr181
+###########################182####Msg5 p- Kss1###
+# Absolute requirements: Kss1_[T183]-{P} True
+# Source states:  Kss1_[T183]-{P} False
+# Product states: Kss1_[T183]-{P} True
+Msg5 + Kss1(T183~P) -> Msg5 + Kss1(T183~U)    k182
+###########################183####Msg5 p- Kss1###
+# Absolute requirements: Kss1_[Y185]-{P} True
+# Source states:  Kss1_[Y185]-{P} False
+# Product states: Kss1_[Y185]-{P} True
+Msg5 + Kss1(Y185~P) -> Msg5 + Kss1(Y185~U)    k183
+###########################184####Ptc3 p- Hog1###
+# Absolute requirements: Hog1_[T174]-{P} True
+# Source states:  Hog1_[T174]-{P} False
+# Product states: Hog1_[T174]-{P} True
+Ptc3 + Hog1(T174~P) -> Ptc3 + Hog1(T174~U)    k184
+###########################185####Ptp2 p- Hog1###
+# Contingencies: k+ Hog1_[CD]--Ptp2_[AssocHog1]
+# Absolute requirements: Hog1_[Y176]-{P} True
+# Source states:  Hog1_[Y176]-{P} False
+# Product states: Hog1_[Y176]-{P} True
+#>>>>>>>>> Rule: 185_1
+# Optional requirements: Hog1_[CD]--Ptp2_[AssocHog1] True
+Hog1(Y176~P,CD!1).Ptp2(AssocHog1!1) -> Hog1(Y176~U,CD!1).Ptp2(AssocHog1!1)    k185_1
+#>>>>>>>>> Rule: 185_2
+# Optional requirements: Hog1_[CD]--Ptp2_[AssocHog1] False
+Ptp2(AssocHog1) + Hog1(Y176~P,CD) -> Ptp2(AssocHog1) + Hog1(Y176~U,CD)    k185_2
+###########################186####Ptp3 p- Hog1###
+# Contingencies: k+ Hog1_[CD]--Ptp3_[AssocHog1]
+# Absolute requirements: Hog1_[Y176]-{P} True
+# Source states:  Hog1_[Y176]-{P} False
+# Product states: Hog1_[Y176]-{P} True
+#>>>>>>>>> Rule: 186_1
+# Optional requirements: Hog1_[CD]--Ptp3_[AssocHog1] True
+Hog1(Y176~P,CD!1).Ptp3(AssocHog1!1) -> Hog1(Y176~U,CD!1).Ptp3(AssocHog1!1)    k186_1
+#>>>>>>>>> Rule: 186_2
+# Optional requirements: Hog1_[CD]--Ptp3_[AssocHog1] False
+Ptp3(AssocHog1) + Hog1(Y176~P,CD) -> Ptp3(AssocHog1) + Hog1(Y176~U,CD)    k186_2
+###########################187####Ptp2 p- Fus3###
+# Absolute requirements: Fus3_[Y182]-{P} True
+# Source states:  Fus3_[Y182]-{P} False
+# Product states: Fus3_[Y182]-{P} True
+Ptp2 + Fus3(Y182~P) -> Ptp2 + Fus3(Y182~U)    k187
+###########################188####Kss1 p+ Sst2###
+# Contingencies: ! Kss1_[T183]-{P}, ! Kss1_[Y185]-{P}
+# Absolute requirements: Kss1_[Y185]-{P} True, Kss1_[T183]-{P} True
+# Source states:  Sst2_[S539]-{P} False
+# Product states: Sst2_[S539]-{P} True
+Kss1(T183~P,Y185~P) + Sst2(S539~U) -> Kss1(T183~P,Y185~P) + Sst2(S539~P)    k188
+###########################189####Kss1 p+ Ste5###
+# Contingencies: ! Kss1_[T183]-{P}, ! Kss1_[Y185]-{P}
+# Absolute requirements: Kss1_[Y185]-{P} True, Kss1_[T183]-{P} True
+# Source states:  Ste5_[Kss1]-{P} False
+# Product states: Ste5_[Kss1]-{P} True
+Kss1(T183~P,Y185~P) + Ste5(Kss1~U) -> Kss1(T183~P,Y185~P) + Ste5(Kss1~P)    k189
+###########################190####Ste2 gef Gpa1###
+# Contingencies: k+ MFalpha_[AssocSte2]--Ste2_[Receptor]
+# Source states:  Gpa1_[GnP]-{P} False
+# Product states: Gpa1_[GnP]-{P} True
+#>>>>>>>>> Rule: 190_1
+# Optional requirements: MFalpha_[AssocSte2]--Ste2_[Receptor] True
+MFalpha(AssocSte2!1).Ste2(Receptor!1) + Gpa1(GnP~U) -> MFalpha(AssocSte2!1).Ste2(Receptor!1) + Gpa1(GnP~P)    k190_1
+#>>>>>>>>> Rule: 190_2
+# Optional requirements: MFalpha_[AssocSte2]--Ste2_[Receptor] False
+Ste2(Receptor) + Gpa1(GnP~U) -> Ste2(Receptor) + Gpa1(GnP~P)    k190_2
+###########################191####Ste3 gef Gpa1###
+# Contingencies: k+ MFa_[AssocSte3]--Ste3_[Receptor]
+# Source states:  Gpa1_[GnP]-{P} False
+# Product states: Gpa1_[GnP]-{P} True
+#>>>>>>>>> Rule: 191_1
+# Optional requirements: MFa_[AssocSte3]--Ste3_[Receptor] True
+MFa(AssocSte3!1).Ste3(Receptor!1) + Gpa1(GnP~U) -> MFa(AssocSte3!1).Ste3(Receptor!1) + Gpa1(GnP~P)    k191_1
+#>>>>>>>>> Rule: 191_2
+# Optional requirements: MFa_[AssocSte3]--Ste3_[Receptor] False
+Ste3(Receptor) + Gpa1(GnP~U) -> Ste3(Receptor) + Gpa1(GnP~P)    k191_2
+###########################192####Rom1 gef Rho1###
+# Source states:  Rho1_[GnP]-{P} False
+# Product states: Rho1_[GnP]-{P} True
+Rom1 + Rho1(GnP~U) -> Rom1 + Rho1(GnP~P)    k192
+###########################193####Mtl1 ppi Rom2###
+# Source states:  Mtl1_[AssocRom2]--Rom2_[AssocMtl1] False
+# Product states: Mtl1_[AssocRom2]--Rom2_[AssocMtl1] True
+Mtl1(AssocRom2) + Rom2(AssocMtl1) <-> Mtl1(AssocRom2!1).Rom2(AssocMtl1!1)    kf193, kr193
+###########################194####Bck1 p+ Mkk1###
+# Contingencies: k+ Bck1_[AssocMkk1]--Mkk1_[AssocBck1], x Bck1_[n]--Bck1_[n]
+# Absolute requirements: Bck1_[n]--Bck1_[n] False
+# Source states:  Mkk1_[S377]-{P} False
+# Product states: Mkk1_[S377]-{P} True
+#>>>>>>>>> Rule: 194_1
+# Optional requirements: Bck1_[AssocMkk1]--Mkk1_[AssocBck1] True
+Bck1(AssocMkk1!1,n).Mkk1(S377~U,AssocBck1!1) -> Bck1(AssocMkk1!1,n).Mkk1(S377~P,AssocBck1!1)    k194_1
+#>>>>>>>>> Rule: 194_2
+# Optional requirements: Bck1_[AssocMkk1]--Mkk1_[AssocBck1] False
+Bck1(AssocMkk1,n) + Mkk1(S377~U,AssocBck1) -> Bck1(AssocMkk1,n) + Mkk1(S377~P,AssocBck1)    k194_2
+###########################195####Bck1 p+ Mkk1###
+# Contingencies: k+ Bck1_[AssocMkk1]--Mkk1_[AssocBck1], x Bck1_[n]--Bck1_[n]
+# Absolute requirements: Bck1_[n]--Bck1_[n] False
+# Source states:  Mkk1_[T381]-{P} False
+# Product states: Mkk1_[T381]-{P} True
+#>>>>>>>>> Rule: 195_1
+# Optional requirements: Bck1_[AssocMkk1]--Mkk1_[AssocBck1] True
+Bck1(AssocMkk1!1,n).Mkk1(T381~U,AssocBck1!1) -> Bck1(AssocMkk1!1,n).Mkk1(T381~P,AssocBck1!1)    k195_1
+#>>>>>>>>> Rule: 195_2
+# Optional requirements: Bck1_[AssocMkk1]--Mkk1_[AssocBck1] False
+Bck1(AssocMkk1,n) + Mkk1(T381~U,AssocBck1) -> Bck1(AssocMkk1,n) + Mkk1(T381~P,AssocBck1)    k195_2
+###########################196####Bck1 p+ Mkk2###
+# Contingencies: k+ Bck1_[AssocMkk2]--Mkk2_[AssocBck1], x Bck1_[n]--Bck1_[n]
+# Absolute requirements: Bck1_[n]--Bck1_[n] False
+# Source states:  Mkk2_[S370]-{P} False
+# Product states: Mkk2_[S370]-{P} True
+#>>>>>>>>> Rule: 196_1
+# Optional requirements: Bck1_[AssocMkk2]--Mkk2_[AssocBck1] True
+Bck1(AssocMkk2!1,n).Mkk2(S370~U,AssocBck1!1) -> Bck1(AssocMkk2!1,n).Mkk2(S370~P,AssocBck1!1)    k196_1
+#>>>>>>>>> Rule: 196_2
+# Optional requirements: Bck1_[AssocMkk2]--Mkk2_[AssocBck1] False
+Bck1(AssocMkk2,n) + Mkk2(S370~U,AssocBck1) -> Bck1(AssocMkk2,n) + Mkk2(S370~P,AssocBck1)    k196_2
+###########################197####Bck1 p+ Mkk2###
+# Contingencies: k+ Bck1_[AssocMkk2]--Mkk2_[AssocBck1], x Bck1_[n]--Bck1_[n]
+# Absolute requirements: Bck1_[n]--Bck1_[n] False
+# Source states:  Mkk2_[T374]-{P} False
+# Product states: Mkk2_[T374]-{P} True
+#>>>>>>>>> Rule: 197_1
+# Optional requirements: Bck1_[AssocMkk2]--Mkk2_[AssocBck1] True
+Bck1(AssocMkk2!1,n).Mkk2(T374~U,AssocBck1!1) -> Bck1(AssocMkk2!1,n).Mkk2(T374~P,AssocBck1!1)    k197_1
+#>>>>>>>>> Rule: 197_2
+# Optional requirements: Bck1_[AssocMkk2]--Mkk2_[AssocBck1] False
+Bck1(AssocMkk2,n) + Mkk2(T374~U,AssocBck1) -> Bck1(AssocMkk2,n) + Mkk2(T374~P,AssocBck1)    k197_2
+###########################198####Mkk1 p+ Slt2###
+# Contingencies: ! Mkk1_[S377]-{P}, ! Mkk1_[T381]-{P}, ! Mkk1_[n]--Slt2_[n]
+# Absolute requirements: Mkk1_[T381]-{P} True, Mkk1_[n]--Slt2_[n] True, Mkk1_[S377]-{P} True
+# Source states:  Slt2_[T190]-{P} False
+# Product states: Slt2_[T190]-{P} True
+Mkk1(S377~P,T381~P,n!1).Slt2(T190~U,n!1) -> Mkk1(S377~P,T381~P,n!1).Slt2(T190~P,n!1)    k198
+###########################199####Mkk1 p+ Slt2###
+# Contingencies: ! Mkk1_[S377]-{P}, ! Mkk1_[T381]-{P}, ! Mkk1_[n]--Slt2_[n]
+# Absolute requirements: Mkk1_[T381]-{P} True, Mkk1_[n]--Slt2_[n] True, Mkk1_[S377]-{P} True
+# Source states:  Slt2_[Y192]-{P} False
+# Product states: Slt2_[Y192]-{P} True
+Mkk1(S377~P,T381~P,n!1).Slt2(Y192~U,n!1) -> Mkk1(S377~P,T381~P,n!1).Slt2(Y192~P,n!1)    k199
+###########################200####Mkk2 p+ Slt2###
+# Contingencies: ! Mkk2_[S370]-{P}, ! Mkk2_[T374]-{P}, ! Mkk2_[n]--Slt2_[n]
+# Absolute requirements: Mkk2_[T374]-{P} True, Mkk2_[n]--Slt2_[n] True, Mkk2_[S370]-{P} True
+# Source states:  Slt2_[T190]-{P} False
+# Product states: Slt2_[T190]-{P} True
+Mkk2(S370~P,T374~P,n!1).Slt2(T190~U,n!1) -> Mkk2(S370~P,T374~P,n!1).Slt2(T190~P,n!1)    k200
+###########################201####Mkk2 p+ Slt2###
+# Contingencies: ! Mkk2_[S370]-{P}, ! Mkk2_[T374]-{P}, ! Mkk2_[n]--Slt2_[n]
+# Absolute requirements: Mkk2_[T374]-{P} True, Mkk2_[n]--Slt2_[n] True, Mkk2_[S370]-{P} True
+# Source states:  Slt2_[Y192]-{P} False
+# Product states: Slt2_[Y192]-{P} True
+Mkk2(S370~P,T374~P,n!1).Slt2(Y192~U,n!1) -> Mkk2(S370~P,T374~P,n!1).Slt2(Y192~P,n!1)    k201
+###########################202####Ste7 ppi Ste11###
+# Source states:  Ste7_[AssocSte11]--Ste11_[AssocSte7] False
+# Product states: Ste7_[AssocSte11]--Ste11_[AssocSte7] True
+Ste7(AssocSte11) + Ste11(AssocSte7) <-> Ste11(AssocSte7!1).Ste7(AssocSte11!1)    kf202, kr202
+###########################203####Fus3 ppi Ste5###
+# Contingencies: ! Ste5_[MEK]--Ste7_[AssocSte5], ! Fus3_[CD]--Ste7_[BDMAPK]
+# Absolute requirements: Ste5_[MEK]--Ste7_[AssocSte5] True, Fus3_[CD]--Ste7_[BDMAPK] True
+# Source states:  Fus3_[AssocSte5]--Ste5_[Unlock] False
+# Product states: Fus3_[AssocSte5]--Ste5_[Unlock] True
+Fus3(AssocSte5,CD!1).Ste7(BDMAPK!1) + Ste5(MEK!1,Unlock).Ste7(AssocSte5!1) <-> Fus3(AssocSte5!3,CD!2).Ste5(MEK!1,Unlock!3).Ste7(BDMAPK!2).Ste7(AssocSte5!1)    kf203, kr203
+###########################204####Slt2 p+ Sir3###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Sir3_[S282]-{P} False
+# Product states: Sir3_[S282]-{P} True
+Slt2(T190~P,Y192~P) + Sir3(S282~U) -> Slt2(T190~P,Y192~P) + Sir3(S282~P)    k204
+###########################205####Slt2 p+ Sir3###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Sir3_[S289]-{P} False
+# Product states: Sir3_[S289]-{P} True
+Slt2(T190~P,Y192~P) + Sir3(S289~U) -> Slt2(T190~P,Y192~P) + Sir3(S289~P)    k205
+###########################206####Slt2 p+ Sir3###
+# Contingencies: ! Slt2_[T190]-{P}, ! Slt2_[Y192]-{P}
+# Absolute requirements: Slt2_[T190]-{P} True, Slt2_[Y192]-{P} True
+# Source states:  Sir3_[S295]-{P} False
+# Product states: Sir3_[S295]-{P} True
+Slt2(T190~P,Y192~P) + Sir3(S295~U) -> Slt2(T190~P,Y192~P) + Sir3(S295~P)    k206
+###########################207####Ste20 i PIP2###
+# Source states:  Ste20_[BR]--PIP2_[AssocSte20] False
+# Product states: Ste20_[BR]--PIP2_[AssocSte20] True
+Ste20(BR) + PIP2(AssocSte20) <-> PIP2(AssocSte20!1).Ste20(BR!1)    kf207, kr207
+###########################208####Yps1 cut Msb2###
+# Contingencies: k+ [NutrientDeprivation]
+# Source states:  Msb2_[HMHCD]-{Truncated} False
+# Product states: Msb2_[HMHCD]-{Truncated} True
+Yps1 + Msb2(HMHCD~U) -> Yps1 + Msb2(HMHCD~Truncated)    k208_2*(1-k_NutrientDeprivation)+k208_1*k_NutrientDeprivation
+###########################209####Tec1 bind TCS###
+# Source states:  Tec1_[nTEA]--TCS_[AssocTec1] False
+# Product states: Tec1_[nTEA]--TCS_[AssocTec1] True
+Tec1(nTEA) + TCS(AssocTec1) <-> TCS(AssocTec1!1).Tec1(nTEA!1)    kf209, kr209
+###########################210####SCF ub+ Tec1###
+# Contingencies: ! Cdc4_[WD40]--Tec1_[CPD], ! Cdc4_[AssocSCF]--SCF_[AssocCdc4]
+# Absolute requirements: Cdc4_[WD40]--Tec1_[CPD] True, Cdc4_[AssocSCF]--SCF_[AssocCdc4] True
+# Source states:  Tec1_[SCF]-{Ub} False
+# Product states: Tec1_[SCF]-{Ub} True
+Cdc4(AssocSCF!1).SCF(AssocCdc4!1) + Cdc4(WD40!1).Tec1(SCF~U,CPD!1) -> Cdc4(AssocSCF!1).SCF(AssocCdc4!1) + Cdc4(WD40!1).Tec1(SCF~Ub,CPD!1)    k210
+###########################211####Sko1 bind CRE###
+# Source states:  Sko1_[bZIP]--CRE_[AssocSko1] False
+# Product states: Sko1_[bZIP]--CRE_[AssocSko1] True
+Sko1(bZIP) + CRE(AssocSko1) <-> CRE(AssocSko1!1).Sko1(bZIP!1)    kf211, kr211
+###########################212####Sko1 ppi Tup1###
+# Contingencies: k- Sko1_[nS108]-{P}, k- Sko1_[nS113]-{P}, k- Sko1_[nS126]-{P}
+# Source states:  Sko1_[n]--Tup1_[AssocSko1] False
+# Product states: Sko1_[n]--Tup1_[AssocSko1] True
+#>>>>>>>>> Rule: 212_1
+# Optional requirements: Sko1_[nS108]-{P} False, Sko1_[nS126]-{P} False, Sko1_[nS113]-{P} False
+Sko1(nS108~U,nS113~U,nS126~U,n) + Tup1(AssocSko1) <-> Sko1(nS108~U,nS113~U,nS126~U,n!1).Tup1(AssocSko1!1)    kf212_1, kr212_1
+#>>>>>>>>> Rule: 212_2
+# Optional requirements: Sko1_[nS126]-{P} False, Sko1_[nS108]-{P} True, Sko1_[nS113]-{P} False
+Sko1(nS108~P,nS113~U,nS126~U,n) + Tup1(AssocSko1) <-> Sko1(nS108~P,nS113~U,nS126~U,n!1).Tup1(AssocSko1!1)    kf212_2, kr212_2
+#>>>>>>>>> Rule: 212_3
+# Optional requirements: Sko1_[nS108]-{P} False, Sko1_[nS126]-{P} False, Sko1_[nS113]-{P} True
+Sko1(nS108~U,nS113~P,nS126~U,n) + Tup1(AssocSko1) <-> Sko1(nS108~U,nS113~P,nS126~U,n!1).Tup1(AssocSko1!1)    kf212_3, kr212_3
+#>>>>>>>>> Rule: 212_4
+# Optional requirements: Sko1_[nS126]-{P} False, Sko1_[nS108]-{P} True, Sko1_[nS113]-{P} True
+Sko1(nS108~P,nS113~P,nS126~U,n) + Tup1(AssocSko1) <-> Sko1(nS108~P,nS113~P,nS126~U,n!1).Tup1(AssocSko1!1)    kf212_4, kr212_4
+#>>>>>>>>> Rule: 212_5
+# Optional requirements: Sko1_[nS108]-{P} False, Sko1_[nS113]-{P} False, Sko1_[nS126]-{P} True
+Sko1(nS108~U,nS113~U,nS126~P,n) + Tup1(AssocSko1) <-> Sko1(nS108~U,nS113~U,nS126~P,n!1).Tup1(AssocSko1!1)    kf212_5, kr212_5
+#>>>>>>>>> Rule: 212_6
+# Optional requirements: Sko1_[nS108]-{P} True, Sko1_[nS113]-{P} False, Sko1_[nS126]-{P} True
+Sko1(nS108~P,nS113~U,nS126~P,n) + Tup1(AssocSko1) <-> Sko1(nS108~P,nS113~U,nS126~P,n!1).Tup1(AssocSko1!1)    kf212_6, kr212_6
+#>>>>>>>>> Rule: 212_7
+# Optional requirements: Sko1_[nS108]-{P} False, Sko1_[nS113]-{P} True, Sko1_[nS126]-{P} True
+Sko1(nS108~U,nS113~P,nS126~P,n) + Tup1(AssocSko1) <-> Sko1(nS108~U,nS113~P,nS126~P,n!1).Tup1(AssocSko1!1)    kf212_7, kr212_7
+#>>>>>>>>> Rule: 212_8
+# Optional requirements: Sko1_[nS108]-{P} True, Sko1_[nS113]-{P} True, Sko1_[nS126]-{P} True
+Sko1(nS108~P,nS113~P,nS126~P,n) + Tup1(AssocSko1) <-> Sko1(nS108~P,nS113~P,nS126~P,n!1).Tup1(AssocSko1!1)    kf212_8, kr212_8
+###########################213####Cyc8 ppi Tup1###
+# Source states:  Cyc8_[TPR13]--Tup1_[n] False
+# Product states: Cyc8_[TPR13]--Tup1_[n] True
+Cyc8(TPR13) + Tup1(n) <-> Cyc8(TPR13!1).Tup1(n!1)    kf213, kr213
+###########################214####Hot1 bind Hot1Site###
+# Source states:  Hot1_[AssocHot1Site]--Hot1Site_[AssocHot1] False
+# Product states: Hot1_[AssocHot1Site]--Hot1Site_[AssocHot1] True
+Hot1(AssocHot1Site) + Hot1Site(AssocHot1) <-> Hot1(AssocHot1Site!1).Hot1Site(AssocHot1!1)    kf214, kr214
+###########################215####Ste12 bind PRE###
+# Source states:  Ste12_[nHTH]--PRE_[AssocSte12] False
+# Product states: Ste12_[nHTH]--PRE_[AssocSte12] True
+Ste12(nHTH) + PRE(AssocSte12) <-> PRE(AssocSte12!1).Ste12(nHTH!1)    kf215, kr215
+###########################216####Rlm1 bind Rlm1Site###
+# Source states:  Rlm1_[AssocRlm1Site]--Rlm1Site_[AssocRlm1] False
+# Product states: Rlm1_[AssocRlm1Site]--Rlm1Site_[AssocRlm1] True
+Rlm1(AssocRlm1Site) + Rlm1Site(AssocRlm1) <-> Rlm1(AssocRlm1Site!1).Rlm1Site(AssocRlm1!1)    kf216, kr216
+###########################217####Smp1 bind Smp1Site###
+# Source states:  Smp1_[AssocSmp1Site]--Smp1Site_[AssocSmp1] False
+# Product states: Smp1_[AssocSmp1Site]--Smp1Site_[AssocSmp1] True
+Smp1(AssocSmp1Site) + Smp1Site(AssocSmp1) <-> Smp1(AssocSmp1Site!1).Smp1Site(AssocSmp1!1)    kf217, kr217
+###########################218####Swi4 bind SCBG1###
+# Contingencies: x Slt2_[DB]--Swi4_[c], x Swi4_[n]--Swi4_[c]
+# Absolute requirements: Slt2_[DB]--Swi4_[c] False, Swi4_[n]--Swi4_[c] False
+# Source states:  Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4] False
+# Product states: Swi4_[AssocSCBG1]--SCBG1_[AssocSwi4] True
+Swi4(AssocSCBG1,c,n) + SCBG1(AssocSwi4) <-> SCBG1(AssocSwi4!1).Swi4(AssocSCBG1!1,c,n)    kf218, kr218
+###########################219####Swi4 bind SCBFKS2###
+# Contingencies: ! Slt2_[DB]--Swi4_[c], x Swi4_[n]--Swi4_[c]
+# Absolute requirements: Swi4_[n]--Swi4_[c] False, Slt2_[DB]--Swi4_[c] True
+# Source states:  Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] False
+# Product states: Swi4_[AssocSCBFKS2]--SCBFKS2_[AssocSwi4] True
+Slt2(DB!1).Swi4(AssocSCBFKS2,c!1,n) + SCBFKS2(AssocSwi4) <-> SCBFKS2(AssocSwi4!1).Slt2(DB!2).Swi4(AssocSCBFKS2!1,c!2,n)    kf219, kr219
+###########################220####Cdc4 ppi Tec1###
+# Contingencies: ! Tec1_[T276]-{P}, ! Tec1_[T273]-{P}
+# Absolute requirements: Tec1_[T273]-{P} True, Tec1_[T276]-{P} True
+# Source states:  Cdc4_[WD40]--Tec1_[CPD] False
+# Product states: Cdc4_[WD40]--Tec1_[CPD] True
+Cdc4(WD40) + Tec1(T273~P,T276~P,CPD) <-> Cdc4(WD40!1).Tec1(T273~P,T276~P,CPD!1)    kf220, kr220
+###########################221####Fus3 p+ Tec1###
+# Contingencies: ! Fus3_[T180]-{P}, ! Fus3_[Y182]-{P}
+# Absolute requirements: Fus3_[Y182]-{P} True, Fus3_[T180]-{P} True
+# Source states:  Tec1_[T276]-{P} False
+# Product states: Tec1_[T276]-{P} True
+Fus3(T180~P,Y182~P) + Tec1(T276~U) -> Fus3(T180~P,Y182~P) + Tec1(T276~P)    k221
+###########################222####Cdc4 ppi SCF###
+# Source states:  Cdc4_[AssocSCF]--SCF_[AssocCdc4] False
+# Product states: Cdc4_[AssocSCF]--SCF_[AssocCdc4] True
+Cdc4(AssocSCF) + SCF(AssocCdc4) <-> Cdc4(AssocSCF!1).SCF(AssocCdc4!1)    kf222, kr222
+end reaction rules
+end model
+
+generate_network({overwrite=>1,max_stoich=>{Bag7=>4,Bar1=>4,Bck1=>4,Bem2=>4,Bem3=>4,CRE=>4,Cdc24=>4,Cdc4=>4,Cdc42=>4,Cyc8=>4,Dig1=>4,Dig2=>4,Far1=>4,Fus3=>4,Gpa1=>4,Hkr1=>4,Hog1=>4,Hot1=>4,Hot1Site=>4,Kss1=>4,Lrg1=>4,MFa=>4,MFalpha=>4,Mid2=>4,Mkk1=>4,Mkk2=>4,Mlp1=>4,Msb2=>4,Msg5=>4,Mtl1=>4,Nbp2=>4,Opy2=>4,PHS=>4,PIP2=>4,PRE=>4,PS=>4,Pbs2=>4,Pkc1=>4,Pkh1=>4,Pkh2=>4,Ptc1=>4,Ptc2=>4,Ptc3=>4,Ptp2=>4,Ptp3=>4,Rck2=>4,Rga1=>4,Rga2=>4,Rho1=>4,Rlm1=>4,Rlm1Site=>4,Rom1=>4,Rom2=>4,SCBFKS2=>4,SCBG1=>4,SCF=>4,Sac7=>4,Sdp1=>4,Sho1=>4,Sic1=>4,Sir3=>4,Sko1=>4,Slg1=>4,Sln1=>4,Slt2=>4,Smp1=>4,Smp1Site=>4,Ssk1=>4,Ssk2=>4,Ssk22=>4,Sst2=>4,Ste11=>4,Ste12=>4,Ste18=>4,Ste2=>4,Ste20=>4,Ste3=>4,Ste4=>4,Ste5=>4,Ste50=>4,Ste7=>4,Swi4=>4,Swi6=>4,TCS=>4,Tec1=>4,Tup1=>4,Tus1=>4,Wsc2=>4,Ypd1=>4,Yps1=>4,Zeo1=>4}});

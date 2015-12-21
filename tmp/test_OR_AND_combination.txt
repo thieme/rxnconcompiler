@@ -1,0 +1,283 @@
+A_ppi_B; ! <AorC> 
+<AorC>; OR A_[x]-{P}
+<AorC>; OR B--C
+<AorC>; OR A--D
+<AorC>; OR B_[y]-{P}
+
+# Contingencies: ! (A_[x]-{P} or B_[AssocC]--C_[AssocB] or A_[AssocD]--D_[AssocA] or B_[y]-{P})
+# Source states:  A_[AssocB]--B_[AssocA] False
+# Product states: A_[AssocB]--B_[AssocA] True
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: A_[x]-{P} True
+A(x~P,AssocB) + B(AssocA) <-> A(x~P,AssocB!1).B(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: A_[x]-{P} False, A_[AssocD]--D_[AssocA] True
+A(x~U,AssocB,AssocD!1).D(AssocA!1) + B(AssocA) <-> A(x~U,AssocB!2,AssocD!1).B(AssocA!2).D(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_3
+# Optional requirements: B_[y]-{P} True, A_[x]-{P} False, A_[AssocD]--D_[AssocA] False
+A(x~U,AssocB,AssocD) + B(y~P,AssocA) <-> A(x~U,AssocB!1,AssocD).B(y~P,AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_4
+# Optional requirements: B_[y]-{P} False, A_[x]-{P} False, B_[AssocC]--C_[AssocB] True, A_[AssocD]--D_[AssocA] False
+A(x~U,AssocB,AssocD) + B(y~U,AssocA,AssocC!1).C(AssocB!1) <-> A(x~U,AssocB!2,AssocD).B(y~U,AssocA!2,AssocC!1).C(AssocB!1)    kf1, kr1
+
+
+
+A_ppi_B; ! <comp>
+<comp>; or A-{P}
+<comp>; or B-{P}
+<comp>; or <compA>
+<compA>; and A--C
+<compA>; and A--D
+<comp>; or <compB>
+<compB>; and B--E
+<compB>; and B--F
+
+
+# Optional requirements: A_[bd]-{P} True
+A(bd~P,AssocB) + B(AssocA) <-> A(bd~P,AssocB!1).B(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: A_[bd]-{P} False, A_[AssocD]--D_[AssocA] True, A_[AssocC]--C_[AssocA] True
+A(bd~U,AssocB,AssocC!2,AssocD!1).C(AssocA!2).D(AssocA!1) + B(AssocA) <-> A(bd~U,AssocB!3,AssocC!2,AssocD!1).B(AssocA!3).C(AssocA!2).D(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_3
+# Optional requirements: A_[AssocD]--D_[AssocA] False, B_[bd]-{P} True, A_[AssocC]--C_[AssocA] False, A_[bd]-{P} False
+A(bd~U,AssocB,AssocC,AssocD) + B(bd~P,AssocA) <-> A(bd~U,AssocB!1,AssocC,AssocD).B(bd~P,AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_4
+# Optional requirements: B_[AssocF]--F_[AssocB] True, B_[bd]-{P} False, A_[bd]-{P} False, A_[AssocD]--D_[AssocA] False, A_[AssocC]--C_[AssocA] False, B_[AssocE]--E_[AssocB] True
+A(bd~U,AssocB,AssocC,AssocD) + B(bd~U,AssocA,AssocE!2,AssocF!1).E(AssocB!2).F(AssocB!1) <-> A(bd~U,AssocB!3,AssocC,AssocD).B(bd~U,AssocA!3,AssocE!2,AssocF!1).E(AssocB!2).F(AssocB!1)    kf1, kr1
+
+
+A_ppi_B; ! <AorC> 
+<AorC>; OR <complA>
+<complA>; AND A_[x]-{P}
+<complA>; AND A--D
+<AorC>; OR <complB>
+<complB>; AND B_[y]-{P}
+<complB>; AND B--C
+
+# Optional requirements: B_[y]-{P} True, B_[AssocC]--C_[AssocB] True
+A(AssocB) + B(y~P,AssocA,AssocC!1).C(AssocB!1) <-> A(AssocB!2).B(y~P,AssocA!2,AssocC!1).C(AssocB!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: B_[y]-{P} False, A_[x]-{P} True, A_[AssocD]--D_[AssocA] True, B_[AssocC]--C_[AssocB] False
+A(x~P,AssocB,AssocD!1).D(AssocA!1) + B(y~U,AssocA,AssocC) <-> A(x~P,AssocB!2,AssocD!1).B(y~U,AssocA!2,AssocC).D(AssocA!1)    kf1, kr1
+
+
+A_ppi_B; ! <compA>
+<compA>; or <compA1>
+<compA>; or <compA2>
+<compA>; or <compB>
+<compB>; and B--T
+<compB>; and B--Z
+<compA1>; and A--C
+<compA1>; and A--D
+<compA2>; and A--E
+<compA2>; and A--F
+
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: B_[AssocZ]--Z_[AssocB] True, B_[AssocT]--T_[AssocB] True
+A(AssocB) + B(AssocA,AssocT!2,AssocZ!1).T(AssocB!2).Z(AssocB!1) <-> A(AssocB!3).B(AssocA!3,AssocT!2,AssocZ!1).T(AssocB!2).Z(AssocB!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: B_[AssocT]--T_[AssocB] False, A_[AssocE]--E_[AssocA] True, B_[AssocZ]--Z_[AssocB] False, A_[AssocF]--F_[AssocA] True
+A(AssocB,AssocE!2,AssocF!1).E(AssocA!2).F(AssocA!1) + B(AssocA,AssocT,AssocZ) <-> A(AssocB!3,AssocE!2,AssocF!1).B(AssocA!3,AssocT,AssocZ).E(AssocA!2).F(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: B_[AssocT]--T_[AssocB] False, A_[AssocD]--D_[AssocA] True, A_[AssocC]--C_[AssocA] True, B_[AssocZ]--Z_[AssocB] False, A_[AssocF]--F_[AssocA] True, A_[AssocE]--E_[AssocA] False
+A(AssocB,AssocC!3,AssocD!2,AssocE,AssocF!1).C(AssocA!3).D(AssocA!2).F(AssocA!1) + B(AssocA,AssocT,AssocZ) <-> A(AssocB!4,AssocC!3,AssocD!2,AssocE,AssocF!1).B(AssocA!4,AssocT,AssocZ).C(AssocA!3).D(AssocA!2).F(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_3
+# Optional requirements: A_[AssocD]--D_[AssocA] True, B_[AssocZ]--Z_[AssocB] False, B_[AssocT]--T_[AssocB] False, A_[AssocF]--F_[AssocA] False, A_[AssocC]--C_[AssocA] True
+A(AssocB,AssocC!2,AssocD!1,AssocF).C(AssocA!2).D(AssocA!1) + B(AssocA,AssocT,AssocZ) <-> A(AssocB!3,AssocC!2,AssocD!1,AssocF).B(AssocA!3,AssocT,AssocZ).C(AssocA!2).D(AssocA!1)    kf1, kr1
+
+
+
+x
+
+A_ppi_B; x <AorC> 
+<AorC>; OR A_[x]-{P}
+<AorC>; OR B--C
+<AorC>; OR A--D
+<AorC>; OR B_[y]-{P}
+
+A(x~U,AssocB,AssocD) + B(y~U,AssocA,AssocC) <-> A(x~U,AssocB!1,AssocD).B(y~U,AssocA!1,AssocC)    kf1, kr1
+
+OR
+
+A(x~U,AssocB,AssocD) + B(AssocA) <-> A(x~U,AssocB!1,AssocD).B(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: B_[y]-{P} False, B_[AssocC]--C_[AssocB] False
+A(x~U,AssocB,AssocD) + B(y~U,AssocA,AssocC) <-> A(x~U,AssocB!1,AssocD).B(y~U,AssocA!1,AssocC)    kf1, kr1
+
+
+A_ppi_B; x <AorC> 
+<AorC>; OR <complA>
+<complA>; AND A_[x]-{P}
+<complA>; AND A--D
+<AorC>; OR <complB>
+<complB>; AND B_[y]-{P}
+<complB>; AND B--C
+
+# Optional requirements: B_[AssocC]--C_[AssocB] True
+A(AssocB) + B(AssocA,AssocC!1).C(AssocB!1) <-> A(AssocB!2).B(AssocA!2,AssocC!1).C(AssocB!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: B_[AssocC]--C_[AssocB] False
+A(AssocB) + B(AssocA,AssocC) <-> A(AssocB!1).B(AssocA!1,AssocC)    kf1, kr1
+#>>>>>>>>> Rule: 1_3
+# Optional requirements: B_[y]-{P} False, A_[AssocD]--D_[AssocA] True, B_[AssocC]--C_[AssocB] False
+A(AssocB,AssocD!1).D(AssocA!1) + B(y~U,AssocA,AssocC) <-> A(AssocB!2,AssocD!1).B(y~U,AssocA!2,AssocC).D(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_4
+# Optional requirements: B_[y]-{P} False, B_[AssocC]--C_[AssocB] False, A_[AssocD]--D_[AssocA] False
+A(AssocB,AssocD) + B(y~U,AssocA,AssocC) <-> A(AssocB!1,AssocD).B(y~U,AssocA!1,AssocC)    kf1, kr1
+
+
+A_ppi_B; x <comp>
+<comp>; or A-{P}
+<comp>; or B-{P}
+<comp>; or <compA>
+<compA>; and A--C
+<compA>; and A--D
+<comp>; or <compB>
+<compB>; and B--E
+<compB>; and B--F
+
+
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: A_[AssocD]--D_[AssocA] True, A_[AssocC]--C_[AssocA] False
+A(bd~U,AssocB,AssocC,AssocD!1).D(AssocA!1) + B(AssocA) <-> A(bd~U,AssocB!2,AssocC,AssocD!1).B(AssocA!2).D(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: A_[AssocD]--D_[AssocA] False
+A(bd~U,AssocB,AssocD) + B(AssocA) <-> A(bd~U,AssocB!1,AssocD).B(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_3
+# Optional requirements: A_[AssocC]--C_[AssocA] False, B_[bd]-{P} False, B_[AssocE]--E_[AssocB] False, B_[AssocF]--F_[AssocB] True, A_[AssocD]--D_[AssocA] False
+A(bd~U,AssocB,AssocC,AssocD) + B(bd~U,AssocA,AssocE,AssocF!1).F(AssocB!1) <-> A(bd~U,AssocB!2,AssocC,AssocD).B(bd~U,AssocA!2,AssocE,AssocF!1).F(AssocB!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_4
+# Optional requirements: A_[AssocC]--C_[AssocA] False, A_[AssocD]--D_[AssocA] False, B_[AssocF]--F_[AssocB] False, B_[bd]-{P} False
+A(bd~U,AssocB,AssocC,AssocD) + B(bd~U,AssocA,AssocF) <-> A(bd~U,AssocB!1,AssocC,AssocD).B(bd~U,AssocA!1,AssocF)    kf1, kr1
+
+
+
+k+
+A_ppi_B; k+ <AorC> 
+<AorC>; OR A_[x]-{P}
+<AorC>; OR B--C
+<AorC>; OR A--D
+<AorC>; OR B_[y]-{P}
+
+
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: A_[x]-{P} True
+A(x~P,AssocB) + B(AssocA) <-> A(x~P,AssocB!1).B(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: A_[x]-{P} False, A_[AssocD]--D_[AssocA] True
+A(x~U,AssocB,AssocD!1).D(AssocA!1) + B(AssocA) <-> A(x~U,AssocB!2,AssocD!1).B(AssocA!2).D(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_3
+# Optional requirements: A_[x]-{P} False, A_[AssocD]--D_[AssocA] False
+A(x~U,AssocB,AssocD) + B(AssocA) <-> A(x~U,AssocB!1,AssocD).B(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_4
+# Optional requirements: B_[y]-{P} True, A_[x]-{P} False, A_[AssocD]--D_[AssocA] False
+A(x~U,AssocB,AssocD) + B(y~P,AssocA) <-> A(x~U,AssocB!1,AssocD).B(y~P,AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_5
+# Optional requirements: B_[y]-{P} False, A_[x]-{P} False, B_[AssocC]--C_[AssocB] True, A_[AssocD]--D_[AssocA] False
+A(x~U,AssocB,AssocD) + B(y~U,AssocA,AssocC!1).C(AssocB!1) <-> A(x~U,AssocB!2,AssocD).B(y~U,AssocA!2,AssocC!1).C(AssocB!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_6
+# Optional requirements: B_[y]-{P} False, A_[x]-{P} False, B_[AssocC]--C_[AssocB] False, A_[AssocD]--D_[AssocA] False
+A(x~U,AssocB,AssocD) + B(y~U,AssocA,AssocC) <-> A(x~U,AssocB!1,AssocD).B(y~U,AssocA!1,AssocC)    kf1, kr1
+
+
+A_ppi_B; k+ <AorC> 
+<AorC>; OR <complA>
+<complA>; AND A_[x]-{P}
+<complA>; AND A--D
+<AorC>; OR <complB>
+<complB>; AND B_[y]-{P}
+<complB>; AND B--C
+
+
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: B_[y]-{P} True, B_[AssocC]--C_[AssocB] True
+A(AssocB) + B(y~P,AssocA,AssocC!1).C(AssocB!1) <-> A(AssocB!2).B(y~P,AssocA!2,AssocC!1).C(AssocB!1)    kf1_1, kr1_1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: B_[AssocC]--C_[AssocB] True
+A(AssocB) + B(AssocA,AssocC!1).C(AssocB!1) <-> A(AssocB!2).B(AssocA!2,AssocC!1).C(AssocB!1)    kf1_2, kr1_2
+#>>>>>>>>> Rule: 1_3
+# Optional requirements: B_[AssocC]--C_[AssocB] False
+A(AssocB) + B(AssocA,AssocC) <-> A(AssocB!1).B(AssocA!1,AssocC)    kf1_2, kr1_2
+#>>>>>>>>> Rule: 1_4
+# Optional requirements: B_[y]-{P} False, A_[x]-{P} True, A_[AssocD]--D_[AssocA] True, B_[AssocC]--C_[AssocB] False
+A(x~P,AssocB,AssocD!1).D(AssocA!1) + B(y~U,AssocA,AssocC) <-> A(x~P,AssocB!2,AssocD!1).B(y~U,AssocA!2,AssocC).D(AssocA!1)    kf1_1, kr1_1
+#>>>>>>>>> Rule: 1_5
+# Optional requirements: B_[y]-{P} False, A_[AssocD]--D_[AssocA] True, B_[AssocC]--C_[AssocB] False
+A(AssocB,AssocD!1).D(AssocA!1) + B(y~U,AssocA,AssocC) <-> A(AssocB!2,AssocD!1).B(y~U,AssocA!2,AssocC).D(AssocA!1)    kf1_2, kr1_2
+#>>>>>>>>> Rule: 1_6
+# Optional requirements: B_[y]-{P} False, B_[AssocC]--C_[AssocB] False, A_[AssocD]--D_[AssocA] False
+A(AssocB,AssocD) + B(y~U,AssocA,AssocC) <-> A(AssocB!1,AssocD).B(y~U,AssocA!1,AssocC)    kf1_2, kr1_2
+
+
+
+A_ppi_B; k+ <comp>
+<comp>; or A-{P}
+<comp>; or B-{P}
+<comp>; or <compA>
+<compA>; and A--C
+<compA>; and A--D
+<comp>; or <compB>
+<compB>; and B--E
+<compB>; and B--F
+
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: A_[bd]-{P} True
+A(bd~P,AssocB) + B(AssocA) <-> A(bd~P,AssocB!1).B(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: A_[bd]-{P} False, A_[AssocD]--D_[AssocA] True, A_[AssocC]--C_[AssocA] True
+A(bd~U,AssocB,AssocC!2,AssocD!1).C(AssocA!2).D(AssocA!1) + B(AssocA) <-> A(bd~U,AssocB!3,AssocC!2,AssocD!1).B(AssocA!3).C(AssocA!2).D(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_3
+# Optional requirements: A_[AssocD]--D_[AssocA] True, A_[AssocC]--C_[AssocA] False, A_[bd]-{P} False
+A(bd~U,AssocB,AssocC,AssocD!1).D(AssocA!1) + B(AssocA) <-> A(bd~U,AssocB!2,AssocC,AssocD!1).B(AssocA!2).D(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_4
+# Optional requirements: A_[AssocD]--D_[AssocA] False, A_[bd]-{P} False
+A(bd~U,AssocB,AssocD) + B(AssocA) <-> A(bd~U,AssocB!1,AssocD).B(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_5
+# Optional requirements: A_[AssocD]--D_[AssocA] False, B_[bd]-{P} True, A_[AssocC]--C_[AssocA] False, A_[bd]-{P} False
+A(bd~U,AssocB,AssocC,AssocD) + B(bd~P,AssocA) <-> A(bd~U,AssocB!1,AssocC,AssocD).B(bd~P,AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_6
+# Optional requirements: B_[AssocF]--F_[AssocB] True, B_[bd]-{P} False, A_[bd]-{P} False, A_[AssocD]--D_[AssocA] False, A_[AssocC]--C_[AssocA] False, B_[AssocE]--E_[AssocB] True
+A(bd~U,AssocB,AssocC,AssocD) + B(bd~U,AssocA,AssocE!2,AssocF!1).E(AssocB!2).F(AssocB!1) <-> A(bd~U,AssocB!3,AssocC,AssocD).B(bd~U,AssocA!3,AssocE!2,AssocF!1).E(AssocB!2).F(AssocB!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_7
+# Optional requirements: B_[AssocF]--F_[AssocB] True, B_[bd]-{P} False, A_[bd]-{P} False, A_[AssocD]--D_[AssocA] False, A_[AssocC]--C_[AssocA] False, B_[AssocE]--E_[AssocB] False
+A(bd~U,AssocB,AssocC,AssocD) + B(bd~U,AssocA,AssocE,AssocF!1).F(AssocB!1) <-> A(bd~U,AssocB!2,AssocC,AssocD).B(bd~U,AssocA!2,AssocE,AssocF!1).F(AssocB!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_8
+# Optional requirements: A_[AssocC]--C_[AssocA] False, A_[AssocD]--D_[AssocA] False, B_[AssocF]--F_[AssocB] False, B_[bd]-{P} False, A_[bd]-{P} False
+A(bd~U,AssocB,AssocC,AssocD) + B(bd~U,AssocA,AssocF) <-> A(bd~U,AssocB!1,AssocC,AssocD).B(bd~U,AssocA!1,AssocF)    kf1, kr1
+
+
+
+A_ppi_B; ! <III>
+<III>; AND <II>
+<III>; AND <I>
+<I>; OR A--C
+<I>; OR A--F
+<II>; OR A--D
+<II>; OR A--E
+
+expect:
+
+C, D
+C, not D, E
+not C, F, D
+not C, F, not D, E
+
+get:
+
+D
+not D E
+C not D not E
+not C not D not E F 
+
+#>>>>>>>>> Rule: 1_1
+# Optional requirements: A_[AssocD]--D_[AssocA] True
+A(AssocB,AssocD!1).D(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocD!1).B(AssocA!2).D(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_2
+# Optional requirements: A_[AssocE]--E_[AssocA] True, A_[AssocD]--D_[AssocA] False
+A(AssocB,AssocD,AssocE!1).E(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocD,AssocE!1).B(AssocA!2).E(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_3
+# Optional requirements: A_[AssocE]--E_[AssocA] False, A_[AssocD]--D_[AssocA] False, A_[AssocC]--C_[AssocA] True
+A(AssocB,AssocC!1,AssocD,AssocE).C(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocC!1,AssocD,AssocE).B(AssocA!2).C(AssocA!1)    kf1, kr1
+#>>>>>>>>> Rule: 1_4
+# Optional requirements: A_[AssocC]--C_[AssocA] False, A_[AssocE]--E_[AssocA] False, A_[AssocD]--D_[AssocA] False, A_[AssocF]--F_[AssocA] True
+A(AssocB,AssocC,AssocD,AssocE,AssocF!1).F(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocC,AssocD,AssocE,AssocF!1).B(AssocA!2).F(AssocA!1)    kf1, kr1
