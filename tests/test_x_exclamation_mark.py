@@ -239,9 +239,6 @@ class x_exclamation_mark_Tests(TestCase):
         #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
         # ''')
         #rxncon = Rxncon("""A_ipi_A_[d/s(r)]""")
-
-        #rxncon = Rxncon('A_ppi_B\nA_ppi_C; ! A--B ')
-
         # rxncon = Rxncon('''Z_p+_A
         #                 Y_p+_A_[d]
         #                 W_p+_A_[d/s]

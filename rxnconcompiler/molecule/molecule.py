@@ -107,6 +107,11 @@ class Molecule:
     def __eq__(self, other):
         if not self.name == other.name:
             return False
+        if isinstance(other, Component):
+            if self.mid and other.cid and self.mid != other.cid:
+                return False
+            else:
+                return True
         if self.mid and other.mid and self.mid != other.mid:
             return False
         return True

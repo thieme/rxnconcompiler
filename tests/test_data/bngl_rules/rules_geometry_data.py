@@ -16,7 +16,9 @@ GEOMETRY = {
 <C2>; 1--2 Ste5_[MEKK]--Ste11; 3--4 Ste5_[MEK]--Ste7; 1--3 Ste5_[BDSte5]--Ste5_[BDSte5]""": {
     'Rules':[
     'Ste11(AssocSte7!1).Ste7(ALS359~U,AssocSte11!1) -> Ste11(AssocSte7!1).Ste7(ALS359~P,AssocSte11!1)',
-    'Ste11(AssocSte5!3,AssocSte7).Ste5(BDSte5!2,MEKK!3).Ste5(BDSte5!2,MEK!1).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3,AssocSte7).Ste5(BDSte5!2,MEKK!3).Ste5(BDSte5!2,MEK!1).Ste7(ALS359~P,AssocSte11,AssocSte5!1)'],
+    #'Ste11(AssocSte5!3).Ste5(BDSte5!2,MEKK!3).Ste5(BDSte5!2,MEK!1).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3).Ste5(BDSte5!2,MEKK!3).Ste5(BDSte5!2,MEK!1).Ste7(ALS359~P,AssocSte11,AssocSte5!1)'],
+                        # the numbering changed a bit through the new indexing during the tree building step and sorting step later
+    'Ste11(AssocSte5!2).Ste5(BDSte5!3,MEK!1).Ste5(BDSte5!3,MEKK!2).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!2).Ste5(BDSte5!3,MEK!1).Ste5(BDSte5!3,MEKK!2).Ste7(ALS359~P,AssocSte11,AssocSte5!1)'],
     'Tags': [
     1, 'P+', 'contingencies', '!', 'bool', 'defined geometry']},
 
@@ -108,7 +110,92 @@ GEOMETRY = {
     'Tags': [
     1, 'ppi','contingencies', '!', 'bool', 'defined geometry']},
 
+# simple example for a cis p+
+    #Tree:   B <- this B gets p+
+    #       / \
+    #      B   A
+     """A_p+_B; ! <cis>
+            <cis>; 1--2 B--B
+            <cis>; 1--3 B--A"""
+        : {
+    'Rules':[
+    'A(AssocB!2).B(A~U,AssocA!2,AssocB!1).B(AssocB!1) -> A(AssocB!2).B(A~P,AssocA!2,AssocB!1).B(AssocB!1)'],
+    'Tags': [
+    1, 'p+','contingencies', '!', 'bool', 'defined geometry']},
 
+#simple exa,ple for a trans p+
+    #Tree:  B <- this be gets p+
+    #       |
+    #       B
+    #       |
+    #       A
+     """A_p+_B; ! <trans>
+        <trans>; 1--2 B--B
+        <trans>; 2--3 B--A"""
+        : {
+    'Rules':[
+    'A(AssocB!1).B(A~U,AssocB!2).B(AssocA!1,AssocB!2) -> A(AssocB!1).B(A~P,AssocB!2).B(AssocA!1,AssocB!2)'],
+    'Tags': [
+    1, 'p+','contingencies', '!', 'bool', 'defined geometry']},
+
+# more complex cis p+
+    #Tree:  B  <- this gets p+
+    #      / \
+    #     A   C
+    #         | <- at domain b
+    #         B
+    """A_p+_B; ! <cis>
+        <cis>; 1--3 B--A
+        <cis>; 1--4 B--C
+        <cis>; 4--2 C_[b]--B""": {
+    'Rules':[
+    'A(AssocB!3).B(A~U,AssocA!3,AssocC!2).B(AssocC!1).C(AssocB!2,b!1) -> A(AssocB!3).B(A~P,AssocA!3,AssocC!2).B(AssocC!1).C(AssocB!2,b!1)'],
+    'Tags': [
+    1, 'p+','contingencies', '!', 'bool', 'defined geometry']},
+
+    ##Tree:  B  <- this gets p+
+    #      / \
+    #     A   C
+    #     | <- at domain b
+    #     B
+    """A_p+_B; ! <cis>
+        <cis>; 1--3 B--A
+        <cis>; 1--4 B--C
+        <cis>; 3--2 A_[b]--B""": {
+    'Rules':[
+    'A(AssocB!3,b!2).B(A~U,AssocA!3,AssocC!1).B(AssocA!2).C(AssocB!1) -> A(AssocB!3,b!2).B(A~P,AssocA!3,AssocC!1).B(AssocA!2).C(AssocB!1)'],
+    'Tags': [
+    1, 'p+','contingencies', '!', 'bool', 'defined geometry']},
+# more complex trans p+
+    #Tree: B <- this gets p+
+    #      |
+    #      C
+    #      | <- at domain b
+    #      B
+    #      |
+    #      A
+    """A_p+_B; ! <trans>
+        <trans>; 2--3 B--A
+        <trans>; 1--4 B--C
+        <trans>; 4--2 C_[b]--B""": {
+    'Rules':[
+    'A(AssocB!3).B(A~U,AssocC!2).B(AssocA!3,AssocC!1).C(AssocB!2,b!1) -> A(AssocB!3).B(A~P,AssocC!2).B(AssocA!3,AssocC!1).C(AssocB!2,b!1)'],
+    'Tags': [
+    1, 'p+','contingencies', '!', 'bool', 'defined geometry']},
+
+    #Tree: B <- this gets p+
+    #      |
+    #      B
+    #     / \
+    #    A   C
+    """A_p+_B; ! <trans>
+        <trans>; 2--3 B--A
+        <trans>; 1--2 B--B
+        <trans>; 4--2 C--B""": {
+    'Rules':[
+    'A(AssocB!2).B(A~U,AssocB!3).B(AssocA!2,AssocB!3,AssocC!1).C(AssocB!1) -> A(AssocB!2).B(A~P,AssocB!3).B(AssocA!2,AssocB!3,AssocC!1).C(AssocB!1)'],
+    'Tags': [
+    1, 'p+','contingencies', '!', 'bool', 'defined geometry']},
 }
 
 

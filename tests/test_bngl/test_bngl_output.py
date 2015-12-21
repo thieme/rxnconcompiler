@@ -36,11 +36,22 @@ class BnglTranslatorTests(TestCase):
         self.assertEqual(self.translator.get_complex_str(product), "Ste11(AssocSte7!1).Ste7(ALS359~P,AssocSte11!1)")
         product = self.rections[1].product_complexes[0]
         #self.assertEqual(self.translator.get_complex_str(product), "Ste11(AssocSte5!3,AssocSte7).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte5!1)")
-        self.assertEqual(self.translator.get_complex_str(product), "Ste11(AssocSte5!3,AssocSte7).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte11,AssocSte5!1)")
+        self.assertEqual(self.translator.get_complex_str(product), "Ste11(AssocSte5!3).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte11,AssocSte5!1)")
                                                                    
     def test_rule_str(self):
         """
         Tests that BnglTranslator returns correct rule string from Rule object.
+        for this reaction the tree looks like
+
+                Ste7 (cid:1)
+                /   \
+    (cid:2) Ste11   Ste5 (cid:3)
+                    /   \
+        (cid:4) Ste11   Ste5 (cid:5)
+
+        Hence we have two different Ste11 considering here
+            Ste11 with cid: 2 for the first rule
+            Ste11 with cid: 4 for the second rule
         """
         rule = Rule(self.rections[0])
         expected = "Ste11(AssocSte7!1).Ste7(ALS359~U,AssocSte11!1) -> Ste11(AssocSte7!1).Ste7(ALS359~P,AssocSte11!1)    k1\n"
@@ -48,7 +59,7 @@ class BnglTranslatorTests(TestCase):
         self.assertEqual(expected, result)
 
         rule = Rule(self.rections[1])
-        expected = "Ste11(AssocSte5!3,AssocSte7).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3,AssocSte7).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte11,AssocSte5!1)    k1\n"
+        expected = "Ste11(AssocSte5!3).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~U,AssocSte11,AssocSte5!1) -> Ste11(AssocSte5!3).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte11,AssocSte5!1)    k1\n"
         result = self.translator.get_rule_str(rule)
         self.assertEqual(expected, result)
 

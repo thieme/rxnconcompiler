@@ -20,8 +20,6 @@ class Compiler:
     TODO: apply filters
     TODO: write any output write_bngl ---> write_output
     """
-
-
     def __init__(self, input_data):
         """
         Keeps single xls object.

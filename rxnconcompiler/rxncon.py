@@ -307,7 +307,7 @@ class Rxncon():
                     if not default_domain_present:
                         if len(available) > 1:
                             self.war.produced_in_more[cont] = available
-                            cont.state = available[0]
+                            #cont.state = available[0]  # in this case we should warn not change
                         elif len(available) == 1:
                             cont.state = state
                         else:
@@ -382,7 +382,7 @@ class Rxncon():
             if complexes:
                 builder = ComplexBuilder()
                 builder.structure_complex(complexes, react_container)
-                ComplexApplicator(react_container, copy.deepcopy(complexes)).apply_complexes()  # 2
+                ComplexApplicator(react_container, copy.deepcopy(complexes), self.war).apply_complexes()  # 2
             # self.apply_rules(react_container, rules)
             # after applying complexes we may have more reactions in a single container.
             # if add_contingencies:
