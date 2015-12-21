@@ -30,12 +30,13 @@ class ReactionContainer(list):
         self.name = None
         self.rid = None
         self.rtype = None
+        self.rtypeID = None
 
     def __repr__(self):
         """
         @return: name and number of reactions in the container.
         """
-        return "ReacionConteiner for %s: %i reactions present" % (self.name, len(self)) 
+        return "ReactionContainer for %s: %i reactions present" % (self.name, len(self))
 
     def add_reaction(self, reaction):
         """
@@ -161,7 +162,7 @@ class ReactionContainer(list):
     @property
     def highest_subrate(self):
         """
-        For ich reaction chaecks all rates. 
+        For each reaction checks all rates.
         From all rates checks which number after '_', is the highest.
         If reaction has only single rate returns 0.
         Returns int.
@@ -183,7 +184,10 @@ class ReactionContainer(list):
         Removes all reactions.
         """
         while self:
-            self.pop()    
+            self.pop()
+
+    def get_reactants(self):
+        return self[0].get_reactants()
 
 
 class ReactionPool(dict):
@@ -258,7 +262,7 @@ class ReactionPool(dict):
     def find_modification_product(self, state):
         """
         Finds Covalent Modification state in products of all reactions,
-        when gicen state - check with name and modifier not with domain.
+        when given state - check with name and modifier not with domain.
 
         Used when exchenging default bd domain in contingency.
         """

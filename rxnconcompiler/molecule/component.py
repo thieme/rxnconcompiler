@@ -15,8 +15,9 @@ class Component:
     def __init__(self, name, domain=None, cid=None):
         self.name = name.strip()
         self.domain = domain
-        if self.domain:
-            self.domain = self.domain.strip()
+        if domain is not None:
+            self.domain = domain.name.strip()
+            self.domain_info = domain
         self.cid = cid
         self.second_domain = None  # for ipi states
 

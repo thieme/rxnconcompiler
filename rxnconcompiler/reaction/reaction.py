@@ -41,6 +41,7 @@ class Reaction:
         self.name = None
         self.rid = None
         self.rtype = None
+        self.rtypeID = None
         self.definition = None
         self.reversibility = None
         self.left_reactant = None # RxnconMolecule object
@@ -88,6 +89,7 @@ class Reaction:
         new.name = copy.deepcopy(self.name)
         new.rid = copy.deepcopy(self.rid)
         new.rtype = self.rtype
+        new.rtypeID = self.rtypeID
         new.definition = self.definition
         new.reversibility = self.reversibility
         new.left_reactant = self.left_reactant #None # RxnconMolecule object
@@ -150,7 +152,7 @@ class Reaction:
             if compl.side == side:
                 return compl
 
-    def join_substrate_complexes(self, state):
+    def join_substrate_complexes(self, state, keep_both=False):
         """"""
         if state.type != 'Association': print 'WARNING', state.type
 
@@ -159,10 +161,10 @@ class Reaction:
 
         if not left and right: print 'WARNING'
 
-        # useing state_comp instead of state.components
+        # using state_comp instead of state.components
         # to avoid that A--A will be added as binding partner to A only once.
         state_comp = state.components
-        if len(state_comp):
+        if len(state_comp) and not keep_both:
             if state_comp[0].name == state_comp[1].name:
                 state_comp = [state.components[0]]
 
@@ -206,7 +208,10 @@ class Reaction:
         120_1 ---> 120
         33 ---> 33
         """  
-        return str(self.rid).split('_')[0]    
+        return str(self.rid).split('_')[0]
+
+    def get_reactants(self):
+        return [self.left_reactant, self.right_reactant]
         
 
 class Interaction(Reaction):
@@ -227,7 +232,7 @@ class Interaction(Reaction):
         """
         Assumes that there are always two substrate complexes.
         """
-        if self.rtype == 'ipi':
+        if self.rtype == 'ipi' or self.rtype == "2.1.1.2":
             self.run_ipi_reaction()
         else:
             #if len(self.substrat_complexes) != 2:
@@ -268,7 +273,7 @@ class Modification(Reaction):
     def run_reaction(self):
         """
         """
-        if self.rtype == 'pt':
+        if self.rtype == 'pt' or self.rtype == "1.1.3.1":
             self.run_reaction_pt()
         else:
             rmol = self.right_reactant
@@ -278,15 +283,15 @@ class Modification(Reaction):
             prcomp = srcomp.clone()
             prmol = prcomp.get_molecules_on_state_condition(name=rmol.name, state=self.to_change, mid=rmol.mid)[0]
 
-
-            if '-' in self.rtype or self.rtype in ['gap']:
+                                                                                                                                                        #negative, trans    
+            if ('-' in self.rtype or self.rtype in ['gap']) or (len(self.rtype.split(".")) == 4 and [self.rtype.split(".")[2], self.rtype.split(".")[3]] == ["2","1"]):
                 prmol.remove_modification(self.to_change)
             else:  
                 prmol.add_modification(self.to_change)
      
             self.product_complexes.append(prcomp)
    
-            if len(self.substrat_complexes) == 2 and self.rtype != 'pt':
+            if len(self.substrat_complexes) == 2 and (self.rtype != 'pt' or self.rtype != "1.1.3.1"):
 
                 lcomp = self.get_substrate_complex('L')
                 if lcomp:
@@ -337,15 +342,38 @@ class Modification(Reaction):
         """"""
         return self.to_change#.get_state(self.right_reactant.name)
 
+    # def get_product_contingency(self):
+    #     """
+    #     Returns a contingency that describes what is 
+    #     prodused/destroyed within a reaction.
+    #     """
+    #     if '+' in self.rtype or self.rtype in ['pt', 'gap']:
+    #         return Contingency(self.name, '!', self.to_change)
+    #     elif '-' in self.rtype or self.rtype in ['ap', 'gef', 'cut']: 
+    #         return Contingency(self.name, 'x', self.to_change)
+    
     def get_product_contingency(self):
         """
         Returns a contingency that describes what is 
         prodused/destroyed within a reaction.
         """
         if '+' in self.rtype or self.rtype in ['pt', 'gap']:
+            return Contingency(self.name, '!', self.to_change)                                                                                            #positive, trans
+        elif (len(self.rtype.split(".")) == 4 and [self.rtype.split(".")[2], self.rtype.split(".")[3]] == ["1","1"]) or self.rtype == "1.1.3.1":
             return Contingency(self.name, '!', self.to_change)
         elif '-' in self.rtype or self.rtype in ['ap', 'gef', 'cut']: 
+            return Contingency(self.name, 'x', self.to_change)                                          #negative, trans
+        elif (len(self.rtype.split(".")) == 4 and [self.rtype.split(".")[2], self.rtype.split(".")[3]] == ["2","1"]):
             return Contingency(self.name, 'x', self.to_change)
+
+    # def get_source_contingency(self):
+    #     """
+    #     Describes state of substrates neccesary for reaction to happen.
+    #     """
+    #     if '+' in self.rtype or self.rtype in ['pt', 'gap']:
+    #         return Contingency(self.name, 'x', self.to_change)
+    #     elif '-' in self.rtype or self.rtype in ['ap', 'gef', 'cut']: 
+    #         return Contingency(self.name, '!', self.to_change)
 
     def get_source_contingency(self):
         """
@@ -353,7 +381,11 @@ class Modification(Reaction):
         """
         if '+' in self.rtype or self.rtype in ['pt', 'gap']:
             return Contingency(self.name, 'x', self.to_change)
+        elif (len(self.rtype.split(".")) == 4 and [self.rtype.split(".")[2], self.rtype.split(".")[3]] == ["1","1"]) or self.rtype == "1.1.3.1":
+            return Contingency(self.name, 'x', self.to_change)
         elif '-' in self.rtype or self.rtype in ['ap', 'gef', 'cut']: 
+            return Contingency(self.name, '!', self.to_change)
+        elif (len(self.rtype.split(".")) == 4 and [self.rtype.split(".")[2], self.rtype.split(".")[3]] == ["2","1"]):
             return Contingency(self.name, '!', self.to_change)
 
 class SyntDeg(Reaction):
@@ -373,24 +405,24 @@ class SyntDeg(Reaction):
         A substrate complex is returned.
         (it is the same as product but has different _id)    
         """
-        if self.rtype in ['trsc', 'deg']:
+        if self.rtype in ['trsc', 'deg'] or self.rtype in ["3.1.2", "3.2.1"]:
             lcompl = self.get_substrate_complex('L')
             if lcompl:
                 return [lcompl]
-        elif self.rtype == 'trsl':
+        elif self.rtype == 'trsl' or self.rtype == "3.1.3":
             return self.substrat_complexes
         return []
 
     def run_reaction(self):
         """"""
-        if self.rtype == 'trsc':
+        if self.rtype == 'trsc' or self.rtype == "3.1.2":
             rcomp = self.get_substrate_complex('R')
             self.substrat_complexes.remove(rcomp)
             rcomp.molecules[0].name += 'mRNA' 
             rcomp.side = 'Z'
             self.product_complexes += self.substrat_complexes
             self.product_complexes.append(rcomp)
-        elif self.rtype == 'trsl':
+        elif self.rtype == 'trsl' or self.rtype == "3.1.3":
             self.product_complexes += self.substrat_complexes
             rcomp = self.get_substrate_complex('R')
             self.substrat_complexes.remove(rcomp)
@@ -399,19 +431,19 @@ class SyntDeg(Reaction):
             rcomp.side = 'Z'
             self.substrat_complexes.append(new_comp)
             self.product_complexes.append(new_comp) 
-        elif self.rtype == 'deg':
+        elif self.rtype == 'deg' or self.rtype == "3.2.1":
             lcomp = self.get_substrate_complex('L')
             self.product_complexes.append(lcomp) 
             rcomp = self.get_substrate_complex('R').clone()
             rcomp.remove_molecule(self.right_reactant)
             if rcomp.molecules:
                 self.product_complexes.append(rcomp) 
-        elif self.rtype == 'produce':
+        elif self.rtype == 'produce' or self.rtype == "3.1.1":
             rcomp = self.get_substrate_complex('R')
             self.substrat_complexes.remove(rcomp)
             self.product_complexes += self.substrat_complexes
             self.product_complexes.append(rcomp)
-        elif self.rtype == 'consume':
+        elif self.rtype == 'consume' or self.rtype == "3.2.2":
             lcomp = self.get_substrate_complex('L')
             self.product_complexes.append(lcomp)
 

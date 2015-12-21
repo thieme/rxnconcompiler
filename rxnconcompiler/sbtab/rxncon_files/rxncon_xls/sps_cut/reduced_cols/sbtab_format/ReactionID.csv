@@ -1,0 +1,5 @@
+"!!SBtab TableType='ReactionID' TableName='Reaction list'",,,,,,,,,,,,
+"!UID: Reaction[Full]",!ComponentA:Name,!ComponentA:Domain,!ComponentA:Subdomain,!ComponentA:Residue,!Reaction,!ComponentB:Name,!ComponentB:Domain,!ComponentB:Subdomain,!ComponentB:Residue,!Quality,!PubMedIdentifiers,!Comment
+Ptr3_ppi_Ssy1_[n],Ptr3,,,,ppi,Ssy1,n,,,,,
+Ssy1_[n]_ppi_Ssy5cat,Ssy1,n,,,ppi,Ssy5cat,,,,,,
+PP2A_p-_Ssy5pro_[phophodegron],PP2A,,,,P-,Ssy5pro,phophodegron,,,,,

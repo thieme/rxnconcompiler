@@ -108,10 +108,76 @@ BOOL_EXAMPLE = {
 '''Fus3_ppi_Ste5_[Unlock]; ! <bool2> 
 <bool2>; AND Ste5_[MEK]--Ste7_[Ste5]; AND Fus3_[CD]--Ste7_[BDMAPK]''': {
     'Rules':[
-    'Fus3(AssocSte5,CD!2).Ste5(MEK!1,Unlock).Ste7(BDMAPK!2,Ste5!1) <-> Fus3(AssocSte5!3,CD!2).Ste5(MEK!1,Unlock!3).Ste7(BDMAPK!2,Ste5!1)'],
+    'Fus3(AssocSte5,CD!1).Ste5(MEK!2,Unlock).Ste7(BDMAPK!1,Ste5!2) <-> Fus3(AssocSte5!3,CD!1).Ste5(MEK!2,Unlock!3).Ste7(BDMAPK!1,Ste5!2)'],
     'Tags': [
     1, 'ppi', 'Fus3', 'Ptp3', 'contingencies', '!', 'difficault']},
+
+'''A_ppi_B; ! <AorC> 
+<AorC>; OR A_[x]-{P}; OR B_[y]-{P}; OR A--C; OR B--D; OR B_[z]-{P}''': {
+    'Rules': [
+        'A(x~P,AssocB) + B(AssocA) <-> A(x~P,AssocB!1).B(AssocA!1)',
+        'A(x~U,AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <-> A(x~U,AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1)',
+        'A(x~U,AssocB,AssocC) + B(y~P,AssocA) <-> A(x~U,AssocB!1,AssocC).B(y~P,AssocA!1)',
+        'A(x~U,AssocB,AssocC) + B(y~U,AssocA,AssocD!1).D(AssocB!1) <-> A(x~U,AssocB!2,AssocC).B(y~U,AssocA!2,AssocD!1).D(AssocB!1)',
+        'A(x~U,AssocB,AssocC) + B(y~U,z~P,AssocA,AssocD) <-> A(x~U,AssocB!1,AssocC).B(y~U,z~P,AssocA!1,AssocD)'],
+    'Tags': [1, 'ppi', 'A', 'B', 'contingencies', '!', 'difficult']},
+
+'''A_ppi_B; ! <AorC> \n <AorC>; OR A--C; OR B--D''': {
+    'Rules': [
+        'A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1)',
+        'A(AssocB,AssocC) + B(AssocA,AssocD!1).D(AssocB!1) <-> A(AssocB!2,AssocC).B(AssocA!2,AssocD!1).D(AssocB!1)'],
+    'Tags': [1, 'ppi', 'A', 'B', 'contingencies', '!', 'difficult']},
+
+"""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste7-5-5-11>
+<Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]""": {
+    'Rules': [
+        'Ste11(AssocSte5!3).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~U,AssocSte5!1) -> Ste11(AssocSte5!3).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte5!1)'],
+    'Tags': [1, 'ppi', 'A', 'B', 'contingencies', '!', 'difficult']},
+
+'''Ste11_[KD]_P+_Ste7_[(ALS359)]; ! Ste5_[MEKK]--Ste11; ! Ste5_[MEK]--Ste7; ! Ste5_[BDSte5]--Ste5_[BDSte5]''': {
+    'Rules': [
+        'Ste11(AssocSte5!3).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~U,AssocSte5!1) -> Ste11(AssocSte5!3).Ste5(BDSte5!2,MEK!1,MEKK!3).Ste5(BDSte5!2).Ste7(ALS359~P,AssocSte5!1)'],
+    'Tags': [1, 'ppi', 'A', 'B', 'contingencies', '!', 'difficult']},
+
+'''A_ppi_B; ! <comp1>
+    <comp1>; OR <comp1C1>
+    <comp1>; OR <comp2C1>
+    <comp1C1>; AND A--C
+    <comp1C1>; AND C--D
+    <comp2C1>; AND A--C
+    <comp2C1>; AND B--E''': {
+    'Rules': [
+        'A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA,AssocE!1).E(AssocB!1) <-> A(AssocB!3,AssocC!2).B(AssocA!3,AssocE!1).C(AssocA!2).E(AssocB!1)',
+        'A(AssocB,AssocC!2).C(AssocA!2,AssocD!1).D(AssocC!1) + B(AssocA,AssocE) <-> A(AssocB!3,AssocC!2).B(AssocA!3,AssocE).C(AssocA!2,AssocD!1).D(AssocC!1)'],
+    'Tags': [1, 'ppi', 'A', 'B', 'contingencies', '!', 'difficult']},
+
+"""
+    A_ppi_B; ! <comp1>
+    <comp1>; OR <comp1C1>
+    <comp1>; OR <comp1C2>
+    <comp1C1>; AND A--A1
+    <comp1C1>; AND A--A2
+    <comp1C2>; AND B--B1
+    <comp1C2>; AND B--B2
+    A_ppi_B; x <comp2>
+    <comp2>; OR <comp2C1>
+    <comp2>; OR <comp2C2>
+    <comp2C1>; AND A--C1
+    <comp2C1>; AND A--C2
+    <comp2C2>; AND A--D1
+    <comp2C2>; AND A--D2""": {
+    'Rules': ['A(AssocB,AssocC1,AssocD1) + B(AssocA,AssocB1!2,AssocB2!1).B1(AssocB!2).B2(AssocB!1) <-> A(AssocB!3,AssocC1,AssocD1).B(AssocA!3,AssocB1!2,AssocB2!1).B1(AssocB!2).B2(AssocB!1)',
+              'A(AssocB,AssocC1,AssocD1!1,AssocD2).D1(AssocA!1) + B(AssocA,AssocB1!2,AssocB2!1).B1(AssocB!2).B2(AssocB!1) <-> A(AssocB!4,AssocC1,AssocD1!1,AssocD2).B(AssocA!4,AssocB1!3,AssocB2!2).B1(AssocB!3).B2(AssocB!2).D1(AssocA!1)',
+              'A(AssocB,AssocC1!1,AssocC2,AssocD1).C1(AssocA!1) + B(AssocA,AssocB1!2,AssocB2!1).B1(AssocB!2).B2(AssocB!1) <-> A(AssocB!4,AssocC1!1,AssocC2,AssocD1).B(AssocA!4,AssocB1!3,AssocB2!2).B1(AssocB!3).B2(AssocB!2).C1(AssocA!1)',
+              'A(AssocB,AssocC1!2,AssocC2,AssocD1!1,AssocD2).C1(AssocA!2).D1(AssocA!1) + B(AssocA,AssocB1!2,AssocB2!1).B1(AssocB!2).B2(AssocB!1) <-> A(AssocB!5,AssocC1!2,AssocC2,AssocD1!1,AssocD2).B(AssocA!5,AssocB1!4,AssocB2!3).B1(AssocB!4).B2(AssocB!3).C1(AssocA!2).D1(AssocA!1)',
+              'A(AssocA1!2,AssocA2!1,AssocB,AssocC1,AssocD1).A1(AssocA!2).A2(AssocA!1) + B(AssocA,AssocB1) <-> A(AssocA1!3,AssocA2!2,AssocB!1,AssocC1,AssocD1).A1(AssocA!3).A2(AssocA!2).B(AssocA!1,AssocB1)',
+              'A(AssocA1!2,AssocA2!1,AssocB,AssocC1,AssocD1).A1(AssocA!2).A2(AssocA!1) + B(AssocA,AssocB1!1,AssocB2).B1(AssocB!1) <-> A(AssocA1!4,AssocA2!3,AssocB!2,AssocC1,AssocD1).A1(AssocA!4).A2(AssocA!3).B(AssocA!2,AssocB1!1,AssocB2).B1(AssocB!1)',
+              'A(AssocA1!3,AssocA2!2,AssocB,AssocC1,AssocD1!1,AssocD2).A1(AssocA!3).A2(AssocA!2).D1(AssocA!1) + B(AssocA,AssocB1) <-> A(AssocA1!4,AssocA2!3,AssocB!2,AssocC1,AssocD1!1,AssocD2).A1(AssocA!4).A2(AssocA!3).B(AssocA!2,AssocB1).D1(AssocA!1)',
+              'A(AssocA1!3,AssocA2!2,AssocB,AssocC1,AssocD1!1,AssocD2).A1(AssocA!3).A2(AssocA!2).D1(AssocA!1) + B(AssocA,AssocB1!1,AssocB2).B1(AssocB!1) <-> A(AssocA1!5,AssocA2!4,AssocB!3,AssocC1,AssocD1!1,AssocD2).A1(AssocA!5).A2(AssocA!4).B(AssocA!3,AssocB1!2,AssocB2).B1(AssocB!2).D1(AssocA!1)',
+              'A(AssocA1!3,AssocA2!2,AssocB,AssocC1!1,AssocC2,AssocD1).A1(AssocA!3).A2(AssocA!2).C1(AssocA!1) + B(AssocA,AssocB1) <-> A(AssocA1!4,AssocA2!3,AssocB!2,AssocC1!1,AssocC2,AssocD1).A1(AssocA!4).A2(AssocA!3).B(AssocA!2,AssocB1).C1(AssocA!1)',
+              'A(AssocA1!3,AssocA2!2,AssocB,AssocC1!1,AssocC2,AssocD1).A1(AssocA!3).A2(AssocA!2).C1(AssocA!1) + B(AssocA,AssocB1!1,AssocB2).B1(AssocB!1) <-> A(AssocA1!5,AssocA2!4,AssocB!3,AssocC1!1,AssocC2,AssocD1).A1(AssocA!5).A2(AssocA!4).B(AssocA!3,AssocB1!2,AssocB2).B1(AssocB!2).C1(AssocA!1)',
+              'A(AssocA1!4,AssocA2!3,AssocB,AssocC1!2,AssocC2,AssocD1!1,AssocD2).A1(AssocA!4).A2(AssocA!3).C1(AssocA!2).D1(AssocA!1) + B(AssocA,AssocB1) <-> A(AssocA1!5,AssocA2!4,AssocB!3,AssocC1!2,AssocC2,AssocD1!1,AssocD2).A1(AssocA!5).A2(AssocA!4).B(AssocA!3,AssocB1).C1(AssocA!2).D1(AssocA!1)',
+              'A(AssocA1!4,AssocA2!3,AssocB,AssocC1!2,AssocC2,AssocD1!1,AssocD2).A1(AssocA!4).A2(AssocA!3).C1(AssocA!2).D1(AssocA!1) + B(AssocA,AssocB1!1,AssocB2).B1(AssocB!1) <-> A(AssocA1!6,AssocA2!5,AssocB!4,AssocC1!2,AssocC2,AssocD1!1,AssocD2).A1(AssocA!6).A2(AssocA!5).B(AssocA!4,AssocB1!3,AssocB2).B1(AssocB!3).C1(AssocA!2).D1(AssocA!1)'],
+    'Tags': [1, 'ppi', 'A', 'B', 'contingencies', '!', 'difficult']}
 }
-
-
 DATA = [BOOL_EXAMPLE]

@@ -1,0 +1,7 @@
+#rxncon_version=1337 Format=quick
+A_ppi_B
+A_ppi_C; ! A--B 
+A_ppi_D
+A_P+_B; ! <mybool>
+<mybool>; OR A--C; OR A--D
+

@@ -11,7 +11,7 @@ modification domains and warnings).
 from unittest import main, TestCase
 
 from rxnconcompiler.compiler import Compiler
-from rxnconcompiler.molecule.domain_factory import DomainFactory
+from rxnconcompiler.molecule.domain_factory import DomainFactory, Domain
 
 DOMAINS_ASSOSIATION = """A_BIND_DNA
 A_ppi_C; ! A--DNA"""
@@ -32,9 +32,9 @@ class DomainFactoryTests(TestCase):
         Tests whether correct association domain name is returned given a string.
         """
         result = self.df.get_association_domain_from_str('X--Y', 'A')
-        self.assertEqual(result, 'AssocY')
+        self.assertEqual(result.name, 'AssocY')
         result = self.df.get_association_domain_from_str('X_[xxx]--Y_[yyy]', 'A')
-        self.assertEqual(result, 'xxx')
+        self.assertEqual(result.name, 'xxx')
 
     def test_association_domain_from_dict(self):
         """
@@ -48,9 +48,9 @@ class DomainFactoryTests(TestCase):
         Tests whether correct modification domain name is return given a string.
         """
         result = self.df.get_modification_domain_from_str('A-{P}')
-        self.assertEqual(result, 'bd')
+        self.assertEqual(result.name, 'bd')
         result = self.df.get_modification_domain_from_str('A_[XxX]-{P}')
-        self.assertEqual(result, 'XxX')
+        self.assertEqual(result.name, 'XxX')
 
     def test_modification_domain_from_dict(self):
         """ 
@@ -63,7 +63,26 @@ class DomainFactoryTests(TestCase):
         """
         Should return loc.
         """
-        self.assertEqual(self.df.get_localisation_domain(), 'loc')
+        loc_dom = self.df.get_localisation_domain()
+        self.assertEqual(loc_dom.name, 'loc')
+
+    def test_domain_object_dsr(self):
+        dsr = "d/s(r)"
+        domain = Domain(dsr)
+        self.assertEqual(domain.main,"d")
+        self.assertEqual(domain.sub,"s")
+        self.assertEqual(domain.residue,"r")
+        self.assertEqual(domain.name, "dsr")
+        self.assertEqual(domain.raw_name, dsr)
+
+    def test_domain_object_set_domain_info(self):
+        domain = Domain("")
+        domain.set_domain_info("d","s","r")
+        self.assertEqual(domain.main,"d")
+        self.assertEqual(domain.sub,"s")
+        self.assertEqual(domain.residue,"r")
+        self.assertEqual(domain.name, "dsr")
+        self.assertEqual(domain.raw_name, "d/s(r)")
 
 
         

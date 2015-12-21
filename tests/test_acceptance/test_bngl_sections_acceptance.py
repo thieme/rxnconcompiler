@@ -13,7 +13,7 @@ from unittest import main, TestCase
 from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.compiler import Compiler
 
-import test_data
+import tests.test_data as test_data
 DATA_PATH = test_data.__path__[0] + os.sep + 'xls_files' + os.sep
 
 
@@ -47,9 +47,9 @@ class MoleculesTests(TestCase):
         """
         Test whether molecule section produced from simple example is correct.
         """ 
-        test_data = '''Sho1_[CyT]_ppi_Ste11_[BD:Sho1]; x Ste5_[MEKK]--Ste11_[AssocSte5]; k+ Hkr1_[TMD]--Sho1_[TMD]; k+ Msb2_[TMD]--Sho1_[TMD]; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
-<Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
-<Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]'''
+        test_data = '''Sho1_ppi_Ste11; x Ste5_[MEKK]--Ste11; k+ Hkr1--Sho1; k+ Msb2--Sho1; k+ Msb2_[CyT]--Sho1_[CyT]; ! <Ste11^{M/50}>
+                        <Ste11^{M/50}>; and Opy2_[BDSte50]--Ste50_[RA]
+                        <Ste11^{M/50}>; and Ste11_[SAM]--Ste50_[SAM]'''
 
         bngl = Compiler(test_data).translate(True, True, True, True)
         molecule_pattern = 'begin molecule types.*?end molecule types'
@@ -67,7 +67,7 @@ class MoleculesTests(TestCase):
         Test whether molecule section produced from simple example is correct.
         """ 
         quick_data = str(Rxncon(DATA_PATH + "Tiger_et_al_TableS1.xls"))
-        bngl = Compiler(quick_data).translate(False, True, True, True)
+        bngl = Compiler(quick_data).translate(add_translation=False, add_missing_reactions=True, add_complexes=True, add_contingencies=True)
 
         molecule_pattern = 'begin molecule types.*?end molecule types'
         mp = re.compile(molecule_pattern, re.DOTALL)

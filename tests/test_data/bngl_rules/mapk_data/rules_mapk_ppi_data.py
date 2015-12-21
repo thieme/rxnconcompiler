@@ -516,7 +516,7 @@ MAPK_PPI_DATA = {
     'Rules':[
     'Fus3(AssocSte5,CD!1).Ste7(BDMAPK!1) + Ste5(MEK!1,Unlock).Ste7(AssocSte5!1) <-> Fus3(AssocSte5!3,CD!2).Ste5(MEK!1,Unlock!3).Ste7(BDMAPK!2).Ste7(AssocSte5!1)'],
     'Tags': [
-    1, 'ppi', 'Fus3', 'Ptp3', 'contingencies', '!', 'difficault']},
+    1, 'ppi', 'Fus3', 'Ptp3', 'contingencies', '!', 'difficult']},
 
 'Gpa1_ppi_Ste4_[BD:Gpa1]; x Gpa1_[GnP]-{P}': {
     'Rules':[
@@ -541,7 +541,7 @@ MAPK_PPI_DATA = {
     'Hog1(PBD2) + Pbs2(HBD1) <-> Hog1(PBD2!1).Pbs2(HBD1!1)',
     'Hog1(CD,PBD2) + Pbs2(HBD1) <-> Hog1(CD,PBD2!1).Pbs2(HBD1!1)'],
     'Tags': [
-    1, 'ppi', 'Hog1', 'Pbs2', 'contingencies', 'K+', 'difficault']},
+    1, 'ppi', 'Hog1', 'Pbs2', 'contingencies', 'K+', 'difficult']},
 
 'Hog1_[CD]_ppi_Ptp2; k+ Hog1_[(Y176)]-{P}': {
     'Rules':[
@@ -682,7 +682,7 @@ MAPK_PPI_DATA = {
     'Rules':[
     'Ste20(CRIB,KD) + Ste20(CRIB) <-> Ste20(CRIB,KD!1).Ste20(CRIB!1)'],
     'Tags': [
-    1, 'ppi', 'Ste20', 'contingencies', 'x', 'difficault']},
+    1, 'ppi', 'Ste20', 'contingencies', 'x', 'difficult']},
 
 'Ste4_ppi_Ste20_[c]; x Gpa1_[AssocSte4]--Ste4_[BDGpa1]': {
     'Rules':[
@@ -706,7 +706,7 @@ MAPK_PPI_DATA = {
     'Rules':[
     'Ste4(BDSte5!1).Ste5(BDSte5,nRINGH2!1) + Ste4(BDSte5!1).Ste5(BDSte5,nRINGH2!1) <-> Ste4(BDSte5!3).Ste4(BDSte5!2).Ste5(BDSte5!1,nRINGH2!3).Ste5(BDSte5!1,nRINGH2!2)'],
     'Tags': [
-    1, 'ppi', 'Ste5', 'Ste11', 'contingencies', '!', 'difficault']},
+    1, 'ppi', 'Ste5', 'Ste11', 'contingencies', '!', 'difficult']},
 
 'Swi4_[c]_ppi_Swi6_[c]; 0 Slt2_[DB]--Swi4_[c]': {
     'Rules':[

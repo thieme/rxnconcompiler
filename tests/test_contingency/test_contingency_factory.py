@@ -80,14 +80,20 @@ class ContingencyFactoryTests(TestCase):
 
     def test_two_reactions(self):
         """
-        Asserts that the same boolean contingency 
+        Asserts that the same boolean contingency
         can be used for two reactions.
         """
         table = parse_text(TWO_REACTIONS)
         factory = ContingencyFactory(table)
         self.pool = factory.parse_contingencies()
-        self.assertEqual(self.pool['A_ppi_C'].count_leafs(), 4)
-        self.assertEqual(self.pool['A_ppi_B'].count_leafs(), 4)
+
+        root = self.pool['A_ppi_C']
+        bool = self.pool[root.children[0].state.state_str]
+        self.assertEqual(bool.count_leafs(), 4)
+
+        root = self.pool['A_ppi_B']
+        bool = self.pool[root.children[0].state.state_str]
+        self.assertEqual(bool.count_leafs(), 4)
 
     def test_boolean(self):
         """
@@ -97,7 +103,9 @@ class ContingencyFactoryTests(TestCase):
         table = parse_text(OR_AND_OR)
         factory = ContingencyFactory(table)
         self.pool = factory.parse_contingencies()
-        self.assertEqual(self.pool['A_ppi_B'].count_leafs(), 4)
+        root = self.pool['A_ppi_B']
+        bool = self.pool[root.children[0].state.state_str]
+        self.assertEqual(bool.count_leafs(), 4)
 
 class ContingencyApoptosisTests(TestCase):
     """Checks whether proper contingencies pool is generated for apoptosis."""
@@ -107,7 +115,7 @@ class ContingencyApoptosisTests(TestCase):
         self.pool = factory.parse_contingencies()
 
     def test_parsing(self):
-        self.assertEqual(len(self.pool), 24)
+        self.assertEqual(len(self.pool),24)
 
     def test_contingencies(self):
         cont = Contingency('TRAIL_i_R', 'x', get_state('FADD--R'))
@@ -123,7 +131,8 @@ class ContingencyMAPKTests(TestCase):
         self.pool = factory.parse_contingencies()
 
     def test_parsing(self):
-        self.assertEqual(len(self.pool), 139)
+        # 139 reaction + used 8 complexes
+        self.assertEqual(len(self.pool),146)
 
 class ContingencyWrapperTests(TestCase):
     """
@@ -171,15 +180,19 @@ class ComplexTests(TestCase):
 
     def test_parsing(self):
         """Tests whether contingencies with defined geometry are parsed."""
-        self.assertEqual(len(self.pool.keys()), 1)
+        # reaction and boolean contingencies directly applied to a reaction are stored in the contingency pool
+        self.assertEqual(len(self.pool.keys()), 2)
         self.assertIn('A_ppi_X', self.pool.keys())
-        self.assertEqual(len(self.pool['A_ppi_X'].children), 3)
+        self.assertEqual(len(self.pool['A_ppi_X'].children),3)
 
     def test_complex(self):
         """Tests whether all contingencies go to the complex."""
         root = self.pool['A_ppi_X']
         self.assertEqual(len(root.children), 3)
-        self.assertEqual(len(root.children[2].children), 5)
+        # one change is that the structure of the boolean contingencies are not longer saved within the reactions they are applied on
+        # but on their own the advantage is that we have to define them only ones and can apply them contingency dependent
+        bool = self.pool[root.children[2].state.state_str]
+        self.assertEqual(len(bool.children), 5)
 
 
 if __name__ == '__main__':

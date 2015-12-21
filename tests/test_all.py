@@ -44,7 +44,7 @@ from test_molecule.test_molecule import MoleculeTests
 from test_molecule.test_state import StateFactoryTests, StateTests
 
 # test_parser
-from test_parser.test_rxncon_parser import RxnconTextParserTests, RxnconXlsParserTests, RxnconParserTests
+from test_parser.test_rxncon_parser import RxnconTextParserTests, RxnconXlsParserTests, RxnconParserTests, RxnconParserConingencyManipulationTests
 
 # test_reaction
 from test_reaction.test_rate import RateTests
@@ -55,6 +55,10 @@ from test_reaction.test_reaction_factory import ReactionFactoryTests
 # test_util
 from test_util.test_util import UtilTests
 
+# test_SBtab
+from test_sbtab.test_sbtab_parser import DirCheckTest
+#from test_sbtab.test_sbtab_parser import DataManipulationTest
+from test_sbtab.test_sbtab_parser import ParserTest
 
 if __name__ == '__main__':
     main()

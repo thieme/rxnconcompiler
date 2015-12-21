@@ -105,7 +105,7 @@ class InterfaceTests(TestCase):
         Tests correct json string is returned.
         """
         json_output = interface.get_json_definitions('A_ppi_B', 'test.json')
-        words = ["Directionality", "Modifier or Boundary"]
+        words = ["Directionality", "ModifierBoundary"]
         for word in words:
             self.assertIn(word, json_output)
         self.assertTrue(os.path.exists('test.json'))      
@@ -182,7 +182,7 @@ class CliTests(TestCase):
         self.assertTrue(os.path.exists('test.json'))
         f = open('test.json') 
         cont = f.read()
-        self.assertIn('A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <->', cont) 
+        self.assertIn('A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <->', cont)
 
     def test_json2rxncon(self):
         """

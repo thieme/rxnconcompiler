@@ -40,13 +40,13 @@ REACTIONS_DATA = {
 
 'Enzyme_GEF_GProt': {
     'Rules':[
-    'Enzyme + GProt(Enzyme~U) -> Enzyme + GProt(Enzyme~P)'],
+    'Enzyme + GProt(Enzyme~U) -> Enzyme + GProt(Enzyme~GTP)'],
     'Tags': [
     1, 'GEF', 'no contingencies']},
 
 'Enzyme_GAP_GProt': {
     'Rules':[
-    'Enzyme + GProt(Enzyme~P) -> Enzyme + GProt(Enzyme~U)'],
+    'Enzyme + GProt(Enzyme~GTP) -> Enzyme + GProt(Enzyme~U)'],
     'Tags': [
     1, 'GAP', 'no contingencies']},
 
@@ -102,7 +102,7 @@ REACTIONS_DATA = {
     'Rules':[
     'Ribo + GenemRNA -> Ribo + GenemRNA + Gene'],
     'Tags': [
-    1, 'TRSC', 'no contingencies']},
+    1, 'TRSL', 'no contingencies']},
 
 'Proteasome_DEG_Protein': {
     'Rules':[
@@ -129,16 +129,18 @@ REACTIONS_DATA = {
     1, 'CONSUME', 'no contingencies']},
 }
 
+
+
 CONTINGENCIES_DATA = {
     # basic reactions with contingencies.
     'A_ppi_C': {
-    'Rules': [
+    'Rules':[
     'A(AssocC) + C(AssocA) <-> A(AssocC!1).C(AssocA!1)'],
     'Tags': [
     1, 'ppi', 'no contingencies']},
 
     'A_ppi_B; ! A--C': {
-    'Rules': [
+    'Rules':[
     'A(AssocB,AssocC!1).C(AssocA!1) + B(AssocA) <-> A(AssocB!2,AssocC!1).B(AssocA!2).C(AssocA!1)'],
     'Tags': [
     1, 'ppi', 'contingencies']},
@@ -337,33 +339,30 @@ CONTINGENCIES_DATA = {
 
 #### negative ipi contingency ####
     'ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; ! ProtA_[a]--[b]': {
-    'Rules': [
+    'Rules':[
     'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a!1,b!1) <-> ProtA(AssocProtC!1,a!2,b!2).ProtC(Gnp~P,AssocProtA!1)'],
     'Tags': [
     1, 'ipi', 'contingencies']},
 ##### positive ipi contingency
     'ProtC_ppi_ProtA; ! ProtC_[Gnp]-{P}; x ProtA_[a]--[b]': {
-    'Rules': [
+    'Rules':[
     'ProtC(Gnp~P,AssocProtA) + ProtA(AssocProtC,a,b) <-> ProtA(AssocProtC!1,a,b).ProtC(Gnp~P,AssocProtA!1)'],
     'Tags': [
     1, 'ipi', 'contingencies']},
-
-    # 'Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]': {
-    # 'Rules': [
-    # 'Cdc42(GnP~P,AssocSte20) + Ste20(AssocCdc42,CRIB2!1,KD!1) <-> Cdc42(GnP~P,AssocSte20!1).Ste20(AssocCdc42!1,CRIB2!2,KD!2)',
-    # 'Ste20(CRIB2,KD) <-> Ste20(CRIB2!1,KD!1)'],
-    # 'Tags': [
-    # 1, 'ipi', 'contingencies']}
-
-    'Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]': {
+	'Cdc42_ppi_Ste20; ! Cdc42_[GnP]-{P}; ! Ste20_[KD]--[CRIB2] \n Ste20_[KD]_ipi_Ste20_[CRIB2]': {
     'Rules': [
     'Cdc42(GnP~P,AssocSte20) + Ste20(AssocCdc42,CRIB2!1,KD!1) <-> Cdc42(GnP~P,AssocSte20!1).Ste20(AssocCdc42!1,CRIB2!2,KD!2)',
     'Ste20(CRIB2,KD) -> Ste20(CRIB2!1,KD!1)',
     'Cdc42(AssocSte20!2).Ste20(AssocCdc42!2,CRIB2!1,KD!1) -> Ste20(AssocCdc42,CRIB2,KD) + Cdc42(AssocSte20)',
     'Ste20(AssocCdc42,CRIB2!1,KD!1) -> Ste20(AssocCdc42,CRIB2,KD)'],
     'Tags': [
-    1, 'ipi', 'contingencies']}
+    1, 'ipi', 'contingencies']},
 
+    'A_ppi_B \n C_p+_B \n D_ub+_B_[x] \n Y_trsl_B': {
+    'Rules':[
+    'Y + BmRNA -> Y + BmRNA + B(C~U,x~U,AssocA)'],
+    'Tags': [
+    1, 'TRSL', 'contingencies']},
 
 }
 
