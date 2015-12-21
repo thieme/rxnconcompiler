@@ -49,7 +49,10 @@ class x_exclamation_mark_Tests(TestCase):
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Tiger_et_al_TableS1.xls"
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/150120_PheromoneModel_BNGL2rxncon.xls"
         #input_data = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Example_Reactions.xls"
-
+        #input = "/home/wajnberg/rxncon/source/rxnconcompiler/sbtab/rxncon_sbtab_files/rxncon_template_2_0.xls"
+        input = "/home/thiemese/project/rxncon/rxncon-compiler/tests/test_data/xls_files/Example_Reactions.xls"
+        rxncon = rxncon_mod.Rxncon(input)
+        #rxncon = Rxncon("""A_ppi_B""")
 #######################################   Presentation ########################################
         # rxncon = Rxncon("""A_ppi_B; ! <comp1>
         #                  <comp1>; OR <comp1C1>
@@ -236,6 +239,9 @@ class x_exclamation_mark_Tests(TestCase):
         #         <Far1^{M}>; and Far1_[nRING-H2]--Ste4_[AssocFar1]
         # ''')
         #rxncon = Rxncon("""A_ipi_A_[d/s(r)]""")
+
+        #rxncon = Rxncon('A_ppi_B\nA_ppi_C; ! A--B ')
+
         # rxncon = Rxncon('''Z_p+_A
         #                 Y_p+_A_[d]
         #                 W_p+_A_[d/s]
@@ -249,11 +255,14 @@ class x_exclamation_mark_Tests(TestCase):
         #                 A_ppi_I; ! A_[d/(r)]-{P}
         #                 A_ppi_J; ! A_[(r)]-{P}''',lumpedModifier=True)
 
+<<<<<<< Temporary merge branch 1
+
+=======
 ####### TEST
-        rxncon = Rxncon("""Z_p+_A
-                        W_p+_A
-                        A_ppi_C; ! A-{P}
-                        """, lumpedModifier=True)
+        # rxncon = Rxncon("""Z_p+_A
+        #                 W_p+_A
+        #                 A_ppi_C; ! A-{P}
+        #                 """, lumpedModifier=True)
 
 #delete contingency
         # rxncon = Rxncon("""A_ppi_B; ! A-{P}
@@ -268,6 +277,7 @@ class x_exclamation_mark_Tests(TestCase):
         #                     H_p+_A_[d/(r)]
         #
         # """)
+
 #         rxncon = Rxncon("""Ste11_[KD]_P+_Ste7_[(ALS359)]; ! <Ste11-7>
 # <Ste11-7>; OR Ste7--Ste11; OR <Ste7-5-5-11>
 # <Ste7-5-5-11>; AND Ste5_[MEKK]--Ste11; AND Ste5_[MEK]--Ste7; AND Ste5_[BDSte5]--Ste5_[BDSte5]
