@@ -18,19 +18,29 @@ class SBMLBuilder(object):
         #self.numOfReactions = {}           # a dict for reaction name : how often the reaction is already in the modell
         self.numOfReactions = 0             # easier but abstract number for reaction id
 
+    def process_complex_id(self, complex):
+        # generates the species id for complexes with one or more molecules
+        compId = "s"
+        for mol in complex.molecules:
+             compId = compId + "_m" + str(mol._id)
+
+        return compId
+
     def process_node(self, visitId):
-        #takes an unvisited node and creates species out of it
-        #TODO only minimal necessary information are set, mostly defaults
-        #optional values are commented commented out until a rxncon variable is found
+        # takes an unvisited node and creates species out of it
+        # TODO only minimal necessary information is set, mostly defaults
+        # optional values are commented out until an according rxncon variable is found
 
         species = self.model.createSpecies()
         for node in self.tree.nodes:
             if node.id == visitId:
 
-                species.setId("s" + str(node.id))          #ist das sinnvoll, muss nicht der complex und seine molecules betrachtet werden
+                #species.setId("s" + str(node.id))          # ist das sinnvoll, muss nicht der complex und seine molecules betrachtet werden
+
+                species.setId( self.process_complex_id(node.node_object) )
                 species.setName(str(node.name))
-                # optional set species.setSpeciesType()     #optional attribute
-                species.setCompartment('c1')                #TODO Compartment is set to default comp c1, find alternative
+                # optional set species.setSpeciesType()     # optional attribute
+                species.setCompartment('c1')                # Compartment is set to default comp c1, has to be changed if compartments are added to rxncon
                 #species.setInitialAmount()
                 #species.setInitialConcentration()
                 #species.setSubstanceUnits('mole')
@@ -39,56 +49,54 @@ class SBMLBuilder(object):
                 #species.setConstant(False)
 
 
-    def process_reaction(self, anReaction):
-        # gets an unhandled reaction  an prcoesses stored information
+    def process_reaction(self, rxnconReaction):
+        # gets an unhandled reaction  an processes stored information
 
         # reaction.id is r + a running number, so that each reaction has a unique id
         reaction = self.model.createReaction()
         reaction.setId('r' + str(self.numOfReactions))
         self.numOfReactions = self.numOfReactions +1
 
-            #idea to use idea not as abstract number but as a combination of name and an number, fails to rxncon names with forbidden characters may be used with some refinemend
-            #value = self.numOfReactions.get(anReaction.name, 0)
-            #reaction.setId(str(anReaction.name) + str(value +1) )
+            #idea to use id not as abstract number but as a combination of name and an number, fails to rxncon names with forbidden characters, may be used with some refinement
+            #value = self.numOfReactions.get(rxnconReaction.name, 0)
+            #reaction.setId(str(rxnconReaction.name) + str(value +1) )
             #reaction.setId('r' + str(value +1) )
-            #self.numOfReactions[anReaction.name] = value +1
+            #self.numOfReactions[rxnconReaction.name] = value +1
 
-        reaction.setName(anReaction.name)
+        reaction.setName(rxnconReaction.name)
         #reaction.setKineticLaw()
-        reaction.setReversible(anReaction.definition["Reversibility"] == "reversible")
+        reaction.setReversible(rxnconReaction.definition["Reversibility"] == "reversible")
         #reaction.setFast()
         #reaction.setSBOTerm()
         if(self.namespace.getLevel >=3):
             reaction.setCompartment('c1')                          # exist not before SBML L3V1
 
-        #TODO find more elaborate way to get species id, serach for species the name of the right reactant
-        #TODO what happens if a compelex has more than one molecule, add handle for the complex itself
-        for reactand in anReaction.substrat_complexes:
-            for mol in reactand.molecules:
-                if not reactand._BiologicalComplex__is_modifier:
-                    reactRef = reaction.createReactant()
-                    reactRef.setSpecies("s" + str(mol._id))
-                else:
+        
+        for reactant in rxnconReaction.substrat_complexes:
+            if not reactant._BiologicalComplex__is_modifier:
+                reactRef = reaction.createReactant()
+                reactRef.setSpecies(self.process_complex_id(reactant))
+            else:
                     modRef = reaction.createModifier()
-                    modRef.setSpecies("s" + str(mol._id))
+                    modRef.setSpecies(self.process_complex_id(reactant))
 
-        for reactand in anReaction.product_complexes:
-            for mol in reactand.molecules:
-                if not reactand._BiologicalComplex__is_modifier:
-                    prodRef = reaction.createProduct()
-                    prodRef.setSpecies("s" + str(mol._id))
-                else:
-                    modRef = reaction.createModifier()
-                    modRef.setSpecies("s" + str(mol._id))
+        for reactant in rxnconReaction.product_complexes:
+            if not reactant._BiologicalComplex__is_modifier:
+                prodRef = reaction.createProduct()
+                prodRef.setSpecies(self.process_complex_id(reactant))
+            else:
+                modRef = reaction.createModifier()
+                modRef.setSpecies(self.process_complex_id(reactant))
 
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree
         self.tree = rPDTree
 
-        #TODO handle compartments, default compartment until further change (from SBML examples)
+        #handle compartments, default compartment until further changes to rxncon
         c = self.model.createCompartment()
         c.setId('c1')
+        #example values for compartments
         #c.setConstant(True)
         #c.setSize(1)
         #c.setSpatialDimensions(3)
@@ -109,7 +117,9 @@ class SBMLBuilder(object):
             if edge.id[1] not in visited_nodes :
                 self.process_node(edge.id[1])
                 visited_nodes.append(edge.id[1])
-            if edge.reaction.rid not in handled_reactions :     #TODO check if it is ok to skip a reaction if it was processed on an other edge already
+
+            # TODO check if it is ok to skip a reaction if it was processed on an other edge already
+            if edge.reaction.rid not in handled_reactions :
                 self.process_reaction(edge.reaction)
                 handled_reactions.append(edge.reaction.rid)
 
