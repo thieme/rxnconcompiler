@@ -32,16 +32,16 @@ class SBMLBuilder(object):
         # optional values are commented out until an according rxncon variable is found
 
         species = self.model.createSpecies()
-        for node in self.tree.nodes:
+        for node in self.tree.nodes:    # TODO tree.get_node(id) benutzen
             if node.id == visitId:
 
-                #species.setId("s" + str(node.id))          # ist das sinnvoll, muss nicht der complex und seine molecules betrachtet werden
+                #species.setId("s" + str(node.id))         # ist das sinnvoll, muss nicht der complex und seine molecules betrachtet werden
 
                 species.setId( self.process_complex_id(node.node_object) )
                 species.setName(str(node.name))
-                # optional set species.setSpeciesType()     # optional attribute
+                #optional set species.setSpeciesType()     # optional attribute
                 species.setCompartment('c1')                # Compartment is set to default comp c1, has to be changed if compartments are added to rxncon
-                #species.setInitialAmount()
+                species.setInitialAmount(100)   # TODO check if amount without unit is possible, if not discard amount deault
                 #species.setInitialConcentration()
                 #species.setSubstanceUnits('mole')
                 #species.setHasOnlySubstanceUnits(False)
@@ -54,7 +54,7 @@ class SBMLBuilder(object):
 
         # reaction.id is r + a running number, so that each reaction has a unique id
         reaction = self.model.createReaction()
-        reaction.setId('r' + str(self.numOfReactions))
+        reaction.setId('r' + str(self.numOfReactions))  # TODO
         self.numOfReactions = self.numOfReactions +1
 
             #idea to use id not as abstract number but as a combination of name and an number, fails to rxncon names with forbidden characters, may be used with some refinement
@@ -64,14 +64,20 @@ class SBMLBuilder(object):
             #self.numOfReactions[rxnconReaction.name] = value +1
 
         reaction.setName(rxnconReaction.name)
-        #reaction.setKineticLaw()
-        reaction.setReversible(rxnconReaction.definition["Reversibility"] == "reversible")
+        #reaction.setKineticLaw()       # TODO set
+        reaction.setReversible(rxnconReaction.definition["Reversibility"] == "reversible")  # TODO describe
         #reaction.setFast()
         #reaction.setSBOTerm()
         if(self.namespace.getLevel >=3):
             reaction.setCompartment('c1')                          # exist not before SBML L3V1
 
-        
+        reactRef = Test(complex)
+        if mod:
+            modRef
+        else:
+            pass
+        prodRef = Test(complex)
+        # TODO: def
         for reactant in rxnconReaction.substrat_complexes:
             if not reactant._BiologicalComplex__is_modifier:
                 reactRef = reaction.createReactant()
@@ -88,6 +94,15 @@ class SBMLBuilder(object):
                 modRef = reaction.createModifier()
                 modRef.setSpecies(self.process_complex_id(reactant))
 
+    def test(self, complex):
+        for reactant in complex:
+            if not modifier:
+                pass
+                return ref, False
+            else:
+                pass
+                mod = True
+                return modifier, mod
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree
@@ -137,7 +152,8 @@ class SBMLBuilder(object):
 
 if __name__ == "__main__":
     TOY1 = """
-    a_p+_b
+    a_p+_b_[x]
+    c_p+_b_[x]
     """
 
     rxncon = Rxncon(TOY1)
