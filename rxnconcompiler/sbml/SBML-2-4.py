@@ -1,8 +1,9 @@
 from rxnconcompiler.SBGN.PD import ReducedProcessDescription
 from rxnconcompiler.rxncon import Rxncon
 import os
-from libsbml import * # TODO imported all the libSBML, maybe specifie what is realy needed in the end
+from libsbml import *
 # libsbml import always marked as unused and (some of) the depending methods as unresolved but work as intended when run
+#TODO import only needed packages
 
 
 class SBMLBuilder(object):
@@ -28,25 +29,24 @@ class SBMLBuilder(object):
 
     def process_node(self, visitId):
         # takes an unvisited node and creates species out of it
-        # TODO only minimal necessary information is set, mostly defaults
         # optional values are commented out until an according rxncon variable is found
+        # TODO only minimal necessary information is set, mostly defaults
 
         species = self.model.createSpecies()
-        for node in self.tree.nodes:    # TODO tree.get_node(id) benutzen
-            if node.id == visitId:
+        node = self.tree.get_node(visitId)
 
-                #species.setId("s" + str(node.id))         # ist das sinnvoll, muss nicht der complex und seine molecules betrachtet werden
+        #species.setId("s" + str(node.id))         # ist das sinnvoll, muss nicht der complex und seine molecules betrachtet werden
 
-                species.setId( self.process_complex_id(node.node_object) )
-                species.setName(str(node.name))
-                #optional set species.setSpeciesType()     # optional attribute
-                species.setCompartment('c1')                # Compartment is set to default comp c1, has to be changed if compartments are added to rxncon
-                species.setInitialAmount(100)   # TODO check if amount without unit is possible, if not discard amount deault
-                #species.setInitialConcentration()
-                #species.setSubstanceUnits('mole')
-                #species.setHasOnlySubstanceUnits(False)
-                #species.setBoundaryCondition(False)
-                #species.setConstant(False)
+        species.setId( self.process_complex_id(node.node_object) )
+        species.setName(str(node.name))
+        #optional set species.setSpeciesType()      # optional attribute
+        species.setCompartment('c1')                # Compartment is set to default comp c1, has to be changed if compartments are added to rxncon
+        species.setInitialAmount(100)               # Default set to 100
+        #species.setInitialConcentration()
+        #species.setSubstanceUnits('mole')
+        #species.setHasOnlySubstanceUnits(False)
+        #species.setBoundaryCondition(False)
+        #species.setConstant(False)
 
 
     def process_reaction(self, rxnconReaction):
@@ -54,8 +54,7 @@ class SBMLBuilder(object):
 
         # reaction.id is r + a running number, so that each reaction has a unique id
         reaction = self.model.createReaction()
-        reaction.setId('r' + str(self.numOfReactions))  # TODO
-        self.numOfReactions = self.numOfReactions +1
+        reaction.setId('r' + str(rxnconReaction.rid))
 
             #idea to use id not as abstract number but as a combination of name and an number, fails to rxncon names with forbidden characters, may be used with some refinement
             #value = self.numOfReactions.get(rxnconReaction.name, 0)
@@ -65,44 +64,46 @@ class SBMLBuilder(object):
 
         reaction.setName(rxnconReaction.name)
         #reaction.setKineticLaw()       # TODO set
-        reaction.setReversible(rxnconReaction.definition["Reversibility"] == "reversible")  # TODO describe
+        reaction.setReversible(rxnconReaction.definition["Reversibility"] == "reversible")  # sets a bool according to Reversibility, True for reversible False for irreversible
         #reaction.setFast()
         #reaction.setSBOTerm()
         if(self.namespace.getLevel >=3):
-            reaction.setCompartment('c1')                          # exist not before SBML L3V1
+            reaction.setCompartment('c1')                          # Reaction_Compartment exists not before SBML L3V1
 
-        reactRef = Test(complex)
-        if mod:
-            modRef
-        else:
-            pass
-        prodRef = Test(complex)
-        # TODO: def
-        for reactant in rxnconReaction.substrat_complexes:
-            if not reactant._BiologicalComplex__is_modifier:
-                reactRef = reaction.createReactant()
-                reactRef.setSpecies(self.process_complex_id(reactant))
-            else:
-                    modRef = reaction.createModifier()
-                    modRef.setSpecies(self.process_complex_id(reactant))
+        #alternative way to set references for commented block
+        self.set_references(reaction, rxnconReaction.substrat_complexes, True)
+        self.set_references(reaction, rxnconReaction.product_complexes, False)
 
-        for reactant in rxnconReaction.product_complexes:
+        # for reactant in rxnconReaction.substrat_complexes:
+        #     if not reactant._BiologicalComplex__is_modifier:
+        #         reactRef = reaction.createReactant()
+        #         reactRef.setSpecies(self.process_complex_id(reactant))
+        #     else:
+        #             modRef = reaction.createModifier()
+        #             modRef.setSpecies(self.process_complex_id(reactant))
+        #
+        # for reactant in rxnconReaction.product_complexes:
+        #     if not reactant._BiologicalComplex__is_modifier:
+        #         prodRef = reaction.createProduct()
+        #         prodRef.setSpecies(self.process_complex_id(reactant))
+        #     else:
+        #         modRef = reaction.createModifier()
+        #         modRef.setSpecies(self.process_complex_id(reactant))
+
+    # sets the reactant/product/modifier references for a reaction
+    def set_references(self, reaction, complex, is_substrate):
+        refs = []
+        for reactant in complex:
             if not reactant._BiologicalComplex__is_modifier:
-                prodRef = reaction.createProduct()
-                prodRef.setSpecies(self.process_complex_id(reactant))
+                if is_substrate:
+                    reactRef = reaction.createReactant()
+                    reactRef.setSpecies(self.process_complex_id(reactant))
+                else:
+                    prodRef =  reaction.createProduct()
+                    prodRef.setSpecies(self.process_complex_id(reactant))
             else:
                 modRef = reaction.createModifier()
                 modRef.setSpecies(self.process_complex_id(reactant))
-
-    def test(self, complex):
-        for reactant in complex:
-            if not modifier:
-                pass
-                return ref, False
-            else:
-                pass
-                mod = True
-                return modifier, mod
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree
@@ -134,9 +135,10 @@ class SBMLBuilder(object):
                 visited_nodes.append(edge.id[1])
 
             # TODO check if it is ok to skip a reaction if it was processed on an other edge already
-            if edge.reaction.rid not in handled_reactions :
-                self.process_reaction(edge.reaction)
-                handled_reactions.append(edge.reaction.rid)
+            for reaction in edge.reaction:
+                if reaction.rid not in handled_reactions :
+                    self.process_reaction(reaction)
+                    handled_reactions.append(reaction.rid)
 
 
 
