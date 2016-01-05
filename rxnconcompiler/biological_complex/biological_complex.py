@@ -88,6 +88,11 @@ class BiologicalComplex(object):
         """
         return len(self.molecules)
 
+    def set_modifier(self, reaction):
+        if reaction.definition['Category'] in ['Covalent Modification', 'Relocalisation', 'Synthesis/Degradation']:
+            if self.side == 'L':
+                self.is_modifier = True
+
     def inspect(self):
         """
         Prints detailed information about a complex.

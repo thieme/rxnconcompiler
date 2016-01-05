@@ -995,4 +995,7 @@ class ComplexApplicator:
         compl = BiologicalComplex()
         compl.side = side
         compl.molecules.append(mol)
+
+        compl.set_modifier(reaction)
+
         reaction.substrat_complexes.append(compl)
