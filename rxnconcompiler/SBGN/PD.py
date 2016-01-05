@@ -14,7 +14,7 @@ class ReducedPDChildren(Children):
 class ReducedPDEdge():
     def __init__(self, parent_id, node_id, reaction):
         self.__edge = []
-        self.reaction = reaction
+        self.reaction = [reaction]
         # a combination of parent and children if there is no parent the first number will be set to 0
         self.id = (parent_id,node_id)
 
@@ -158,7 +158,14 @@ class ReducedPDTree(Tree):
 
     def add_edge(self, node, parent_id, reaction):
         edge = ReducedPDEdge(parent_id=parent_id, node_id=node.id, reaction=reaction)
+        #if edge.id in self.edges:
+
         self.edges.append(edge)
+
+    def get_edge(self, parent_id, child_id):
+        for edge in self.edges:
+            if edge.id == (parent_id, child_id):
+                return edge
 
     def remove_edge(self):
         pass
@@ -183,6 +190,10 @@ class ReducedPDTree(Tree):
                     if parent_tuple not in node.parent and node_tuple[1] not in parent_list:
                             self.add_parent(parent_node, node)
                             self.add_edge(node=node, parent_id=parent_tuple[1], reaction=reaction)
+                    if parent_tuple in node.parent and node_tuple[1] not in parent_list:
+                        edge = self.get_edge(parent_tuple[1], node_tuple[1])
+                        if edge is not None and reaction not in edge.reaction:
+                            edge.reaction.append(reaction)
             return
         self.nodes.append(node)
         self.last_node = node.name
