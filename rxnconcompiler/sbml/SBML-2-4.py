@@ -117,7 +117,7 @@ class SBMLBuilder(object):
 
         # default compartment until further changes to rxncon
         c = self.model.createCompartment()
-        c.setId('c1')
+        c.setId('cell')
         # example values for compartments
         #c.setConstant(True)
         #c.setSize(1)
