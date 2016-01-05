@@ -249,9 +249,9 @@ class Interaction(Reaction):
             self.product_complexes.append(new)
 
 
-
 class Modification(Reaction):
     """"""
+
     def get_modifier(self):
         """
         Returns complex that doesn't change during reaction.
@@ -390,6 +390,7 @@ class SyntDeg(Reaction):
     trsl (translation)
     deg (degradation)
     """
+
     def get_modifier(self):
         """
         Returns complex that doesn't change during reaction:
@@ -444,6 +445,7 @@ class SyntDeg(Reaction):
 
 class Relocalisation(Reaction):
     """"""
+
     def get_modifier(self):
         """
         Returns complex that doesn't change during reaction:
