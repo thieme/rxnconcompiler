@@ -104,12 +104,12 @@ class SBMLBuilder(object):
     def add_references(self, rid, edge_id):
         reaction = self.model.getReaction('r' + str(rid))
         substrate = self.tree.get_node(edge_id[0]).node_object
-        if reaction.getReactant(self.process_complex_id(substrate)) == None:
+        if reaction.getReactant(self.process_complex_id(substrate)) == None and reaction.getModifier(self.process_complex_id(substrate)) == None:
             self.set_reference(reaction, substrate, True)
 
-        product = self.tree.get_node(edge_id[0]).node_object
-        if reaction.getReactant(self.process_complex_id(product)) == None:
-            self.set_reference(reaction, product)
+        product = self.tree.get_node(edge_id[1]).node_object
+        if reaction.getProduct(self.process_complex_id(product)) == None and reaction.getModifier(self.process_complex_id(product)) == None:
+            self.set_reference(reaction, product, False)
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
