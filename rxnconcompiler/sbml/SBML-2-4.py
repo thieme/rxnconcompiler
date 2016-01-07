@@ -14,10 +14,10 @@ class SBMLBuilder(object):
             self.namespace = SBMLNamespaces(level, version)
             self.document = SBMLDocument(self.namespace)
         except ValueError:
-            raise SystemExit("SBML Document creation failed")    # TODO another exception handle requiered?
+            raise SystemExit("SBML Document creation failed")    # TODO another exception handle required?
         self.model = self.document.createModel()
         #self.numOfReactions = {}           # a dict for reaction name : how often the reaction is already in the modell
-        self.numOfReactions = 0             # easier but abstract number for reaction id
+        reactions = []
 
     def process_complex_id(self, complex):
         # generates the species id for complexes with one or more molecules consisting of "s_m[id of molecule]_m..."
@@ -38,7 +38,7 @@ class SBMLBuilder(object):
         species.setId( self.process_complex_id(node.node_object) )
         species.setName(str(node.name))
         #optional set species.setSpeciesType()      # optional attribute
-        species.setCompartment('c1')                # Compartment is set to default comp c1, has to be changed if compartments are added to rxncon
+        species.setCompartment('cell')                # Compartment is set to default comp cell, has to be changed if compartments are added to rxncon
         species.setInitialAmount(100)               # Default set to 100
         #species.setInitialConcentration()
         #species.setSubstanceUnits('mole')          #there are no units in rxncon
@@ -46,11 +46,12 @@ class SBMLBuilder(object):
         #species.setBoundaryCondition(False)
         #species.setConstant(False)
 
-    def process_reaction(self, rxnconReaction, edge_id):
-        # gets an unhandled reaction  an processes stored information
+    def process_reaction(self, rxnconReactions):
+        # gets an unhandled list of tupel (reaction, edge.id)  an processes stored information
 
         reaction = self.model.createReaction()
-        reaction.setId('r' + str(rxnconReaction.rid))   # id is a string "r[id]" where id is the number
+        rid = 'r' + str(rxnconReactions[0][0].rid)   # id is a string "r[id]" where id is the number
+        reaction.setId(rid)
 
             #idea to use id not as abstract number but as a combination of name and an number, fails to rxncon names with forbidden characters, may be used with some refinement
             #value = self.numOfReactions.get(rxnconReaction.name, 0)
@@ -58,18 +59,24 @@ class SBMLBuilder(object):
             #reaction.setId('r' + str(value +1) )
             #self.numOfReactions[rxnconReaction.name] = value +1
 
-        reaction.setName(rxnconReaction.name)
-        #reaction.setKineticLaw()       # TODO set
-        reaction.setReversible(rxnconReaction.definition["Reversibility"] == "reversible")  # sets a bool according to Reversibility, True for reversible False for irreversible
+        names = set()
+        for reactionTupel in rxnconReactions:
+            names.add(reactionTupel[0].name)
+        names = list(names)
+
+
+        reaction.setName(";".join(names))
+        #reaction.setKineticLaw()       # TODO set / call function to do so
+        reaction.setReversible(rxnconReactions[0][0].definition["Reversibility"] == "reversible")  # sets a bool according to Reversibility, True for reversible False for irreversible
         #reaction.setFast()
         #reaction.setSBOTerm()
         if(self.namespace.getLevel >=3):
-            reaction.setCompartment('c1')                          # Reaction_Compartment exists not before SBML L3V1
+            reaction.setCompartment('cell')                          # Reaction_Compartment exists not before SBML L3V1
 
-        #edge_id[0] refers to the reactant of the edge, edge[1] to the substrat, adds them as reference to the reaction
-        self.set_reference(reaction, self.tree.get_node(edge_id[0]).node_object, True)
-        self.set_reference(reaction, self.tree.get_node(edge_id[1]).node_object, False)
+        for reactionTupel in rxnconReactions:
+            self.add_references(rid, reactionTupel[1])
 
+    #not needed anymore in the newest iteration
     def set_reference(self, reaction, reactant, is_substrate):
         # sets the reactant/product/modifier references for the given reaction
         if not reactant._BiologicalComplex__is_modifier:
@@ -85,7 +92,7 @@ class SBMLBuilder(object):
 
     def add_references(self, rid, edge_id):
         # adds new reactants to an reaction that has already been handled on another node
-        reaction = self.model.getReaction('r' + str(rid))
+        reaction = self.model.getReaction(rid)
         substrate = self.tree.get_node(edge_id[0]).node_object
         if reaction.getReactant(self.process_complex_id(substrate)) == None and reaction.getModifier(self.process_complex_id(substrate)) == None:
             self.set_reference(reaction, substrate, True)
@@ -128,7 +135,7 @@ class SBMLBuilder(object):
         # for all edges it is checked if the nodes are already visited, if not they are added as species in process_node
         # the same will happen for each edge and their reaction, an reaction can be on two different edges so it has to be checked if this reaction was already added
         for edge in rPDTree.edges:
-            #print(edge.id)
+            # add all nodes as species
             if edge.id[0] not in visited_nodes :
                 self.process_node(edge.id[0])
                 visited_nodes.append(edge.id[0])
@@ -136,13 +143,24 @@ class SBMLBuilder(object):
                 self.process_node(edge.id[1])
                 visited_nodes.append(edge.id[1])
 
+        for edge in rPDTree.edges:
+            #handle edges, so that all reactions with the same product(s) get handled at once
             for reaction in edge.reaction:
-                if reaction.rid not in handled_reactions :
-                    self.process_reaction(reaction, edge.id)
+                if reaction.rid not in handled_reactions:
+                    reactions = [(reaction, edge.id)]
                     handled_reactions.append(reaction.rid)
-                else:
-                    self.add_references(reaction.rid, edge.id)
-
+                    products = []
+                    for prod in reaction.product_complexes:
+                        if not prod.is_modifier:
+                            products.append(edge.id[1])
+                    for other_edge in rPDTree.edges:
+                        for other_reaction in other_edge.reaction:
+                            if other_edge.id != edge.id:
+                                if other_edge.id[1] in products:
+                                    reactions.append((other_reaction, other_edge.id ))
+                                    handled_reactions.append(other_reaction.rid)
+                    print(reactions)
+                    self.process_reaction(reactions)
 
         return(self.document)
 
@@ -151,6 +169,7 @@ if __name__ == "__main__":
     TOY1 = """
     a_p+_b_[x]
     c_p+_b_[x]
+    d_ppi_e
     """
 
     rxncon = Rxncon(TOY1)
