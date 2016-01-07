@@ -16,10 +16,10 @@ from rxnconcompiler.biological_complex.complex_applicator import ComplexApplicat
 class ContingencyApplicatorTests(TestCase):
     """Checks whether proper contingencies pool is generated for simple example."""
     def setUp(self):
-        rxn = Rxncon('A_ppi_B')
-        rxn1 = Rxncon("A_pt_B")
-        self.rcont = rxn.reaction_pool['A_ppi_B']  # reaction container
-        self.rcont1 = rxn1.reaction_pool['A_pt_B']
+        self.rxn = Rxncon('A_ppi_B')
+        self.rxn1 = Rxncon("A_pt_B")
+        self.rcont = self.rxn.reaction_pool['A_ppi_B']  # reaction container
+        self.rcont1 = self.rxn1.reaction_pool['A_pt_B']
 
     def test_kminus(self):
         """Tests whether k- is properly applied."""

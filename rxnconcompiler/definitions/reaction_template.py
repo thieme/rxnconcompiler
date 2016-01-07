@@ -68,7 +68,7 @@ REACTION_TEMPLATE = [{
         'ProductState[Component]': 'ComponentB',
         'SourceState[Component]': 'ComponentA',
 
-        'Reversibility': 'reversible',
+        'Reversibility': 'irreversible',
         'Directionality': 'unidirectional'
         # 'ProductState[Modification]': '-{P}',
         # 'SourceState[Modification]': '-{P}'

@@ -231,6 +231,8 @@ class Rxncon():
         if self.contingency_pool.has_key(container.name):
             for cont in self.contingency_pool[container.name].children:
                 if cont.children == []:
+                    if "<" in cont.state:
+                        contingencies.extend(self.contingency_pool)
                     contingencies.append(cont)
         cap = ContingencyApplicator(self.war)
         for cont in contingencies:
@@ -388,8 +390,23 @@ class Rxncon():
             complexes = []
             if add_complexes:
                 complexes = self.get_complexes(react_container.name)  # 1
-            if add_contingencies:
+
+            #orignial_react_container = copy.deepcopy(react_container)
+            #react_container = self.solve_conflict.find_conflicts_on_mol(react_container) # find conflicts within the different reactions
+
+            #if self.solve_conflict.requirement_found:
+                # we have to add a deepcopy of originial_react_container because other wise
+                # the self.apply_contingencies will manipulate twice on the same object (internal referencing of python)
+            #    react_container.insert_reaction(0, copy.deepcopy(orignial_react_container[0]))  # we add an unmodified reaction again to the container to cover all possible reactions
+
+            #if add_contingencies or self.solve_conflict.conflict_found: # old
+            #    self.apply_contingencies_on_complex(react_container)
+            #    self.apply_contingencies_on_complex(orignial_react_container)
+
+            if add_contingencies:# or self.solve_conflict.conflict_found:
                 complexes = self.apply_contingencies(react_container, complexes)
+                #complexes2 = self.apply_contingencies(orignial_react_container, complexes)
+                #com
 
             if complexes:
                 builder = ComplexBuilder()
@@ -397,15 +414,7 @@ class Rxncon():
                 ComplexApplicator(react_container, copy.deepcopy(complexes), self.war).apply_complexes()  # 2
             # self.apply_rules(react_container, rules)
             # after applying complexes we may have more reactions in a single container.
-            orignial_react_container = copy.deepcopy(react_container)
-            react_container = self.solve_conflict.find_conflicts_on_mol(react_container) # find conflicts within the different reactions
-            if self.solve_conflict.requirement_found:
-                # we have to add a deepcopy of originial_react_container because other wise
-                # the self.apply_contingencies will manipulate twice on the same object (internal referencing of python)
-                react_container.insert_reaction(0, copy.deepcopy(orignial_react_container[0]))  # we add an unmodified reaction again to the container to cover all possible reactions
-            if add_contingencies or self.solve_conflict.conflict_found:
-                self.apply_contingencies_on_complex(react_container)
-                self.apply_contingencies_on_complex(orignial_react_container)
+
             # single contingency is applied for all reactions. If K+/K- reactions are dubbled.
             self.update_reactions()  # 4
             for reaction in react_container:  # 5
