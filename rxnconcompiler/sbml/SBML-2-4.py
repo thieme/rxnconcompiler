@@ -46,7 +46,6 @@ class SBMLBuilder(object):
         #species.setBoundaryCondition(False)
         #species.setConstant(False)
 
-
     def process_reaction(self, rxnconReaction, edge_id):
         # gets an unhandled reaction  an processes stored information
 
@@ -67,29 +66,12 @@ class SBMLBuilder(object):
         if(self.namespace.getLevel >=3):
             reaction.setCompartment('c1')                          # Reaction_Compartment exists not before SBML L3V1
 
-        # molecules in substrate/product_complex have different id than in the nodes so use the nodes of the reaction old
-        #self.set_references(reaction, rxnconReaction.substrat_complexes, True)
-        #self.set_references(reaction, rxnconReaction.product_complexes, False)
-
         #edge_id[0] refers to the reactant of the edge, edge[1] to the substrat, adds them as reference to the reaction
         self.set_reference(reaction, self.tree.get_node(edge_id[0]).node_object, True)
         self.set_reference(reaction, self.tree.get_node(edge_id[1]).node_object, False)
 
-    # sets the reactant/product/modifier references for the given reaction TODO this is an old try set_reference is the new version this should be deleted when the new approach works
-    def set_references(self, reaction, complex, is_substrate):
-        for reactant in complex:
-            if not reactant._BiologicalComplex__is_modifier:
-                if is_substrate:
-                    reactRef = reaction.createReactant()
-                    reactRef.setSpecies(self.process_complex_id(reactant))
-                else:
-                    prodRef =  reaction.createProduct()
-                    prodRef.setSpecies(self.process_complex_id(reactant))
-            else:
-                modRef = reaction.createModifier()
-                modRef.setSpecies(self.process_complex_id(reactant))
-
     def set_reference(self, reaction, reactant, is_substrate):
+        # sets the reactant/product/modifier references for the given reaction
         if not reactant._BiologicalComplex__is_modifier:
             if is_substrate:
                 reactRef = reaction.createReactant()
@@ -102,6 +84,7 @@ class SBMLBuilder(object):
             modRef.setSpecies(self.process_complex_id(reactant))
 
     def add_references(self, rid, edge_id):
+        # adds new reactants to an reaction that has already been handled on another node
         reaction = self.model.getReaction('r' + str(rid))
         substrate = self.tree.get_node(edge_id[0]).node_object
         if reaction.getReactant(self.process_complex_id(substrate)) == None and reaction.getModifier(self.process_complex_id(substrate)) == None:
@@ -110,6 +93,20 @@ class SBMLBuilder(object):
         product = self.tree.get_node(edge_id[1]).node_object
         if reaction.getProduct(self.process_complex_id(product)) == None and reaction.getModifier(self.process_complex_id(product)) == None:
             self.set_reference(reaction, product, False)
+
+    def compute_KineticLaw(self, reaction_id):
+        # takes the id of an fully handled reaction and gets it from the model to add its kinetic law
+        reaction = self.model.getReaction(reaction_id)
+        # TODO finish this call it where it should be called probably in build_model after all edges have been handled
+
+    def save_SBML(self, document, path):
+        # writes the SBML Document to a textfile
+
+        #TODO validation of model before writing to file!?
+        if writeSBMLToFile(document, path):
+            print("file save xuscessful")
+        else:
+            print('file save failed')
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
@@ -147,17 +144,7 @@ class SBMLBuilder(object):
                     self.add_references(reaction.rid, edge.id)
 
 
-
         return(self.document)
-
-    def save_SBML(self, document, path):
-        # writes the SBML Document to a textfile
-
-        #TODO validation of model before writing to file!?
-        if writeSBMLToFile(document, path):
-            print("file save xuscessful")
-        else:
-            print('file save failed')
 
 
 if __name__ == "__main__":
