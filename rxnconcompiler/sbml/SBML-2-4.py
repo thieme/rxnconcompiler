@@ -47,7 +47,7 @@ class SBMLBuilder(object):
         #species.setConstant(False)
 
     def process_reaction(self, rxnconReactions):
-        # gets an unhandled list of tupel (reaction, edge.id)  an processes stored information
+        # gets a list of tupel (reaction, edge.id)  and processes stored information
 
         reaction = self.model.createReaction()
         rid = 'r' + str(rxnconReactions[0][0].rid)   # id is a string "r[id]" where id is the number
@@ -73,38 +73,75 @@ class SBMLBuilder(object):
         if(self.namespace.getLevel >=3):
             reaction.setCompartment('cell')                          # Reaction_Compartment exists not before SBML L3V1
 
+        references = []
+        #adds SpeciesReferences to the reaction and gives back the reactants Id for further use
         for reactionTupel in rxnconReactions:
-            self.add_references(rid, reactionTupel[1])
+            references.append((self.add_references(rid, reactionTupel[1]), reactionTupel[0].rid))
 
-    #not needed anymore in the newest iteration
+        print(references)
+        self.compute_KineticLaw(rid, references)
+
+
     def set_reference(self, reaction, reactant, is_substrate):
         # sets the reactant/product/modifier references for the given reaction
+        # returns the id of the added speciesReference
         if not reactant._BiologicalComplex__is_modifier:
             if is_substrate:
                 reactRef = reaction.createReactant()
                 reactRef.setSpecies(self.process_complex_id(reactant))
+                return self.process_complex_id(reactant)
             else:
                 prodRef =  reaction.createProduct()
                 prodRef.setSpecies(self.process_complex_id(reactant))
+                return self.process_complex_id(reactant)
         else:
             modRef = reaction.createModifier()
             modRef.setSpecies(self.process_complex_id(reactant))
+            return self.process_complex_id(reactant)
 
     def add_references(self, rid, edge_id):
-        # adds new reactants to an reaction that has already been handled on another node
+        # adds new reactants to an reaction
+        # passes the returned reference
         reaction = self.model.getReaction(rid)
+        refs = None
+
         substrate = self.tree.get_node(edge_id[0]).node_object
         if reaction.getReactant(self.process_complex_id(substrate)) == None and reaction.getModifier(self.process_complex_id(substrate)) == None:
-            self.set_reference(reaction, substrate, True)
+            refs = (self.set_reference(reaction, substrate, True))
+        else:
+            refs = self.process_complex_id(substrate)
 
         product = self.tree.get_node(edge_id[1]).node_object
         if reaction.getProduct(self.process_complex_id(product)) == None and reaction.getModifier(self.process_complex_id(product)) == None:
             self.set_reference(reaction, product, False)
 
-    def compute_KineticLaw(self, reaction_id):
-        # takes the id of an fully handled reaction and gets it from the model to add its kinetic law
+        return refs
+
+    def compute_KineticLaw(self, reaction_id, references):
+        # takes the id of an otherwise fully handled reaction and the list of (SpeciesReferences, reaction)
         reaction = self.model.getReaction(reaction_id)
-        # TODO finish this call it where it should be called probably in build_model after all edges have been handled
+        parameters = set()
+        rule = ""
+        for ref in references:
+            parameters.add(ref[1])
+
+        for par in list(parameters):
+            k = self.model.createParameter()
+            k.setId("k"+str(par))
+            k.setValue(1)
+            if rule:
+                rule = rule + " + "
+
+            rule = rule +  "k"+str(par)
+            for ref in references:
+                if ref[1] == par and ref[0] != None:
+                    rule = rule + " * " + ref[0]
+        print("the rule is:" +rule)
+
+        kineticLaw = reaction.createKineticLaw()
+
+        kineticLaw.setMath( parseL3Formula(rule) )
+
 
     def save_SBML(self, document, path):
         # writes the SBML Document to a textfile
@@ -159,7 +196,7 @@ class SBMLBuilder(object):
                                 if other_edge.id[1] in products:
                                     reactions.append((other_reaction, other_edge.id ))
                                     handled_reactions.append(other_reaction.rid)
-                    print(reactions)
+                    print(" The reactions: "+str(reactions))
                     self.process_reaction(reactions)
 
         return(self.document)
@@ -169,8 +206,9 @@ if __name__ == "__main__":
     TOY1 = """
     a_p+_b_[x]
     c_p+_b_[x]
-    d_ppi_e
+
     """
+    #d_ppi_e
 
     rxncon = Rxncon(TOY1)
     rxncon.run_process()
