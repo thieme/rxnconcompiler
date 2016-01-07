@@ -16,8 +16,6 @@ class SBMLBuilder(object):
         except ValueError:
             raise SystemExit("SBML Document creation failed")    # TODO another exception handle required?
         self.model = self.document.createModel()
-        #self.numOfReactions = {}           # a dict for reaction name : how often the reaction is already in the modell
-        reactions = []
 
     def process_complex_id(self, complex):
         # generates the species id for complexes with one or more molecules consisting of "s_m[id of molecule]_m..."
@@ -59,14 +57,13 @@ class SBMLBuilder(object):
             #reaction.setId('r' + str(value +1) )
             #self.numOfReactions[rxnconReaction.name] = value +1
 
+        #creates a name out of the unique reaction names that are part of this reaction
         names = set()
         for reactionTupel in rxnconReactions:
             names.add(reactionTupel[0].name)
         names = list(names)
-
-
         reaction.setName(";".join(names))
-        #reaction.setKineticLaw()       # TODO set / call function to do so
+
         reaction.setReversible(rxnconReactions[0][0].definition["Reversibility"] == "reversible")  # sets a bool according to Reversibility, True for reversible False for irreversible
         #reaction.setFast()
         #reaction.setSBOTerm()
@@ -78,9 +75,7 @@ class SBMLBuilder(object):
         for reactionTupel in rxnconReactions:
             references.append((self.add_references(rid, reactionTupel[1]), reactionTupel[0].rid))
 
-        print(references)
         self.compute_KineticLaw(rid, references)
-
 
     def set_reference(self, reaction, reactant, is_substrate):
         # sets the reactant/product/modifier references for the given reaction
@@ -106,13 +101,13 @@ class SBMLBuilder(object):
         refs = None
 
         substrate = self.tree.get_node(edge_id[0]).node_object
-        if reaction.getReactant(self.process_complex_id(substrate)) == None and reaction.getModifier(self.process_complex_id(substrate)) == None:
+        if reaction.getReactant(self.process_complex_id(substrate)) is None and reaction.getModifier(self.process_complex_id(substrate)) is None:
             refs = (self.set_reference(reaction, substrate, True))
         else:
-            refs = self.process_complex_id(substrate)
+            refs = self.process_complex_id(substrate)   # is needed so no (None, int) Tupel get get created which would produce wrong Kinetic Laws
 
         product = self.tree.get_node(edge_id[1]).node_object
-        if reaction.getProduct(self.process_complex_id(product)) == None and reaction.getModifier(self.process_complex_id(product)) == None:
+        if reaction.getProduct(self.process_complex_id(product)) is None and reaction.getModifier(self.process_complex_id(product)) is None:
             self.set_reference(reaction, product, False)
 
         return refs
@@ -134,9 +129,8 @@ class SBMLBuilder(object):
 
             rule = rule +  "k"+str(par)
             for ref in references:
-                if ref[1] == par and ref[0] != None:
+                if ref[1] == par and ref[0] is not None:
                     rule = rule + " * " + ref[0]
-        print("the rule is:" +rule)
 
         kineticLaw = reaction.createKineticLaw()
 
@@ -196,7 +190,6 @@ class SBMLBuilder(object):
                                 if other_edge.id[1] in products:
                                     reactions.append((other_reaction, other_edge.id ))
                                     handled_reactions.append(other_reaction.rid)
-                    print(" The reactions: "+str(reactions))
                     self.process_reaction(reactions)
 
         return(self.document)
