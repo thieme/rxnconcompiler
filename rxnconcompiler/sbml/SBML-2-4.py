@@ -12,6 +12,7 @@ class SBMLBuilder(object):
         # creates a SBML document of given level and version, default is 2.4 because of Celldesigner specs
         try:
             self.namespace = SBMLNamespaces(level, version)
+            self.namespace.addNamespace("http://www.sbml.org/2001/ns/celldesigner", "celldesigner")
             self.document = SBMLDocument(self.namespace)
         except ValueError:
             raise SystemExit("SBML Document creation failed")    # TODO another exception handle required?
@@ -131,7 +132,6 @@ class SBMLBuilder(object):
         kineticLaw = reaction.createKineticLaw()
         kineticLaw.setMath(parseL3Formula(rule))
 
-
     def save_SBML(self, document, path):
         # writes the SBML Document to a textfile
 
@@ -140,6 +140,19 @@ class SBMLBuilder(object):
             print("file save xuscessful")
         else:
             print('file save failed')
+
+    def model_CdAnnotation(self):
+        theAnnotation = "<celldesigner:extension>"
+        theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>"
+        theAnnotation += "<celldesigner:modelDisplay sizeX=\"600\" sizeY=\"400\"/>"
+        #theAnnotation += addlistOfCompartmentAliases       # will probaly needed when rxncon gets compartments
+        #theAnnotation += addlistOfComplexSpeciesAliases    # will needed for complexes that are formed in ppi
+        #theAnnotation += addlistOfSpeciesAliases           # TODO this will be needed ASAP
+        #theAnnotation += addlistOfProtein                  # TODO second objective
+
+
+        theAnnotation += "</celldesigner:extension>"
+        #self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
@@ -150,7 +163,7 @@ class SBMLBuilder(object):
         c.setId('cell')
         # example values for compartments
         #c.setConstant(True)
-        #c.setSize(1)
+        c.setSize(1)
         #c.setSpatialDimensions(3)
         #c.setUnits('litre')
 
@@ -187,23 +200,37 @@ class SBMLBuilder(object):
                                     handled_reactions.append(other_reaction.rid)
                     self.process_reaction(reactions)
 
+        self.model_CdAnnotation()
         return(self.document)
 
 
 if __name__ == "__main__":
-    TOY1 = """
-    a_p+_b_[x]
-    c_p+_b_[x]
 
+    simple = """
+    a_p+_b
+    """
+
+    TOY1 = """
+    a_p+_b_[x]; ! b_[y]-{p}
+    c_p+_b_[y]
+    d_ppi_e
     """
     #d_ppi_e
 
-    rxncon = Rxncon(TOY1)
+    TOY2 = """
+    C_p+_A_[x]
+    A_ppi_B; X A_[x]-{p}
+    """
+
+    #rxncon = Rxncon(TOY1)
+    #rxncon = Rxncon(TOY2)
+    rxncon = Rxncon(simple)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
     #sb = SBMLBuilder(level = 3, version = 1)
     sb = SBMLBuilder()
     toy1sbml =  sb.build_model(reducedPD.tree)
-    sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/testsbml.sbml"))
+    sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/test.xml"))
+    #sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/test.sbml"))
     print("\n" + writeSBMLToString(toy1sbml) + "\n")
