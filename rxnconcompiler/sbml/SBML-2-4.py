@@ -51,12 +51,6 @@ class SBMLBuilder(object):
         rid = 'r' + str(rxnconReactions[0][0].rid)   # id is a string "r[id]" where id is the number
         reaction.setId(rid)
 
-            #idea to use id not as abstract number but as a combination of name and an number, fails to rxncon names with forbidden characters, may be used with some refinement
-            #value = self.numOfReactions.get(rxnconReaction.name, 0)
-            #reaction.setId(str(rxnconReaction.name) + str(value +1) )
-            #reaction.setId('r' + str(value +1) )
-            #self.numOfReactions[rxnconReaction.name] = value +1
-
         #creates a name out of the unique reaction names that are part of this reaction
         names = set()
         for reactionTupel in rxnconReactions:
@@ -117,9 +111,11 @@ class SBMLBuilder(object):
         reaction = self.model.getReaction(reaction_id)
         parameters = set()
         rule = ""
+        # set of unique Parameters one for each reaction in rxncon_ReducedPDTree relevant for this KineticLaw
         for ref in references:
             parameters.add(ref[1])
 
+        # a string based rule is created based on: Sum of ([Parameter of Reaction] * SpeciesRef1 * SpeciesRef2...)
         for par in list(parameters):
             k = self.model.createParameter()
             k.setId("k"+str(par))
@@ -133,8 +129,7 @@ class SBMLBuilder(object):
                     rule = rule + " * " + ref[0]
 
         kineticLaw = reaction.createKineticLaw()
-
-        kineticLaw.setMath( parseL3Formula(rule) )
+        kineticLaw.setMath(parseL3Formula(rule))
 
 
     def save_SBML(self, document, path):
