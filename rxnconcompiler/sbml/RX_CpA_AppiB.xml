@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model>
+    <listOfCompartments>
+      <compartment id="cell" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="s_m1" name="C" compartment="cell" initialAmount="100"/>
+      <species id="s_m5" name="A(x~P)" compartment="cell" initialAmount="100"/>
+      <species id="s_m2" name="A" compartment="cell" initialAmount="100"/>
+      <species id="s_m6_m7" name="A-B" compartment="cell" initialAmount="100"/>
+      <species id="s_m4" name="B" compartment="cell" initialAmount="100"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="k1" value="1"/>
+      <parameter id="k2" value="1"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="r1" name="C_p+_A_[x]" reversible="false">
+        <listOfReactants>
+          <speciesReference species="s_m2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="s_m5"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="s_m1"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> s_m1 </ci>
+              <ci> s_m2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r2" name="A_ppi_B" reversible="true">
+        <listOfReactants>
+          <speciesReference species="s_m2"/>
+          <speciesReference species="s_m4"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="s_m6_m7"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> s_m2 </ci>
+              <ci> s_m4 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
