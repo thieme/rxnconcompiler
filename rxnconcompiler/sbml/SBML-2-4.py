@@ -46,16 +46,16 @@ class SBMLBuilder(object):
         #species.setConstant(False)
 
     def process_reaction(self, rxnconReactions):
-        # gets a list of tupel (reaction, edge.id)  and processes stored information
+        # gets a list of tuple (reaction, edge.id)  and processes stored information
 
         reaction = self.model.createReaction()
-        rid = 'r' + str(rxnconReactions[0][0].rid)   # id is a string "r[id]" where id is the number
-        reaction.setId(rid)
+        id = 'r' + str(rxnconReactions[0][0].rid)   # id is a string "r[rid]" where rid is the number from the rxncon-reaction
+        reaction.setId(id)
 
         #creates a name out of the unique reaction names that are part of this reaction
         names = set()
-        for reactionTupel in rxnconReactions:
-            names.add(reactionTupel[0].name)
+        for reactionTuple in rxnconReactions:
+            names.add(reactionTuple[0].name)
         names = list(names)
         reaction.setName(";".join(names))
 
@@ -66,11 +66,12 @@ class SBMLBuilder(object):
             reaction.setCompartment('cell')                          # Reaction_Compartment exists not before SBML L3V1
 
         references = []
-        #adds SpeciesReferences to the reaction and gives back the reactants Id for further use
-        for reactionTupel in rxnconReactions:
-            references.append((self.add_references(rid, reactionTupel[1]), reactionTupel[0].rid))
+        #adds SpeciesReferences to the reaction and gives back a tupel of (reactantList, prodList, rxncon-reaction.rid)
+        for reactionTuple in rxnconReactions:
+            references.append((self.add_references(id, reactionTuple[1]), reactionTuple[0].rid))
 
-        self.compute_KineticLaw(rid, references)
+        #self.compute_KineticLaw(id, references, rxnconReactions[0])
+        self.compute_KineticLaw(id, rxnconReactions)
 
     def set_reference(self, reaction, reactant, is_substrate):
         # sets the reactant/product/modifier references for the given reaction
@@ -89,26 +90,27 @@ class SBMLBuilder(object):
             modRef.setSpecies(self.process_complex_id(reactant))
             return self.process_complex_id(reactant)
 
-    def add_references(self, rid, edge_id):
+    def add_references(self, id, edge_id):
         # adds new reactants to an reaction
         # passes the returned reference
-        reaction = self.model.getReaction(rid)
-        refs = None
+        reaction = self.model.getReaction(id)
+        reactRefs = None
+        prodRefs =  None
 
         substrate = self.tree.get_node(edge_id[0]).node_object
         if reaction.getReactant(self.process_complex_id(substrate)) is None and reaction.getModifier(self.process_complex_id(substrate)) is None:
-            refs = (self.set_reference(reaction, substrate, True))
+            reactRefs = (self.set_reference(reaction, substrate, True))
         else:
-            refs = self.process_complex_id(substrate)   # is needed so no (None, int) Tupel get get created which would produce wrong Kinetic Laws
+            reactRefs = self.process_complex_id(substrate)   # is needed so no (None, int) Tupel get get created which would produce wrong Kinetic Laws
 
         product = self.tree.get_node(edge_id[1]).node_object
         if reaction.getProduct(self.process_complex_id(product)) is None and reaction.getModifier(self.process_complex_id(product)) is None:
-            self.set_reference(reaction, product, False)
+           prodRefs =  self.set_reference(reaction, product, False)
 
-        return refs
+        return (reactRefs, prodRefs)
 
-    def compute_KineticLaw(self, reaction_id, references):
-        # takes the id of an otherwise fully handled reaction and the list of (SpeciesReferences, reaction)
+    def compute_KineticLaw(self, reaction_id, references, rxnconReactions):
+        # takes the id of an otherwise fully handled reaction, the list of (SpeciesReferences, rxnconReaction.rid) and the list of rxnconReactions in this reaction
         reaction = self.model.getReaction(reaction_id)
         parameters = set()
         rule = ""
@@ -119,18 +121,44 @@ class SBMLBuilder(object):
         # a string based rule is created based on: Sum of ([Parameter of Reaction] * SpeciesRef1 * SpeciesRef2...)
         for par in list(parameters):
             k = self.model.createParameter()
+
             k.setId("k"+str(par))
             k.setValue(1)
             if rule:
-                rule = rule + " + "
+                rule += " + "
 
-            rule = rule +  "k"+str(par)
+            rule +=  "k"+str(par)
             for ref in references:
                 if ref[1] == par and ref[0] is not None:
-                    rule = rule + " * " + ref[0]
+                    rule += " * " + ref[0]
 
         kineticLaw = reaction.createKineticLaw()
         kineticLaw.setMath(parseL3Formula(rule))
+
+    def compute_KineticLaw(self, reaction_id, rxnconReactions):
+        handledReaction=[]
+        rule = ""
+        for reactions in rxnconReactions:
+            if reactions[0].rid not in handledReaction:
+                handledReaction.append(reactions[0].rid)
+                handledNode = []
+                if reactions[0].rate.rate is not None:
+                    if rule:
+                        rule += " + "
+                    rule += reactions[0].rate.rate
+                    for reactionTuple in rxnconReactions:
+                        if reactionTuple[0].rid == reactions[0].rid:
+                            if reactionTuple[1][0] not in handledNode:
+                                rule += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
+                                handledNode.append(reactionTuple[1][0])
+
+
+
+
+        reaction = self.model.getReaction(reaction_id)
+        kineticLaw = reaction.createKineticLaw()
+        kineticLaw.setMath(parseL3Formula(rule))
+
 
     def save_SBML(self, document, path):
         # writes the SBML Document to a textfile
@@ -207,12 +235,18 @@ class SBMLBuilder(object):
 if __name__ == "__main__":
 
     simple = """
-    a_p+_b
+    a_ppi_b
     """
 
     TOY1 = """
-    a_p+_b_[x]; ! b_[y]-{p}
+    a_p+_b_[x]; ! b_[y]-{P}
     c_p+_b_[y]
+    d_ppi_e
+    """
+
+    TOY3 = """
+    a_p+_b_[x]
+    c_p+_b_[x]
     d_ppi_e
     """
     #d_ppi_e
@@ -222,9 +256,9 @@ if __name__ == "__main__":
     A_ppi_B; X A_[x]-{p}
     """
 
-    #rxncon = Rxncon(TOY1)
+    rxncon = Rxncon(TOY3)
     #rxncon = Rxncon(TOY2)
-    rxncon = Rxncon(simple)
+    #rxncon = Rxncon(simple)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
