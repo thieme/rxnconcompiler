@@ -137,7 +137,6 @@ class SBMLBuilder(object):
         kineticLaw = reaction.createKineticLaw()
         kineticLaw.setMath(parseL3Formula(rule))
 
-
     def save_SBML(self, document, path):
         # writes the SBML Document to a textfile
 
@@ -147,21 +146,7 @@ class SBMLBuilder(object):
         else:
             print('file save failed')
 
-    def addlistOfSpeciesAliases(self):           # TODO this will be needed ASAP
-        pass
 
-    def model_CdAnnotation(self):
-        theAnnotation = "<celldesigner:extension>"
-        theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>"
-        theAnnotation += "<celldesigner:modelDisplay sizeX=\"600\" sizeY=\"400\"/>"
-        #theAnnotation += addlistOfCompartmentAliases       # will probaly needed when rxncon gets compartments
-        #theAnnotation += addlistOfComplexSpeciesAliases    # TODO will needed for complexes that are formed in ppi
-        #theAnnotation += addlistOfSpeciesAliases           # TODO this will be needed ASAP
-        #theAnnotation += addlistOfProtein                  # TODO second objective
-
-
-        theAnnotation += "</celldesigner:extension>"
-        #self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
 
     def build_model(self, rPDTree, cd = False):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
@@ -209,9 +194,22 @@ class SBMLBuilder(object):
                                     handled_reactions.append(other_reaction.rid)
                     self.process_reaction(reactions)
 
-        self.model_CdAnnotation()
         return(self.document)
 
+# TODO everything with Celldesigner should go here so that the basic SBML isn't changed in the process
+class CDBuilder(SBMLBuilder):
+    def model_CdAnnotation(self):
+        theAnnotation = "<celldesigner:extension>"
+        theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>"
+        theAnnotation += "<celldesigner:modelDisplay sizeX=\"600\" sizeY=\"400\"/>"
+        #theAnnotation += addlistOfCompartmentAliases       # will probaly needed when rxncon gets compartments
+        #theAnnotation += addlistOfComplexSpeciesAliases    # TODO will needed for complexes that are formed in ppi
+        #theAnnotation += addlistOfSpeciesAliases           # TODO this will be needed ASAP
+        #theAnnotation += addlistOfProtein                  # TODO second objective
+
+
+        theAnnotation += "</celldesigner:extension>"
+        #self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
 
 if __name__ == "__main__":
 
@@ -244,9 +242,9 @@ if __name__ == "__main__":
     cellDesigner = False
     #rxncon = Rxncon(TOY3)
     #rxncon = Rxncon(TOY2)
-    rxncon = Rxncon(TOY4)
+    #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
-    #rxncon = Rxncon(simple)
+    rxncon = Rxncon(simple)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
