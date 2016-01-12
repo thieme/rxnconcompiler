@@ -1,5 +1,7 @@
 class RxnconError(Exception): pass
 
+class RxnconRateError(RxnconError): pass
+
 
 class RxnconParserError(RxnconError): pass
 

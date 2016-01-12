@@ -1,5 +1,6 @@
 from rxnconcompiler.SBGN.PD import ReducedProcessDescription
 from rxnconcompiler.rxncon import Rxncon
+from rxnconcompiler.util.rxncon_errors import RxnconRateError
 import os
 from libsbml import *
 # libsbml import always marked as unused and (some of) the depending methods as unresolved but work as intended when run
@@ -17,7 +18,7 @@ class SBMLBuilder(object):
                 self.namespace.addNamespace("http://www.sbml.org/2001/ns/celldesigner", "celldesigner")
             self.document = SBMLDocument(self.namespace)
         except ValueError:
-            raise SystemExit("SBML Document creation failed")    # TODO another exception handle required?
+            raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
 
     def process_complex_id(self, complex):
@@ -68,8 +69,7 @@ class SBMLBuilder(object):
             reaction.setCompartment('cell')                          # Reaction_Compartment exists not before SBML L3V1
 
         #adds SpeciesReferences to the reaction and gives back a tupel of (reactantList, prodList, rxncon-reaction.rid)
-        for reactionTuple in rxnconReactions:
-            self.add_references(id, reactionTuple[1])
+        [self.add_references(id, reactionTuple[1]) for reactionTuple in rxnconReactions]
 
         self.compute_KineticLaw(id, rxnconReactions)
 
@@ -118,7 +118,7 @@ class SBMLBuilder(object):
                                 rule += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
                                 handledNode.append(reactionTuple[1][0])
 
-                if reactions[0].rate.rate is None and reactions[0].rate.rrate is not None and reactions[0].rate.frate is not None:
+                elif reactions[0].rate.rate is None and reactions[0].rate.rrate is not None and reactions[0].rate.frate is not None:
                     there =" "+ reactions[0].rate.frate
                     back =" "+ reactions[0].rate.rrate
                     for reactionTuple in rxnconReactions:
@@ -130,7 +130,8 @@ class SBMLBuilder(object):
                                 back += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][1]).node_object)
                                 handledNode.append(reactionTuple[1][1])
                     rule += there + " - " + back
-
+                else:
+                    raise RxnconRateError("failed to set Kinetic law for reaction " + str(reactions[0].rid ))
 
         reaction = self.model.getReaction(reaction_id)
         kineticLaw = reaction.createKineticLaw()
@@ -233,12 +234,18 @@ if __name__ == "__main__":
 
     TOY2 = """
     C_p+_A_[x]
-    A_ppi_B; X A_[x]-{p}
+    A_ppi_B; X A_[x]-{P}
     """
+    TOY4 = """
+    C_p+_A_[x]
+    A_ppi_B; K+ A_[x]-{P}
+    """
+
     cellDesigner = False
     #rxncon = Rxncon(TOY3)
     #rxncon = Rxncon(TOY2)
-    rxncon = Rxncon(TOY1)
+    rxncon = Rxncon(TOY4)
+    #rxncon = Rxncon(TOY1)
     #rxncon = Rxncon(simple)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
