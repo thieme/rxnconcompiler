@@ -8,11 +8,13 @@ from libsbml import *
 
 class SBMLBuilder(object):
 
-    def __init__(self, level = 2, version = 4):
+    def __init__(self, level = 2, version = 4, cd = False):
         # creates a SBML document of given level and version, default is 2.4 because of Celldesigner specs
+        # Boolean cd indicates weahter CellDesigner Annotations should be added or not
         try:
             self.namespace = SBMLNamespaces(level, version)
-            self.namespace.addNamespace("http://www.sbml.org/2001/ns/celldesigner", "celldesigner")
+            if cd:
+                self.namespace.addNamespace("http://www.sbml.org/2001/ns/celldesigner", "celldesigner")
             self.document = SBMLDocument(self.namespace)
         except ValueError:
             raise SystemExit("SBML Document creation failed")    # TODO another exception handle required?
@@ -144,12 +146,15 @@ class SBMLBuilder(object):
         else:
             print('file save failed')
 
+    def addlistOfSpeciesAliases(self):           # TODO this will be needed ASAP
+        pass
+
     def model_CdAnnotation(self):
         theAnnotation = "<celldesigner:extension>"
         theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>"
         theAnnotation += "<celldesigner:modelDisplay sizeX=\"600\" sizeY=\"400\"/>"
         #theAnnotation += addlistOfCompartmentAliases       # will probaly needed when rxncon gets compartments
-        #theAnnotation += addlistOfComplexSpeciesAliases    # will needed for complexes that are formed in ppi
+        #theAnnotation += addlistOfComplexSpeciesAliases    # TODO will needed for complexes that are formed in ppi
         #theAnnotation += addlistOfSpeciesAliases           # TODO this will be needed ASAP
         #theAnnotation += addlistOfProtein                  # TODO second objective
 
@@ -157,7 +162,7 @@ class SBMLBuilder(object):
         theAnnotation += "</celldesigner:extension>"
         #self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
 
-    def build_model(self, rPDTree):
+    def build_model(self, rPDTree, cd = False):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
         self.tree = rPDTree
 
@@ -230,7 +235,7 @@ if __name__ == "__main__":
     C_p+_A_[x]
     A_ppi_B; X A_[x]-{p}
     """
-
+    cellDesigner = False
     #rxncon = Rxncon(TOY3)
     #rxncon = Rxncon(TOY2)
     rxncon = Rxncon(TOY1)
@@ -238,9 +243,9 @@ if __name__ == "__main__":
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
-    #sb = SBMLBuilder(level = 3, version = 1)
-    sb = SBMLBuilder()
-    toy1sbml =  sb.build_model(reducedPD.tree)
+    #sb = SBMLBuilder(level = 3, version = 1, cd = True)
+    sb = SBMLBuilder(cd = cellDesigner)
+    toy1sbml =  sb.build_model(reducedPD.tree, cellDesigner)
     sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/test.xml"))
     #sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/test.sbml"))
     print("\n" + writeSBMLToString(toy1sbml) + "\n")
