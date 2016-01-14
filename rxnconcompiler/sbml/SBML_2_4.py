@@ -87,7 +87,6 @@ class SBMLBuilder(object):
             modRef = reaction.createModifier()
             modRef.setSpecies(self.process_complex_id(reactant))
 
-
     def add_references(self, id, edge_id):
         # adds new reactants to an reaction
 
@@ -145,8 +144,6 @@ class SBMLBuilder(object):
             print("file save xuscessful")
         else:
             print('file save failed')
-
-
 
     def build_model(self, rPDTree, cd = False):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
