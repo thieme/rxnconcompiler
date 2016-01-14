@@ -7,6 +7,7 @@ from libsbml import *
 #TODO import only needed packages (when its clear which are needed)
 
 
+# for each rxncon model there has to be another instance of SBMLBuilder, otherwise all information of the first model will be stored in the second sbml
 class SBMLBuilder(object):
 
     def __init__(self, level = 2, version = 4, cd = False):
@@ -193,6 +194,7 @@ class SBMLBuilder(object):
 
         return(self.document)
 
+
 # TODO everything with Celldesigner should go here so that the basic SBML isn't changed in the process
 class CDBuilder(SBMLBuilder):
     def model_CdAnnotation(self):
@@ -211,7 +213,7 @@ class CDBuilder(SBMLBuilder):
 if __name__ == "__main__":
 
     simple = """
-    a_ppi_b
+    a_p+_b
     """
 
     TOY1 = """
