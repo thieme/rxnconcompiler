@@ -10,13 +10,11 @@ from libsbml import *
 # for each rxncon model there has to be another instance of SBMLBuilder, otherwise all information of the first model will be stored in the second sbml
 class SBMLBuilder(object):
 
-    def __init__(self, level = 2, version = 4, cd = False):
+    def __init__(self, level = 2, version = 4):
         # creates a SBML document of given level and version, default is 2.4 because of Celldesigner specs
         # Boolean cd indicates weahter CellDesigner Annotations should be added or not
         try:
             self.namespace = SBMLNamespaces(level, version)
-            if cd:
-                self.namespace.addNamespace("http://www.sbml.org/2001/ns/celldesigner", "celldesigner")
             self.document = SBMLDocument(self.namespace)
         except ValueError:
             raise SystemExit("SBML Document creation failed")
@@ -146,7 +144,7 @@ class SBMLBuilder(object):
         else:
             print('file save failed')
 
-    def build_model(self, rPDTree, cd = False):
+    def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
         self.tree = rPDTree
 
@@ -197,6 +195,16 @@ class SBMLBuilder(object):
 
 # TODO everything with Celldesigner should go here so that the basic SBML isn't changed in the process
 class CDBuilder(SBMLBuilder):
+    def __init__(self, level = 2, version = 4):
+        # creates a SBML document of given level and version, default is 2.4 because of Celldesigner specs
+        try:
+            self.namespace = SBMLNamespaces(level, version)
+            self.namespace.addNamespace("http://www.sbml.org/2001/ns/celldesigner", "celldesigner")
+            self.document = SBMLDocument(self.namespace)
+        except ValueError:
+            raise SystemExit("SBML Document creation failed")
+        self.model = self.document.createModel()
+
     def model_CdAnnotation(self):
         theAnnotation = "<celldesigner:extension>"
         theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>"
@@ -238,7 +246,6 @@ if __name__ == "__main__":
     A_ppi_B; K+ A_[x]-{P}
     """
 
-    cellDesigner = False
     #rxncon = Rxncon(TOY3)
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
@@ -247,9 +254,9 @@ if __name__ == "__main__":
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
-    #sb = SBMLBuilder(level = 3, version = 1, cd = True)
-    sb = SBMLBuilder(cd = cellDesigner)
-    toy1sbml =  sb.build_model(reducedPD.tree, cellDesigner)
+    #sb = SBMLBuilder(level = 3, version = 1)
+    sb = SBMLBuilder()
+    toy1sbml =  sb.build_model(reducedPD.tree)
     sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/test.xml"))
     #sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/test.sbml"))
     print("\n" + writeSBMLToString(toy1sbml) + "\n")
