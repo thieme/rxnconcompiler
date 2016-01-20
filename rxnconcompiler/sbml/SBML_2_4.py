@@ -98,6 +98,10 @@ class SBMLBuilder(object):
         if reaction.getProduct(self.process_complex_id(product)) is None and reaction.getModifier(self.process_complex_id(product)) is None:
           self.set_reference(reaction, product, False)
 
+    def add_parameter(self, parId):
+        par = self.model.createParameter()
+        par.setId(parId)
+
     def compute_KineticLaw(self, reaction_id, rxnconReactions):
         handledReaction=[]
         rule = ""
@@ -109,6 +113,8 @@ class SBMLBuilder(object):
                     if rule:
                         rule += " + "
                     rule += reactions[0].rate.rate
+                    self.add_parameter(reactions[0].rate.rate)
+
                     for reactionTuple in rxnconReactions:
                         if reactionTuple[0].rid == reactions[0].rid:
                             if reactionTuple[1][0] not in handledNode:
@@ -117,7 +123,9 @@ class SBMLBuilder(object):
 
                 elif reactions[0].rate.rate is None and reactions[0].rate.rrate is not None and reactions[0].rate.frate is not None:
                     there =" "+ reactions[0].rate.frate
+                    self.add_parameter(reactions[0].rate.frate)
                     back =" "+ reactions[0].rate.rrate
+                    self.add_parameter(reactions[0].rate.rrate)
                     for reactionTuple in rxnconReactions:
                         if reactionTuple[0].rid == reactions[0].rid:
                             if reactionTuple[1][0] not in handledNode:
