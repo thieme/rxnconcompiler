@@ -3,7 +3,6 @@ from rxnconcompiler.SBGN.PD import ReducedProcessDescription
 from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.sbml.SBML_2_4 import SBMLBuilder
 from libsbml import *
-import os
 
 
 class SbmlTest(TestCase):
@@ -83,6 +82,7 @@ class SbmlTest(TestCase):
         self.assertIsInstance(law, KineticLaw)
         self.assertEqual(law.getFormula(), "k1 * s_m5 * s_m6")
 
+
         # test for reversible ppi and irreversible p+ in one model
         toy3 = """
         a_p+_b_[x]
@@ -140,3 +140,15 @@ class SbmlTest(TestCase):
         law = r3.getKineticLaw()
         self.assertIsInstance(law, KineticLaw)
         self.assertEqual(law.getFormula(), "kf3 * s_m12 * s_m13 - kr3 * s_m16_m17")
+
+
+        # libsmbl test for errors in the SBML Document
+
+        errors1 = toy1sbml.getNumErrors()
+        self.assertEquals(errors1, 0)
+
+        errors2 = toy2sbml.getNumErrors()
+        self.assertEquals(errors2, 0)
+
+        errors3 = toy3sbml.getNumErrors()
+        self.assertEquals(errors3, 0)
