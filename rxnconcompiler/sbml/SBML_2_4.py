@@ -12,7 +12,6 @@ class SBMLBuilder(object):
 
     def __init__(self, level = 2, version = 4):
         # creates a SBML document of given level and version, default is 2.4 because of Celldesigner specs
-        # Boolean cd indicates weahter CellDesigner Annotations should be added or not
         try:
             self.namespace = SBMLNamespaces(level, version)
             self.document = SBMLDocument(self.namespace)
@@ -205,18 +204,83 @@ class CDBuilder(SBMLBuilder):
             raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
 
+    def addlistOfCompartmentAliases(self):
+        # as long as it is empty
+        return "<celldesigner:listOfCompartmentAliases/>\n"
+
+    def addlistOfComplexSpeciesAliases(self):
+        # as long as it is empty
+        return "<celldesigner:listOfComplexSpeciesAliases/>\n"
+
+    def addlistOfSpeciesAliases(self):
+        # as long as it is empty
+        return "<celldesigner:listOfSpeciesAliases/>\n"
+
+    def addlistOfProtein(self):
+        # as long as it is empty
+        return "<celldesigner:listOfProteins/>\n"
+
     def model_CdAnnotation(self):
-        theAnnotation = "<celldesigner:extension>"
-        theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>"
-        theAnnotation += "<celldesigner:modelDisplay sizeX=\"600\" sizeY=\"400\"/>"
-        #theAnnotation += addlistOfCompartmentAliases       # will probaly needed when rxncon gets compartments
-        #theAnnotation += addlistOfComplexSpeciesAliases    # TODO will needed for complexes that are formed in ppi
-        #theAnnotation += addlistOfSpeciesAliases           # TODO this will be needed ASAP
-        #theAnnotation += addlistOfProtein                  # TODO second objective
-
-
+        theAnnotation = "<celldesigner:extension>\n"
+        theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>\n"
+        theAnnotation += "<celldesigner:modelDisplay sizeX=\"600\" sizeY=\"400\"/>\n"
+        theAnnotation += self.addlistOfCompartmentAliases()       # will probaly needed when rxncon gets compartments
+        theAnnotation += self.addlistOfComplexSpeciesAliases()    # TODO will needed for complexes that are formed in ppi
+        theAnnotation += self.addlistOfSpeciesAliases()              # TODO this will be needed ASAP
+        theAnnotation += "<celldesigner:listOfGroups/>\n"
+        theAnnotation += self.addlistOfProtein()                  # TODO second objective
         theAnnotation += "</celldesigner:extension>"
-        #self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
+
+        self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
+
+    def build_model(self, rPDTree):
+        # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
+        self.tree = rPDTree
+
+        # default compartment until further changes to rxncon
+        c = self.model.createCompartment()
+        c.setId('cell')
+        # example values for compartments
+        #c.setConstant(True)
+        c.setSize(1)
+        #c.setSpatialDimensions(3)
+        #c.setUnits('litre')
+
+
+        visited_nodes = []
+        handled_reactions= []
+
+        # for all edges it is checked if the nodes are already visited, if not they are added as species in process_node
+        # the same will happen for each edge and their reaction, an reaction can be on two different edges so it has to be checked if this reaction was already added
+        for edge in rPDTree.edges:
+            # add all nodes as species
+            if edge.id[0] not in visited_nodes :
+                self.process_node(edge.id[0])
+                visited_nodes.append(edge.id[0])
+            if edge.id[1] not in visited_nodes :
+                self.process_node(edge.id[1])
+                visited_nodes.append(edge.id[1])
+
+        for edge in rPDTree.edges:
+            #handle edges, so that all reactions with the same product(s) get handled at once
+            for reaction in edge.reaction:
+                if reaction.rid not in handled_reactions:
+                    reactions = [(reaction, edge.id)]
+                    handled_reactions.append(reaction.rid)
+                    products = []
+                    for prod in reaction.product_complexes:
+                        if not prod.is_modifier:
+                            products.append(edge.id[1])
+                    for other_edge in rPDTree.edges:
+                        for other_reaction in other_edge.reaction:
+                            if other_edge.id != edge.id:
+                                if other_edge.id[1] in products:
+                                    reactions.append((other_reaction, other_edge.id ))
+                                    handled_reactions.append(other_reaction.rid)
+                    self.process_reaction(reactions)
+
+        self.model_CdAnnotation()
+        return(self.document)
 
 if __name__ == "__main__":
 
@@ -254,9 +318,22 @@ if __name__ == "__main__":
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
-    #sb = SBMLBuilder(level = 3, version = 1)
-    sb = SBMLBuilder()
-    toy1sbml =  sb.build_model(reducedPD.tree)
-    sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/test.xml"))
-    #sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/test.sbml"))
-    print("\n" + writeSBMLToString(toy1sbml) + "\n")
+
+    #useCD = False
+    useCD = True
+
+    if useCD:
+        #cd = SBMLBuilder(level = 3, version = 1)
+        cd = CDBuilder()
+        toy1sbml =  cd.build_model(reducedPD.tree)
+        cd.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/cdtest.xml"))
+        #sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/cdtest.sbml"))
+        print("\n" + writeSBMLToString(toy1sbml) + "\n")
+
+    else:
+        #sb = SBMLBuilder(level = 3, version = 1)
+        sb = SBMLBuilder()
+        toy1sbml =  sb.build_model(reducedPD.tree)
+        sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/sbmltest.xml"))
+        #sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/sbmltest.sbml"))
+        print("\n" + writeSBMLToString(toy1sbml) + "\n")
