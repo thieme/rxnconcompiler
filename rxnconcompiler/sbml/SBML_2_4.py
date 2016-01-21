@@ -211,26 +211,29 @@ class CDBuilder(SBMLBuilder):
         except ValueError:
             raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
+        self.proteins = set()
 
+    #TODO decide weather or not this is needed
     def addlistOfCompartmentAliases(self):
         # TODO might as well go back in model_CdAnnotation as a +=...
         return "<celldesigner:listOfCompartmentAliases/>\n"
 
+    # TODO
     def addlistOfComplexSpeciesAliases(self):
         # as long as it is empty
         return "<celldesigner:listOfComplexSpeciesAliases/>\n"
 
     def addlistOfSpeciesAliases(self):
-        # as long as it is empty
+        # adds for every Species an entry mostly of default information , except id and species, the later is "s"+ species_id
         speciesList = self.model.getListOfSpecies()
 
-        lspa = "<celldesigner:listOfSpeciesAliases>\n"
+        losa = "<celldesigner:listOfSpeciesAliases>\n"
         id = 1
         for species in self.model.getListOfSpecies():
-            lspa += "<celldesigner:speciesAlias id=\"sa"+ str(id) +"\" species=\""+ str(species.getId()) +"\">\n"
+            losa += "<celldesigner:speciesAlias id=\"sa"+ str(id) +"\" species=\""+ str(species.getId()) +"\">\n"
             id +=1
             # block of necessary but uninteresting default informations
-            lspa += """<celldesigner:activity>inactive</celldesigner:activity>
+            losa += """<celldesigner:activity>inactive</celldesigner:activity>
 <celldesigner:bounds x="0.0" y="0.0" w="80.0" h="40.0"/>
 <celldesigner:font size="12"/>
 <celldesigner:view state="usual"/>
@@ -248,15 +251,21 @@ class CDBuilder(SBMLBuilder):
 </celldesigner:briefView>
 <celldesigner:info state="empty" angle="-1.5707963267948966"/>"""
 
-            lspa += "</celldesigner:speciesAlias>\n"
+            losa += "</celldesigner:speciesAlias>\n"
 
-        lspa += "</celldesigner:listOfSpeciesAliases>\n"
-        print lspa
-        return lspa
+        losa += "</celldesigner:listOfSpeciesAliases>\n"
+        return losa
 
+    # TODO
     def addlistOfProtein(self):
-        # as long as it is empty
-        return "<celldesigner:listOfProteins/>\n"
+        lop = "<celldesigner:listOfProteins>\n"
+        pId = 1
+        for prot in list(self.proteins):
+            lop += "<celldesigner:protein id=\"pr"+ str(pId) +"\" name=\""+ prot +"\" type=\"GENERIC\"/>"
+            pId +=1
+
+        lop +="</celldesigner:listOfProteins>\n"
+        return lop
 
     def model_CdAnnotation(self):
         theAnnotation = "<celldesigner:extension>\n"
@@ -270,6 +279,32 @@ class CDBuilder(SBMLBuilder):
         theAnnotation += "</celldesigner:extension>"
 
         self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
+
+    def process_node(self, visitId):
+        # takes an unvisited node and creates species out of it
+        # optional values are commented out until an according rxncon variable is found
+        # TODO only minimal necessary information is set, mostly defaults
+
+        species = self.model.createSpecies()
+        node = self.tree.get_node(visitId)
+
+        species.setId( self.process_complex_id(node.node_object) )
+        #change for CD
+        if len(node.node_object.molecules) >= 2:
+            # TODO handle Complex, add to complex list, note which species are in the complex
+            species.setName(str(node.name))
+        else:
+            species.setName(node.node_object.molecules[0].name)
+            self.proteins.add(node.node_object.molecules[0].name)
+
+        #optional set species.setSpeciesType()      # optional attribute
+        species.setCompartment('cell')                # Compartment is set to default comp cell, has to be changed if compartments are added to rxncon
+        species.setInitialAmount(100)               # Default set to 100
+        #species.setInitialConcentration()
+        #species.setSubstanceUnits('mole')          #there are no units in rxncon
+        #species.setHasOnlySubstanceUnits(False)
+        #species.setBoundaryCondition(False)
+        #species.setConstant(False)
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
@@ -325,6 +360,9 @@ if __name__ == "__main__":
     simple = """
     a_p+_b
     """
+    simple2 = """
+    a_ppi_b
+    """
 
     TOY1 = """
     a_p+_b_[x]; ! b_[y]-{P}
@@ -352,7 +390,7 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
-    rxncon = Rxncon(simple)
+    rxncon = Rxncon(simple2)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
