@@ -212,6 +212,7 @@ class CDBuilder(SBMLBuilder):
             raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
         self.proteins = set()
+        self.modRes = set()
 
     #TODO decide weather or not this is needed
     def addlistOfCompartmentAliases(self):
@@ -223,6 +224,7 @@ class CDBuilder(SBMLBuilder):
         # as long as it is empty
         return "<celldesigner:listOfComplexSpeciesAliases/>\n"
 
+    # TODO include speciesalias "placeholder" for species inside of a complex
     def addlistOfSpeciesAliases(self):
         # adds for every Species an entry mostly of default information , except id and species, the later is "s"+ species_id
         speciesList = self.model.getListOfSpecies()
@@ -256,7 +258,6 @@ class CDBuilder(SBMLBuilder):
         losa += "</celldesigner:listOfSpeciesAliases>\n"
         return losa
 
-    # TODO
     def addlistOfProtein(self):
         lop = "<celldesigner:listOfProteins>\n"
         pId = 1
@@ -267,6 +268,15 @@ class CDBuilder(SBMLBuilder):
         lop +="</celldesigner:listOfProteins>\n"
         return lop
 
+    def addlistOfModificationResidues(self):
+        lomr = "<celldesigner:listOfModificationResidues>\n"
+        angle = 0
+        for residue in self.modRes:
+            lomr += "<celldesigner:modificationResidue angle=\"" + str(angle) + "\" id=\""+ residue[0]+"\" name=\""+ residue[1] +"\" side=\"none\"/>\n"
+            angle += 1
+        lomr += "</celldesigner:listOfModificationResidues>\n"
+        return lomr
+
     def model_CdAnnotation(self):
         theAnnotation = "<celldesigner:extension>\n"
         theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>\n"
@@ -275,7 +285,8 @@ class CDBuilder(SBMLBuilder):
         theAnnotation += self.addlistOfComplexSpeciesAliases()    # TODO will needed for complexes that are formed in ppi
         theAnnotation += self.addlistOfSpeciesAliases()
         theAnnotation += "<celldesigner:listOfGroups/>\n"
-        theAnnotation += self.addlistOfProtein()                  # TODO second objective
+        theAnnotation += self.addlistOfProtein()
+        theAnnotation += self.addlistOfModificationResidues()
         theAnnotation += "</celldesigner:extension>"
 
         self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
@@ -305,6 +316,14 @@ class CDBuilder(SBMLBuilder):
         #species.setHasOnlySubstanceUnits(False)
         #species.setBoundaryCondition(False)
         #species.setConstant(False)
+
+        # for CD handling of Modifications TODO expand to species Annotaion for now its only for the model Annotation
+        # TODO make sure only modificated modification sites get added
+        for molecule in node.node_object.molecules:
+            modNum = 1
+            for modSite in molecule.modifications:
+                self.modRes.add((species.getName() + str(modNum), modSite._State__components[0].domain)) #might there be more _State__components, its a list so there might but what does it mean
+
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
@@ -358,7 +377,7 @@ class CDBuilder(SBMLBuilder):
 if __name__ == "__main__":
 
     simple = """
-    a_p+_b
+    a_p+_b_[x]
     """
     simple2 = """
     a_ppi_b
@@ -390,7 +409,7 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
-    rxncon = Rxncon(simple2)
+    rxncon = Rxncon(simple)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
