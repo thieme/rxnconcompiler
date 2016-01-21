@@ -213,7 +213,7 @@ class CDBuilder(SBMLBuilder):
         self.model = self.document.createModel()
 
     def addlistOfCompartmentAliases(self):
-        # as long as it is empty
+        # TODO might as well go back in model_CdAnnotation as a +=...
         return "<celldesigner:listOfCompartmentAliases/>\n"
 
     def addlistOfComplexSpeciesAliases(self):
@@ -222,7 +222,37 @@ class CDBuilder(SBMLBuilder):
 
     def addlistOfSpeciesAliases(self):
         # as long as it is empty
-        return "<celldesigner:listOfSpeciesAliases/>\n"
+        speciesList = self.model.getListOfSpecies()
+
+        lspa = "<celldesigner:listOfSpeciesAliases>\n"
+        id = 1
+        for species in self.model.getListOfSpecies():
+            lspa += "<celldesigner:speciesAlias id=\"sa"+ str(id) +"\" species=\""+ str(species.getId()) +"\">\n"
+            id +=1
+            # block of necessary but uninteresting default informations
+            lspa += """<celldesigner:activity>inactive</celldesigner:activity>
+<celldesigner:bounds x="0.0" y="0.0" w="80.0" h="40.0"/>
+<celldesigner:font size="12"/>
+<celldesigner:view state="usual"/>
+<celldesigner:usualView>
+<celldesigner:innerPosition x="0.0" y="0.0"/>
+<celldesigner:boxSize width="80.0" height="40.0"/>
+<celldesigner:singleLine width="1.0"/>
+<celldesigner:paint color="ffccffcc" scheme="Color"/>
+</celldesigner:usualView>
+<celldesigner:briefView>
+<celldesigner:innerPosition x="0.0" y="0.0"/>
+<celldesigner:boxSize width="80.0" height="60.0"/>
+<celldesigner:singleLine width="0.0"/>
+<celldesigner:paint color="3fff0000" scheme="Color"/>
+</celldesigner:briefView>
+<celldesigner:info state="empty" angle="-1.5707963267948966"/>"""
+
+            lspa += "</celldesigner:speciesAlias>\n"
+
+        lspa += "</celldesigner:listOfSpeciesAliases>\n"
+        print lspa
+        return lspa
 
     def addlistOfProtein(self):
         # as long as it is empty
@@ -232,9 +262,9 @@ class CDBuilder(SBMLBuilder):
         theAnnotation = "<celldesigner:extension>\n"
         theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>\n"
         theAnnotation += "<celldesigner:modelDisplay sizeX=\"600\" sizeY=\"400\"/>\n"
-        theAnnotation += self.addlistOfCompartmentAliases()       # will probaly needed when rxncon gets compartments
+        theAnnotation += self.addlistOfCompartmentAliases()
         theAnnotation += self.addlistOfComplexSpeciesAliases()    # TODO will needed for complexes that are formed in ppi
-        theAnnotation += self.addlistOfSpeciesAliases()              # TODO this will be needed ASAP
+        theAnnotation += self.addlistOfSpeciesAliases()
         theAnnotation += "<celldesigner:listOfGroups/>\n"
         theAnnotation += self.addlistOfProtein()                  # TODO second objective
         theAnnotation += "</celldesigner:extension>"
@@ -334,7 +364,7 @@ if __name__ == "__main__":
         #cd = SBMLBuilder(level = 3, version = 1)
         cd = CDBuilder()
         toy1sbml =  cd.build_model(reducedPD.tree)
-        cd.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/cdtest.xml"))
+        cd.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/CDTest/cdtest.xml"))
         #sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/cdtest.sbml"))
         print("\n" + writeSBMLToString(toy1sbml) + "\n")
 
