@@ -260,6 +260,7 @@ class CDBuilder(SBMLBuilder):
         return losa
 
     def addlistOfProtein(self):
+    # writes for every unique protein an entry in model.Annotation and replaces it in the proteins list with its new id
         lop = "<celldesigner:listOfProteins>\n"
         pId = 1
         for prot in list(self.proteins):
@@ -291,19 +292,22 @@ class CDBuilder(SBMLBuilder):
             annotation += "<celldesigner:proteinReference>"
             for prot in list(self.proteins):
                 name = species.getName()
-                print name
-                print prot[0]
                 if prot[0] == name:
                     annotation += str(prot[1]) + "</celldesigner:proteinReference>\n"
                     break
             annotation += "</celldesigner:speciesIdentity>\n"
-            # TODO list of catalyzed eraction
 
+            # TODO list of catalyzed eraction
+            cat = ""
+            for reaction in self.model.getListOfReactions():
+                if reaction.getListOfModifiers().get(id) is not None:
+                    cat += "<celldesigner:catalyzed reaction=\""+ str(reaction.getId()) +"\"/>\n"
+            if cat:
+                annotation += "<celldesigner:listOfCatalyzedReactions>\n"+ cat +"</celldesigner:listOfCatalyzedReactions>\n"
             # TODO List of modification
 
             annotation += "</celldesigner:extension>"
-            print(annotation)
-            print(species.setAnnotation(annotation))
+            print(species.setAnnotation(annotation))        # TODO delete print when finished
 
     def model_CdAnnotation(self):
         theAnnotation = "<celldesigner:extension>\n"
