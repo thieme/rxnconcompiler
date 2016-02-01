@@ -211,8 +211,9 @@ class CDBuilder(SBMLBuilder):
         except ValueError:
             raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
-        self.proteins = set()
-        self.modRes = set()
+        self.proteins = set()   # all unique proteins in this model (Id,name) where id == 0 means it is unset to the moment
+        self.modRes = set()     # all unique modification Sites in this model, Set of tuple (id, domain)
+        self.species_Mod = {}   # key: species, object: List[(modification id, state)] # TODO fill in loop where modREs gests filled and use
 
     #TODO decide weather or not this is needed
     def addlistOfCompartmentAliases(self):
@@ -262,7 +263,9 @@ class CDBuilder(SBMLBuilder):
         lop = "<celldesigner:listOfProteins>\n"
         pId = 1
         for prot in list(self.proteins):
-            lop += "<celldesigner:protein id=\"pr"+ str(pId) +"\" name=\""+ prot +"\" type=\"GENERIC\"/>"
+            lop += "<celldesigner:protein id=\"pr"+ str(pId) +"\" name=\""+ prot[0] +"\" type=\"GENERIC\"/>"
+            self.proteins.add((prot[0],"pr" + str(pId)))
+            self.proteins.remove(prot)
             pId +=1
 
         lop +="</celldesigner:listOfProteins>\n"
@@ -277,6 +280,31 @@ class CDBuilder(SBMLBuilder):
         lomr += "</celldesigner:listOfModificationResidues>\n"
         return lomr
 
+    # TODO
+    def setSpeciesAnnotation(self):
+        listOfSpecies = self.model.getListOfSpecies()
+        for species in listOfSpecies:
+            print("set species annotation")
+            id = species.getId()
+            annotation = "<celldesigner:extension>\n<celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>\n<celldesigner:speciesIdentity>"
+            annotation += "<celldesigner:class>PROTEIN</celldesigner:class>\n" # TODO handle complexes maybe by checking if in list of Proteins
+            annotation += "<celldesigner:proteinReference>"
+            for prot in list(self.proteins):
+                name = species.getName()
+                print name
+                print prot[0]
+                if prot[0] == name:
+                    annotation += str(prot[1]) + "</celldesigner:proteinReference>\n"
+                    break
+            annotation += "</celldesigner:speciesIdentity>\n"
+            # TODO list of catalyzed eraction
+
+            # TODO List of modification
+
+            annotation += "</celldesigner:extension>"
+            print(annotation)
+            print(species.setAnnotation(annotation))
+
     def model_CdAnnotation(self):
         theAnnotation = "<celldesigner:extension>\n"
         theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>\n"
@@ -289,7 +317,10 @@ class CDBuilder(SBMLBuilder):
         theAnnotation += self.addlistOfModificationResidues()
         theAnnotation += "</celldesigner:extension>"
 
+        # TODO handle error codes
         self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
+
+        self.setSpeciesAnnotation()
 
     def process_node(self, visitId):
         # takes an unvisited node and creates species out of it
@@ -300,13 +331,14 @@ class CDBuilder(SBMLBuilder):
         node = self.tree.get_node(visitId)
 
         species.setId( self.process_complex_id(node.node_object) )
+        species.setMetaId( self.process_complex_id(node.node_object) )
         #change for CD
         if len(node.node_object.molecules) >= 2:
             # TODO handle Complex, add to complex list, note which species are in the complex
             species.setName(str(node.name))
         else:
             species.setName(node.node_object.molecules[0].name)
-            self.proteins.add(node.node_object.molecules[0].name)
+            self.proteins.add((node.node_object.molecules[0].name, 0))
 
         #optional set species.setSpeciesType()      # optional attribute
         species.setCompartment('cell')                # Compartment is set to default comp cell, has to be changed if compartments are added to rxncon
@@ -323,7 +355,7 @@ class CDBuilder(SBMLBuilder):
             modNum = 1
             for modSite in molecule.modifications:
                 self.modRes.add((species.getName() + str(modNum), modSite._State__components[0].domain)) #might there be more _State__components, its a list so there might but what does it mean
-
+                # TODO fill species_mod
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
