@@ -297,17 +297,24 @@ class CDBuilder(SBMLBuilder):
                     break
             annotation += "</celldesigner:speciesIdentity>\n"
 
-            # TODO list of catalyzed eraction
+            #adds listOfReactions to species Annotation
             cat = ""
             for reaction in self.model.getListOfReactions():
                 if reaction.getListOfModifiers().get(id) is not None:
                     cat += "<celldesigner:catalyzed reaction=\""+ str(reaction.getId()) +"\"/>\n"
             if cat:
                 annotation += "<celldesigner:listOfCatalyzedReactions>\n"+ cat +"</celldesigner:listOfCatalyzedReactions>\n"
-            # TODO List of modification
+
+            # adds listOfModifications to species Annotaion
+            if id in self.species_Mod:
+                annotation += "<celldesigner:state>\n<celldesigner:listOfModifications>\n"
+                for mod in self.species_Mod[id]:
+                    annotation += "<celldesigner:modification residue=\""+ mod[0]  +"\" state=\""+ mod[1] +"\"/>\n"
+                annotation += "</celldesigner:listOfModifications>\n</celldesigner:state>\n"
+
 
             annotation += "</celldesigner:extension>"
-            print(species.setAnnotation(annotation))        # TODO delete print when finished
+            print("annotation write code: "+ str(species.setAnnotation(annotation)))        # TODO delete print when finished
 
     def model_CdAnnotation(self):
         theAnnotation = "<celldesigner:extension>\n"
@@ -329,7 +336,6 @@ class CDBuilder(SBMLBuilder):
     def process_node(self, visitId):
         # takes an unvisited node and creates species out of it
         # optional values are commented out until an according rxncon variable is found
-        # TODO only minimal necessary information is set, mostly defaults
 
         species = self.model.createSpecies()
         node = self.tree.get_node(visitId)
@@ -353,13 +359,17 @@ class CDBuilder(SBMLBuilder):
         #species.setBoundaryCondition(False)
         #species.setConstant(False)
 
-        # for CD handling of Modifications TODO expand to species Annotaion for now its only for the model Annotation
-        # TODO make sure only modificated modification sites get added
+        # for CD handling of Modifications
         for molecule in node.node_object.molecules:
+            switcher = {"P" : "phosphorylated"} # TODO different cases for different modifications
             modNum = 1
+            mods = []
             for modSite in molecule.modifications:
                 self.modRes.add((species.getName() + str(modNum), modSite._State__components[0].domain)) #might there be more _State__components, its a list so there might but what does it mean
-                # TODO fill species_mod
+                mods.append(((species.getName() + str(modNum)), switcher[modSite.modifier]))
+                modNum += 1
+            if mods:
+                self.species_Mod = {species.getId(): mods}
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
