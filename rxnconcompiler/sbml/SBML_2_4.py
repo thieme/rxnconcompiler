@@ -27,6 +27,16 @@ class SBMLBuilder(object):
 
         return compId
 
+    def species_set_SBML_defaults(self, species):
+        #optional set species.setSpeciesType()      # optional attribute
+        species.setCompartment('cell')                # Compartment is set to default comp cell, has to be changed if compartments are added to rxncon
+        species.setInitialAmount(100)               # Default set to 100
+        #species.setInitialConcentration()
+        #species.setSubstanceUnits('mole')          #there are no units in rxncon
+        #species.setHasOnlySubstanceUnits(False)
+        #species.setBoundaryCondition(False)
+        #species.setConstant(False)
+
     def process_node(self, visitId):
         # takes an unvisited node and creates species out of it
         # optional values are commented out until an according rxncon variable is found
@@ -37,14 +47,7 @@ class SBMLBuilder(object):
 
         species.setId( self.process_complex_id(node.node_object) )
         species.setName(str(node.name))
-        #optional set species.setSpeciesType()      # optional attribute
-        species.setCompartment('cell')                # Compartment is set to default comp cell, has to be changed if compartments are added to rxncon
-        species.setInitialAmount(100)               # Default set to 100
-        #species.setInitialConcentration()
-        #species.setSubstanceUnits('mole')          #there are no units in rxncon
-        #species.setHasOnlySubstanceUnits(False)
-        #species.setBoundaryCondition(False)
-        #species.setConstant(False)
+        self.species_set_SBML_defaults(species)
 
     def process_reaction(self, rxnconReactions):
         # gets a list of tuple (reaction, edge.id)  and processes stored information
@@ -213,7 +216,7 @@ class CDBuilder(SBMLBuilder):
         self.model = self.document.createModel()
         self.proteins = set()   # all unique proteins in this model (Id,name) where id == 0 means it is unset to the moment
         self.modRes = set()     # all unique modification Sites in this model, Set of tuple (id, domain)
-        self.species_Mod = {}   # key: species, object: List[(modification id, state)] # TODO fill in loop where modREs gests filled and use
+        self.species_Mod = {}   # key: species, object: List[(modification id, state)]
 
     #TODO decide weather or not this is needed
     def addlistOfCompartmentAliases(self):
@@ -281,7 +284,7 @@ class CDBuilder(SBMLBuilder):
         lomr += "</celldesigner:listOfModificationResidues>\n"
         return lomr
 
-    # TODO
+    # TODO complex species
     def setSpeciesAnnotation(self):
         listOfSpecies = self.model.getListOfSpecies()
         for species in listOfSpecies:
@@ -314,7 +317,7 @@ class CDBuilder(SBMLBuilder):
 
 
             annotation += "</celldesigner:extension>"
-            print("annotation write code: "+ str(species.setAnnotation(annotation)))        # TODO delete print when finished
+            species.setAnnotation(annotation)
 
     def model_CdAnnotation(self):
         theAnnotation = "<celldesigner:extension>\n"
@@ -350,14 +353,7 @@ class CDBuilder(SBMLBuilder):
             species.setName(node.node_object.molecules[0].name)
             self.proteins.add((node.node_object.molecules[0].name, 0))
 
-        #optional set species.setSpeciesType()      # optional attribute
-        species.setCompartment('cell')                # Compartment is set to default comp cell, has to be changed if compartments are added to rxncon
-        species.setInitialAmount(100)               # Default set to 100
-        #species.setInitialConcentration()
-        #species.setSubstanceUnits('mole')          #there are no units in rxncon
-        #species.setHasOnlySubstanceUnits(False)
-        #species.setBoundaryCondition(False)
-        #species.setConstant(False)
+        self.species_set_SBML_defaults(species)
 
         # for CD handling of Modifications
         for molecule in node.node_object.molecules:
