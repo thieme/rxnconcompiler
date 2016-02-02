@@ -215,8 +215,8 @@ class CDBuilder(SBMLBuilder):
             raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
         self.speciesAliases = {} # dict of key = species id and value alias
-        self.proteins = set()   # all unique proteins in this model (Id,name) where id == 0 means it is unset to the moment
-        self.modRes = set()     # all unique modification Sites in this model, Set of tuple (id, domain)
+        self.proteins = set()   # all unique proteins in this model (Id,name) where id == 0 means it is not set yet
+        self.modRes = set()     # all unique modification Sites in this model, Set of tuple (name, domain)
         self.species_Mod = {}   # key: species, object: List[(modification id, state)]
 
     #TODO decide weather or not this is needed
@@ -264,27 +264,32 @@ class CDBuilder(SBMLBuilder):
         losa += "</celldesigner:listOfSpeciesAliases>\n"
         return losa
 
+    def addlistOfModificationResidues(self, name):
+        lomr = "<celldesigner:listOfModificationResidues>\n"
+        angle = 1
+        num = 1
+        for residue in list(self.modRes):
+            if name == residue[0]:
+                lomr += "<celldesigner:modificationResidue angle=\"" + str(angle) + "\" id=\""+ residue[0] + str(num) +"\" name=\""+ residue[1] +"\" side=\"none\"/>\n"
+                angle += 1
+                num += 1
+        lomr += "</celldesigner:listOfModificationResidues>\n"
+        return lomr
+
     def addlistOfProtein(self):
     # writes for every unique protein an entry in model.Annotation and replaces it in the proteins list with its new id
         lop = "<celldesigner:listOfProteins>\n"
         pId = 1
         for prot in list(self.proteins):
-            lop += "<celldesigner:protein id=\"pr"+ str(pId) +"\" name=\""+ prot[0] +"\" type=\"GENERIC\"/>"
+            lop += "<celldesigner:protein id=\"pr"+ str(pId) +"\" name=\""+ prot[0] +"\" type=\"GENERIC\">"
             self.proteins.add((prot[0],"pr" + str(pId)))
             self.proteins.remove(prot)
+            lop += self.addlistOfModificationResidues(prot[0])
+            lop += "</celldesigner:protein>\n"
             pId +=1
 
         lop +="</celldesigner:listOfProteins>\n"
         return lop
-
-    def addlistOfModificationResidues(self):
-        lomr = "<celldesigner:listOfModificationResidues>\n"
-        angle = 0
-        for residue in self.modRes:
-            lomr += "<celldesigner:modificationResidue angle=\"" + str(angle) + "\" id=\""+ residue[0]+"\" name=\""+ residue[1] +"\" side=\"none\"/>\n"
-            angle += 1
-        lomr += "</celldesigner:listOfModificationResidues>\n"
-        return lomr
 
     # TODO complex species
     def setSpeciesAnnotation(self):
@@ -299,7 +304,6 @@ class CDBuilder(SBMLBuilder):
                 if prot[0] == name:
                     annotation += str(prot[1]) + "</celldesigner:proteinReference>\n"
                     break
-            annotation += "</celldesigner:speciesIdentity>\n"
 
             #adds listOfReactions to species Annotation
             cat = ""
@@ -316,7 +320,7 @@ class CDBuilder(SBMLBuilder):
                     annotation += "<celldesigner:modification residue=\""+ mod[0]  +"\" state=\""+ mod[1] +"\"/>\n"
                 annotation += "</celldesigner:listOfModifications>\n</celldesigner:state>\n"
 
-
+            annotation += "</celldesigner:speciesIdentity>\n"
             annotation += "</celldesigner:extension>"
             species.setAnnotation(annotation)
 
@@ -383,7 +387,7 @@ class CDBuilder(SBMLBuilder):
         theAnnotation += self.addlistOfSpeciesAliases()
         theAnnotation += "<celldesigner:listOfGroups/>\n"
         theAnnotation += self.addlistOfProtein()
-        theAnnotation += self.addlistOfModificationResidues()
+        #theAnnotation += self.addlistOfModificationResidues()
         theAnnotation += "</celldesigner:extension>"
 
         # TODO handle error codes
@@ -414,7 +418,7 @@ class CDBuilder(SBMLBuilder):
             modNum = 1
             mods = []
             for modSite in molecule.modifications:
-                self.modRes.add((species.getName() + str(modNum), modSite._State__components[0].domain)) #might there be more _State__components, its a list so there might but what does it mean
+                self.modRes.add((species.getName(), modSite._State__components[0].domain)) #might there be more _State__components, its a list so there might but what does it mean TODO delete
                 mods.append(((species.getName() + str(modNum)), switcher[modSite.modifier]))
                 modNum += 1
             if mods:
