@@ -214,6 +214,7 @@ class CDBuilder(SBMLBuilder):
         except ValueError:
             raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
+        self.speciesAliases = {} # dict of key = species id and value alias
         self.proteins = set()   # all unique proteins in this model (Id,name) where id == 0 means it is unset to the moment
         self.modRes = set()     # all unique modification Sites in this model, Set of tuple (id, domain)
         self.species_Mod = {}   # key: species, object: List[(modification id, state)]
@@ -237,6 +238,7 @@ class CDBuilder(SBMLBuilder):
         id = 1
         for species in self.model.getListOfSpecies():
             losa += "<celldesigner:speciesAlias id=\"sa"+ str(id) +"\" species=\""+ str(species.getId()) +"\">\n"
+            self.speciesAliases[species.getId()] = "sa"+str(id)
             id +=1
             # block of necessary but uninteresting default informations
             losa += """<celldesigner:activity>inactive</celldesigner:activity>
@@ -288,7 +290,6 @@ class CDBuilder(SBMLBuilder):
     def setSpeciesAnnotation(self):
         listOfSpecies = self.model.getListOfSpecies()
         for species in listOfSpecies:
-            print("set species annotation")
             id = species.getId()
             annotation = "<celldesigner:extension>\n<celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>\n<celldesigner:speciesIdentity>"
             annotation += "<celldesigner:class>PROTEIN</celldesigner:class>\n" # TODO handle complexes maybe by checking if in list of Proteins
@@ -319,6 +320,60 @@ class CDBuilder(SBMLBuilder):
             annotation += "</celldesigner:extension>"
             species.setAnnotation(annotation)
 
+    def setReferenzAnnotation(self, reaction):
+
+        for ref in reaction.getListOfReactants():
+            annotation = "<celldesigner:extension>\n"
+            annotation += "<celldesigner:alias>"+self.speciesAliases[ref.getSpecies()]+"</celldesigner:alias>\n"
+            annotation += "</celldesigner:extension>"
+            ref.setAnnotation(annotation)
+
+        for ref in reaction.getListOfProducts():
+            annotation = "<celldesigner:extension>\n"
+            annotation += "<celldesigner:alias>"+self.speciesAliases[ref.getSpecies()]+"</celldesigner:alias>\n"
+            annotation += "</celldesigner:extension>"
+            ref.setAnnotation(annotation)
+
+        for ref in reaction.getListOfModifiers():
+            annotation = "<celldesigner:extension>\n"
+            annotation += "<celldesigner:alias>"+self.speciesAliases[ref.getSpecies()]+"</celldesigner:alias>\n"
+            annotation += "</celldesigner:extension>"
+            ref.setAnnotation(annotation)
+
+    # TODO
+    def setReactionAnnotation(self):
+        listOfReactions = self.model.getListOfReactions()
+        for reaction in listOfReactions:
+            id = reaction.getId()
+            name = reaction.getName()
+            annotation = "<celldesigner:extension>\n"
+            annotation += "<celldesigner:name>"+name+"</celldesigner:name>\n"
+            annotation += "<celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>\n" #TODO make other reactions possible
+
+            annotation += "<celldesigner:baseReactants>\n"
+            for reactant in reaction.getListOfReactants():
+                annotation += "<celldesigner:baseReactant species=\""+ str(reactant.getSpecies()) +"\" alias=\"" + self.speciesAliases[reactant.getSpecies()] + "\">\n"
+                annotation += "<celldesigner:linkAnchor position=\"S\"/>\n</celldesigner:baseReactant>\n"
+            annotation += "</celldesigner:baseReactants>\n"
+
+            annotation += "<celldesigner:baseProducts>\n"
+            for product in reaction.getListOfProducts():
+                annotation += "<celldesigner:baseProduct species=\""+ str(product.getSpecies()) +"\" alias=\""+ self.speciesAliases[product.getSpecies()] +"\">\n"
+                annotation += "<celldesigner:linkAnchor position=\"WNW\"/>\n</celldesigner:baseProduct>\n"
+            annotation += "</celldesigner:baseProducts>\n"
+
+            annotation +="<celldesigner:listOfModification>\n"
+            for modifier in reaction.getListOfModifiers():
+                annotation += "<celldesigner:modification type=\"CATALYSIS\" modifiers=\""+ modifier.getSpecies() +"\" aliases=\""+ self.speciesAliases[modifier.getSpecies()] +"\">\n" # TODO check if targetLineIndex="?" at the end is needed
+                # TODO suppose that here also the layout information isnt needed, if correct, delete comment
+                annotation += "</celldesigner:modification>\n"
+            annotation+= "</celldesigner:listOfModification>\n"
+
+            annotation += "</celldesigner:extension>"
+
+            reaction.setAnnotation(annotation)
+            self.setReferenzAnnotation(reaction)
+
     def model_CdAnnotation(self):
         theAnnotation = "<celldesigner:extension>\n"
         theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>\n"
@@ -333,8 +388,6 @@ class CDBuilder(SBMLBuilder):
 
         # TODO handle error codes
         self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
-
-        self.setSpeciesAnnotation()
 
     def process_node(self, visitId):
         # takes an unvisited node and creates species out of it
@@ -365,7 +418,7 @@ class CDBuilder(SBMLBuilder):
                 mods.append(((species.getName() + str(modNum)), switcher[modSite.modifier]))
                 modNum += 1
             if mods:
-                self.species_Mod = {species.getId(): mods}
+                self.species_Mod[species.getId()] = mods
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
@@ -414,12 +467,15 @@ class CDBuilder(SBMLBuilder):
                     self.process_reaction(reactions)
 
         self.model_CdAnnotation()
+        self.setSpeciesAnnotation()
+        self.setReactionAnnotation()
+
         return(self.document)
 
 if __name__ == "__main__":
 
     simple = """
-    a_p+_b_[x]
+    C_p+_A_[x]
     """
     simple2 = """
     a_ppi_b
