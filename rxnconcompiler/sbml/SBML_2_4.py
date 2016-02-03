@@ -65,6 +65,8 @@ class SBMLBuilder(object):
                 prodRef =  reaction.createProduct()
                 #prodRef.setSpecies(self.process_complex_id(reactant))
                 prodRef.setSpecies(self.process_node_id(node_id))
+                print("prodref got set to" + str(node_id))
+                print (reaction.getProduct(node_id) is not None)
         else:
             modRef = reaction.createModifier()
             #modRef.setSpecies(self.process_complex_id(reactant))
@@ -104,10 +106,10 @@ class SBMLBuilder(object):
             #else:
                 #print("Warning: there is an node which is part of no edge") # TODO maybe make this an real exception?!
 
-        if sbmlReaction.getReactant(edge_id[0]) is None and sbmlReaction.getModifier(edge_id[0]) is None:
+        if sbmlReaction.getReactant(self.process_node_id(edge_id[0])) is None and sbmlReaction.getModifier(self.process_node_id(edge_id[0])) is None:
             self.set_reference(sbmlReaction, substrate, True, edge_id[0])
 
-        if sbmlReaction.getProduct(edge_id[1]) is None and sbmlReaction.getModifier(edge_id[1]) is None:
+        if sbmlReaction.getProduct(self.process_node_id(edge_id[1])) is None and sbmlReaction.getModifier(self.process_node_id(edge_id[1])) is None:
             self.set_reference(sbmlReaction, product, False, edge_id[1])
 
         #substrate = self.tree.get_node(edge_id[0]).node_object # old but incorrect way, information in node ist inccorect, is_modifier is reaction dependand not globaly
