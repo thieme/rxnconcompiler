@@ -26,9 +26,9 @@ class SbmlTest(TestCase):
         self.assertEqual(toy1sbml.model.getNumReactions(), 1)
 
         species = toy1sbml.model.getListOfSpecies()
-        a = species.get("s_m1")
-        b = species.get("s_m2")
-        ab = species.get("s_m3_m4")
+        a = species.get("s1")
+        b = species.get("s2")
+        ab = species.get("s3")
         self.assertIsInstance(a, Species)
         self.assertEqual(a.getName(), "a")
         self.assertIsInstance(b, Species)
@@ -42,7 +42,7 @@ class SbmlTest(TestCase):
         self.assertEqual(r1.getName(), "a_ppi_b")
         law = r1.getKineticLaw()
         self.assertIsInstance(law, KineticLaw)
-        self.assertEqual(law.getFormula(), "kf1 * s_m1 * s_m2 - kr1 * s_m3_m4")
+        self.assertEqual(law.getFormula(), "kf1 * s1 * s2 - kr1 * s3")
 
 
         # basic test for irreversible phosphorylation reaction
@@ -64,9 +64,9 @@ class SbmlTest(TestCase):
         self.assertEqual(toy2sbml.model.getNumReactions(), 1)
 
         species = toy2sbml.model.getListOfSpecies()
-        a = species.get("s_m5")
-        b = species.get("s_m6")
-        ab = species.get("s_m7")
+        a = species.get("s1")
+        b = species.get("s2")
+        ab = species.get("s3")
         self.assertIsInstance(a, Species)
         self.assertEqual(a.getName(), "a")
         self.assertIsInstance(b, Species)
@@ -80,7 +80,7 @@ class SbmlTest(TestCase):
         self.assertEqual(r1.getName(), "a_p+_b")
         law = r1.getKineticLaw()
         self.assertIsInstance(law, KineticLaw)
-        self.assertEqual(law.getFormula(), "k1 * s_m5 * s_m6")
+        self.assertEqual(law.getFormula(), "k1 * s1 * s2")
 
 
         # test for reversible ppi and irreversible p+ in one model
@@ -103,13 +103,13 @@ class SbmlTest(TestCase):
         self.assertEqual(toy3sbml.model.getNumReactions(), 2)
 
         species = toy3sbml.model.getListOfSpecies()
-        a = species.get("s_m8")
-        b = species.get("s_m9")
-        c = species.get("s_m10")
-        d = species.get("s_m12")
-        e = species.get("s_m13")
-        bp = species.get("s_m14")
-        de = species.get("s_m16_m17")
+        a = species.get("s1")
+        b = species.get("s2")
+        c = species.get("s4")
+        d = species.get("s5")
+        e = species.get("s6")
+        bp = species.get("s3")
+        de = species.get("s7")
         self.assertIsInstance(a, Species)
         self.assertEqual(a.getName(), "a")
         self.assertIsInstance(b, Species)
@@ -132,14 +132,14 @@ class SbmlTest(TestCase):
         self.assertEqual(r1.getName(), "a_p+_b_[x];c_p+_b_[x]")
         law = r1.getKineticLaw()
         self.assertIsInstance(law, KineticLaw)
-        self.assertEqual(law.getFormula(), "k1 * s_m8 * s_m9 + k2 * s_m9 * s_m10")
+        self.assertEqual(law.getFormula(), "k1 * s1 * s2 + k2 * s2 * s4")
 
         r3 = reactions.get("r3")
         self.assertIsInstance(r3, Reaction)
         self.assertEqual(r3.getName(), "d_ppi_e")
         law = r3.getKineticLaw()
         self.assertIsInstance(law, KineticLaw)
-        self.assertEqual(law.getFormula(), "kf3 * s_m12 * s_m13 - kr3 * s_m16_m17")
+        self.assertEqual(law.getFormula(), "kf3 * s5 * s6 - kr3 * s7")
 
 
         # libsmbl test for errors in the SBML Document
