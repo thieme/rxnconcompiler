@@ -19,11 +19,14 @@ class SBMLBuilder(object):
             raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
 
+    def process_node_id(self, nodeId):
+        return ("s" + str(nodeId))
+
     def process_complex_id(self, complex):
-        # generates the species id for complexes with one or more molecules consisting of "s_m[id of molecule]_m..."
+        # generates the species id for complexes with one or more molecules consisting of "s_m[id of molecule]_m..." may be unnecessary to process_node_id
         compId = "s"
         for mol in complex.molecules:
-             compId = compId + "_m" + str(mol._id)
+             compId = compId + "_m" + str(mol._id) # TODO change to node id
 
         return compId
 
@@ -45,9 +48,76 @@ class SBMLBuilder(object):
         species = self.model.createSpecies()
         node = self.tree.get_node(visitId)
 
-        species.setId( self.process_complex_id(node.node_object) )
+        #species.setId( self.process_complex_id(node.node_object) )
+        species.setId( self.process_node_id(node.id))
         species.setName(str(node.name))
         self.species_set_SBML_defaults(species)
+
+    def set_reference(self, reaction, reactant, is_substrate, node_id):
+        # sets the reactant/product/modifier references for the given reaction
+
+        if not reactant._BiologicalComplex__is_modifier:
+            if is_substrate:
+                reactRef = reaction.createReactant()
+                #reactRef.setSpecies(self.process_complex_id(reactant))
+                reactRef.setSpecies(self.process_node_id(node_id))
+            else:
+                prodRef =  reaction.createProduct()
+                #prodRef.setSpecies(self.process_complex_id(reactant))
+                prodRef.setSpecies(self.process_node_id(node_id))
+        else:
+            modRef = reaction.createModifier()
+            #modRef.setSpecies(self.process_complex_id(reactant))
+            modRef.setSpecies(self.process_node_id(node_id))
+
+    def add_references(self, sbmlRId, edge_id):
+        # adds new reactants to an reaction
+
+        #print sbmlRId
+        #print edge_id
+
+        sbmlReaction = self.model.getReaction(sbmlRId)
+        rxnconReaction = None
+        for edge in self.tree.edges:
+            if edge_id == edge.id:
+                rxnconReaction = edge.reaction[0]
+
+        substrate = None
+        product = None
+
+        for node in self.tree.nodes:
+            if node.id == edge_id[0]:
+                if node.node_object.molecules == rxnconReaction.substrat_complexes[0].molecules:
+                    substrate = rxnconReaction.substrat_complexes[0]
+                elif node.node_object.molecules == rxnconReaction.substrat_complexes[1].molecules:
+                    substrate = rxnconReaction.substrat_complexes[1]
+                else:
+                    print("error in print referenz substrat is neither of the two substrat_complexes")
+
+            elif node.id == edge_id[1]:
+                if node.node_object.molecules == rxnconReaction.product_complexes[0].molecules:
+                    product = rxnconReaction.product_complexes[0]
+                elif node.node_object.molecules == rxnconReaction.product_complexes[1].molecules:
+                    product = rxnconReaction.product_complexes[1]
+                else:
+                    print("error in print referenz prodcut is neither of the two product_complexes")
+            #else:
+                #print("Warning: there is an node which is part of no edge") # TODO maybe make this an real exception?!
+
+        if sbmlReaction.getReactant(edge_id[0]) is None and sbmlReaction.getModifier(edge_id[0]) is None:
+            self.set_reference(sbmlReaction, substrate, True, edge_id[0])
+
+        if sbmlReaction.getProduct(edge_id[1]) is None and sbmlReaction.getModifier(edge_id[1]) is None:
+            self.set_reference(sbmlReaction, product, False, edge_id[1])
+
+        #substrate = self.tree.get_node(edge_id[0]).node_object # old but incorrect way, information in node ist inccorect, is_modifier is reaction dependand not globaly
+        #product = self.tree.get_node(edge_id[1]).node_object the same with substrate
+
+        # if sbmlReaction.getReactant(self.process_complex_id(substrate)) is None and sbmlReaction.getModifier(self.process_complex_id(substrate)) is None:
+        #     reactRefs = (self.set_reference(sbmlReaction, substrate, True))
+        #
+        # if sbmlReaction.getProduct(self.process_complex_id(product)) is None and sbmlReaction.getModifier(self.process_complex_id(product)) is None:
+        #     self.set_reference(sbmlReaction, product, False)
 
     def process_reaction(self, rxnconReactions):
         # gets a list of tuple (reaction, edge.id)  and processes stored information
@@ -69,37 +139,10 @@ class SBMLBuilder(object):
         if(self.namespace.getLevel >=3):
             reaction.setCompartment('cell')                          # Reaction_Compartment exists not before SBML L3V1
 
-        #adds SpeciesReferences to the reaction and gives back a tupel of (reactantList, prodList, rxncon-reaction.rid)
+        #adds SpeciesReferences to the reaction
         [self.add_references(id, reactionTuple[1]) for reactionTuple in rxnconReactions]
 
         self.compute_KineticLaw(id, rxnconReactions)
-
-    def set_reference(self, reaction, reactant, is_substrate):
-        # sets the reactant/product/modifier references for the given reaction
-
-        if not reactant._BiologicalComplex__is_modifier:
-            if is_substrate:
-                reactRef = reaction.createReactant()
-                reactRef.setSpecies(self.process_complex_id(reactant))
-            else:
-                prodRef =  reaction.createProduct()
-                prodRef.setSpecies(self.process_complex_id(reactant))
-        else:
-            modRef = reaction.createModifier()
-            modRef.setSpecies(self.process_complex_id(reactant))
-
-    def add_references(self, id, edge_id):
-        # adds new reactants to an reaction
-
-        reaction = self.model.getReaction(id)
-
-        substrate = self.tree.get_node(edge_id[0]).node_object
-        if reaction.getReactant(self.process_complex_id(substrate)) is None and reaction.getModifier(self.process_complex_id(substrate)) is None:
-            reactRefs = (self.set_reference(reaction, substrate, True))
-
-        product = self.tree.get_node(edge_id[1]).node_object
-        if reaction.getProduct(self.process_complex_id(product)) is None and reaction.getModifier(self.process_complex_id(product)) is None:
-          self.set_reference(reaction, product, False)
 
     def add_parameter(self, parId):
         par = self.model.createParameter()
@@ -400,8 +443,10 @@ class CDBuilder(SBMLBuilder):
         species = self.model.createSpecies()
         node = self.tree.get_node(visitId)
 
-        species.setId( self.process_complex_id(node.node_object) )
-        species.setMetaId( self.process_complex_id(node.node_object) )
+        #species.setId( self.process_complex_id(node.node_object) ) # TODO change id to node.id according to SBML builder
+        #species.setMetaId( self.process_complex_id(node.node_object) )
+        species.setId( self.process_node_id(node.id))
+        species.setMetaId( self.process_node_id(node.id ))
         #change for CD
         if len(node.node_object.molecules) >= 2:
             # TODO handle Complex, add to complex list, note which species are in the complex
@@ -480,6 +525,7 @@ if __name__ == "__main__":
 
     simple = """
     C_p+_A_[x]
+    A_p+_B_[x]
     """
     simple2 = """
     a_ppi_b
@@ -516,8 +562,8 @@ if __name__ == "__main__":
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
 
-    #useCD = False
-    useCD = True
+    useCD = False
+    #useCD = True
 
     if useCD:
         #cd = SBMLBuilder(level = 3, version = 1)
