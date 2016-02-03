@@ -65,8 +65,6 @@ class SBMLBuilder(object):
                 prodRef =  reaction.createProduct()
                 #prodRef.setSpecies(self.process_complex_id(reactant))
                 prodRef.setSpecies(self.process_node_id(node_id))
-                print("prodref got set to" + str(node_id))
-                print (reaction.getProduct(node_id) is not None)
         else:
             modRef = reaction.createModifier()
             #modRef.setSpecies(self.process_complex_id(reactant))
@@ -166,7 +164,8 @@ class SBMLBuilder(object):
                     for reactionTuple in rxnconReactions:
                         if reactionTuple[0].rid == reactions[0].rid:
                             if reactionTuple[1][0] not in handledNode:
-                                rule += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
+                                #rule += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
+                                rule += " * " + self.process_node_id(reactionTuple[1][0])
                                 handledNode.append(reactionTuple[1][0])
 
                 elif reactions[0].rate.rate is None and reactions[0].rate.rrate is not None and reactions[0].rate.frate is not None:
@@ -177,10 +176,12 @@ class SBMLBuilder(object):
                     for reactionTuple in rxnconReactions:
                         if reactionTuple[0].rid == reactions[0].rid:
                             if reactionTuple[1][0] not in handledNode:
-                                there += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
+                                #there += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
+                                there += " * " + self.process_node_id( reactionTuple[1][0])
                                 handledNode.append(reactionTuple[1][0])
                             if reactionTuple[1][1] not in handledNode:
-                                back += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][1]).node_object)
+                                #back += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][1]).node_object)
+                                back += " * " + self.process_node_id(reactionTuple[1][1])
                                 handledNode.append(reactionTuple[1][1])
                     rule += there + " - " + back
                 else:
@@ -559,7 +560,7 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
-    rxncon = Rxncon(simple)
+    rxncon = Rxncon(simple2)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
