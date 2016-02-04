@@ -265,6 +265,8 @@ class CDBuilder(SBMLBuilder):
         self.modRes = set()     # all unique modification Sites in this model, Set of tuple (name, domain)
         self.species_Mod = {}   # key: species, object: List[(modification id, state)]
 
+        self.switcher = {"1.1.1.1" : "phosphorylated"} # TODO add other known modifications
+
     #TODO decide weather or not this is needed
     def addlistOfCompartmentAliases(self):
         # TODO might as well go back in model_CdAnnotation as a +=...
@@ -462,12 +464,17 @@ class CDBuilder(SBMLBuilder):
 
         # for CD handling of Modifications
         for molecule in node.node_object.molecules:
-            switcher = {"P" : "phosphorylated"} # TODO different cases for different modifications
+
             modNum = 1
             mods = []
             for modSite in molecule.modifications:
                 self.modRes.add((species.getName(), modSite._State__components[0].domain)) #might there be more _State__components, its a list so there might but what does it mean TODO delete
-                mods.append(((species.getName() + str(modNum)), switcher[modSite.modifier]))
+                #mods.append(((species.getName() + str(modNum)), self.switcher[modSite.modifier]))  #unpractical method due to lacking clearness of .modifier
+                visitedReactions = []
+                for edge in self.tree.edges:
+                    if edge.id[1] == node.id and edge.reaction[0].rid not in visitedReactions:
+                        mods.append(((species.getName() + str(modNum)), self.switcher[edge.reaction[0].rtype]))
+                        visitedReactions.append(edge.reaction[0].rid)
                 modNum += 1
             if mods:
                 self.species_Mod[species.getId()] = mods
@@ -528,7 +535,7 @@ if __name__ == "__main__":
 
     simple = """
     C_p+_A_[x]
-    A_p+_B_[x]
+    A_p+_B_[x]; ! A_[x]-{P}
     """
     simple2 = """
     a_ppi_b
@@ -560,13 +567,13 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
-    rxncon = Rxncon(simple2)
+    rxncon = Rxncon(simple)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
 
-    useCD = False
-    #useCD = True
+    #useCD = False
+    useCD = True
 
     if useCD:
         #cd = SBMLBuilder(level = 3, version = 1)
