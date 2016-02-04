@@ -235,6 +235,7 @@ class SBMLBuilder(object):
 
 
 # TODO everything with Celldesigner should go here so that the basic SBML isn't changed in the process
+# TODO check compartments, the default "cell" compartment gets lost in CD output visualisation
 class CDBuilder(SBMLBuilder):
     def __init__(self, level = 2, version = 4):
         # creates a SBML document of given level and version, default is 2.4 because of Celldesigner specs
@@ -250,7 +251,9 @@ class CDBuilder(SBMLBuilder):
         self.modRes = set()     # all unique modification Sites in this model, Set of tuple (name, domain)
         self.species_Mod = {}   # key: species, object: List[(modification id, state)]
 
-        self.switcher = {"1.1.1.1" : "phosphorylated"} # TODO add other known modifications
+        self.modSwitcher = {"1.1.1.1" : "phosphorylated"} # TODO add other known modifications
+
+        self.reactionSwitcher = {"1.1.1.1" : "STATE_TRANSITION", "2.1.1.1" : "HETERODIMER_ASSOCIATION"} #TODO add more reaction types
 
     #TODO decide weather or not this is needed
     def addlistOfCompartmentAliases(self):
@@ -383,9 +386,15 @@ class CDBuilder(SBMLBuilder):
         for reaction in listOfReactions:
             id = reaction.getId()
             name = reaction.getName()
+            rxnconreaction = None
+            for edge in self.tree.edges:
+                if str(edge.reaction[0].rid) == id[1:]:
+                    rxnconreaction = edge.reaction[0]
+                    break
+
             annotation = "<celldesigner:extension>\n"
             annotation += "<celldesigner:name>"+name+"</celldesigner:name>\n"
-            annotation += "<celldesigner:reactionType>STATE_TRANSITION</celldesigner:reactionType>\n" #TODO make other reactions possible
+            annotation += "<celldesigner:reactionType>"+ self.reactionSwitcher[ rxnconreaction.rtype ] +"</celldesigner:reactionType>\n"
 
             annotation += "<celldesigner:baseReactants>\n"
             for reactant in reaction.getListOfReactants():
@@ -452,11 +461,11 @@ class CDBuilder(SBMLBuilder):
             mods = []
             for modSite in molecule.modifications:
                 self.modRes.add((species.getName(), modSite._State__components[0].domain))
-                #mods.append(((species.getName() + str(modNum)), self.switcher[modSite.modifier]))  #unpractical method due to lacking clearness of .modifier
+                #mods.append(((species.getName() + str(modNum)), self.modSwitcher[modSite.modifier]))  #unpractical method due to lacking clearness of .modifier
                 visitedReactions = []
                 for edge in self.tree.edges:
                     if edge.id[1] == node.id and edge.reaction[0].rid not in visitedReactions:
-                        mods.append(((species.getName() + str(modNum)), self.switcher[edge.reaction[0].rtype]))
+                        mods.append(((species.getName() + str(modNum)), self.modSwitcher[edge.reaction[0].rtype]))
                         visitedReactions.append(edge.reaction[0].rid)
                 modNum += 1
             if mods:
@@ -550,7 +559,7 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
-    rxncon = Rxncon(simple)
+    rxncon = Rxncon(simple2)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
