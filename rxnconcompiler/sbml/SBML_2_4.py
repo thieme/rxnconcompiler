@@ -450,7 +450,7 @@ class CDBuilder(SBMLBuilder):
             annotation += "</celldesigner:extension>"
             species.setAnnotation(annotation)
 
-    def setReferenzAnnotation(self, reaction):
+    def setReferenzAnnotation(self, reaction, rtype):
 
         for ref in reaction.getListOfReactants():
             annotation = "<celldesigner:extension>\n"
@@ -460,7 +460,10 @@ class CDBuilder(SBMLBuilder):
 
         for ref in reaction.getListOfProducts():
             annotation = "<celldesigner:extension>\n"
-            annotation += "<celldesigner:alias>"+self.speciesAliases[ref.getSpecies()]+"</celldesigner:alias>\n"
+            if rtype == "2.1.1.1":
+                annotation += "<celldesigner:alias>"+ref.getSpecies()+"</celldesigner:alias>\n"
+            else:
+                annotation += "<celldesigner:alias>"+self.speciesAliases[ref.getSpecies()]+"</celldesigner:alias>\n"
             annotation += "</celldesigner:extension>"
             ref.setAnnotation(annotation)
 
@@ -493,8 +496,18 @@ class CDBuilder(SBMLBuilder):
 
             annotation += "<celldesigner:baseProducts>\n"
             for product in reaction.getListOfProducts():
-                annotation += "<celldesigner:baseProduct species=\""+ str(product.getSpecies()) +"\" alias=\""+ self.speciesAliases[product.getSpecies()] +"\">\n"
-                annotation += "<celldesigner:linkAnchor position=\"WNW\"/>\n</celldesigner:baseProduct>\n"
+                is_complex = False
+                for comp in self.complexes:
+                    if product.getSpecies() == comp[0]:
+                        is_complex = True
+                        break
+
+                if is_complex:
+                    annotation += "<celldesigner:baseProduct species=\""+ str(product.getSpecies()) +"\" alias=\""+ str(product.getSpecies()) +"\">\n"
+                    annotation += "<celldesigner:linkAnchor position=\"WNW\"/>\n</celldesigner:baseProduct>\n"
+                else:
+                    annotation += "<celldesigner:baseProduct species=\""+ str(product.getSpecies()) +"\" alias=\""+ self.speciesAliases[product.getSpecies()] +"\">\n"
+                    annotation += "<celldesigner:linkAnchor position=\"WNW\"/>\n</celldesigner:baseProduct>\n"
             annotation += "</celldesigner:baseProducts>\n"
 
             annotation +="<celldesigner:listOfModification>\n"
@@ -506,7 +519,7 @@ class CDBuilder(SBMLBuilder):
             annotation += "</celldesigner:extension>"
 
             reaction.setAnnotation(annotation)
-            self.setReferenzAnnotation(reaction)
+            self.setReferenzAnnotation(reaction, rxnconreaction.rtype)
 
     def model_CdAnnotation(self):
 
