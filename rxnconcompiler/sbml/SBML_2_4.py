@@ -247,7 +247,8 @@ class CDBuilder(SBMLBuilder):
             raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
         self.speciesAliases = {} # dict of key = species id and value alias
-        self.proteins = set()   # all unique proteins in this model (Id,name) where id == 0 means it is not set yet
+        self.proteins = set()   # all unique proteins in this model (name, id) where id == 0 means it is not set yet
+        self.complexes= set()   # all unique complex species (id, node1.id, node2.id)
         self.modRes = set()     # all unique modification Sites in this model, Set of tuple (name, domain)
         self.species_Mod = {}   # key: species, object: List[(modification id, state)]
 
@@ -255,15 +256,71 @@ class CDBuilder(SBMLBuilder):
 
         self.reactionSwitcher = {"1.1.1.1" : "STATE_TRANSITION", "2.1.1.1" : "HETERODIMER_ASSOCIATION"} #TODO add more reaction types
 
+    def addlistOfIncludedSpecies(self):
+        annotation = "<celldesigner:listOfIncludedSpecies>\n"
+
+        for comp in self.complexes:
+            for iId in [comp[1], comp[2]]:
+                node = self.tree.get_node(iId)
+
+                annotation += "<celldesigner:species id=\" i"+ str(iId) +"\" name=\"" + node.node_object.molecules[0].name +"\">\n"
+                annotation += "<celldesigner:annotation>\n"
+                annotation += "<celldesigner:complexSpecies>"+comp[0]+"</celldesigner:complexSpecies>\n"
+                annotation += "<celldesigner:speciesIdentity>\n"
+
+                #TODO at the momentent only proteins as parts of a complex
+                for prot in self.proteins:
+
+                    if prot[0] == node.name:
+                        annotation += "<celldesigner:class>PROTEIN</celldesigner:class>\n"
+                        annotation += "<celldesigner:proteinReference>"+prot[1]+"</celldesigner:proteinReference>"
+
+                # TODO make modifications possible, this might work or not, not tested at the moment, therefore commented out
+                # if self.model.getSpecies(iId).getId() in self.species_Mod:
+                #     annotation += "<celldesigner:state>\n<celldesigner:listOfModifications>\n"
+                #     for mod in self.species_Mod[id]:
+                #         annotation += "<celldesigner:modification residue=\""+ mod[0]  +"\" state=\""+ mod[1] +"\"/>\n"
+                #     annotation += "</celldesigner:listOfModifications>\n</celldesigner:state>\n"
+
+                annotation += """</celldesigner:speciesIdentity>
+    </celldesigner:annotation>
+    </celldesigner:species>"""
+
+        annotation +="</celldesigner:listOfIncludedSpecies>\n"
+        return annotation
+
     #TODO decide weather or not this is needed
     def addlistOfCompartmentAliases(self):
         # TODO might as well go back in model_CdAnnotation as a +=...
         return "<celldesigner:listOfCompartmentAliases/>\n"
 
-    # TODO
     def addlistOfComplexSpeciesAliases(self):
-        # as long as it is empty
-        return "<celldesigner:listOfComplexSpeciesAliases/>\n"
+        annotation = "<celldesigner:listOfComplexSpeciesAliases>\n"
+        for comp in self.complexes:
+            annotation +=  "<celldesigner:complexSpeciesAlias id=\""+ str(comp[0]) + "\" species=\""+comp[0]+"\">\n"
+            annotation += """ <celldesigner:activity>inactive</celldesigner:activity>
+    <celldesigner:bounds x="191.0" y="190.0" w="100.0" h="120.0"/>
+    <celldesigner:font size="12"/>
+    <celldesigner:view state="usual"/>
+    <celldesigner:backupSize w="0.0" h="0.0"/>
+    <celldesigner:backupView state="none"/>
+    <celldesigner:usualView>
+    <celldesigner:innerPosition x="0.0" y="0.0"/>
+    <celldesigner:boxSize width="100.0" height="120.0"/>
+    <celldesigner:singleLine width="2.0"/>
+    <celldesigner:paint color="fff7f7f7" scheme="Color"/>
+    </celldesigner:usualView>
+    <celldesigner:briefView>
+    <celldesigner:innerPosition x="0.0" y="0.0"/>
+    <celldesigner:boxSize width="80.0" height="60.0"/>
+    <celldesigner:singleLine width="2.0"/>
+    <celldesigner:paint color="fff7f7f7" scheme="Color"/>
+    </celldesigner:briefView>
+    <celldesigner:info state="empty" angle="-1.5707963267948966"/>
+    </celldesigner:complexSpeciesAlias>\n"""
+
+        annotation += "</celldesigner:listOfComplexSpeciesAliases>\n"
+        return annotation
 
     # TODO include speciesalias "placeholder" for species inside of a complex
     def addlistOfSpeciesAliases(self):
@@ -333,13 +390,22 @@ class CDBuilder(SBMLBuilder):
         for species in listOfSpecies:
             id = species.getId()
             annotation = "<celldesigner:extension>\n<celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>\n<celldesigner:speciesIdentity>"
-            annotation += "<celldesigner:class>PROTEIN</celldesigner:class>\n" # TODO handle complexes maybe by checking if in list of Proteins
-            annotation += "<celldesigner:proteinReference>"
+            name = species.getName()
+
+            #TODO make class complex possible
             for prot in list(self.proteins):
                 name = species.getName()
                 if prot[0] == name:
+                    annotation += "<celldesigner:class>PROTEIN</celldesigner:class>\n"
+                    annotation += "<celldesigner:proteinReference>"
                     annotation += str(prot[1]) + "</celldesigner:proteinReference>\n"
                     break
+
+            for comp in list(self.complexes):
+                if id == comp[0]:
+                   annotation +=  "<celldesigner:class>COMPLEX</celldesigner:class>\n"
+                   annotation +=  "<celldesigner:name>"+ id +"</celldesigner:name>\n"
+
 
             #adds listOfReactions to species Annotation
             cat = ""
@@ -421,17 +487,23 @@ class CDBuilder(SBMLBuilder):
             self.setReferenzAnnotation(reaction)
 
     def model_CdAnnotation(self):
+
+        listOfProtein = self.addlistOfProtein()
+
+
         theAnnotation = "<celldesigner:extension>\n"
         theAnnotation += "<celldesigner:modelVersion>4.0</celldesigner:modelVersion>\n"
         theAnnotation += "<celldesigner:modelDisplay sizeX=\"600\" sizeY=\"400\"/>\n"
+        theAnnotation += self.addlistOfIncludedSpecies()
         theAnnotation += self.addlistOfCompartmentAliases()
         theAnnotation += self.addlistOfComplexSpeciesAliases()    # TODO will needed for complexes that are formed in ppi
         theAnnotation += self.addlistOfSpeciesAliases()
         theAnnotation += "<celldesigner:listOfGroups/>\n"
-        theAnnotation += self.addlistOfProtein()
+        theAnnotation += listOfProtein
         #theAnnotation += self.addlistOfModificationResidues()
         theAnnotation += "</celldesigner:extension>"
 
+        #print theAnnotation
         # TODO handle error codes
         self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
 
@@ -444,10 +516,14 @@ class CDBuilder(SBMLBuilder):
 
         species.setId( self.process_node_id(node.id))
         species.setMetaId( self.process_node_id(node.id ))
+
+        is_complex = False
         #change for CD
         if len(node.node_object.molecules) >= 2:
             # TODO handle Complex, add to complex list, note which species are in the complex
-            species.setName(str(node.name))
+            is_complex = True
+            #species.setName(str(node.name)) # TODO might try empty name for better graphical representation
+            species.setName("Complex")
         else:
             species.setName(node.node_object.molecules[0].name)
             self.proteins.add((node.node_object.molecules[0].name, 0))
@@ -455,11 +531,10 @@ class CDBuilder(SBMLBuilder):
         self.species_set_SBML_defaults(species)
 
         # for CD handling of Modifications
-        for molecule in node.node_object.molecules:
-
+        if not is_complex :
             modNum = 1
             mods = []
-            for modSite in molecule.modifications:
+            for modSite in node.node_object.molecules[0].modifications:
                 self.modRes.add((species.getName(), modSite._State__components[0].domain))
                 #mods.append(((species.getName() + str(modNum)), self.modSwitcher[modSite.modifier]))  #unpractical method due to lacking clearness of .modifier
                 visitedReactions = []
@@ -470,6 +545,9 @@ class CDBuilder(SBMLBuilder):
                 modNum += 1
             if mods:
                 self.species_Mod[species.getId()] = mods
+        else:
+            self.complexes.add( (self.process_node_id(node.id), node.parent[0][1], node.parent[1][1] ))
+            print "c" +str(visitId) + ", "+ str(node.parent[0][1] )+ ", "+  str(node.parent[1][1])
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
@@ -530,7 +608,8 @@ if __name__ == "__main__":
     A_p+_B_[x]; ! A_[x]-{P}
     """
     simple2 = """
-    a_ppi_b
+    c_p+_a_[x]
+    a_ppi_b; ! a_[x]-{P}
     """
 
     TOY1 = """
