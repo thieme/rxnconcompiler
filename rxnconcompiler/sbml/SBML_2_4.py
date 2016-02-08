@@ -260,8 +260,11 @@ class CDBuilder(SBMLBuilder):
         annotation = "<celldesigner:listOfIncludedSpecies>\n"
 
         for comp in self.complexes:
+            print "we look into complex " + str(comp[0])
             for iId in [comp[1], comp[2]]:
+                print "with included species " + str(iId)
                 node = self.tree.get_node(iId)
+                speciesId = self.model.getSpecies(self.process_node_id(iId)).getId()
 
                 annotation += "<celldesigner:species id=\" i"+ str(iId) +"\" name=\"" + node.node_object.molecules[0].name +"\">\n"
                 annotation += "<celldesigner:annotation>\n"
@@ -269,18 +272,24 @@ class CDBuilder(SBMLBuilder):
                 annotation += "<celldesigner:speciesIdentity>\n"
 
                 #TODO at the momentent only proteins as parts of a complex
-                for prot in self.proteins:
 
-                    if prot[0] == node.name:
+                for prot in self.proteins:
+                    #print node.node_object.molecules[0].name
+                    #print prot[0]
+                    if prot[0] == node.node_object.molecules[0].name:
                         annotation += "<celldesigner:class>PROTEIN</celldesigner:class>\n"
-                        annotation += "<celldesigner:proteinReference>"+prot[1]+"</celldesigner:proteinReference>"
+                        annotation += "<celldesigner:proteinReference>"+prot[1]+"</celldesigner:proteinReference>\n"
 
                 # TODO make modifications possible, this might work or not, not tested at the moment, therefore commented out
-                # if self.model.getSpecies(iId).getId() in self.species_Mod:
-                #     annotation += "<celldesigner:state>\n<celldesigner:listOfModifications>\n"
-                #     for mod in self.species_Mod[id]:
-                #         annotation += "<celldesigner:modification residue=\""+ mod[0]  +"\" state=\""+ mod[1] +"\"/>\n"
-                #     annotation += "</celldesigner:listOfModifications>\n</celldesigner:state>\n"
+                print "what about mods"
+                print self.species_Mod
+                print speciesId
+
+                if speciesId in self.species_Mod:
+                    annotation += "<celldesigner:state>\n<celldesigner:listOfModifications>\n"
+                    for mod in self.species_Mod[speciesId]:
+                        annotation += "<celldesigner:modification residue=\""+ mod[0]  +"\" state=\""+ mod[1] +"\"/>\n"
+                        annotation += "</celldesigner:listOfModifications>\n</celldesigner:state>\n"
 
                 annotation += """</celldesigner:speciesIdentity>
     </celldesigner:annotation>
