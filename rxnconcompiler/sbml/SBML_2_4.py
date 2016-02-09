@@ -234,11 +234,12 @@ class SBMLBuilder(object):
         return(self.document)
 
 
-# TODO everything with Celldesigner should go here so that the basic SBML isn't changed in the process
+# TODO everything for Celldesigner should go here so that the basic SBML isn't changed in the process
 # TODO check compartments, the default "cell" compartment gets lost in CD output visualisation
 class CDBuilder(SBMLBuilder):
     def __init__(self, level = 2, version = 4):
         # creates a SBML document of given level and version, default is 2.4 because of Celldesigner specs
+        # adds Cellldesigner Namespace
         try:
             self.namespace = SBMLNamespaces(level, version)
             self.namespace.addNamespace("http://www.sbml.org/2001/ns/celldesigner", "celldesigner")
@@ -267,12 +268,20 @@ class CDBuilder(SBMLBuilder):
                 node = self.tree.get_node(iId)
                 speciesId = self.model.getSpecies(self.process_node_id(iId)).getId()
 
-                annotation += "<celldesigner:species id=\"i"+ str(iId) +"\" name=\"" + node.node_object.molecules[0].name +"\">\n"
+                #for molecule in node.molecules:
+                # speciesId = self.model.getSpecies(self.process_node_id(iId)).getId()
+                #species id += molecule.name
+                #indenent everything in the secon for loop, so it will be in this one
+
+
+                name = "-".join(mol.name for mol in node.node_object.molecules)
+
+                annotation += "<celldesigner:species id=\"i"+ str(iId) +"\" name=\"" + name +"\">\n"
                 annotation += "<celldesigner:annotation>\n"
                 annotation += "<celldesigner:complexSpecies>"+comp[0]+"</celldesigner:complexSpecies>\n"
                 annotation += "<celldesigner:speciesIdentity>\n"
 
-                #TODO at the momentent only proteins as parts of a complex
+                #TODO at the momentent only proteins as parts of a complex, complex should get represented as one species instead of a real complex with included species (which would be better but might get strange with included species getting displaced, needs tests)
 
                 for prot in self.proteins:
                     #print node.node_object.molecules[0].name
@@ -287,9 +296,9 @@ class CDBuilder(SBMLBuilder):
                         annotation += "<celldesigner:modification residue=\""+ mod[0]  +"\" state=\""+ mod[1] +"\"/>\n"
                         annotation += "</celldesigner:listOfModifications>\n</celldesigner:state>\n"
 
-                annotation += """</celldesigner:speciesIdentity>
-    </celldesigner:annotation>
-    </celldesigner:species>"""
+                annotation +=   """</celldesigner:speciesIdentity>
+                                </celldesigner:annotation>
+                                </celldesigner:species>"""
 
         annotation +="</celldesigner:listOfIncludedSpecies>\n"
         return annotation
@@ -361,27 +370,29 @@ class CDBuilder(SBMLBuilder):
             losa += "</celldesigner:speciesAlias>\n"
 
         for comp in self.complexes:
+            ypos = 0
             #print "we look into complex " + str(comp[0])
             for iId in [comp[1], comp[2]]:
                 losa += "<celldesigner:speciesAlias id=\"isa"+ str(iId) +"\" species=\"i"+ str(iId) +"\" complexSpeciesAlias=\""+ self.complexSpeciesAliases[comp[0]] +"\">\n"
-                losa += """<celldesigner:activity>inactive</celldesigner:activity>
-    <celldesigner:bounds x="0.0" y="0.0" w="80.0" h="40.0"/>
-    <celldesigner:font size="12"/>
-    <celldesigner:view state="usual"/>
-    <celldesigner:usualView>
-    <celldesigner:innerPosition x="0.0" y="0.0"/>
-    <celldesigner:boxSize width="80.0" height="40.0"/>
-    <celldesigner:singleLine width="1.0"/>
-    <celldesigner:paint color="ffccffcc" scheme="Color"/>
-    </celldesigner:usualView>
-    <celldesigner:briefView>
-    <celldesigner:innerPosition x="0.0" y="0.0"/>
-    <celldesigner:boxSize width="80.0" height="60.0"/>
-    <celldesigner:singleLine width="1.0"/>
-    <celldesigner:paint color="3fff0000" scheme="Color"/>
-    </celldesigner:briefView>
-    <celldesigner:info state="empty" angle="-1.5707963267948966"/>
-    </celldesigner:speciesAlias>\n"""
+                losa += "<celldesigner:activity>inactive</celldesigner:activity>\n"
+                losa += "<celldesigner:bounds x=\"0.0\" y=\""+str(ypos)+"\" w=\"80.0\" h=\"40.0\"/>\n"     #for more then three also x has to be manipulated
+                ypos += 40
+                losa += """<celldesigner:font size="12"/>
+                        <celldesigner:view state="usual"/>
+                        <celldesigner:usualView>
+                        <celldesigner:innerPosition x="0.0" y="0.0"/>
+                        <celldesigner:boxSize width="80.0" height="40.0"/>
+                        <celldesigner:singleLine width="1.0"/>
+                        <celldesigner:paint color="ffccffcc" scheme="Color"/>
+                        </celldesigner:usualView>
+                        <celldesigner:briefView>
+                        <celldesigner:innerPosition x="0.0" y="0.0"/>
+                        <celldesigner:boxSize width="80.0" height="60.0"/>
+                        <celldesigner:singleLine width="1.0"/>
+                        <celldesigner:paint color="3fff0000" scheme="Color"/>
+                        </celldesigner:briefView>
+                        <celldesigner:info state="empty" angle="-1.5707963267948966"/>
+                        </celldesigner:speciesAlias>\n"""
 
         losa += "</celldesigner:listOfSpeciesAliases>\n"
         return losa
@@ -561,10 +572,9 @@ class CDBuilder(SBMLBuilder):
         is_complex = False
         #change for CD
         if len(node.node_object.molecules) >= 2:
-            # TODO handle Complex, add to complex list, note which species are in the complex
             is_complex = True
-            #species.setName(str(node.name)) # TODO might try empty name for better graphical representation
-            species.setName("Complex")
+            species.setName(str(node.name))
+            #species.setName("Complex")
             self.complexSpeciesAliases[species.getId()] = "csa" + str(node.id)
         else:
             species.setName(node.node_object.molecules[0].name)
@@ -702,7 +712,9 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
-    rxncon = Rxncon(simple)
+
+    rxncon = Rxncon(sample3)
+
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
