@@ -247,8 +247,9 @@ class CDBuilder(SBMLBuilder):
             raise SystemExit("SBML Document creation failed")
         self.model = self.document.createModel()
         self.speciesAliases = {} # dict of key = species id and value alias
+        self.complexSpeciesAliases = {} #dict of key = species id and value aliasId
         self.proteins = set()   # all unique proteins in this model (name, id) where id == 0 means it is not set yet
-        self.complexes= set()   # all unique complex species (id, node1.id, node2.id)
+        self.complexes= set()   # all unique complex species (id, parentNode1.id, parentNode2.id)
         self.modRes = set()     # all unique modification Sites in this model, Set of tuple (name, domain)
         self.species_Mod = {}   # key: species, object: List[(modification id, state)]
 
@@ -301,7 +302,7 @@ class CDBuilder(SBMLBuilder):
     def addlistOfComplexSpeciesAliases(self):
         annotation = "<celldesigner:listOfComplexSpeciesAliases>\n"
         for comp in self.complexes:
-            annotation +=  "<celldesigner:complexSpeciesAlias id=\""+ str(comp[0]) + "\" species=\""+comp[0]+"\">\n"
+            annotation +=  "<celldesigner:complexSpeciesAlias id=\""+ self.complexSpeciesAliases[comp[0]] + "\" species=\""+comp[0]+"\">\n"
             annotation += """ <celldesigner:activity>inactive</celldesigner:activity>
     <celldesigner:bounds x="191.0" y="190.0" w="100.0" h="120.0"/>
     <celldesigner:font size="12"/>
@@ -333,6 +334,8 @@ class CDBuilder(SBMLBuilder):
         losa = "<celldesigner:listOfSpeciesAliases>\n"
         id = 1
         for species in self.model.getListOfSpecies():
+            if self.complexSpeciesAliases.has_key(species.getId()):
+                continue
             losa += "<celldesigner:speciesAlias id=\"sa"+ str(id) +"\" species=\""+ str(species.getId()) +"\">\n"
             self.speciesAliases[species.getId()] = "sa"+str(id)
             id +=1
@@ -358,9 +361,9 @@ class CDBuilder(SBMLBuilder):
             losa += "</celldesigner:speciesAlias>\n"
 
         for comp in self.complexes:
-            print "we look into complex " + str(comp[0])
+            #print "we look into complex " + str(comp[0])
             for iId in [comp[1], comp[2]]:
-                losa += "<celldesigner:speciesAlias id=\"sa"+ str(iId) +"\" species=\"i"+ str(iId) +"\" complexSpeciesAlias=\""+ str(comp[0]) +"\">\n"
+                losa += "<celldesigner:speciesAlias id=\"isa"+ str(iId) +"\" species=\"i"+ str(iId) +"\" complexSpeciesAlias=\""+ self.complexSpeciesAliases[comp[0]] +"\">\n"
                 losa += """<celldesigner:activity>inactive</celldesigner:activity>
     <celldesigner:bounds x="0.0" y="0.0" w="80.0" h="40.0"/>
     <celldesigner:font size="12"/>
@@ -461,7 +464,7 @@ class CDBuilder(SBMLBuilder):
         for ref in reaction.getListOfProducts():
             annotation = "<celldesigner:extension>\n"
             if rtype == "2.1.1.1":
-                annotation += "<celldesigner:alias>"+ref.getSpecies()+"</celldesigner:alias>\n"
+                annotation += "<celldesigner:alias>"+self.complexSpeciesAliases[ref.getSpecies()]+"</celldesigner:alias>\n"
             else:
                 annotation += "<celldesigner:alias>"+self.speciesAliases[ref.getSpecies()]+"</celldesigner:alias>\n"
             annotation += "</celldesigner:extension>"
@@ -503,12 +506,15 @@ class CDBuilder(SBMLBuilder):
                         break
 
                 if is_complex:
-                    annotation += "<celldesigner:baseProduct species=\""+ str(product.getSpecies()) +"\" alias=\""+ str(product.getSpecies()) +"\">\n"
+                    annotation += "<celldesigner:baseProduct species=\""+ str(product.getSpecies()) +"\" alias=\""+ self.complexSpeciesAliases[product.getSpecies()] +"\">\n"
                     annotation += "<celldesigner:linkAnchor position=\"WNW\"/>\n</celldesigner:baseProduct>\n"
                 else:
                     annotation += "<celldesigner:baseProduct species=\""+ str(product.getSpecies()) +"\" alias=\""+ self.speciesAliases[product.getSpecies()] +"\">\n"
                     annotation += "<celldesigner:linkAnchor position=\"WNW\"/>\n</celldesigner:baseProduct>\n"
             annotation += "</celldesigner:baseProducts>\n"
+
+            if rxnconreaction.rtype == "2.1.1.1":
+                annotation += "<celldesigner:editPoints>0.0,0.0</celldesigner:editPoints>\n"
 
             annotation +="<celldesigner:listOfModification>\n"
             for modifier in reaction.getListOfModifiers():
@@ -559,6 +565,7 @@ class CDBuilder(SBMLBuilder):
             is_complex = True
             #species.setName(str(node.name)) # TODO might try empty name for better graphical representation
             species.setName("Complex")
+            self.complexSpeciesAliases[species.getId()] = "csa" + str(node.id)
         else:
             species.setName(node.node_object.molecules[0].name)
             self.proteins.add((node.node_object.molecules[0].name, 0))
@@ -582,7 +589,7 @@ class CDBuilder(SBMLBuilder):
                 self.species_Mod[species.getId()] = mods
         else:
             self.complexes.add( (self.process_node_id(node.id), node.parent[0][1], node.parent[1][1] ))
-            print "c" +str(visitId) + ", "+ str(node.parent[0][1] )+ ", "+  str(node.parent[1][1])
+            #print "" +str(visitId) + ", "+ str(node.parent[0][1] )+ ", "+  str(node.parent[1][1])
 
     def build_model(self, rPDTree):
         # build_model takes a reducedPD.tree and calls the functions to build a species for each node and reaction for each edge
