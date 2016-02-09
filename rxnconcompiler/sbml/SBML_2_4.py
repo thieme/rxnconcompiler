@@ -304,7 +304,7 @@ class CDBuilder(SBMLBuilder):
         for comp in self.complexes:
             annotation +=  "<celldesigner:complexSpeciesAlias id=\""+ self.complexSpeciesAliases[comp[0]] + "\" species=\""+comp[0]+"\">\n"
             annotation += """ <celldesigner:activity>inactive</celldesigner:activity>
-    <celldesigner:bounds x="191.0" y="190.0" w="100.0" h="120.0"/>
+    <celldesigner:bounds x="0.0" y="0.0" w="100.0" h="120.0"/>
     <celldesigner:font size="12"/>
     <celldesigner:view state="usual"/>
     <celldesigner:backupSize w="0.0" h="0.0"/>
@@ -651,6 +651,7 @@ if __name__ == "__main__":
     """
     simple2 = """
     a_ppi_b
+    d_ppi_e
     """
 
     simple3 = """
