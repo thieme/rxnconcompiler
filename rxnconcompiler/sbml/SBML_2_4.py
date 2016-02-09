@@ -645,13 +645,30 @@ class CDBuilder(SBMLBuilder):
 
 if __name__ == "__main__":
 
+    sample1 = """
+    a_ppi_b
+    """""
+
+    sample2= """
+    a_ppi_b
+    c_ppi_d
+    """
+
+    sample3= """
+    c_p+_a
+    a_ppi_d; ! a-{P}
+    """
+
     simple = """
-    C_p+_A_[x]
-    A_p+_B_[x]; ! A_[x]-{P}
+    A_ppi_C
+    C_ppi_E
+    A_p+_B_[x]; ! <comp>
+    <comp>; AND A--C
+    <comp>; AND C--E
     """
     simple2 = """
-    a_ppi_b
-    d_ppi_e
+    c_p+_a
+    a_ppi_b; ! a-{P}
     """
 
     simple3 = """
@@ -685,7 +702,7 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
-    rxncon = Rxncon(simple2)
+    rxncon = Rxncon(simple)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
