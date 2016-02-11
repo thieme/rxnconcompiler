@@ -251,12 +251,13 @@ class CDBuilder(SBMLBuilder):
         self.complexSpeciesAliases = {} #dict of key = species id and value aliasId
         self.proteins = set()   # all unique proteins in this model (name, id) where id == 0 means it is not set yet
         self.complexes= set()   # all unique complex species (id, parentNode1.id, parentNode2.id)
+        self.compDim = {}      # id : (num mol parent1, num mol partent2)
         self.modRes = set()     # all unique modification Sites in this model, Set of tuple (name, domain)
         self.species_Mod = {}   # key: species, object: List[(modification id, state)]
 
-        self.modSwitcher = {"1.1.1.1" : "phosphorylated"} # TODO add other known modifications
+        self.modSwitcher = {"1.1.1.1" : "phosphorylated", "1.1.2.1" : ""} # TODO add other known modifications
 
-        self.reactionSwitcher = {"1.1.1.1" : "STATE_TRANSITION", "2.1.1.1" : "HETERODIMER_ASSOCIATION"} #TODO add more reaction types
+        self.reactionSwitcher = {"1.1.1.1" : "STATE_TRANSITION","1.1.2.1" : "STATE_TRANSITION", "2.1.1.1" : "HETERODIMER_ASSOCIATION"} #TODO add more reaction types
 
     def addlistOfIncludedSpecies(self):
         annotation = "<celldesigner:listOfIncludedSpecies>\n"
@@ -269,8 +270,8 @@ class CDBuilder(SBMLBuilder):
                 speciesId = self.model.getSpecies(self.process_node_id(iId)).getId()
 
                 #for molecule in node.molecules:
-                # speciesId = self.model.getSpecies(self.process_node_id(iId)).getId()
-                #species id += molecule.name
+                # iId = self.model.getSpecies(self.process_node_id(iId)).getId()
+                #iId += molecule.name
                 #indenent everything in the secon for loop, so it will be in this one
 
 
@@ -290,15 +291,20 @@ class CDBuilder(SBMLBuilder):
                         annotation += "<celldesigner:class>PROTEIN</celldesigner:class>\n"
                         annotation += "<celldesigner:proteinReference>"+prot[1]+"</celldesigner:proteinReference>\n"
 
+                note = "<celldesigner:notes>\n<body xmlns=\"http://www.w3.org/1999/xhtml\">"
                 if speciesId in self.species_Mod:
                     annotation += "<celldesigner:state>\n<celldesigner:listOfModifications>\n"
                     for mod in self.species_Mod[speciesId]:
                         annotation += "<celldesigner:modification residue=\""+ mod[0]  +"\" state=\""+ mod[1] +"\"/>\n"
                         annotation += "</celldesigner:listOfModifications>\n</celldesigner:state>\n"
+                        if mod[1] == "phosphorylated":
+                            note += "The residue "+mod[0]+" is assumed to be phosphorylated but might be ubiquitinated or Guanine Nucleotide Exchange\n"
 
                 annotation +=   """</celldesigner:speciesIdentity>
-                                </celldesigner:annotation>
-                                </celldesigner:species>"""
+                                </celldesigner:annotation>\n"""
+                note += "</body>\n</celldesigner:notes>\n"
+                annotation += note
+                annotation += "</celldesigner:species>\n"
 
         annotation +="</celldesigner:listOfIncludedSpecies>\n"
         return annotation
@@ -454,11 +460,18 @@ class CDBuilder(SBMLBuilder):
                 annotation += "<celldesigner:listOfCatalyzedReactions>\n"+ cat +"</celldesigner:listOfCatalyzedReactions>\n"
 
             # adds listOfModifications to species Annotaion
+            note = "<notes>\n<body xmlns=\"http://www.w3.org/1999/xhtml\">"
             if id in self.species_Mod:
                 annotation += "<celldesigner:state>\n<celldesigner:listOfModifications>\n"
                 for mod in self.species_Mod[id]:
                     annotation += "<celldesigner:modification residue=\""+ mod[0]  +"\" state=\""+ mod[1] +"\"/>\n"
+                    if mod[1] == "phosphorylated":
+                        note += "The residue "+mod[0]+" is assumed to be phosphorylated but might be ubiquitinated or Guanine Nucleotide Exchange\n"
                 annotation += "</celldesigner:listOfModifications>\n</celldesigner:state>\n"
+
+            #note += "</h2></center>\n</body>\n"
+            note += "</body>\n</notes>"
+            species.appendNotes(note)
 
             annotation += "</celldesigner:speciesIdentity>\n"
             annotation += "</celldesigner:extension>"
@@ -548,7 +561,7 @@ class CDBuilder(SBMLBuilder):
         theAnnotation += "<celldesigner:modelDisplay sizeX=\"600\" sizeY=\"400\"/>\n"
         theAnnotation += self.addlistOfIncludedSpecies()
         theAnnotation += self.addlistOfCompartmentAliases()
-        theAnnotation += self.addlistOfComplexSpeciesAliases()    # TODO will needed for complexes that are formed in ppi
+        theAnnotation += self.addlistOfComplexSpeciesAliases()
         theAnnotation += self.addlistOfSpeciesAliases()
         theAnnotation += "<celldesigner:listOfGroups/>\n"
         theAnnotation += listOfProtein
@@ -557,7 +570,7 @@ class CDBuilder(SBMLBuilder):
 
         #print theAnnotation
         # TODO handle error codes
-        self.model.setAnnotation(theAnnotation)        #currently adding the model annotation makes the file not readable for CD
+        self.model.setAnnotation(theAnnotation)
 
     def process_node(self, visitId):
         # takes an unvisited node and creates species out of it
@@ -655,9 +668,18 @@ class CDBuilder(SBMLBuilder):
 
 if __name__ == "__main__":
 
+    sample4 = """
+    c_p+_a_[X]
+    b_ppi_a_[X]; ! a_[X]-{P}
+
+    """
+
     sample1 = """
-    a_ppi_b
+    d_p+_b_[x]
+    c_p+_a_[X]
+    a_[X]_p-_b_[x]; ! a_[X]-{P}
     """""
+    #     a_[X]_p-_b_[x]; ! b_[x]-{P} this line would make the p- reaction disappear in the PDTRee
 
     sample2= """
     a_ppi_b
@@ -713,7 +735,7 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
 
-    rxncon = Rxncon(sample3)
+    rxncon = Rxncon(sample4)
 
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
