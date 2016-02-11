@@ -1,6 +1,8 @@
 from rxnconcompiler.SBGN.PD import ReducedProcessDescription
 from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.util.rxncon_errors import RxnconRateError
+from math import sqrt
+from math import ceil
 import os
 from libsbml import *
 # libsbml import always marked as unused and (some of) the depending methods as unresolved but work as intended when run
@@ -318,9 +320,10 @@ class CDBuilder(SBMLBuilder):
         annotation = "<celldesigner:listOfComplexSpeciesAliases>\n"
         for comp in self.complexes:
             annotation +=  "<celldesigner:complexSpeciesAlias id=\""+ self.complexSpeciesAliases[comp[0]] + "\" species=\""+comp[0]+"\">\n"
-            annotation += """ <celldesigner:activity>inactive</celldesigner:activity>
-    <celldesigner:bounds x="0.0" y="0.0" w="100.0" h="120.0"/>
-    <celldesigner:font size="12"/>
+            annotation +=  "<celldesigner:activity>inactive</celldesigner:activity>\n"
+            n = self.compDim[comp[0]][0]
+            annotation += "<celldesigner:bounds x=\"0.0\" y=\"0.0\" w=\""+str(90 * n)+"\" h=\""+str(50 * n)+"\"/>\n"
+            annotation += """<celldesigner:font size="12"/>
     <celldesigner:view state="usual"/>
     <celldesigner:backupSize w="0.0" h="0.0"/>
     <celldesigner:backupView state="none"/>
@@ -376,13 +379,19 @@ class CDBuilder(SBMLBuilder):
             losa += "</celldesigner:speciesAlias>\n"
 
         for comp in self.complexes:
-            ypos = 0
+            n = self.compDim[comp[0]][0]
+            xpos = 5
+            ypos = 5
             #print "we look into complex " + str(comp[0])
             for iId in [comp[1], comp[2]]:
                 losa += "<celldesigner:speciesAlias id=\"isa"+ str(iId) +"\" species=\"i"+ str(iId) +"\" complexSpeciesAlias=\""+ self.complexSpeciesAliases[comp[0]] +"\">\n"
                 losa += "<celldesigner:activity>inactive</celldesigner:activity>\n"
-                losa += "<celldesigner:bounds x=\"0.0\" y=\""+str(ypos)+"\" w=\"80.0\" h=\"40.0\"/>\n"     #for more then three also x has to be manipulated
-                ypos += 40
+                losa += "<celldesigner:bounds x=\""+str(xpos)+"\" y=\""+str(ypos)+"\" w=\"80.0\" h=\"40.0\"/>\n"     #for more then three also x has to be manipulated
+                if ypos +50 >= n * 40:
+                    xpos += 85
+                    ypos = 5
+                else :
+                    ypos += 50
                 losa += """<celldesigner:font size="12"/>
                         <celldesigner:view state="usual"/>
                         <celldesigner:usualView>
@@ -589,6 +598,8 @@ class CDBuilder(SBMLBuilder):
             species.setName(str(node.name))
             #species.setName("Complex")
             self.complexSpeciesAliases[species.getId()] = "csa" + str(node.id)
+            n = ceil(sqrt(len(node.node_object.molecules)))
+            self.compDim[species.getId()]= (n , n)
         else:
             species.setName(node.node_object.molecules[0].name)
             self.proteins.add((node.node_object.molecules[0].name, 0))
@@ -621,6 +632,7 @@ class CDBuilder(SBMLBuilder):
         # default compartment until further changes to rxncon
         c = self.model.createCompartment()
         c.setId('cell')
+        c.setMetaId('cell')
         # example values for compartments
         #c.setConstant(True)
         c.setSize(1)
