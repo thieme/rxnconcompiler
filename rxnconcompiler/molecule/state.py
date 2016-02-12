@@ -117,7 +117,7 @@ class State:
         self.__homodimer = homodimer
 
     def __repr__(self):
-        str(self)
+        return str(self)
 
     def __str__(self):
         if self.type == 'Intraprotein':

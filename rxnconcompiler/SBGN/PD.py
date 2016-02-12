@@ -293,7 +293,7 @@ if __name__ == "__main__":
     <b>; AND Ste5--Ste7
     <b>; AND Ste5--Ste5"""
 
-    rxncon = Rxncon(TOY4)
+    rxncon = Rxncon(TOY1)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
