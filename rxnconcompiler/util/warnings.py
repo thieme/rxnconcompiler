@@ -54,7 +54,7 @@ class RxnconWarnings:
         Based on the reaction pool this function checks if interaction reactions (ppi, i, BIND, ...) are using the same domain.
         modification reactions are not tested here because in case of e.g. phosphorylating the same domain of a certain protein the same state will be created.
         In case of interaction reactions the state will be different.
-
+cd
         @return: dictionary key: reaction value: a tuple of reaction and state of all mutually exclusive reactions
         @rtype:  dict
         @param reaction_pool: collection of all reactions. object of ReactionContainer class
