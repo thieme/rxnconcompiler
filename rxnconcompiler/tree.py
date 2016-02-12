@@ -95,7 +95,7 @@ class Tree(object):
         self.show_tree = []
 
     def get_highest_id(self):
-        max_id = 0
+        max_id = -1
         for node in self.nodes:
             if node.id > max_id:
                 max_id = node.id

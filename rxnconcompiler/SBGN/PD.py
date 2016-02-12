@@ -23,14 +23,18 @@ class ReducedPDEdge():
         return self.__edge
 
     def __repr__(self):
-        return "{0}-{1}".format(self.id, self.reaction.rtypeID)
+        return str(self)
+
+    def __str__(self):
+        return "{0}-{1}".format(self.id, "[ {} ]".format(",".join(reaction.rtypeID for reaction in self.reaction)))
 
 class ReducedPDNode(Node):
-    def __init__(self, complex, id, new_lvl=True):
+    def __init__(self, complex, positive_cont, id, new_lvl=True):
         self.name = ""
         self.get_name(complex.molecules)
         Node.__init__(self, self.name, id, new_lvl=new_lvl)
         self.node_object = complex
+        self.positive_cont = positive_cont
         self.parent = []
 
     @property
@@ -177,7 +181,12 @@ class ReducedPDTree(Tree):
         if id is None:
             id = self.get_highest_id()
             id += 1
-        node = ReducedPDNode(complex=complex, id=id)
+        positive_cont = []
+        for mol in complex.molecules:
+            positive_cont.extend([str(binding_partner) for binding_partner in mol.binding_partners])
+            positive_cont.extend([str(modification) for modification in mol.modifications])
+        positive_cont = set(positive_cont)
+        node = ReducedPDNode(complex=complex, positive_cont=positive_cont, id=id)
 
         if self.has_node(node.name):
             node = self.nodes[self.get_index(node.name)]
@@ -195,6 +204,20 @@ class ReducedPDTree(Tree):
                         if edge is not None and reaction not in edge.reaction:
                             edge.reaction.append(reaction)
             return
+        elif not self.has_node(node.name) and len(node.node_object.molecules) > 1 and not parent_list:
+            new_parent_list = set()
+            for mol in node.node_object.molecules:
+                for mol_cont in mol.binding_partners + mol.modifications:
+                    for tree_node in self.nodes:
+                        if str(mol_cont) in tree_node.positive_cont:
+                            new_parent_list.add(tree_node)
+
+            parent_list = []
+            #child = ReducedPDChildren(node.name, node.id)
+            for parent in new_parent_list:
+                parent_list.append(self.get_index(parent.name))
+
+
         self.nodes.append(node)
         self.last_node = node.name
         self.set_parent(node=node, parent_list=parent_list)
@@ -270,7 +293,7 @@ if __name__ == "__main__":
     <b>; AND Ste5--Ste7
     <b>; AND Ste5--Ste5"""
 
-    rxncon = Rxncon(TOY3)
+    rxncon = Rxncon(TOY4)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()

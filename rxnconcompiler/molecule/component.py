@@ -23,12 +23,14 @@ class Component:
 
     def __repr__(self):
         #return str((self.name , self.domain, self.cid))
+         return str(self)
+
+    def __str__(self):
         if self.second_domain:
             return '%s_[%s]_[%s]' % (self.name, self.domain, self.second_domain)
         elif self.domain:
             return '%s_[%s]' % (self.name, self.domain)
-        return self.name 
-
+        return self.name
     def __eq__(self, other):
         if not self.name == other.name:
             return False
