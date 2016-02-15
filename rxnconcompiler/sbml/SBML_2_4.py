@@ -253,7 +253,7 @@ class CDBuilder(SBMLBuilder):
         self.complexSpeciesAliases = {} #dict of key = species id and value aliasId
         self.proteins = set()   # all unique proteins in this model (name, id) where id == 0 means it is not set yet
         self.complexes= set()   # all unique complex species (id, parentNode1.id, parentNode2.id)
-        self.compDim = {}      # id : (num mol parent1, num mol partent2)
+        self.compDim = {}      # id : (rows, columns)
         self.modRes = set()     # all unique modification Sites in this model, Set of tuple (name, domain)
         self.species_Mod = {}   # key: species, object: List[(modification id, state)]
 
@@ -321,8 +321,8 @@ class CDBuilder(SBMLBuilder):
         for comp in self.complexes:
             annotation +=  "<celldesigner:complexSpeciesAlias id=\""+ self.complexSpeciesAliases[comp[0]] + "\" species=\""+comp[0]+"\">\n"
             annotation +=  "<celldesigner:activity>inactive</celldesigner:activity>\n"
-            n = self.compDim[comp[0]][0]
-            annotation += "<celldesigner:bounds x=\"0.0\" y=\"0.0\" w=\""+str(90 * n)+"\" h=\""+str(50 * n)+"\"/>\n"
+            n = self.compDim[comp[0]]
+            annotation += "<celldesigner:bounds x=\"0.0\" y=\"0.0\" w=\""+str(90 * n[1])+"\" h=\""+str(15 + 50 * n[0])+"\"/>\n"
             annotation += """<celldesigner:font size="12"/>
     <celldesigner:view state="usual"/>
     <celldesigner:backupSize w="0.0" h="0.0"/>
@@ -598,8 +598,16 @@ class CDBuilder(SBMLBuilder):
             species.setName(str(node.name))
             #species.setName("Complex")
             self.complexSpeciesAliases[species.getId()] = "csa" + str(node.id)
-            n = ceil(sqrt(len(node.node_object.molecules)))
-            self.compDim[species.getId()]= (n , n)
+            n1 = ceil(sqrt(len(node.node_object.molecules)))
+            n2 = ceil(sqrt(len(node.node_object.molecules)))
+
+            # so that the complex is not unnecessary wide
+            while n1 * (n2-1) - len(node.node_object.molecules)  >= 0:
+                print "in while"
+                n2 += -1
+                print n2
+
+            self.compDim[species.getId()]= (n1 , n2)
         else:
             species.setName(node.node_object.molecules[0].name)
             self.proteins.add((node.node_object.molecules[0].name, 0))
@@ -762,7 +770,7 @@ if __name__ == "__main__":
         toy1sbml =  cd.build_model(reducedPD.tree)
         cd.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/CDTest/cdtest.xml"))
         #sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/cdtest.sbml"))
-        print("\n" + writeSBMLToString(toy1sbml) + "\n")
+        #print("\n" + writeSBMLToString(toy1sbml) + "\n")
 
     else:
         #sb = SBMLBuilder(level = 3, version = 1)
