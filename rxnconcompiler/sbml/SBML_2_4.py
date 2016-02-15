@@ -73,6 +73,7 @@ class SBMLBuilder(object):
         substrate = None
         product = None
 
+        # TODO
         for node in self.tree.nodes:
             if node.id == edge_id[0]:
                 if node.node_object.molecules == rxnconReaction.substrat_complexes[0].molecules:
@@ -272,9 +273,9 @@ class CDBuilder(SBMLBuilder):
                 speciesId = self.model.getSpecies(self.process_node_id(iId)).getId()
 
                 #for molecule in node.molecules:
-                # iId = self.model.getSpecies(self.process_node_id(iId)).getId()
-                #iId += molecule.name
-                #indenent everything in the secon for loop, so it will be in this one
+                    # miId = self.model.getSpecies(self.process_node_id(iId)).getId()
+                    # miId += molecule.name
+                    # indenent everything in the secon for loop, so it will be in this one
 
 
                 name = "-".join(mol.name for mol in node.node_object.molecules)
@@ -603,9 +604,7 @@ class CDBuilder(SBMLBuilder):
 
             # so that the complex is not unnecessary wide
             while n1 * (n2-1) - len(node.node_object.molecules)  >= 0:
-                print "in while"
                 n2 += -1
-                print n2
 
             self.compDim[species.getId()]= (n1 , n2)
         else:
@@ -688,6 +687,14 @@ class CDBuilder(SBMLBuilder):
 
 if __name__ == "__main__":
 
+    sample5 ="""
+    a_ppi_b
+    c_ppi_d
+    a_ppi_c; ! <comp>
+    <comp>; AND a--b
+    <comp>; AND c--d
+    """
+
     sample4 = """
     c_p+_a_[X]
     b_ppi_a_[X]; ! a_[X]-{P}
@@ -755,7 +762,7 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
 
-    rxncon = Rxncon(sample4)
+    rxncon = Rxncon(sample5)
 
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
@@ -770,7 +777,7 @@ if __name__ == "__main__":
         toy1sbml =  cd.build_model(reducedPD.tree)
         cd.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/CDTest/cdtest.xml"))
         #sb.save_SBML(toy1sbml, os.path.expanduser("~/Desktop/cdtest.sbml"))
-        #print("\n" + writeSBMLToString(toy1sbml) + "\n")
+        print("\n" + writeSBMLToString(toy1sbml) + "\n")
 
     else:
         #sb = SBMLBuilder(level = 3, version = 1)
