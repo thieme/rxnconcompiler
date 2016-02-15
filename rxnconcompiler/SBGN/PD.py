@@ -1,3 +1,5 @@
+import copy
+
 from rxnconcompiler.rxncon import Rxncon
 from rxnconcompiler.tree import Tree, Node, Children
 from rxnconcompiler.biological_complex.biological_complex import BiologicalComplex
@@ -5,6 +7,14 @@ import re
 
 (_ADD, _DELETE, _INSERT) = range(3)
 (_ROOT, _DEPTH, _WIDTH) = range(3)
+class EdgeReaction():
+    def __init__(self, rtype, reversibility):
+        self.rtype = rtype
+        self.reversibility = reversibility
+    def __repr__(self):
+        return str(self)
+    def __str__(self):
+        return "({},{})".format(self.rtype, self.reversibility)
 
 class ReducedPDChildren(Children):
     def __init__(self, name, id):
@@ -26,7 +36,7 @@ class ReducedPDEdge():
         return str(self)
 
     def __str__(self):
-        return "{0}-{1}".format(self.id, "[ {} ]".format(",".join(reaction.rtypeID for reaction in self.reaction)))
+        return "{0}-{1}".format(self.id, self.reaction)
 
 class ReducedPDNode(Node):
     def __init__(self, complex, positive_cont, id, new_lvl=True):
@@ -181,13 +191,16 @@ class ReducedPDTree(Tree):
         if id is None:
             id = self.get_highest_id()
             id += 1
+
+
+        # get list of properties
         positive_cont = []
         for mol in complex.molecules:
             positive_cont.extend([str(binding_partner) for binding_partner in mol.binding_partners])
             positive_cont.extend([str(modification) for modification in mol.modifications])
         positive_cont = set(positive_cont)
         node = ReducedPDNode(complex=complex, positive_cont=positive_cont, id=id)
-
+        edge_reaction = EdgeReaction(reaction.rtype,reaction.definition["Reversibility"])
         if self.has_node(node.name):
             node = self.nodes[self.get_index(node.name)]
             self.last_node = node.name
@@ -202,26 +215,44 @@ class ReducedPDTree(Tree):
                     if parent_tuple in node.parent and node_tuple[1] not in parent_list:
                         edge = self.get_edge(parent_tuple[1], node_tuple[1])
                         if edge is not None and reaction not in edge.reaction:
-                            edge.reaction.append(reaction)
+                            edge_reaction = EdgeReaction(reaction.rtype, reaction.substrat_complexes.molecules, reaction.product_complexes.molecules, reaction.definition["reversibility"])
+                            edge.reaction.append(edge_reaction)
             return
         elif not self.has_node(node.name) and len(node.node_object.molecules) > 1 and not parent_list:
-            new_parent_list = set()
-            for mol in node.node_object.molecules:
-                for mol_cont in mol.binding_partners + mol.modifications:
-                    for tree_node in self.nodes:
-                        if str(mol_cont) in tree_node.positive_cont:
-                            new_parent_list.add(tree_node)
 
             parent_list = []
-            #child = ReducedPDChildren(node.name, node.id)
-            for parent in new_parent_list:
-                parent_list.append(self.get_index(parent.name))
+            mols_needed = copy.deepcopy(node.node_object.molecules)
+            # find node with most common properties
+            tree_node_sharing_most_properties = []
+            max = 0
+            for tree_node in self.nodes:
+                sharing_properties = tree_node.positive_cont.intersection(node.positive_cont)
+                if len(sharing_properties) > max:
+                    tree_node_sharing_most_properties = tree_node
+                    max = len(sharing_properties)
 
+            assert tree_node_sharing_most_properties
+            parent_list.append(tree_node_sharing_most_properties.id)
+
+            states_left = node.positive_cont.difference(tree_node_sharing_most_properties.positive_cont)
+            mols_left = []
+            mols_used = []
+            while len(mols_needed) > 0:
+                mol = mols_needed.pop()
+                if mol not in tree_node_sharing_most_properties.node_object.molecules:
+                    mols_left.append(mol)
+                else:
+                    mols_used.append(mol)
+
+            if len(mols_left) == 1:
+                edge_reaction = EdgeReaction("2.1.1.1", "reversible")
+                parent_list.append(self.get_index(mols_left[0].name))
 
         self.nodes.append(node)
         self.last_node = node.name
         self.set_parent(node=node, parent_list=parent_list)
-        self.set_edge(node=node, parent_list=parent_list, reaction=reaction)
+        self.set_edge(node=node, parent_list=parent_list, reaction=edge_reaction)
+
 
     def add_parent(self, parent, node):
         """
@@ -293,7 +324,28 @@ if __name__ == "__main__":
     <b>; AND Ste5--Ste7
     <b>; AND Ste5--Ste5"""
 
-    rxncon = Rxncon(TOY1)
+    TOY5 = """
+    A_ppi_C
+    C_ppi_E
+    A_p+_B_[x]; ! <comp>
+    <comp>; AND A--C
+    <comp>; AND C--E
+    """
+    TOY6 = """
+    A_ppi_B
+    B_ppi_C
+    C_ppi_E
+    E_p+_C; ! C--E
+    A_p+_E; ! <comp>
+    <comp>; AND <Ccomp>
+    <comp>; AND <Acomp>
+    <Ccomp>; AND C--E
+    <Ccomp>; AND C-{P}
+    <Acomp>; AND A--B
+    <Acomp>; AND B--C
+    """
+
+    rxncon = Rxncon(TOY6)
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
