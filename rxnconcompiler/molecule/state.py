@@ -117,6 +117,9 @@ class State:
         self.__homodimer = homodimer
 
     def __repr__(self):
+        return str(self)
+
+    def __str__(self):
         if self.type == 'Intraprotein':
             return '%s_[%s]--[%s]' % (self.components[0].name, \
                 self.components[0].domain, self.components[0].second_domain)
@@ -125,6 +128,7 @@ class State:
         if self.type in ['Covalent Modification', 'Relocalisation']:
             return '%s-{%s}' % (str(self.components[0]), self.modifier)
         return self.state_str
+
 
     def __eq__(self, other):
         """
