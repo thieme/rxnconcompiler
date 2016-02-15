@@ -691,7 +691,7 @@ if __name__ == "__main__":
     c_p+_a_[X]
     a_[X]_p-_b_[x]; ! a_[X]-{P}
     """""
-    #     a_[X]_p-_b_[x]; ! b_[x]-{P} this line would make the p- reaction disappear in the PDTRee
+    # a_[X]_p-_b_[x]; ! b_[x]-{P} this line would make the p- reaction disappear in the PDTRee
 
     sample2= """
     a_ppi_b
