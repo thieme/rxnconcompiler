@@ -47,6 +47,54 @@ class SBMLBuilder(object):
         species.setName(str(node.name))
         self.species_set_SBML_defaults(species)
 
+    def add_parameter(self, parId):
+        par = self.model.createParameter()
+        par.setId(parId)
+
+    def compute_KineticLaw(self, reaction_id, rxnconReactions):
+        handledReaction=[]
+        rule = ""
+        for reaction in rxnconReactions:
+            if reaction.id[0].rid not in handledReaction:
+                handledReaction.append(reaction[0].rid)
+                handledNode = []
+                if reaction[0].rate.rate is not None:
+                    if rule:
+                        rule += " + "
+                    rule += reaction[0].rate.rate
+                    self.add_parameter(reaction[0].rate.rate)
+
+                    for reactionTuple in rxnconReactions:
+                        if reactionTuple[0].rid == reaction[0].rid:
+                            if reactionTuple[1][0] not in handledNode:
+                                #rule += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
+                                rule += " * " + self.process_node_id(reactionTuple[1][0])
+                                handledNode.append(reactionTuple[1][0])
+
+                elif reaction[0].rate.rate is None and reaction[0].rate.rrate is not None and reaction[0].rate.frate is not None:
+                    there =" "+ reaction[0].rate.frate
+                    self.add_parameter(reaction[0].rate.frate)
+                    back =" "+ reaction[0].rate.rrate
+                    self.add_parameter(reaction[0].rate.rrate)
+                    for reactionTuple in rxnconReactions:
+                        if reactionTuple[0].rid == reaction[0].rid:
+                            if reactionTuple[1][0] not in handledNode:
+                                #there += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
+                                there += " * " + self.process_node_id( reactionTuple[1][0])
+                                handledNode.append(reactionTuple[1][0])
+                            if reactionTuple[1][1] not in handledNode:
+                                #back += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][1]).node_object)
+                                back += " * " + self.process_node_id(reactionTuple[1][1])
+                                handledNode.append(reactionTuple[1][1])
+                    rule += there + " - " + back
+                else:
+                    raise RxnconRateError("failed to set Kinetic law for reaction " + str(reaction[0].rid ))
+
+        reaction = self.model.getReaction(reaction_id)
+        kineticLaw = reaction.createKineticLaw()
+        kineticLaw.setMath(parseL3Formula(rule))
+
+    # deprecated TODO delete when erverthing works as intended
     def set_reference(self, reaction, reactant, is_substrate, node_id):
         # sets the reactant/product/modifier references for the given reaction
 
@@ -61,123 +109,62 @@ class SBMLBuilder(object):
             modRef = reaction.createModifier()
             modRef.setSpecies(self.process_node_id(node_id))
 
-    def add_references(self, sbmlRId, edge_id):
+    def add_references(self, sbmlRId, edge):
         # adds new reactants to an reaction
 
         sbmlReaction = self.model.getReaction(sbmlRId)
-        rxnconReaction = None
-        for edge in self.tree.edges:
-            if edge_id == edge.id:
-                rxnconReaction = edge.reaction[0]
+        rxnconReaction = edge.reaction[0]
 
         substrate = None
         product = None
 
-        # TODO
         for node in self.tree.nodes:
-            if node.id == edge_id[0]:
-                if node.node_object.molecules == rxnconReaction.substrat_complexes[0].molecules:
-                    substrate = rxnconReaction.substrat_complexes[0]
-                elif node.node_object.molecules == rxnconReaction.substrat_complexes[1].molecules:
-                    substrate = rxnconReaction.substrat_complexes[1]
-                else:
-                    print("error in print referenz substrat is neither of the two substrat_complexes")
+            if node.id == edge.id[0]:
+                 # checking if the node1 is alredy in the reaction and if it is modifier or substrate
+                if sbmlReaction.getReactant(self.process_node_id(edge.id[0])) is None and sbmlReaction.getModifier(self.process_node_id(edge.id[0])) is None:
+                    if (rxnconReaction.rtype == "1.1.1.1" or rxnconReaction.rtype == "1.1.1.2" ) and  node.node_object.molecules[0].name != self.tree.get_node(edge.id[1]).node_object.molecules[0].name:
+                        modRef = sbmlReaction.createModifier()
+                        modRef.setSpecies(self.process_node_id(node.id))
 
-            elif node.id == edge_id[1]:
-                if node.node_object.molecules == rxnconReaction.product_complexes[0].molecules:
-                    product = rxnconReaction.product_complexes[0]
-                elif node.node_object.molecules == rxnconReaction.product_complexes[1].molecules:
-                    product = rxnconReaction.product_complexes[1]
-                else:
-                    print("error in print reference product is neither of the two product_complexes")
+                    else:
+                        reactRef = sbmlReaction.createReactant()
+                        reactRef.setSpecies(self.process_node_id(node.id))
 
-
-        if sbmlReaction.getReactant(self.process_node_id(edge_id[0])) is None and sbmlReaction.getModifier(self.process_node_id(edge_id[0])) is None:
-            self.set_reference(sbmlReaction, substrate, True, edge_id[0])
-
-        if sbmlReaction.getProduct(self.process_node_id(edge_id[1])) is None and sbmlReaction.getModifier(self.process_node_id(edge_id[1])) is None:
-            self.set_reference(sbmlReaction, product, False, edge_id[1])
-
-        #substrate = self.tree.get_node(edge_id[0]).node_object # old but incorrect way, information in node ist inccorect, is_modifier is reaction dependand not globaly
-        #product = self.tree.get_node(edge_id[1]).node_object the same with substrate
-
-        # if sbmlReaction.getReactant(self.process_complex_id(substrate)) is None and sbmlReaction.getModifier(self.process_complex_id(substrate)) is None:
-        #     reactRefs = (self.set_reference(sbmlReaction, substrate, True))
-        #
-        # if sbmlReaction.getProduct(self.process_complex_id(product)) is None and sbmlReaction.getModifier(self.process_complex_id(product)) is None:
-        #     self.set_reference(sbmlReaction, product, False)
+            elif node.id == edge.id[1]:
+                # checking of node2 is already set as a product
+                if sbmlReaction.getProduct(self.process_node_id(edge.id[1])) is None and sbmlReaction.getModifier(self.process_node_id(edge.id[1])) is None:
+                    prodRef =  sbmlReaction.createProduct()
+                    prodRef.setSpecies(self.process_node_id(node.id))
 
     def process_reaction(self, rxnconReactions):
         # gets a list of tuple (reaction, edge.id)  and processes stored information
 
         reaction = self.model.createReaction()
-        id = 'r' + str(rxnconReactions[0][0].rid)   # id is a string "r[rid]" where rid is the number from the rxncon-reaction
+        id = 'r' + str(rxnconReactions[0].id[1])   # id is a string "r" + number  where the number is the products node number
         reaction.setId(id)
 
         #creates a name out of the unique reaction names that are part of this reaction
         names = set()
-        for reactionTuple in rxnconReactions:
-            names.add(reactionTuple[0].name)
+        for edge in rxnconReactions:
+            if edge.reaction[0].rtype == "1.1.1.1":
+                names.add("phos")
+            elif edge.reaction[0].rtype == "2.1.1.1":
+                names.add("ppi")
+            else:
+                names.add("unknown")
         names = list(names)
         reaction.setName(";".join(names))
 
-        reaction.setReversible(rxnconReactions[0][0].definition["Reversibility"] == "reversible")  # sets a bool according to Reversibility, True for reversible False for irreversible
+        reaction.setReversible(rxnconReactions[0].reaction[0].reversibility == "reversible")  # sets a bool according to Reversibility, True for reversible False for irreversible
         #reaction.setFast()
         #reaction.setSBOTerm()
         if(self.namespace.getLevel >=3):
             reaction.setCompartment('cell')                          # Reaction_Compartment exists not before SBML L3V1
 
         #adds SpeciesReferences to the reaction
-        [self.add_references(id, reactionTuple[1]) for reactionTuple in rxnconReactions]
+        [self.add_references(id, edge) for edge in rxnconReactions]
 
-        self.compute_KineticLaw(id, rxnconReactions)
-
-    def add_parameter(self, parId):
-        par = self.model.createParameter()
-        par.setId(parId)
-
-    def compute_KineticLaw(self, reaction_id, rxnconReactions):
-        handledReaction=[]
-        rule = ""
-        for reactions in rxnconReactions:
-            if reactions[0].rid not in handledReaction:
-                handledReaction.append(reactions[0].rid)
-                handledNode = []
-                if reactions[0].rate.rate is not None:
-                    if rule:
-                        rule += " + "
-                    rule += reactions[0].rate.rate
-                    self.add_parameter(reactions[0].rate.rate)
-
-                    for reactionTuple in rxnconReactions:
-                        if reactionTuple[0].rid == reactions[0].rid:
-                            if reactionTuple[1][0] not in handledNode:
-                                #rule += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
-                                rule += " * " + self.process_node_id(reactionTuple[1][0])
-                                handledNode.append(reactionTuple[1][0])
-
-                elif reactions[0].rate.rate is None and reactions[0].rate.rrate is not None and reactions[0].rate.frate is not None:
-                    there =" "+ reactions[0].rate.frate
-                    self.add_parameter(reactions[0].rate.frate)
-                    back =" "+ reactions[0].rate.rrate
-                    self.add_parameter(reactions[0].rate.rrate)
-                    for reactionTuple in rxnconReactions:
-                        if reactionTuple[0].rid == reactions[0].rid:
-                            if reactionTuple[1][0] not in handledNode:
-                                #there += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][0]).node_object)
-                                there += " * " + self.process_node_id( reactionTuple[1][0])
-                                handledNode.append(reactionTuple[1][0])
-                            if reactionTuple[1][1] not in handledNode:
-                                #back += " * " + self.process_complex_id( self.tree.get_node(reactionTuple[1][1]).node_object)
-                                back += " * " + self.process_node_id(reactionTuple[1][1])
-                                handledNode.append(reactionTuple[1][1])
-                    rule += there + " - " + back
-                else:
-                    raise RxnconRateError("failed to set Kinetic law for reaction " + str(reactions[0].rid ))
-
-        reaction = self.model.getReaction(reaction_id)
-        kineticLaw = reaction.createKineticLaw()
-        kineticLaw.setMath(parseL3Formula(rule))
+        #self.compute_KineticLaw(id, rxnconReactions)
 
     def save_SBML(self, document, path):
         # writes the SBML Document to a textfile
@@ -218,11 +205,12 @@ class SBMLBuilder(object):
                 self.process_node(edge.id[1])
                 visited_nodes.append(edge.id[1])
 
-            #handle edges, so that all reactions with the same product(s) get handled at once
+            # lists edges according the product
             reactions[edge.id[1]].append(edge)
 
-
-        #self.process_reaction(reactions) # TODO call for each list in reactions separately
+        for key in reactions:
+            # each set of edges with the same product get computed together
+            self.process_reaction(reactions[key])
 
         return(self.document)
 
@@ -749,13 +737,16 @@ if __name__ == "__main__":
     phos = """
     a_p+_b_[X]
     """
+    ppi = """
+    a_ppi_b
+    """
 
     #rxncon = Rxncon(TOY3)
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
 
-    rxncon = Rxncon(phos)
+    rxncon = Rxncon(ppi)
 
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
