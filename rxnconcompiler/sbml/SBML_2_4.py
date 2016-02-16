@@ -762,7 +762,7 @@ if __name__ == "__main__":
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
 
-    rxncon = Rxncon(sample5)
+    rxncon = Rxncon(simple)
 
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
