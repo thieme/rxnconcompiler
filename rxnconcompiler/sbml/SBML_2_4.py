@@ -43,7 +43,7 @@ class SBMLBuilder(object):
         node = self.tree.get_node(visitId)
 
         #species.setId( self.process_complex_id(node.node_object) )
-        species.setId( self.process_node_id(node.id))
+        species.setId( self.process_node_id(visitId))
         species.setName(str(node.name))
         self.species_set_SBML_defaults(species)
 
@@ -204,6 +204,7 @@ class SBMLBuilder(object):
 
         visited_nodes = []
         handled_reactions= []
+        reactions = {} # list of list where reactions[2] is the list of all edges with product node2
 
         # for all edges it is checked if the nodes are already visited, if not they are added as species in process_node
         # the same will happen for each edge and their reaction, an reaction can be on two different edges so it has to be checked if this reaction was already added
@@ -213,26 +214,15 @@ class SBMLBuilder(object):
                 self.process_node(edge.id[0])
                 visited_nodes.append(edge.id[0])
             if edge.id[1] not in visited_nodes :
+                reactions[edge.id[1]] = []
                 self.process_node(edge.id[1])
                 visited_nodes.append(edge.id[1])
 
-        for edge in rPDTree.edges:
             #handle edges, so that all reactions with the same product(s) get handled at once
-            for reaction in edge.reaction:
-                if reaction.rid not in handled_reactions:
-                    reactions = [(reaction, edge.id)]
-                    handled_reactions.append(reaction.rid)
-                    products = []
-                    for prod in reaction.product_complexes:
-                        if not prod.is_modifier:
-                            products.append(edge.id[1])
-                    for other_edge in rPDTree.edges:
-                        for other_reaction in other_edge.reaction:
-                            if other_edge.id != edge.id:
-                                if other_edge.id[1] in products:
-                                    reactions.append((other_reaction, other_edge.id ))
-                                    handled_reactions.append(other_reaction.rid)
-                    self.process_reaction(reactions)
+            reactions[edge.id[1]].append(edge)
+
+
+        #self.process_reaction(reactions) # TODO call for each list in reactions separately
 
         return(self.document)
 
@@ -756,20 +746,23 @@ if __name__ == "__main__":
     C_p+_A_[x]
     A_ppi_B; K+ A_[x]-{P}
     """
+    phos = """
+    a_p+_b_[X]
+    """
 
     #rxncon = Rxncon(TOY3)
     #rxncon = Rxncon(TOY2)
     #rxncon = Rxncon(TOY4)
     #rxncon = Rxncon(TOY1)
 
-    rxncon = Rxncon(simple)
+    rxncon = Rxncon(phos)
 
     rxncon.run_process()
     reducedPD = ReducedProcessDescription(rxncon.reaction_pool)
     reducedPD.build_reaction_Tree()
 
-    #useCD = False
-    useCD = True
+    useCD = False
+    #useCD = True
 
     if useCD:
         #cd = SBMLBuilder(level = 3, version = 1)
