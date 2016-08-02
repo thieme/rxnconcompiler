@@ -1,5 +1,7 @@
-# rxnconcompiler 
+#We are currently finalising a major overhaul of the interpretation engine and the export features.
 
+
+# rxnconcompiler 
 
 **rxnconcompiler is an iterative network building tool for Systems Biology.**
 
